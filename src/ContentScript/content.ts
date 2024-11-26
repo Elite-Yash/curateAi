@@ -1,3 +1,15 @@
+const getPostText = (commentElement) => {
+    const parentElement = commentElement?.parentElement?.parentElement?.previousElementSibling;
+    console.log('parentElement: ', parentElement);
+
+    if(parentElement) {
+        const secondChild = parentElement?.children[1];
+
+        return secondChild?.innerText;
+    } else{
+        return '';
+    }
+}
 
 function addCustomIcons() {
     const commentBoxes = document.querySelectorAll(
@@ -7,6 +19,7 @@ function addCustomIcons() {
     commentBoxes.forEach((box) => {
         // Find the parent element with the class 'comments-comment-box--cr'
         const commentBoxCr = box.closest('.comments-comment-box--cr');
+        console.log('commentBoxCr: ', commentBoxCr);
 
         // Check if the element exists and has an ID
         const commentBoxCrId = commentBoxCr?.id || 'No ID found';
@@ -23,8 +36,9 @@ function addCustomIcons() {
             customIcon.style.width = '24px';
             customIcon.style.height = '24px';
 
+            let postText = getPostText(commentBoxCr);
             customIcon.addEventListener('click', () => {
-                console.log(`Custom icon clicked in box with ID: ${commentBoxCrId}`);
+                console.log(`Custom icon clicked in box with ID: ${postText??''}`);
                 alert(`Custom icon clicked in box with ID: ${commentBoxCrId}`);
             });
 
@@ -41,3 +55,5 @@ observer.observe(document.body, {
 });
 
 addCustomIcons();
+
+
