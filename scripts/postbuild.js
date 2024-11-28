@@ -37,6 +37,7 @@ function readFile(path, prefix, extension) {
 const content = readFile("js", "content", "js");
 const js = readFile("js", "index", "js");
 const css = readFile("css", "index", "css");
+console.log(js,'js')
 if (!js || !css) {
   console.error("Required JS or CSS files are missing. Build may have failed.");
   // process.exit(1);
@@ -47,7 +48,8 @@ const newManifest = {
   content_scripts: [
     {
       matches: ["https://*.linkedin.com/*"],
-      js: ["js/content.js"],
+      js: [js],
+      css: [css],
       match_about_blank: true,
       all_frames: false,
     },

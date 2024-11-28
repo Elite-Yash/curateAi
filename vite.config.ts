@@ -24,11 +24,11 @@ export default defineConfig({
         //   dest: "",                  // Destination root in the build
         //   rename: "popup.html",      // Rename as popup.html
         // },
-        {
-          src: "src/ContentScript/content.ts", // Ensure blank script is copied
-          dest: "js",          // Destination folder in the build
-          rename: "content.js",  // Rename or keep the same
-        },
+        // {
+        //   src: "src/ContentScript/content.tsx", // Ensure blank script is copied
+        //   dest: "js",          // Destination folder in the build
+        //   rename: "content.js",  // Rename or keep the same
+        // },
       ],
     }),
   ],

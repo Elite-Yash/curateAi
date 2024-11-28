@@ -13,17 +13,18 @@
  */
 
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import { MemoryRouter as Router } from "react-router-dom";
-
+// import App from "./App.tsx";
+// import { MemoryRouter as Router } from "react-router-dom";
+import Layout from "./contentScript/content.tsx";
 // Create a new <div> element to serve as the root container for the React app
 const root = document.querySelector("body");
 
+const div = document.createElement("div");
+
+div.id = "curateai-extension-root";
+document.body.appendChild(div);
+
 // Render the React application into the root container
 if (root) {
-  ReactDOM.createRoot(root).render(
-    <Router>
-        <App />
-    </Router>
-  );
+  ReactDOM.createRoot(div).render(<Layout />);
 }
