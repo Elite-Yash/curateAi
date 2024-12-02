@@ -11,21 +11,21 @@ chrome.action.onClicked.addListener(function (tab) {
 // background.js
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type === "GENERATE_COMMENT") {
-        const { language, tone, postText, authorName, type } = request.data;
+    if (request.type === "GENERATE_CONTENT") {
+        const { language, tone, postText, authorName, contentType, command } = request.data;
         console.log('request.data: ', request.data);
 
         // Perform the API call
 
 
-        const url = `${BASE_URL}${GENERATE_COMMENT_URL}`;
+        const url = `${BASE_URL}${GENERATE_CONTENT_URL}`;
 
         fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ language, tone, postText, authorName, type }),
+            body: JSON.stringify({ language, tone, postText, authorName, contentType, command }),
         })
             .then((response) => response.json())
             .then((data) => {

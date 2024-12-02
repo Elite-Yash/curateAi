@@ -8,9 +8,10 @@ interface ModalProps {
     onClose: () => void;
     postData: PostData;
     insertGeneratedComment: (comment: string) => void;
+    popupTriggeredFrom: string;
 }
 
-const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment }) => {
+const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, popupTriggeredFrom }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]); // Default to first language in the list
     const [tone, setTone] = useState(TONES[0]); // Default to first tone in the list
     const [text, setText] = useState('');
@@ -27,12 +28,12 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
         setError(""); // Reset any previous error
         
         const currentUrl = window.location.href;
-        let type = ""
+        let platform = ""
 
         if(currentUrl.includes("linkedin.com")) {
-            type = "linkedin";
+            platform = "linkedin";
         }else if(currentUrl.includes("x.com")) {
-            type = "twitter";
+            platform = "twitter";
         }
         // Prepare the data to send to the background script
         const requestData = {
@@ -40,16 +41,18 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             tone,
             postText: postData.postText,
             authorName: postData.authorName,
-            type : type,
-            command : text
+            platform : platform,
+            command : text,
+            contentType : popupTriggeredFrom
         };
 
         console.log('requestData: ', requestData);
+        console.log("triggered", popupTriggeredFrom);
 
 
         // Send the data to the background script
         chrome.runtime.sendMessage(
-            { type: 'GENERATE_COMMENT', data: requestData },
+            { type: 'GENERATE_CONTENT', data: requestData },
             (response) => {
                 if (response.success) {
                     setText(response.data.data);

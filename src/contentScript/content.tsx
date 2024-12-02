@@ -11,6 +11,7 @@ const Layout = () => {
 
     const [selectedCommentBoxId, setSelectedCommentBoxId] = useState('');
     const [currentPlatform, setCurrentPlatform] = useState('');
+    const [popupTriggeredFrom, setPopupTriggeredFrom] = useState('comment');
 
     const getPlatformName = () => {
         const hostname = window.location.hostname;
@@ -217,6 +218,33 @@ const Layout = () => {
         });
     };
 
+    const addCustomIconToElement = (element: HTMLElement) => {
+        // Check if the custom icon already exists
+        if (element.querySelector(".custom-comment-icon")) return;
+
+        // Create and append the custom icon
+        const customIcon = document.createElement("img");
+        customIcon.src = chrome.runtime.getURL("/icon.png");
+        customIcon.alt = "Custom Icon";
+        customIcon.className = "custom-comment-icon";
+        customIcon.style.cursor = "pointer";
+        customIcon.style.width = "24px";
+        customIcon.style.height = "24px";
+
+        customIcon.addEventListener("click", () => {
+            setOpenAiPopup(true);
+            setPopupTriggeredFrom("create-post");
+        });
+
+        element?.insertBefore(customIcon, element.lastElementChild);
+    };
+    const addIconInCreatePostLinkedin = () => {
+        const modalPostBox = document.querySelector(".share-creation-state__footer") as HTMLElement; // LinkedIn's create-post modal class
+        if (modalPostBox) {
+            addCustomIconToElement(modalPostBox);
+        }
+    };
+
     useEffect(() => {
         // Determine the platform
         let platform = getPlatformName();
@@ -230,6 +258,7 @@ const Layout = () => {
         const observer = new MutationObserver(() => {
             if (platform === "LinkedIn") {
                 addCustomCommentIconLinkedIn();
+                addIconInCreatePostLinkedin();
             } else if (platform === "Twitter") {
                 addCustomCommentIconTwitter();
             }
@@ -267,6 +296,7 @@ const Layout = () => {
                     onClose={() => setOpenAiPopup(false)}
                     postData={postData}
                     insertGeneratedComment={currentPlatform === "LinkedIn" ? insertGeneratedCommentLinkedin : insertGeneratedCommentTwitter}
+                    popupTriggeredFrom={popupTriggeredFrom}
                 />
             </div>
         );
