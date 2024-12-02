@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import "../../css/linkedinPopup.css"; // Import the CSS file
+import "../../css/InputAiPopup.css"; // Import the CSS file
 import { LANGUAGES, TONES } from "../../constants/constants"; // Import constants
-import { LinkedinPostData } from "../../constants/types";
+import { PostData } from "../../constants/types";
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    postData: LinkedinPostData;
+    postData: PostData;
     insertGeneratedComment: (comment: string) => void;
 }
 
-const LinkedinPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment }) => {
+const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]); // Default to first language in the list
     const [tone, setTone] = useState(TONES[0]); // Default to first tone in the list
     const [text, setText] = useState('');
@@ -25,20 +25,31 @@ const LinkedinPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insert
     const handleSubmit = () => {
         setLoading(true);
         setError(""); // Reset any previous error
+        
+        const currentUrl = window.location.href;
+        let type = ""
 
+        if(currentUrl.includes("linkedin.com")) {
+            type = "linkedin";
+        }else if(currentUrl.includes("x.com")) {
+            type = "twitter";
+        }
         // Prepare the data to send to the background script
         const requestData = {
             language,
             tone,
             postText: postData.postText,
             authorName: postData.authorName,
+            type : type,
+            command : text
         };
 
         console.log('requestData: ', requestData);
 
+
         // Send the data to the background script
         chrome.runtime.sendMessage(
-            { type: 'GENERATE_LINKEDIN_COMMENT', data: requestData },
+            { type: 'GENERATE_COMMENT', data: requestData },
             (response) => {
                 if (response.success) {
                     setText(response.data.data);
@@ -126,4 +137,4 @@ const LinkedinPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insert
     );
 };
 
-export default LinkedinPopup;
+export default InputAiPopup;

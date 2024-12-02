@@ -1,24 +1,39 @@
 import { useState, useEffect } from "react";
-import LinkedinPopup from "../components/linkedInComponents/linkedinPopup";
-import { LinkedinPostData } from "../constants/types";
+import InputAiPopup from "../components/aiPopup/InputAiPopup";
+import { PostData } from "../constants/types";
 
 const Layout = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
-    const [linkedinPostData, setlinkedinPostData] = useState<LinkedinPostData>({
+    const [postData, setPostData] = useState<PostData>({
         postText: '',
         authorName: ''
     });
 
     const [selectedCommentBoxId, setSelectedCommentBoxId] = useState('');
+    const [currentPlatform, setCurrentPlatform] = useState('');
 
-    const getPostData = (commentElement) => {
+    const getPlatformName = () => {
+        const hostname = window.location.hostname;
+
+        if (hostname.includes("linkedin.com")) {
+            setCurrentPlatform("LinkedIn");
+            return "LinkedIn";
+        } else if (hostname.includes("twitter.com") || hostname.includes("x.com")) {
+            setCurrentPlatform("Twitter");
+            return "Twitter";
+        } else {
+            return "Unknown";
+        }
+    };
+
+    const getPostDataLinkedin = (commentElement: HTMLElement) => {
         const parentElement = commentElement?.parentElement?.parentElement?.previousElementSibling;
         let postText = "";
         let authorName = "";
 
         if (parentElement) {
             // Extract post text (second child element)
-            const secondChild = parentElement?.children[1];
+            const secondChild = parentElement?.children[1] as HTMLElement;
             postText = secondChild?.innerText || "";
 
             // Extract author name (searching for a specific class within the first child)
@@ -41,8 +56,105 @@ const Layout = () => {
         return { postText, authorName }; // Return the extracted data
     };
 
+    const getPostDataTwitter = () => {
+        let postText = "";
+        let authorName = "";
 
-    const insertGeneratedComment = (comment: string) => {
+        const tweetContainer = document.querySelector("article");
+        if (tweetContainer) {
+            // Extract post text
+            const textElement = tweetContainer.querySelector("div[data-testid='tweetText']");
+            postText = textElement?.querySelector("span")?.textContent?.trim() || "";
+
+            // Extract author name
+            const authorElement = tweetContainer.nextElementSibling;
+            if (authorElement) {
+                // Safely query the span containing the username text
+                const replyTextElement = tweetContainer.querySelector('div[dir="ltr"]')?.children[0].children[0];
+                console.log('replyTextElement: ', replyTextElement);
+
+                if (replyTextElement?.textContent) { // Optional chaining ensures textContent is accessed safely
+                    authorName = replyTextElement.textContent.trim(); // Extract the text
+                    console.log('Username text: ', authorName); // Should log "@ia_william"
+                } else {
+                    console.warn('Username span or its textContent is null.');
+                }
+            } else {
+                console.warn('Reply button not found.');
+            }
+        }
+
+
+        console.log('{ postText, authorName };: ', { postText, authorName });
+        return { postText, authorName };
+    };
+
+    const addCustomCommentIconTwitter = () => {
+        const commentBoxes = document.querySelectorAll("div[data-testid='tweetTextarea_0']");
+
+        commentBoxes.forEach((box) => {
+            // Check if the custom icon already exists
+            if (box.parentElement?.querySelector(".custom-comment-icon")) return;
+
+            const commentBoxId = box.closest("div")?.id || "No ID found";
+            setSelectedCommentBoxId(commentBoxId);
+
+            // Create and append the custom icon
+            const customIcon = document.createElement("img");
+            customIcon.src = chrome.runtime.getURL("/icon.png");
+            customIcon.alt = "Custom Icon";
+            customIcon.className = "custom-comment-icon";
+            customIcon.style.cursor = "pointer";
+            customIcon.style.marginLeft = "10px";
+            customIcon.style.width = "24px";
+            customIcon.style.height = "24px";
+
+            customIcon.addEventListener("click", () => {
+                const postData = getPostDataTwitter();
+                setPostData(postData);
+                setOpenAiPopup(true);
+            });
+
+            box.parentElement?.appendChild(customIcon);
+        });
+    };
+    const insertGeneratedCommentTwitter = (comment: string) => {
+        try {
+            // Find the main comment box
+            const commentBox = document.querySelector("div[data-testid='tweetTextarea_0']");
+            console.log("commentBox: ", commentBox);
+
+            if (commentBox) {
+                // Identify the contenteditable div within the comment box
+                const editableDiv = commentBox.querySelector("div[contenteditable='true']");
+                if (editableDiv) {
+                    // Set the comment text
+                    editableDiv.textContent = comment;
+
+                    // Dispatch input event to ensure Twitter recognizes the input
+                    const event = new InputEvent("input", {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    editableDiv.dispatchEvent(event);
+
+                    // Close any OpenAI popup or additional UI
+                    setOpenAiPopup(false);
+
+                    console.log("Comment inserted successfully.");
+                } else {
+                    console.error("Editable div not found within the comment box.");
+                }
+            } else {
+                console.error("Comment box not found.");
+            }
+        } catch (error) {
+            console.error("Error inserting comment:", error);
+        }
+    };
+
+
+    const insertGeneratedCommentLinkedin = (comment: string) => {
         const commentBox = document.getElementById(selectedCommentBoxId);
 
         if (commentBox) {
@@ -71,9 +183,7 @@ const Layout = () => {
     };
 
 
-
-
-    const addCustomIcons = () => {
+    const addCustomCommentIconLinkedIn = () => {
         const commentBoxes = document.querySelectorAll(
             ".comments-comment-box__form .comments-comment-texteditor .editor-container"
         );
@@ -82,13 +192,14 @@ const Layout = () => {
             // Check if the custom icon already exists
             if (box.querySelector(".custom-comment-icon")) return;
 
-            const commentBoxCr = box.closest(".comments-comment-box--cr");
+            const commentBoxCr = box.closest(".comments-comment-box--cr") as HTMLElement;
             const commentBoxCrId = commentBoxCr?.id || 'No ID found';
 
             setSelectedCommentBoxId(commentBoxCrId);
+
             // Create and append the custom icon
             const customIcon = document.createElement("img");
-            customIcon.src = chrome.runtime.getURL("/icon.png"); // Adjust the path to match your folder structure
+            customIcon.src = chrome.runtime.getURL("/icon.png");
             customIcon.alt = "Custom Icon";
             customIcon.className = "custom-comment-icon";
             customIcon.style.cursor = "pointer";
@@ -97,8 +208,8 @@ const Layout = () => {
             customIcon.style.height = "24px";
 
             customIcon.addEventListener("click", () => {
-                const postData = getPostData(commentBoxCr);
-                setlinkedinPostData(postData);
+                const postData = getPostDataLinkedin(commentBoxCr);
+                setPostData(postData);
                 setOpenAiPopup(true);
             });
 
@@ -107,12 +218,22 @@ const Layout = () => {
     };
 
     useEffect(() => {
-        // Manually trigger the function on initial load
-        addCustomIcons();
+        // Determine the platform
+        let platform = getPlatformName();
+        if (platform === "LinkedIn") {
+            addCustomCommentIconLinkedIn();
+        } else if (platform === "Twitter") {
+            addCustomCommentIconTwitter();
+        }
 
         // Set up MutationObserver
-        const observer = new MutationObserver(addCustomIcons);
-
+        const observer = new MutationObserver(() => {
+            if (platform === "LinkedIn") {
+                addCustomCommentIconLinkedIn();
+            } else if (platform === "Twitter") {
+                addCustomCommentIconTwitter();
+            }
+        });
         observer.observe(document.body, {
             childList: true,
             subtree: true,
@@ -141,11 +262,11 @@ const Layout = () => {
                     zIndex: 21213123,
                 }}
             >
-                <LinkedinPopup
+                <InputAiPopup
                     isOpen={openAiPopup}
                     onClose={() => setOpenAiPopup(false)}
-                    postData={linkedinPostData}
-                    insertGeneratedComment={insertGeneratedComment}
+                    postData={postData}
+                    insertGeneratedComment={currentPlatform === "LinkedIn" ? insertGeneratedCommentLinkedin : insertGeneratedCommentTwitter}
                 />
             </div>
         );

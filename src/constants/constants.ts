@@ -32,5 +32,6 @@ export const LANGUAGES = [
     "French",
     "German",
     "Italian", // Add more languages as needed
+    "Hindi"
 ];
 

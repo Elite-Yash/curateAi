@@ -1,4 +1,4 @@
-export interface LinkedinPostData {
+export interface PostData {
     authorName: string;
     postText: string;
 }

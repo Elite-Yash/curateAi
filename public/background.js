@@ -11,21 +11,21 @@ chrome.action.onClicked.addListener(function (tab) {
 // background.js
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type === "GENERATE_LINKEDIN_COMMENT") {
-        const { language, tone, postText, authorName } = request.data;
+    if (request.type === "GENERATE_COMMENT") {
+        const { language, tone, postText, authorName, type } = request.data;
         console.log('request.data: ', request.data);
 
         // Perform the API call
 
 
-        const url = `${BASE_URL}${LINKEDIN_GENERATE_COMMENT_URL}`;
+        const url = `${BASE_URL}${GENERATE_COMMENT_URL}`;
 
         fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ language, tone, postText, authorName }),
+            body: JSON.stringify({ language, tone, postText, authorName, type }),
         })
             .then((response) => response.json())
             .then((data) => {
