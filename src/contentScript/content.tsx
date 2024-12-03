@@ -183,6 +183,19 @@ const Layout = () => {
         }
     };
 
+    const insertGeneratedPostLinkedIn = (comment: string) => {
+        const postBox = document.querySelector('.ql-editor') as HTMLElement; // This class is used by LinkedIn's editor
+
+        if (postBox) {
+            postBox?.focus();
+            postBox.textContent = comment;
+            
+            setOpenAiPopup(false);
+        }else{
+            console.error("Post box not found");
+        }
+    };
+
 
     const addCustomCommentIconLinkedIn = () => {
         const commentBoxes = document.querySelectorAll(
@@ -296,6 +309,7 @@ const Layout = () => {
                     onClose={() => setOpenAiPopup(false)}
                     postData={postData}
                     insertGeneratedComment={currentPlatform === "LinkedIn" ? insertGeneratedCommentLinkedin : insertGeneratedCommentTwitter}
+                    insertGeneratedPost={insertGeneratedPostLinkedIn}
                     popupTriggeredFrom={popupTriggeredFrom}
                 />
             </div>

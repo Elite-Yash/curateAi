@@ -8,10 +8,11 @@ interface ModalProps {
     onClose: () => void;
     postData: PostData;
     insertGeneratedComment: (comment: string) => void;
+    insertGeneratedPost: (post: string) => void;
     popupTriggeredFrom: string;
 }
 
-const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, popupTriggeredFrom }) => {
+const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, insertGeneratedPost, popupTriggeredFrom }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]); // Default to first language in the list
     const [tone, setTone] = useState(TONES[0]); // Default to first tone in the list
     const [text, setText] = useState('');
@@ -26,13 +27,12 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
     const handleSubmit = () => {
         setLoading(true);
         setError(""); // Reset any previous error
-        
         const currentUrl = window.location.href;
         let platform = ""
 
-        if(currentUrl.includes("linkedin.com")) {
+        if (currentUrl.includes("linkedin.com")) {
             platform = "linkedin";
-        }else if(currentUrl.includes("x.com")) {
+        } else if (currentUrl.includes("x.com")) {
             platform = "twitter";
         }
         // Prepare the data to send to the background script
@@ -41,9 +41,9 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             tone,
             postText: postData.postText,
             authorName: postData.authorName,
-            platform : platform,
-            command : text,
-            contentType : popupTriggeredFrom
+            platform: platform,
+            command: text,
+            contentType: popupTriggeredFrom
         };
 
         console.log('requestData: ', requestData);
@@ -56,6 +56,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             (response) => {
                 if (response.success) {
                     setText(response.data.data);
+                    setLoading(false);
                     setIsTextGenerated(true);
                 } else {
                     setError("Failed to submit the comment. Please try again.");
@@ -65,8 +66,12 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
         );
     };
 
-    const insertComment = () => {
-        insertGeneratedComment(text);
+    const insertContent = () => {
+        if (popupTriggeredFrom === "comment") {
+            insertGeneratedComment(text);
+        } else if (popupTriggeredFrom === "create-post") {
+            insertGeneratedPost(text);
+        }
     }
 
     return (
@@ -119,7 +124,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
                         Cancel
                     </button>
                     {isTextGenerated && (
-                        <button className="popup-button-insert" onClick={insertComment}>
+                        <button className="popup-button-insert" onClick={insertContent}>
                             Insert
                         </button>
                     )}
