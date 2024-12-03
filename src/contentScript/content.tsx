@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import InputAiPopup from "../components/aiPopup/InputAiPopup";
 import { PostData } from "../constants/types";
+import { LINKEDIN_CLASS_NAMES } from "../constants/linkedinSelectors";
 
 const Layout = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
@@ -28,7 +29,7 @@ const Layout = () => {
     };
 
     const getPostDataLinkedin = (commentElement: HTMLElement) => {
-        const parentElement = commentElement?.parentElement?.parentElement?.previousElementSibling;
+        const parentElement = commentElement?.parentElement?.parentElement?.parentElement;
         let postText = "";
         let authorName = "";
 
@@ -41,7 +42,7 @@ const Layout = () => {
 
             const firstChild = parentElement?.children[0];
             // Find element with either of the two classes
-            const authorElement = firstChild.querySelector(".update-components-actor__title");
+            const authorElement = firstChild.querySelector(`.${LINKEDIN_CLASS_NAMES.AUTHOR_NAME}`);
 
             if (authorElement) {
                 // Select the span with 'dir="ltr"' that is not inside 'aria-hidden'
@@ -95,7 +96,7 @@ const Layout = () => {
 
         commentBoxes.forEach((box) => {
             // Check if the custom icon already exists
-            if (box.parentElement?.querySelector(".custom-comment-icon")) return;
+            if (box.parentElement?.querySelector(".curateai-open-popup-icon")) return;
 
             const commentBoxId = box.closest("div")?.id || "No ID found";
             setSelectedCommentBoxId(commentBoxId);
@@ -103,8 +104,8 @@ const Layout = () => {
             // Create and append the custom icon
             const customIcon = document.createElement("img");
             customIcon.src = chrome.runtime.getURL("/icon.png");
-            customIcon.alt = "Custom Icon";
-            customIcon.className = "custom-comment-icon";
+            customIcon.alt = "curateai-open-popup-icon";
+            customIcon.className = "curateai-open-popup-icon";
             customIcon.style.cursor = "pointer";
             customIcon.style.marginLeft = "10px";
             customIcon.style.width = "24px";
@@ -160,7 +161,7 @@ const Layout = () => {
 
         if (commentBox) {
             // Locate the contenteditable div inside the comment box (where the comment should be inserted)
-            const editor = commentBox.querySelector('.ql-editor'); // This class is used by LinkedIn's editor
+            const editor = commentBox.querySelector(`.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`); // This class is used by LinkedIn's editor
 
             if (editor) {
                 // Replace the existing content with the new comment
@@ -184,14 +185,14 @@ const Layout = () => {
     };
 
     const insertGeneratedPostLinkedIn = (comment: string) => {
-        const postBox = document.querySelector('.ql-editor') as HTMLElement; // This class is used by LinkedIn's editor
+        const postBox = document.querySelector(`.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`) as HTMLElement; // This class is used by LinkedIn's editor
 
         if (postBox) {
             postBox?.focus();
             postBox.textContent = comment;
-            
+
             setOpenAiPopup(false);
-        }else{
+        } else {
             console.error("Post box not found");
         }
     };
@@ -204,9 +205,9 @@ const Layout = () => {
 
         commentBoxes.forEach((box) => {
             // Check if the custom icon already exists
-            if (box.querySelector(".custom-comment-icon")) return;
+            if (box.querySelector(".curateai-open-popup-icon")) return;
 
-            const commentBoxCr = box.closest(".comments-comment-box--cr") as HTMLElement;
+            const commentBoxCr = box.closest(`.${LINKEDIN_CLASS_NAMES.COMMENT_BOX_CR}`) as HTMLElement;
             const commentBoxCrId = commentBoxCr?.id || 'No ID found';
 
             setSelectedCommentBoxId(commentBoxCrId);
@@ -214,8 +215,8 @@ const Layout = () => {
             // Create and append the custom icon
             const customIcon = document.createElement("img");
             customIcon.src = chrome.runtime.getURL("/icon.png");
-            customIcon.alt = "Custom Icon";
-            customIcon.className = "custom-comment-icon";
+            customIcon.alt = "curateai-open-popup-icon";
+            customIcon.className = "curateai-open-popup-icon";
             customIcon.style.cursor = "pointer";
             customIcon.style.marginLeft = "10px";
             customIcon.style.width = "24px";
@@ -252,7 +253,7 @@ const Layout = () => {
         element?.insertBefore(customIcon, element.lastElementChild);
     };
     const addIconInCreatePostLinkedin = () => {
-        const modalPostBox = document.querySelector(".share-creation-state__footer") as HTMLElement; // LinkedIn's create-post modal class
+        const modalPostBox = document.querySelector(`.${LINKEDIN_CLASS_NAMES.SHARE_CREATION_FOOTER}`) as HTMLElement; // LinkedIn's create-post modal class
         if (modalPostBox) {
             addCustomIconToElement(modalPostBox);
         }

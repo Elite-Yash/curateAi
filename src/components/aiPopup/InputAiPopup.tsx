@@ -27,6 +27,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
     const handleSubmit = () => {
         setLoading(true);
         setError(""); // Reset any previous error
+        
         const currentUrl = window.location.href;
         let platform = ""
 
@@ -39,10 +40,10 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
         const requestData = {
             language,
             tone,
-            postText: postData.postText,
+            postText: (postData.postText) ? postData.postText : text,
             authorName: postData.authorName,
             platform: platform,
-            command: text,
+            command:  text,
             contentType: popupTriggeredFrom
         };
 
@@ -133,9 +134,11 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
                         onClick={handleSubmit}
                         disabled={loading} // Disable when loading
                     >
-                        {loading ? "Generating..." : (isTextGenerated ? "Regenerate" : "Generate")}
-
+                        {loading
+                            ? (isTextGenerated ? "Regenerating..." : "Generating...")
+                            : (isTextGenerated ? "Regenerate" : "Generate")}
                     </button>
+
                 </div>
 
                 {/* Error Message */}
