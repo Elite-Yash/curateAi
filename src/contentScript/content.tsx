@@ -7,13 +7,21 @@ const Layout = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
     const [postData, setPostData] = useState<PostData>({
         postText: '',
-        authorName: ''
+        postAutherName: '',
+        commentText: '',
+        commentAuthorName: '',
     });
 
     const [selectedCommentBoxId, setSelectedCommentBoxId] = useState('');
     const [currentPlatform, setCurrentPlatform] = useState('');
     const [popupTriggeredFrom, setPopupTriggeredFrom] = useState('comment');
 
+    useEffect(() => {
+
+        if(postData.commentText != '') {
+            setPopupTriggeredFrom("comment-reply")
+        }
+    },[postData])
     const getPlatformName = () => {
         const hostname = window.location.hostname;
 
@@ -28,39 +36,219 @@ const Layout = () => {
         }
     };
 
-    const getPostDataLinkedin = (commentElement: HTMLElement) => {
-        const parentElement = commentElement?.parentElement?.parentElement?.parentElement;
+
+    const getPostText = (commentBoxEditor: HTMLElement): string => {
+        let parentElement = commentBoxEditor.parentElement;
         let postText = "";
-        let authorName = "";
 
-        if (parentElement) {
-            // Extract post text (second child element)
-            const secondChild = parentElement?.children[1] as HTMLElement;
-            postText = secondChild?.innerText || "";
+        while (parentElement) {
 
-            // Extract author name (searching for a specific class within the first child)
-
-            const firstChild = parentElement?.children[0];
-            // Find element with either of the two classes
-            const authorElement = firstChild.querySelector(`.${LINKEDIN_CLASS_NAMES.AUTHOR_NAME}`);
-
-            if (authorElement) {
-                // Select the span with 'dir="ltr"' that is not inside 'aria-hidden'
-                const innerSpan = authorElement.querySelector("span[dir='ltr'] > span:not([aria-hidden])");
-
-                // If the span exists and is an HTMLElement, get the inner text
-                if (innerSpan && innerSpan instanceof HTMLElement) {
-                    authorName = innerSpan.innerText.trim(); // Extract and clean up the name
-                }
+            if (parentElement.className == LINKEDIN_CLASS_NAMES.FIE_IMPRESSION_CONTAINER) {
+                const secondChild = parentElement.children[1] as HTMLElement;
+                postText = secondChild?.innerText || "";
+                return postText;
             }
+
+            parentElement = parentElement.parentElement;
         }
 
-        return { postText, authorName }; // Return the extracted data
+        return "";
+    };
+
+    const getPostCommentTextNew1 = (commentBoxEditor: HTMLElement) => {
+        //EvyAILogger.log("getPostCommentTextNew1");
+        // get parent element and find its mentioned
+        let iconParentElement = commentBoxEditor?.parentElement;
+        let mentioned_name_element = iconParentElement?.querySelector(
+            `div[${LINKEDIN_CLASS_NAMES.DATA_QL_EDITOR_CONTENT_EDITABLE}="true"]`
+        ) as HTMLElement;
+        let mentioned_name = mentioned_name_element?.innerText.trim();
+        // then loop through all thread and find all comments merge it
+        let comment_text = "";
+        // get actor name
+        // step 1:
+        //comments-comment-meta__container
+        //comments-thread-entity
+        // comment-social-activity comments-thread-entity
+        //step 2
+        //comment-social-activity
+        let threadElemArray: HTMLElement[] = [];
+        let parentElement = commentBoxEditor?.closest(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ITEM) as HTMLElement;
+        threadElemArray.push(parentElement);
+        let childElementsArray = parentElement?.querySelectorAll(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ITEM) ?? [];
+
+        // Convert NodeList to an array and push each element individually
+        childElementsArray?.forEach((childElement) => {
+            threadElemArray.push(childElement as HTMLElement);
+        });
+
+        threadElemArray?.forEach((element) => {
+            let actor_name_elem = element?.querySelector(LINKEDIN_CLASS_NAMES.COMMENTS_POST_META_H3_SPAN_COMMENTS__TEXT) as HTMLElement;
+
+            if (actor_name_elem) {
+                let actor_name_elem1 = actor_name_elem?.querySelector(`span[aria-hidden="true"]`) as HTMLElement;
+                if (actor_name_elem1) {
+                    actor_name_elem = actor_name_elem1;
+                }
+            }
+
+            let actor_name = actor_name_elem?.innerText?.trim();
+            if (mentioned_name.includes(actor_name)) {
+                if (element?.querySelector(LINKEDIN_CLASS_NAMES.DIV_COMMENTS_COMMENT_ITEM_SHOW_MORE_TEXT)) {
+                    const comment_div = element.querySelector(LINKEDIN_CLASS_NAMES.DIV_COMMENTS_COMMENT_ITEM_SHOW_MORE_TEXT) as HTMLElement;
+                    comment_text += comment_div?.innerText ?? "";
+                }
+                comment_text += "\n";
+            }
+        });
+
+        return comment_text;
+    };
+
+    const getPostCommentTextNewUI1 = (commentBoxEditor: HTMLElement) => {
+        //EvyAILogger.log("getPostCommentTextNewUI1");
+        // get parent element and find its mentioned
+        let iconParentElement = commentBoxEditor?.parentElement;
+        let mentioned_name_element = iconParentElement?.querySelector(
+            `div[${LINKEDIN_CLASS_NAMES.DATA_QL_EDITOR_CONTENT_EDITABLE}="true"]`
+        ) as HTMLElement;
+        let mentioned_name = mentioned_name_element?.innerText.trim();
+        let comment_text = "";
+
+        // get actor name
+        // step 1:
+        //comments-comment-meta__container
+        //comments-thread-entity
+        // comment-social-activity comments-thread-entity
+        //step 2
+        //comment-social-activity
+        let threadElemArray: HTMLElement[] = [];
+        let parentElement = commentBoxEditor?.closest(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ENTITY) as HTMLElement;
+        threadElemArray.push(parentElement);
+        let childElementsArray = parentElement?.querySelectorAll(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ENTITY) ?? [];
+        if (childElementsArray.length == 0) {
+            childElementsArray = parentElement?.querySelectorAll(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ITEM) ?? [];
+        }
+        // Convert NodeList to an array and push each element individually
+        childElementsArray?.forEach((childElement) => {
+            threadElemArray.push(childElement as HTMLElement);
+        });
+
+        threadElemArray?.forEach((element) => {
+            let actor_name_elem = element?.querySelector(
+                `.comments-comment-meta__container h3 .${LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_META_DESCRIPTION_TITLE}`
+            ) as HTMLElement;
+
+            if (actor_name_elem) {
+                let actor_name_elem1 = actor_name_elem?.querySelector(`span[aria-hidden="true"]`) as HTMLElement;
+                if (actor_name_elem1) {
+                    actor_name_elem = actor_name_elem1;
+                }
+            }
+            if (!actor_name_elem) {
+                actor_name_elem = element?.querySelector(LINKEDIN_CLASS_NAMES.COMMENTS_POST_META_H3_SPAN_COMMENTS__TEXT) as HTMLElement;
+
+                if (actor_name_elem) {
+                    let actor_name_elem1 = actor_name_elem?.querySelector(`span[aria-hidden="true"]`) as HTMLElement;
+                    if (actor_name_elem1) {
+                        actor_name_elem = actor_name_elem1;
+                    }
+                }
+            }
+
+            let actor_name = actor_name_elem?.innerText?.trim();
+            if (mentioned_name.includes(actor_name)) {
+                if (element?.querySelector(`div.` + LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_CONTENT_ELEMENT)) {
+                    const comment_div = element.querySelector(`div.` + LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_CONTENT_ELEMENT) as HTMLElement;
+                    comment_text += comment_div?.innerText ?? "";
+                }
+                comment_text += "\n";
+            }
+        });
+
+        return comment_text;
+    };
+
+    const getPostCommentAuthorNameNew = (commentBoxEditor: HTMLElement) => {
+        // get parent element and find its mentioned
+        let iconParentElement = commentBoxEditor?.parentElement;
+        let mentioned_name_element = iconParentElement?.querySelector(
+            `div[${LINKEDIN_CLASS_NAMES.DATA_QL_EDITOR_CONTENT_EDITABLE}="true"]`
+        ) as HTMLElement;
+        //EvyAILogger.log("mentioned_name_element?.innerText",mentioned_name_element?.innerText);
+        return mentioned_name_element?.innerText;
+        // then loop through all thread and find all comments merge it
+    };
+
+    const getPostCommentAuthorName = (commentBoxEditor: HTMLElement) => {
+        let parentElement = commentBoxEditor.parentElement;
+        while (parentElement) {
+            if (
+                parentElement.classList.contains(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ITEM) ||
+                parentElement.classList.contains(LINKEDIN_CLASS_NAMES.COMMENTS_HIGHLIGHTED_COMMENT_ITEM) ||
+                parentElement.classList.contains(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ITEM_HIGHLIGHTED)
+            ) {
+                const postCommentAuthorOuterContainer = parentElement.querySelector(
+                    `.${LINKEDIN_CLASS_NAMES.COMMENT_COMMENT_ITEM_POST_META}`
+                ) as HTMLElement;
+                if (postCommentAuthorOuterContainer) {
+                    const spanContainer = postCommentAuthorOuterContainer.querySelector(
+                        `.${LINKEDIN_CLASS_NAMES.COMMENT_POST_META_NAME_TEXT_SPAN_CONTAINER}`
+                    ) as HTMLElement;
+                    if (spanContainer) {
+                        if (spanContainer.firstElementChild?.firstElementChild) {
+                            return (spanContainer?.firstElementChild?.firstElementChild as HTMLElement)?.innerText ?? "";
+                        } else {
+                            return spanContainer.innerText;
+                        }
+                    }
+                }
+            }
+            parentElement = parentElement.parentElement;
+        }
+        return "";
+    };
+
+    const getPostAuthorName = (commentBoxEditor: HTMLElement) => {
+        let parentElement = commentBoxEditor.parentElement;
+        let authorName = "";
+        while (parentElement) {
+            if (parentElement.className == LINKEDIN_CLASS_NAMES.FIE_IMPRESSION_CONTAINER) {
+                const authorElement = parentElement.children[0].querySelector(`.${LINKEDIN_CLASS_NAMES.AUTHOR_NAME}`);
+                if (authorElement) {
+                    // Select the span with 'dir="ltr"' that is not inside 'aria-hidden'
+                    const innerSpan = authorElement.querySelector("span[dir='ltr'] > span:not([aria-hidden])");
+
+                    // If the span exists and is an HTMLElement, get the inner text
+                    if (innerSpan && innerSpan instanceof HTMLElement) {
+                        authorName = innerSpan.innerText.trim(); // Extract and clean up the name
+                    }
+                }
+                return authorName;
+            }
+            parentElement = parentElement.parentElement;
+        }
+        return "";
+    };
+    const getPostAndCommentInfo = (commentElement: any) => {
+        const commentBoxEditor = commentElement?.parentElement?.parentElement;
+        const postText = getPostText(commentBoxEditor);
+
+        const postCommentText = getPostCommentTextNew1(commentBoxEditor).trim();
+        const commentText = postCommentText === "" ? getPostCommentTextNewUI1(commentBoxEditor) : postCommentText;
+        const postCommentAuthorName = getPostCommentAuthorNameNew(commentBoxEditor);
+        const commentAuthorName = postCommentAuthorName === "" ? getPostCommentAuthorName(commentBoxEditor) : postCommentAuthorName;
+        const postAutherName = getPostAuthorName(commentBoxEditor);
+
+        return { postText, postAutherName, commentText, commentAuthorName };
+
     };
 
     const getPostDataTwitter = () => {
         let postText = "";
-        let authorName = "";
+        let postAutherName = "";
+        let commentText = "";
+        let commentAuthorName = "";
 
         const tweetContainer = document.querySelector("article");
         if (tweetContainer) {
@@ -76,8 +264,7 @@ const Layout = () => {
                 console.log('replyTextElement: ', replyTextElement);
 
                 if (replyTextElement?.textContent) { // Optional chaining ensures textContent is accessed safely
-                    authorName = replyTextElement.textContent.trim(); // Extract the text
-                    console.log('Username text: ', authorName); // Should log "@ia_william"
+                    postAutherName = replyTextElement.textContent.trim(); // Extract the text
                 } else {
                     console.warn('Username span or its textContent is null.');
                 }
@@ -87,8 +274,7 @@ const Layout = () => {
         }
 
 
-        console.log('{ postText, authorName };: ', { postText, authorName });
-        return { postText, authorName };
+        return { postText, postAutherName, commentText , commentAuthorName };
     };
 
     const addCustomCommentIconTwitter = () => {
@@ -223,7 +409,7 @@ const Layout = () => {
             customIcon.style.height = "24px";
 
             customIcon.addEventListener("click", () => {
-                const postData = getPostDataLinkedin(commentBoxCr);
+                const postData = getPostAndCommentInfo(box);
                 setPostData(postData);
                 setOpenAiPopup(true);
             });

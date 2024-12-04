@@ -1,4 +1,6 @@
 export interface PostData {
-    authorName: string;
+    postAutherName: string;
     postText: string;
+    commentText: string;
+    commentAuthorName: string;
 }

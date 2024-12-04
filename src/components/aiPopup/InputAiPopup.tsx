@@ -41,10 +41,12 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             language,
             tone,
             postText: (postData.postText) ? postData.postText : text,
-            authorName: postData.authorName,
+            authorName: postData.commentAuthorName,
             platform: platform,
             command:  text,
-            contentType: popupTriggeredFrom
+            contentType: popupTriggeredFrom,
+            commentAuthorName: postData.commentAuthorName,
+            commentText : postData.commentText,
         };
 
         console.log('requestData: ', requestData);
@@ -68,7 +70,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
     };
 
     const insertContent = () => {
-        if (popupTriggeredFrom === "comment") {
+        if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply") {
             insertGeneratedComment(text);
         } else if (popupTriggeredFrom === "create-post") {
             insertGeneratedPost(text);
