@@ -162,6 +162,7 @@ const Layout = () => {
                     const comment_div = element.querySelector(`div.` + LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_CONTENT_ELEMENT) as HTMLElement;
                     comment_text += comment_div?.innerText ?? "";
                 }
+                setPopupTriggeredFrom("comment-reply");
                 comment_text += "\n";
             }
         });
@@ -409,6 +410,7 @@ const Layout = () => {
             customIcon.style.height = "24px";
 
             customIcon.addEventListener("click", () => {
+                setPopupTriggeredFrom("comment");
                 const postData = getPostAndCommentInfo(box);
                 setPostData(postData);
                 setOpenAiPopup(true);
@@ -420,20 +422,21 @@ const Layout = () => {
 
     const addCustomIconToElement = (element: HTMLElement) => {
         // Check if the custom icon already exists
-        if (element.querySelector(".custom-comment-icon")) return;
+        if (element.querySelector(".curateai-open-popup-icon")) return;
 
         // Create and append the custom icon
         const customIcon = document.createElement("img");
         customIcon.src = chrome.runtime.getURL("/icon.png");
-        customIcon.alt = "Custom Icon";
-        customIcon.className = "custom-comment-icon";
+        customIcon.alt = "curateai-open-popup-icon";
+        customIcon.className = "curateai-open-popup-icon";
         customIcon.style.cursor = "pointer";
         customIcon.style.width = "24px";
         customIcon.style.height = "24px";
 
         customIcon.addEventListener("click", () => {
-            setOpenAiPopup(true);
+            console.log("post");
             setPopupTriggeredFrom("create-post");
+            setOpenAiPopup(true);
         });
 
         element?.insertBefore(customIcon, element.lastElementChild);

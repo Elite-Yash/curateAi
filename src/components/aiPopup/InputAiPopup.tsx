@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../css/InputAiPopup.css"; // Import the CSS file
-import { LANGUAGES, TONES } from "../../constants/constants"; // Import constants
+import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants"; // Import constants
 import { PostData } from "../../constants/types";
 
 interface ModalProps {
@@ -15,6 +15,7 @@ interface ModalProps {
 const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, insertGeneratedPost, popupTriggeredFrom }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]); // Default to first language in the list
     const [tone, setTone] = useState(TONES[0]); // Default to first tone in the list
+    const [motives, setMotive] = useState((popupTriggeredFrom == "create-post") ? POSTING_MOTIVES[0] : COMMENT_MOTIVES[0]); // Default to first tone in the list")); // Default to first tone in the list
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -47,6 +48,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             contentType: popupTriggeredFrom,
             commentAuthorName: postData.commentAuthorName,
             commentText : postData.commentText,
+            goal: motives
         };
 
         console.log('requestData: ', requestData);
@@ -77,11 +79,30 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
         }
     }
 
+    console.log("popuptrgifferedfrom", popupTriggeredFrom);
     return (
         <div className="popup-overlay">
             <div className="popup-container">
                 <h2 className="popup-title">Curate Your Comment</h2>
 
+                {/* Motive Selector */}
+                <label className="popup-label">Motive:</label>
+                <select
+                    value={motives}
+                    onChange={(e) => setMotive(e.target.value)}
+                    className="popup-select"
+                    disabled={loading} // Disable when loading
+                >
+                    {(popupTriggeredFrom == "create-post") ? POSTING_MOTIVES.map((motive, index) => (
+                        <option key={index} value={motive}>
+                            {motive}
+                        </option>
+                    )) : COMMENT_MOTIVES.map((motive, index) => (
+                        <option key={index} value={motive}>
+                            {motive}
+                        </option>
+                    ))}
+                </select>
                 {/* Language Selector */}
                 <label className="popup-label">Language:</label>
                 <select
