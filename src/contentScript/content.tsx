@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import InputAiPopup from "../components/aiPopup/InputAiPopup";
-import { PostData } from "../constants/types";
+import { PostData, ArticleInfo } from "../constants/types";
 import { LINKEDIN_CLASS_NAMES } from "../constants/linkedinSelectors";
 
 const Layout = () => {
@@ -15,13 +15,21 @@ const Layout = () => {
     const [selectedCommentBoxId, setSelectedCommentBoxId] = useState('');
     const [currentPlatform, setCurrentPlatform] = useState('');
     const [popupTriggeredFrom, setPopupTriggeredFrom] = useState('comment');
+    const [articleInfo, setArticleInfo] = useState<ArticleInfo | null>(null);
+
 
     useEffect(() => {
 
-        if(postData.commentText != '') {
+        if (postData.commentText != '') {
             setPopupTriggeredFrom("comment-reply")
         }
-    },[postData])
+
+        if(articleInfo?.author != '' && postData.commentText == '') {
+            setPopupTriggeredFrom("article-comment")
+        }else if (articleInfo?.author != '' && postData.commentText != '') {
+            setPopupTriggeredFrom("article-comment-reply")
+        }
+    }, [postData, articleInfo])
     const getPlatformName = () => {
         const hostname = window.location.hostname;
 
@@ -115,13 +123,6 @@ const Layout = () => {
         let mentioned_name = mentioned_name_element?.innerText.trim();
         let comment_text = "";
 
-        // get actor name
-        // step 1:
-        //comments-comment-meta__container
-        //comments-thread-entity
-        // comment-social-activity comments-thread-entity
-        //step 2
-        //comment-social-activity
         let threadElemArray: HTMLElement[] = [];
         let parentElement = commentBoxEditor?.closest(LINKEDIN_CLASS_NAMES.COMMENTS_COMMENT_ENTITY) as HTMLElement;
         threadElemArray.push(parentElement);
@@ -241,9 +242,83 @@ const Layout = () => {
         const commentAuthorName = postCommentAuthorName === "" ? getPostCommentAuthorName(commentBoxEditor) : postCommentAuthorName;
         const postAutherName = getPostAuthorName(commentBoxEditor);
 
-        return { postText, postAutherName, commentText, commentAuthorName };
+        setPostData({ postText, postAutherName, commentText, commentAuthorName });
 
     };
+
+    const trimAllWhiteSpaces = (str: string) => {
+        return str.replace(/[\n\r\t\s]+/g, " ").trim();
+    };
+
+    const getArticleTitle = (articleElement: HTMLElement) => {
+        const articleHeaderH1Element = articleElement?.querySelector(".reader-article-header__title");
+        const articleTitle = trimAllWhiteSpaces(articleHeaderH1Element?.textContent ?? "");
+        return articleTitle;
+    };
+
+    const getArticleAuthor = (articleElement: HTMLElement) => {
+        const articleAuthorInfoContainer = articleElement?.querySelector(".reader-author-info__container");
+        const articleAuthorInfoElement = articleAuthorInfoContainer?.querySelector(".reader-author-info__inner-container");
+        const articleAuthorHeaderElement = articleAuthorInfoElement?.querySelector(
+            ".reader-author-info__author-lockup--flex"
+        );
+        const articleAuthor = trimAllWhiteSpaces(articleAuthorHeaderElement?.textContent ?? "");
+        return articleAuthor;
+    };
+
+    const getArticlePostDate = (articleElement: HTMLElement) => {
+        const articleAuthorInfoContainer = articleElement?.querySelector(".reader-author-info__container");
+        const articlePostDateElement = articleAuthorInfoContainer?.querySelector("time");
+        const articlePostDate = trimAllWhiteSpaces(articlePostDateElement?.textContent ?? "");
+        return articlePostDate;
+    };
+
+    const getArticleContent = (articleElement: HTMLElement) => {
+        const articleContentElement = articleElement?.querySelector(".reader-article-content");
+        const articleContentHTML = articleContentElement?.outerHTML ?? "";
+        return articleContentHTML;
+    };
+
+    const getArticleRawText = (articleElement: HTMLElement): string => {
+        // Ensure articleElement is valid and querySelector returns an HTMLElement
+        const articleContentElement = articleElement.querySelector('article[itemtype^="http://"]') as HTMLElement | null;
+
+        // Use innerText to get the text content of the article or default to an empty string
+        const articleContentText = articleContentElement?.innerText ?? "";
+
+        return articleContentText;
+    };
+
+
+    const getArticleInfo = () => {
+        const articleElement = document.querySelector(
+            // ".reader__content"
+            ".scaffold-layout--main-aside"
+        ) as HTMLElement;
+        const articleTitle = getArticleTitle(articleElement);
+        const articleAuthor = getArticleAuthor(articleElement);
+        const articlePostDate = getArticlePostDate(articleElement);
+        const articleContentHTML = getArticleContent(articleElement);
+        const articleContentRawText = getArticleRawText(articleElement);
+
+        
+        return { articleTitle, articleAuthor, articlePostDate, articleContentHTML, articleContentRawText };
+    };
+
+    const getArticlePageInfo = (commentBoxEditor: any) => {
+        const { articleTitle, articleAuthor, articlePostDate, articleContentHTML, articleContentRawText } =
+        getArticleInfo();
+        
+        setArticleInfo({
+            title: articleTitle,
+            author: articleAuthor,
+            postDate: articlePostDate,
+            contentHTML: articleContentHTML,
+            rawText: articleContentRawText,
+        });
+
+        getPostAndCommentInfo(commentBoxEditor);
+    }
 
     const getPostDataTwitter = () => {
         let postText = "";
@@ -275,7 +350,7 @@ const Layout = () => {
         }
 
 
-        return { postText, postAutherName, commentText , commentAuthorName };
+        return { postText, postAutherName, commentText, commentAuthorName };
     };
 
     const addCustomCommentIconTwitter = () => {
@@ -384,6 +459,13 @@ const Layout = () => {
         }
     };
 
+    const isLinkedInArticlePage = (url: string) => {
+        if (url.toLowerCase().includes("linkedin.com/pulse/")) {
+            return true;
+        }
+        return false;
+    };
+
 
     const addCustomCommentIconLinkedIn = () => {
         const commentBoxes = document.querySelectorAll(
@@ -411,8 +493,14 @@ const Layout = () => {
 
             customIcon.addEventListener("click", () => {
                 setPopupTriggeredFrom("comment");
-                const postData = getPostAndCommentInfo(box);
-                setPostData(postData);
+                
+                if (isLinkedInArticlePage(window.location.href)) {
+                    console.log("article");
+                    getArticlePageInfo(box);
+                } else {
+                    getPostAndCommentInfo(box);
+                }
+                
                 setOpenAiPopup(true);
             });
 
@@ -501,6 +589,7 @@ const Layout = () => {
                     insertGeneratedComment={currentPlatform === "LinkedIn" ? insertGeneratedCommentLinkedin : insertGeneratedCommentTwitter}
                     insertGeneratedPost={insertGeneratedPostLinkedIn}
                     popupTriggeredFrom={popupTriggeredFrom}
+                    articleInfo = {articleInfo}
                 />
             </div>
         );

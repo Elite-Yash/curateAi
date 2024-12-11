@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../css/InputAiPopup.css"; // Import the CSS file
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants"; // Import constants
-import { PostData } from "../../constants/types";
+import { ArticleInfo, PostData } from "../../constants/types";
 
 interface ModalProps {
     isOpen: boolean;
@@ -10,9 +10,10 @@ interface ModalProps {
     insertGeneratedComment: (comment: string) => void;
     insertGeneratedPost: (post: string) => void;
     popupTriggeredFrom: string;
+    articleInfo?: ArticleInfo | null;
 }
 
-const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, insertGeneratedPost, popupTriggeredFrom }) => {
+const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, insertGeneratedPost, popupTriggeredFrom, articleInfo }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]); // Default to first language in the list
     const [tone, setTone] = useState(TONES[0]); // Default to first tone in the list
     const [motives, setMotive] = useState((popupTriggeredFrom == "create-post") ? POSTING_MOTIVES[0] : COMMENT_MOTIVES[0]); // Default to first tone in the list")); // Default to first tone in the list
@@ -48,7 +49,8 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             contentType: popupTriggeredFrom,
             commentAuthorName: postData.commentAuthorName,
             commentText : postData.commentText,
-            goal: motives
+            goal: motives,
+            articleInfo: articleInfo
         };
 
         console.log('requestData: ', requestData);
@@ -72,7 +74,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
     };
 
     const insertContent = () => {
-        if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply") {
+        if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "article-comment" || popupTriggeredFrom === "article-comment-reply") {
             insertGeneratedComment(text);
         } else if (popupTriggeredFrom === "create-post") {
             insertGeneratedPost(text);
