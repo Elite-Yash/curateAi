@@ -12,7 +12,7 @@ chrome.action.onClicked.addListener(function (tab) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "GENERATE_CONTENT") {
-        const { language, tone, postText, authorName, contentType, command, platform , commentAuthorName, commentText, goal, articleInfo} = request.data;
+        const { language, tone, postText, authorName, contentType, command, platform , commentAuthorName, commentText, goal, articleInfo, lastMessages} = request.data;
         console.log('request.data: ', request.data);
 
         // Perform the API call
@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo }),
+            body: JSON.stringify({ language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages }),
         })
             .then((response) => response.json())
             .then((data) => {

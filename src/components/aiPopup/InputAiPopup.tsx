@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import "../../css/InputAiPopup.css"; // Import the CSS file
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants"; // Import constants
 import { ArticleInfo, PostData } from "../../constants/types";
-
+export interface LinkedInMessage {
+    messageSpeaker: string;
+    messageText: string;
+}
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -11,9 +14,10 @@ interface ModalProps {
     insertGeneratedPost: (post: string) => void;
     popupTriggeredFrom: string;
     articleInfo?: ArticleInfo | null;
+    lastMessages: LinkedInMessage[];
 }
 
-const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, insertGeneratedPost, popupTriggeredFrom, articleInfo }) => {
+const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertGeneratedComment, insertGeneratedPost, popupTriggeredFrom, articleInfo, lastMessages }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]); // Default to first language in the list
     const [tone, setTone] = useState(TONES[0]); // Default to first tone in the list
     const [motives, setMotive] = useState((popupTriggeredFrom == "create-post") ? POSTING_MOTIVES[0] : COMMENT_MOTIVES[0]); // Default to first tone in the list")); // Default to first tone in the list
@@ -29,7 +33,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
     const handleSubmit = () => {
         setLoading(true);
         setError(""); // Reset any previous error
-        
+
         const currentUrl = window.location.href;
         let platform = ""
 
@@ -43,14 +47,15 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
             language,
             tone,
             postText: (postData.postText) ? postData.postText : text,
-            authorName: postData.commentAuthorName,
+            authorName: postData.postAutherName,
             platform: platform,
-            command:  text,
+            command: text,
             contentType: popupTriggeredFrom,
             commentAuthorName: postData.commentAuthorName,
-            commentText : postData.commentText,
+            commentText: postData.commentText,
             goal: motives,
-            articleInfo: articleInfo
+            articleInfo: articleInfo,
+            lastMessages: lastMessages
         };
 
         console.log('requestData: ', requestData);
@@ -74,7 +79,7 @@ const InputAiPopup: React.FC<ModalProps> = ({ isOpen, onClose, postData, insertG
     };
 
     const insertContent = () => {
-        if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "article-comment" || popupTriggeredFrom === "article-comment-reply") {
+        if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "article-comment" || popupTriggeredFrom === "article-comment-reply" || popupTriggeredFrom === "message-reply") {
             insertGeneratedComment(text);
         } else if (popupTriggeredFrom === "create-post") {
             insertGeneratedPost(text);

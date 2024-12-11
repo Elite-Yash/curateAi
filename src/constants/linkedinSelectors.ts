@@ -50,4 +50,26 @@ export const LINKEDIN_CLASS_NAMES = {
     ART_DECO_CARD: "artdeco-card",
     COMMENTS_COMMENT_ENTITY: ".comments-comment-entity",
     FIE_IMPRESSION_CONTAINER: "fie-impression-container",
+    MESSAGE_BOX_CONTAINER: "msg-form__msg-content-container",
+    MESSAGE_FORM_FOOTER: "msg-form__footer",
+    MESSAGE_FORM: "msg-form",
+    MESSAGE_THREAD_CONTAINER: "msg-s-message-list-content",
+    MESSAGE_TEXT_LIST_ITEM: "msg-s-message-list__event",
+    MESSAGE_TEXT_FROM_USER: "msg-s-message-group__name",
+    MESSAGE_TEXT_CONTENT: "msg-s-event__content",
+    MESSAGE_OVERLAY_CONVERSATION_BUBBLE: "msg-overlay-conversation-bubble",
+    MESSAGE_OVERLAY_CONVERSATION_BUBBLE_HEADER: "msg-overlay-conversation-bubble_header",
+    MESSAGE_EDITOR: "msg-form__contenteditable",
+
 }
+
+export const LINKEDIN_ID_NAMES = {
+    MESSAGE_THREAD_OTHER_USER: "thread-detail-jump-target",
+    EXPERIENCE_DIV_ID: "experience",
+    PROFILE_EDIT_FORM_PAGE_HEADER: "profile-edit-form-page-header",
+    EDUCATION_DIV_ID: "education",
+    LICENSES_AND_CERTIFICATIONS_DIV_ID: "licenses_and_certifications",
+    PROFILE_URL: "ember687",
+    RECOMMENDATION_TEXT_AREA:
+        "multiline-text-form-component-profileEditFormElement-WRITE-RECOMMENDATION-recommendation-11-recommendationText",
+};

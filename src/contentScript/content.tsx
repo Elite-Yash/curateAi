@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import InputAiPopup from "../components/aiPopup/InputAiPopup";
 import { PostData, ArticleInfo } from "../constants/types";
-import { LINKEDIN_CLASS_NAMES } from "../constants/linkedinSelectors";
+import { LINKEDIN_CLASS_NAMES, LINKEDIN_ID_NAMES } from "../constants/linkedinSelectors";
+import { sleep, removeEmojis, trimAllWhiteSpaces, isLinkedInArticlePage } from "../helpers/commonHelper";
+
+export interface LinkedInMessage {
+    messageSpeaker: string;
+    messageText: string;
+}
 
 const Layout = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
@@ -16,6 +22,8 @@ const Layout = () => {
     const [currentPlatform, setCurrentPlatform] = useState('');
     const [popupTriggeredFrom, setPopupTriggeredFrom] = useState('comment');
     const [articleInfo, setArticleInfo] = useState<ArticleInfo | null>(null);
+    const [lastMessages, setLastMessages] = useState<LinkedInMessage[]>([]);
+    const [selectedMessageBoxContainer, setSelectedMessageBoxContainer] = useState<HTMLElement | null>(null);
 
 
     useEffect(() => {
@@ -24,10 +32,12 @@ const Layout = () => {
             setPopupTriggeredFrom("comment-reply")
         }
 
-        if(articleInfo?.author != '' && postData.commentText == '') {
+        if (articleInfo?.author != '' && postData.commentText == '' && lastMessages.length == 0) {
             setPopupTriggeredFrom("article-comment")
-        }else if (articleInfo?.author != '' && postData.commentText != '') {
+        } else if (articleInfo?.author != '' && postData.commentText != '' && lastMessages.length == 0) {
             setPopupTriggeredFrom("article-comment-reply")
+        } else if (articleInfo?.author != '' && postData.commentText != '' && lastMessages.length > 0) {
+            setPopupTriggeredFrom("message-reply")
         }
     }, [postData, articleInfo])
     const getPlatformName = () => {
@@ -246,9 +256,7 @@ const Layout = () => {
 
     };
 
-    const trimAllWhiteSpaces = (str: string) => {
-        return str.replace(/[\n\r\t\s]+/g, " ").trim();
-    };
+
 
     const getArticleTitle = (articleElement: HTMLElement) => {
         const articleHeaderH1Element = articleElement?.querySelector(".reader-article-header__title");
@@ -301,14 +309,14 @@ const Layout = () => {
         const articleContentHTML = getArticleContent(articleElement);
         const articleContentRawText = getArticleRawText(articleElement);
 
-        
+
         return { articleTitle, articleAuthor, articlePostDate, articleContentHTML, articleContentRawText };
     };
 
     const getArticlePageInfo = (commentBoxEditor: any) => {
         const { articleTitle, articleAuthor, articlePostDate, articleContentHTML, articleContentRawText } =
-        getArticleInfo();
-        
+            getArticleInfo();
+
         setArticleInfo({
             title: articleTitle,
             author: articleAuthor,
@@ -417,33 +425,46 @@ const Layout = () => {
         }
     };
 
+    ;
 
     const insertGeneratedCommentLinkedin = (comment: string) => {
-        const commentBox = document.getElementById(selectedCommentBoxId);
 
-        if (commentBox) {
-            // Locate the contenteditable div inside the comment box (where the comment should be inserted)
-            const editor = commentBox.querySelector(`.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`); // This class is used by LinkedIn's editor
-
-            if (editor) {
-                // Replace the existing content with the new comment
-                editor.textContent = comment;
-
-                // Optionally, trigger an 'input' event to simulate the user typing and update listeners
-                const event = new Event('input', {
-                    bubbles: true,
-                    cancelable: true,
-                });
-                editor.dispatchEvent(event);
-
-                // Close the popup after the comment is inserted (optional, as per your requirement)
-                setOpenAiPopup(false);
-            } else {
-                console.error("Editor not found within the comment box");
-            }
+        console.log('selectedMessageBoxContainer: ', selectedMessageBoxContainer);
+        if (selectedMessageBoxContainer) {
+            const messageEditor = selectedMessageBoxContainer?.querySelector(`.${LINKEDIN_CLASS_NAMES.MESSAGE_EDITOR}`) as HTMLElement;
+            const cleanedMessage = removeEmojis(comment);
+            messageEditor?.focus();
+            document.execCommand("insertText", false, cleanedMessage);
         } else {
-            console.error("Comment box with id", selectedCommentBoxId, "not found");
+
+            const commentBox = document.getElementById(selectedCommentBoxId);
+
+            if (commentBox) {
+                // Locate the contenteditable div inside the comment box (where the comment should be inserted)
+                const editor = commentBox.querySelector(`.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`); // This class is used by LinkedIn's editor
+
+                if (editor) {
+                    // Replace the existing content with the new comment
+                    editor.textContent = comment;
+
+                    // Optionally, trigger an 'input' event to simulate the user typing and update listeners
+                    const event = new Event('input', {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    editor.dispatchEvent(event);
+
+                    // Close the popup after the comment is inserted (optional, as per your requirement)
+                    setOpenAiPopup(false);
+                } else {
+                    console.error("Editor not found within the comment box");
+                }
+            } else {
+                console.error("Comment box with id", selectedCommentBoxId, "not found");
+            }
         }
+        setOpenAiPopup(false);
+
     };
 
     const insertGeneratedPostLinkedIn = (comment: string) => {
@@ -459,18 +480,134 @@ const Layout = () => {
         }
     };
 
-    const isLinkedInArticlePage = (url: string) => {
-        if (url.toLowerCase().includes("linkedin.com/pulse/")) {
-            return true;
+
+
+
+    const getOtherUserNameOnIndividualMessageBox = (messageBoxTextEditorContainer: HTMLElement) => {
+        let parentElement = messageBoxTextEditorContainer.parentElement;
+        while (parentElement) {
+            if (parentElement.classList.contains(LINKEDIN_CLASS_NAMES.MESSAGE_OVERLAY_CONVERSATION_BUBBLE)) {
+                const messageBoxHeaderElement = parentElement.querySelector(`header`) as HTMLElement;
+                const userName = messageBoxHeaderElement.querySelector(`h2`)?.textContent;
+                return userName?.trim();
+            }
+
+            parentElement = parentElement.parentElement;
         }
-        return false;
+        return null;
+    };
+    const getOtherUserNameOnMessagePage = (messageBoxTextEditorContainer: HTMLElement) => {
+        const otherUserNameOfIndividualMessageBox = getOtherUserNameOnIndividualMessageBox(messageBoxTextEditorContainer);
+        if (otherUserNameOfIndividualMessageBox) {
+            return otherUserNameOfIndividualMessageBox;
+        }
+        const messageThreadOtherUserNameElement = document.getElementById(`${LINKEDIN_ID_NAMES.MESSAGE_THREAD_OTHER_USER}`);
+        return messageThreadOtherUserNameElement?.innerText ?? "";
     };
 
+    const getMessageThreadContainer = (messageBoxTextEditorContainer: HTMLElement) => {
+        let parentElement = messageBoxTextEditorContainer.parentElement;
+        while (parentElement) {
+            const messageThreadContainer = parentElement.querySelector(
+                `.${LINKEDIN_CLASS_NAMES.MESSAGE_THREAD_CONTAINER}`
+            ) as HTMLElement;
+            if (messageThreadContainer) {
+                return messageThreadContainer;
+            }
+            parentElement = parentElement.parentElement;
+        }
+        return null;
+    };
+
+    const getLastMessages = (
+        messageBoxTextEditorContainer: HTMLElement,
+        otherUserName: string,
+        numberOfMessages = 6
+    ) => {
+        const messageThreadContainer = getMessageThreadContainer(messageBoxTextEditorContainer);
+        const messageTextListItems =
+            messageThreadContainer?.querySelectorAll(`li.${LINKEDIN_CLASS_NAMES.MESSAGE_TEXT_LIST_ITEM}`) ?? [];
+        const allMessages: LinkedInMessage[] = [];
+        let messageSpeaker = "";
+        for (let i = 0; i < messageTextListItems.length; i++) {
+            const messageSenderInfoElement = messageTextListItems[i]?.querySelector(
+                `.${LINKEDIN_CLASS_NAMES.MESSAGE_TEXT_FROM_USER}`
+            ) as HTMLElement;
+            const messageTextElement = messageTextListItems[i]?.querySelector(
+                `.${LINKEDIN_CLASS_NAMES.MESSAGE_TEXT_CONTENT}`
+            ) as HTMLElement;
+            if (messageSenderInfoElement) {
+                if (messageSenderInfoElement.innerText.trim() === otherUserName.trim()) {
+                    messageSpeaker = otherUserName;
+                } else {
+                    messageSpeaker = "self";
+                }
+            }
+            const messageText = messageTextElement?.innerText ?? "";
+            allMessages.push({ messageSpeaker, messageText });
+        }
+        // EvyAILogger.log(allMessages, "all message");
+        return allMessages.reverse().slice(0, numberOfMessages);
+    };
+
+    const addCurateIconOnMessageBox = async (messageBoxTextEditorContainer: any) => {
+
+        await sleep(1000);
+        // Traverse upwards to locate the form element
+        let formElement = messageBoxTextEditorContainer.closest('form.msg-form');
+
+        // Locate the footer inside the form
+        const messageBoxFooter = formElement ? formElement.querySelector('.msg-form__footer') : null;
+
+        // Check if the icon already exists
+        if (messageBoxFooter.querySelector(`.curateai-open-popup-icon`)) {
+            return;
+        }
+        if (messageBoxFooter) {
+            // Create and append the custom icon
+            const button = document.createElement("button");
+            const icon = document.createElement("img");
+            icon.setAttribute("style", "width: 18px; height: 18px;");
+            icon.src = chrome.runtime.getURL("/icon.png");
+            icon.alt = "curateai-open-popup-icon";
+            button.setAttribute(
+                "style",
+                "width: 40px; height: 40px; cursor: pointer; display: flex; justify-content: center; align-items: center; "
+            );
+            button.appendChild(icon);
+            button.setAttribute("class", "curateai-open-popup-icon");
+            button.setAttribute("type", "button");
+
+            button.addEventListener("click", () => {
+                const otherUserName = getOtherUserNameOnMessagePage(messageBoxTextEditorContainer);
+                const lastMessages = getLastMessages(messageBoxTextEditorContainer, otherUserName, 6);
+                setLastMessages(lastMessages);
+                setPostData({ postText: "", postAutherName: otherUserName, commentText: "", commentAuthorName: "" });
+                setSelectedMessageBoxContainer(messageBoxTextEditorContainer);
+                setPopupTriggeredFrom("message-reply");
+                setOpenAiPopup(true);
+            });
+
+            messageBoxFooter.appendChild(button);
+        } else {
+            console.log("Footer not found");
+        }
+    };
 
     const addCustomCommentIconLinkedIn = () => {
         const commentBoxes = document.querySelectorAll(
             ".comments-comment-box__form .comments-comment-texteditor .editor-container"
         );
+
+        const messageBoxes = document.querySelectorAll(
+            ".msg-form__msg-content-container"
+        );
+
+        if (messageBoxes) {
+            messageBoxes.forEach((box) => {
+                addCurateIconOnMessageBox(box);
+            })
+        }
 
         commentBoxes.forEach((box) => {
             // Check if the custom icon already exists
@@ -493,14 +630,13 @@ const Layout = () => {
 
             customIcon.addEventListener("click", () => {
                 setPopupTriggeredFrom("comment");
-                
+
                 if (isLinkedInArticlePage(window.location.href)) {
-                    console.log("article");
                     getArticlePageInfo(box);
                 } else {
                     getPostAndCommentInfo(box);
                 }
-                
+
                 setOpenAiPopup(true);
             });
 
@@ -589,7 +725,8 @@ const Layout = () => {
                     insertGeneratedComment={currentPlatform === "LinkedIn" ? insertGeneratedCommentLinkedin : insertGeneratedCommentTwitter}
                     insertGeneratedPost={insertGeneratedPostLinkedIn}
                     popupTriggeredFrom={popupTriggeredFrom}
-                    articleInfo = {articleInfo}
+                    articleInfo={articleInfo}
+                    lastMessages={lastMessages}
                 />
             </div>
         );
