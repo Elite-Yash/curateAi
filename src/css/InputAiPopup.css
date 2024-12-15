@@ -1,118 +1,84 @@
-/* Overlay for dimming background */
 .popup-overlay {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Dim the background */
     z-index: 1000;
+    display: flex;
+    justify-content: flex-end; /* Align panel to the right */
+    transition: opacity 0.3s ease-in-out;
 }
 
-/* Modal container */
 .popup-container {
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    width: 90%;
-    font-family: Arial, sans-serif;
+    width: 400px; /* Width of the sliding panel */
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    overflow-y: auto;
+    transform: translateX(100%); /* Initially hidden off-screen */
+    transition: transform 0.3s ease-in-out;
 }
 
+.popup-overlay.open .popup-container {
+    transform: translateX(0); /* Slide into view */
+}
 /* Modal title */
 .popup-title {
-    margin-bottom: 20px;
-    color: #0073b1;
-    font-size: 22px;
-    text-align: center;
-}
-
-/* Label for inputs */
-.popup-label {
-    display: block;
-    margin-bottom: 10px;
-    color: #333;
+    font-size: 20px;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
-/* Dropdown and text area styling */
+.popup-label {
+    font-size: 14px;
+    margin-top: 10px;
+    display: block;
+}
+
+
 .popup-select,
 .popup-textarea {
     width: 100%;
-    height: fit-content;
     padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     font-size: 14px;
-    color: black;
 }
 
-/* Text area specific */
-.popup-textarea {
-    height: 100px;
-    resize: none;
-}
-.popup-textarea::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and other WebKit browsers */
-}
-/* Button container */
 .popup-buttons {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    margin-top: 20px;
 }
-
-/* Cancel button */
-.popup-button-cancel {
-    padding: 10px 20px;
-    background-color: #f0f0f0;
-    color: #555;
+.popup-button-cancel,
+.popup-button-submit,
+.popup-button-insert {
+    padding: 10px 15px;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    font-size: 14px;
 }
 
-.popup-button-cancel:hover {
-    background-color: #e0e0e0;
+.popup-button-cancel {
+    background-color: #ccc;
 }
 
-/* Submit button */
 .popup-button-submit {
-    padding: 10px 20px;
     background-color: #0073b1;
     color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
 }
 
-.popup-button-submit:hover {
-    background-color: #005d91;
-}
-
-
-/* INsert button */
 .popup-button-insert {
-    padding: 10px 20px;
-    background-color: #03b903;
+    background-color: #28a745;
     color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
 }
 
-.popup-button-insert:hover {
-    background-color: #0c910c;
+.popup-error {
+    color: red;
+    margin-top: 10px;
 }

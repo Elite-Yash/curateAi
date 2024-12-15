@@ -21,25 +21,17 @@ const Layout = () => {
     const [selectedCommentBoxId, setSelectedCommentBoxId] = useState('');
     const [currentPlatform, setCurrentPlatform] = useState('');
     const [popupTriggeredFrom, setPopupTriggeredFrom] = useState('comment');
-    const [articleInfo, setArticleInfo] = useState<ArticleInfo | null>(null);
+    const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
+        title: '',
+        author: '',
+        postDate: '',
+        contentHTML: '',
+        rawText: '',
+    });
     const [lastMessages, setLastMessages] = useState<LinkedInMessage[]>([]);
     const [selectedMessageBoxContainer, setSelectedMessageBoxContainer] = useState<HTMLElement | null>(null);
 
 
-    useEffect(() => {
-
-        if (postData.commentText != '') {
-            setPopupTriggeredFrom("comment-reply")
-        }
-
-        if (articleInfo?.author != '' && postData.commentText == '' && lastMessages.length == 0) {
-            setPopupTriggeredFrom("article-comment")
-        } else if (articleInfo?.author != '' && postData.commentText != '' && lastMessages.length == 0) {
-            setPopupTriggeredFrom("article-comment-reply")
-        } else if (articleInfo?.author != '' && postData.commentText != '' && lastMessages.length > 0) {
-            setPopupTriggeredFrom("message-reply")
-        }
-    }, [postData, articleInfo])
     const getPlatformName = () => {
         const hostname = window.location.hostname;
 
@@ -242,7 +234,7 @@ const Layout = () => {
         }
         return "";
     };
-    const getPostAndCommentInfo = (commentElement: any) => {
+    const getPostAndCommentInfo = (commentElement: any, isFromArticle : boolean) => {
         const commentBoxEditor = commentElement?.parentElement?.parentElement;
         const postText = getPostText(commentBoxEditor);
 
@@ -251,6 +243,14 @@ const Layout = () => {
         const postCommentAuthorName = getPostCommentAuthorNameNew(commentBoxEditor);
         const commentAuthorName = postCommentAuthorName === "" ? getPostCommentAuthorName(commentBoxEditor) : postCommentAuthorName;
         const postAutherName = getPostAuthorName(commentBoxEditor);
+
+        if (postAutherName != "" && commentAuthorName === ""){
+            setPopupTriggeredFrom("comment");
+        };
+
+        if (isFromArticle && commentAuthorName != "" && commentText != "" ){ 
+            setPopupTriggeredFrom("article-comment-reply");
+        }
 
         setPostData({ postText, postAutherName, commentText, commentAuthorName });
 
@@ -324,8 +324,9 @@ const Layout = () => {
             contentHTML: articleContentHTML,
             rawText: articleContentRawText,
         });
+        setPopupTriggeredFrom("article-comment");
 
-        getPostAndCommentInfo(commentBoxEditor);
+        getPostAndCommentInfo(commentBoxEditor, true);
     }
 
     const getPostDataTwitter = () => {
@@ -629,12 +630,10 @@ const Layout = () => {
             customIcon.style.height = "24px";
 
             customIcon.addEventListener("click", () => {
-                setPopupTriggeredFrom("comment");
-
                 if (isLinkedInArticlePage(window.location.href)) {
                     getArticlePageInfo(box);
                 } else {
-                    getPostAndCommentInfo(box);
+                    getPostAndCommentInfo(box, false);
                 }
 
                 setOpenAiPopup(true);
