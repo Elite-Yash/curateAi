@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../../css/InputAiPopup.css";
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants";
 import { ArticleInfo, PostData } from "../../constants/types";
+import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -54,6 +55,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
             platform = "twitter";
         }
 
+        const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
+        console.log('currentUserName: ', currentUserName);
+
         console.log("postData: , articleInfo", postData, articleInfo);
 
         const requestData = {
@@ -69,6 +73,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
             goal: motives,
             articleInfo: articleInfo,
             lastMessages: lastMessages,
+            currentUserName: currentUserName
+
         };
 
         console.log('requestData: ', requestData);

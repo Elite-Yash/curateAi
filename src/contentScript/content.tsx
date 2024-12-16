@@ -234,7 +234,7 @@ const Layout = () => {
         }
         return "";
     };
-    const getPostAndCommentInfo = (commentElement: any, isFromArticle : boolean) => {
+    const getPostAndCommentInfo = (commentElement: any, isFromArticle: boolean) => {
         const commentBoxEditor = commentElement?.parentElement?.parentElement;
         const postText = getPostText(commentBoxEditor);
 
@@ -244,11 +244,11 @@ const Layout = () => {
         const commentAuthorName = postCommentAuthorName === "" ? getPostCommentAuthorName(commentBoxEditor) : postCommentAuthorName;
         const postAutherName = getPostAuthorName(commentBoxEditor);
 
-        if (postAutherName != "" && commentAuthorName === ""){
+        if (postAutherName != "" && commentAuthorName === "") {
             setPopupTriggeredFrom("comment");
         };
 
-        if (isFromArticle && commentAuthorName != "" && commentText != "" ){ 
+        if (isFromArticle && commentAuthorName != "" && commentText != "") {
             setPopupTriggeredFrom("article-comment-reply");
         }
 
@@ -671,10 +671,64 @@ const Layout = () => {
         }
     };
 
+    const storeLoggedInLinkedInUserNameInStorage = () => {
+        if (localStorage.getItem("linkedInUserName")) {
+            return; // Exit the function early
+        }
+        const meDropDownElement = document.querySelector(`.${LINKEDIN_CLASS_NAMES.ME_MENU_TRIGGER}`) as HTMLElement;
+
+        if (meDropDownElement) {
+            const meMenuItemsContainer = document.querySelector(`.${LINKEDIN_CLASS_NAMES.ME_MENU_ITEMS_CONTAINER}`) as HTMLElement;
+
+            if (meMenuItemsContainer) {
+                // Temporarily hide the menu
+                meDropDownElement.click();
+                meMenuItemsContainer.style.opacity = "0";
+
+                const div = meMenuItemsContainer.children[0]
+
+                const header = div.querySelector('.p2') as HTMLElement;
+
+                if (header) {
+                    const linkElement = header.querySelector('a') as HTMLElement;
+
+                    if (linkElement) {
+                        const href = linkElement.getAttribute('href');
+
+                        if (href) {
+                            localStorage.setItem('linkedInProfileUrl', href);
+                        }
+                    }
+                    const title = header.querySelector(`.${LINKEDIN_CLASS_NAMES.ART_DECO_ENTITY_LOCKUP__TITLE}`) as HTMLElement;
+                    const userName = title.textContent?.trim();
+                    if (userName) {
+                        // Store the extracted name in local storage
+                        localStorage.setItem("linkedInUserName", userName);
+                    } else {
+                    }
+                }
+
+
+                // Restore the original display style
+                setTimeout(() => {
+                    if (localStorage.getItem('linkedInUserName')) {
+
+                        meMenuItemsContainer.style.opacity = "1";
+                    }
+                }, 1000);
+            } else {
+                console.warn("Menu items container not found.");
+            }
+        } else {
+            console.warn("Dropdown trigger element not found.");
+        }
+    };
+
     useEffect(() => {
         // Determine the platform
         let platform = getPlatformName();
         if (platform === "LinkedIn") {
+
             addCustomCommentIconLinkedIn();
         } else if (platform === "Twitter") {
             addCustomCommentIconTwitter();
@@ -683,6 +737,8 @@ const Layout = () => {
         // Set up MutationObserver
         const observer = new MutationObserver(() => {
             if (platform === "LinkedIn") {
+                storeLoggedInLinkedInUserNameInStorage();
+
                 addCustomCommentIconLinkedIn();
                 addIconInCreatePostLinkedin();
             } else if (platform === "Twitter") {

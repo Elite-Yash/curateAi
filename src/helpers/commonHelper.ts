@@ -1,3 +1,5 @@
+import { LOCAL_STORAGE_NAMES} from "../constants/linkedinSelectors";
+
 export const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
@@ -20,3 +22,13 @@ export const isLinkedInArticlePage = (url: string) => {
     }
     return false;
 };
+
+
+export const getCurrentLinkedInUsernameFromLocalStorage = () => {
+    
+    const username = localStorage.getItem(LOCAL_STORAGE_NAMES.LINKEDIN_USERNAME);
+    if (username) {
+        return username;
+    }
+    return "";
+}

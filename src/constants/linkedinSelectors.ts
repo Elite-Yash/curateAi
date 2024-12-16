@@ -60,7 +60,9 @@ export const LINKEDIN_CLASS_NAMES = {
     MESSAGE_OVERLAY_CONVERSATION_BUBBLE: "msg-overlay-conversation-bubble",
     MESSAGE_OVERLAY_CONVERSATION_BUBBLE_HEADER: "msg-overlay-conversation-bubble_header",
     MESSAGE_EDITOR: "msg-form__contenteditable",
-
+    ME_MENU_TRIGGER: "global-nav__primary-link-me-menu-trigger",
+    ME_MENU_ITEMS_CONTAINER: "global-nav__me-content, .artdeco-dropdown__content.artdeco-dropdown__content--is-open",
+    ART_DECO_ENTITY_LOCKUP__TITLE  : "artdeco-entity-lockup__title"
 }
 
 export const LINKEDIN_ID_NAMES = {
@@ -73,3 +75,10 @@ export const LINKEDIN_ID_NAMES = {
     RECOMMENDATION_TEXT_AREA:
         "multiline-text-form-component-profileEditFormElement-WRITE-RECOMMENDATION-recommendation-11-recommendationText",
 };
+
+
+
+export const LOCAL_STORAGE_NAMES = {
+    LINKEDIN_USERNAME: "linkedInUserName",
+    LINKEDIN_PROFILE_URL : "linkedInProfileUrl", 
+}
