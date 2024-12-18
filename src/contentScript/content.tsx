@@ -448,9 +448,9 @@ const Layout = () => {
                     let alreadyContentInComment: any = "";
                     if (popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "article-comment-reply") {
                         alreadyContentInComment = editor.innerHTML;  // Use innerHTML to preserve mentions (HTML)
-                        
+
                         editor.innerHTML = alreadyContentInComment + " " + comment;
-                    }else{
+                    } else {
                         editor.textContent = comment;
                     }
                     // Replace the existing content with the new comment
@@ -624,7 +624,6 @@ const Layout = () => {
             const commentBoxCr = box.closest(`.${LINKEDIN_CLASS_NAMES.COMMENT_BOX_CR}`) as HTMLElement;
             const commentBoxCrId = commentBoxCr?.id || 'No ID found';
 
-            setSelectedCommentBoxId(commentBoxCrId);
 
             // Create and append the custom icon
             const customIcon = document.createElement("img");
@@ -637,6 +636,7 @@ const Layout = () => {
             customIcon.style.height = "24px";
 
             customIcon.addEventListener("click", () => {
+                setSelectedCommentBoxId(commentBoxCrId);
                 if (isLinkedInArticlePage(window.location.href)) {
                     getArticlePageInfo(box);
                 } else {
