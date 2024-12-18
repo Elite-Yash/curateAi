@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_NAMES} from "../constants/linkedinSelectors";
+import { LOCAL_STORAGE_NAMES } from "../constants/linkedinSelectors";
 
 export const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,10 +25,18 @@ export const isLinkedInArticlePage = (url: string) => {
 
 
 export const getCurrentLinkedInUsernameFromLocalStorage = () => {
-    
     const username = localStorage.getItem(LOCAL_STORAGE_NAMES.LINKEDIN_USERNAME);
     if (username) {
         return username;
+    }
+    return "";
+}
+
+
+export const getAuthTokenFromLocalStorage = () => {
+    const token = localStorage.getItem(LOCAL_STORAGE_NAMES.AUTH_TOKEN);
+    if (token) {
+        return token;
     }
     return "";
 }

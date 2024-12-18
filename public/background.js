@@ -21,7 +21,7 @@ chrome.webNavigation.onCompleted.addListener((details) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "GENERATE_CONTENT") {
-        const { language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages, currentUserName } = request.data;
+        const { language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages, currentUserName, authToken } = request.data;
         console.log('request.data: ', request.data);
 
         // Perform the API call
@@ -32,6 +32,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(url, {
             method: "POST",
             headers: {
+                "Authorization": `Bearer ${authToken}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages , currentUserName}),

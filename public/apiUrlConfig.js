@@ -1,2 +1,2 @@
 const GENERATE_CONTENT_URL = "/generate-content";
-const BASE_URL = "https://7fc5-2402-a00-405-d100-5d74-81d0-f0fc-c190.ngrok-free.app"
+const BASE_URL = "https://ec4c-2401-4900-1c80-521e-a161-d7ba-6d80-a7e.ngrok-free.app"

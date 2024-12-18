@@ -80,5 +80,6 @@ export const LINKEDIN_ID_NAMES = {
 
 export const LOCAL_STORAGE_NAMES = {
     LINKEDIN_USERNAME: "linkedInUserName",
-    LINKEDIN_PROFILE_URL : "linkedInProfileUrl", 
+    LINKEDIN_PROFILE_URL : "linkedInProfileUrl",
+    AUTH_TOKEN : "curateai-auth-token" 
 }

@@ -445,8 +445,15 @@ const Layout = () => {
                 const editor = commentBox.querySelector(`.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`); // This class is used by LinkedIn's editor
 
                 if (editor) {
+                    let alreadyContentInComment: any = "";
+                    if (popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "article-comment-reply") {
+                        alreadyContentInComment = editor.innerHTML;  // Use innerHTML to preserve mentions (HTML)
+                        
+                        editor.innerHTML = alreadyContentInComment + " " + comment;
+                    }else{
+                        editor.textContent = comment;
+                    }
                     // Replace the existing content with the new comment
-                    editor.textContent = comment;
 
                     // Optionally, trigger an 'input' event to simulate the user typing and update listeners
                     const event = new Event('input', {
