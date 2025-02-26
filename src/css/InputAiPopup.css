@@ -13,8 +13,7 @@
 
 .popup-container {
     width: 400px; /* Width of the sliding panel */
-    height: 100%;
-    background-color: #fff;
+    background-color: #f3f9ff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
     padding: 20px;
     overflow-y: auto;
@@ -24,6 +23,14 @@
 
 .popup-overlay.open .popup-container {
     transform: translateX(0); /* Slide into view */
+    background-color: #f3f9ff;
+    box-shadow: #f3f9ff59 1px 1px 1px 10px;
+    height: 485px;
+    position: absolute;
+    bottom: 30px;
+    right: 19px;
+    border: 0px;
+    border-radius: 10px;
 }
 /* Modal title */
 .popup-title {

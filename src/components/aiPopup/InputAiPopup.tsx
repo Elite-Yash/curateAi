@@ -76,7 +76,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             articleInfo: articleInfo,
             lastMessages: lastMessages,
             currentUserName: currentUserName,
-            authToken : authToken
+            authToken : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhamF5QGdtYWlsLmNvbSIsInN1YnNjcmlwdGlvbl9zdGF0dXMiOiJ0cmlhbCIsImlhdCI6MTc0MDU1NjUzMiwiZXhwIjoxNzQ1NzQwNTMyfQ.4B6itUSJZiz1VVd2kI8Y-gyxk63HwAJd7cY_ERzo7XI'
         };
 
         chrome.runtime.sendMessage(
