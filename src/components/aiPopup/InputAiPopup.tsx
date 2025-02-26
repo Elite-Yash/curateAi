@@ -76,7 +76,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             articleInfo: articleInfo,
             lastMessages: lastMessages,
             currentUserName: currentUserName,
-            authToken : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhamF5QGdtYWlsLmNvbSIsInN1YnNjcmlwdGlvbl9zdGF0dXMiOiJ0cmlhbCIsImlhdCI6MTc0MDU1NjUzMiwiZXhwIjoxNzQ1NzQwNTMyfQ.4B6itUSJZiz1VVd2kI8Y-gyxk63HwAJd7cY_ERzo7XI'
+            authToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhamF5QGdtYWlsLmNvbSIsInN1YnNjcmlwdGlvbl9zdGF0dXMiOiJ0cmlhbCIsImlhdCI6MTc0MDU1NjUzMiwiZXhwIjoxNzQ1NzQwNTMyfQ.4B6itUSJZiz1VVd2kI8Y-gyxk63HwAJd7cY_ERzo7XI'
         };
 
         chrome.runtime.sendMessage(
@@ -112,6 +112,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
         <div className={`popup-overlay ${isOpen ? "open" : ""}`}>
             <div className="popup-container">
                 <h2 className="popup-title">Curate Your Comment</h2>
+                <span onClick={onClose} className="close-box" style={{ backgroundImage: `url(${chrome.runtime.getURL("/close.png")}` }}></span>
 
                 <label className="popup-label">Motive:</label>
                 <select
@@ -166,9 +167,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 ></textarea>
 
                 <div className="popup-buttons">
-                    <button className="popup-button-cancel" onClick={onClose}>
+                    {/* <button className="popup-button-cancel" onClick={onClose}>
                         Cancel
-                    </button>
+                    </button> */}
                     {isTextGenerated && (
                         <button className="popup-button-insert" onClick={insertContent}>
                             Insert

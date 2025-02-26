@@ -509,9 +509,11 @@ const LinkedIn = () => {
 
 
             // Create and append the custom icon
-            const customIcon = document.createElement("img");
-            customIcon.src = chrome.runtime.getURL("/icon.png");
-            customIcon.alt = "curateai-open-popup-icon";
+            const customIcon = document.createElement("div");
+            customIcon.style.backgroundImage = `url(${chrome.runtime.getURL("/icon.png")})`;
+            customIcon.style.backgroundSize = "contain"; // Ensures the image fits inside
+            customIcon.style.backgroundRepeat = "no-repeat";
+            customIcon.style.backgroundPosition = "center";
             customIcon.className = "curateai-open-popup-icon";
             customIcon.style.cursor = "pointer";
             customIcon.style.marginLeft = "10px";
@@ -538,9 +540,11 @@ const LinkedIn = () => {
         if (element.querySelector(".curateai-open-popup-icon")) return;
 
         // Create and append the custom icon
-        const customIcon = document.createElement("img");
-        customIcon.src = chrome.runtime.getURL("/icon.png");
-        customIcon.alt = "curateai-open-popup-icon";
+        const customIcon = document.createElement("div");
+        customIcon.style.backgroundImage = `url(${chrome.runtime.getURL("/icon.png")})`;
+        customIcon.style.backgroundSize = "contain"; // Ensures the image fits inside
+        customIcon.style.backgroundRepeat = "no-repeat";
+        customIcon.style.backgroundPosition = "center";
         customIcon.className = "curateai-open-popup-icon";
         customIcon.style.cursor = "pointer";
         customIcon.style.width = "24px";

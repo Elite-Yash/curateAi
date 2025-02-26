@@ -49,7 +49,7 @@ const newManifest = {
     {
       matches: ["https://*.linkedin.com/*", "https://*.x.com/*"],
       js: [js],
-      css: [css],
+      // css: [css],
       match_about_blank: true,
       all_frames: false,
     },
