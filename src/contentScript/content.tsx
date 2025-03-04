@@ -1,5 +1,5 @@
-import LinkedIn from "../injector/linkedin";
-import Twitter from "../injector/twitter";
+import LinkedIn from "../injector/LinkedIn";
+import Twitter from "../injector/Twitter";
 
 const Layout = () => {
     const getPlatformName = () => {

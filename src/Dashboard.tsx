@@ -1,5 +1,4 @@
 import "../src/css/popup.css";
-
 // Check if chrome.runtime is available
 /**
  * Main application component.
@@ -13,8 +12,8 @@ import "../src/css/popup.css";
  * @returns {JSX.Element} The rendered component.
  */
 
-const PopUp = () => {
-  return <div>Popup</div>
+const Dashboard = () => {
+  return <div>Dashboard</div>
 };
 
-export default PopUp;
+export default Dashboard;

@@ -69,7 +69,7 @@
 }
 
 .popup-buttons {
-    display: flex;
+    text-align: right;
     justify-content: space-between;
     margin-top: 20px;
 }

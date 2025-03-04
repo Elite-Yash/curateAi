@@ -1,6 +1,6 @@
-## Salesmagnet Chrome Plugin
+## CurateAi Chrome Plugin
 
-Salesmagnet.
+CurateAi.
 
 ###Supported browsers
 For now **Chrome** is supported.

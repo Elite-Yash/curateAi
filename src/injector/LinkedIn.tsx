@@ -487,7 +487,7 @@ const LinkedIn = () => {
 
     const addCustomCommentIconLinkedIn = () => {
         const commentBoxes = document.querySelectorAll(
-            ".comments-comment-box__form .comments-comment-texteditor .editor-container"
+            ".comments-comment-box__form .comments-comment-texteditor"
         );
 
         const messageBoxes = document.querySelectorAll(
@@ -507,7 +507,7 @@ const LinkedIn = () => {
             const commentBoxCr = box.closest(`.${LINKEDIN_CLASS_NAMES.COMMENT_BOX_CR}`) as HTMLElement;
             const commentBoxCrId = commentBoxCr?.id || 'No ID found';
 
-
+            let appendIcon = box.querySelector(".comments-comment-box__detour-container") as HTMLElement;
             // Create and append the custom icon
             const customIcon = document.createElement("div");
             customIcon.style.backgroundImage = `url(${chrome.runtime.getURL("/icon.png")})`;
@@ -516,9 +516,9 @@ const LinkedIn = () => {
             customIcon.style.backgroundPosition = "center";
             customIcon.className = "curateai-open-popup-icon";
             customIcon.style.cursor = "pointer";
-            customIcon.style.marginLeft = "10px";
-            customIcon.style.width = "24px";
-            customIcon.style.height = "24px";
+            customIcon.style.width = "21px";
+            customIcon.style.height = "21px";
+            customIcon.style.margin = "9px 7px 10px 8px";
 
             customIcon.addEventListener("click", () => {
                 setSelectedCommentBoxId(commentBoxCrId);
@@ -531,7 +531,7 @@ const LinkedIn = () => {
                 setOpenAiPopup(true);
             });
 
-            box.appendChild(customIcon);
+            appendIcon.appendChild(customIcon);
         });
     };
 
