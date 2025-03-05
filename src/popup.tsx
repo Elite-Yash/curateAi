@@ -1,5 +1,5 @@
 import "../src/css/popup.css";
-
+import Popup from "./components/Popup/Popup";
 // Check if chrome.runtime is available
 /**
  * Main application component.
@@ -14,7 +14,9 @@ import "../src/css/popup.css";
  */
 
 const PopUp = () => {
-  return <div>Popup</div>
+  return <>  
+    <Popup />
+  </>
 };
 
 export default PopUp;

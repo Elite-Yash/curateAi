@@ -1,1 +1,161 @@
+/*--global--*/
+* {
+    --diff: calc(var(--max-size) - var(--min-size));
+    --responsive: calc((var(--min-size) * 1px) + var(--diff) * ((100vw - 320px) / (2000 - 320)));
+}
 
+:root {
+    --background-one: #6841ea;
+    --background-two: #8667ed;
+    --background-three: #f4faff;
+    --background-white: #fff;
+    --background-white-light: #4f596614;
+    --dark-background: #110a28;
+    --color-one: #6841ea;
+    --white-color: #fff;
+    --dark-color: #20262e;
+    --dec-color: #545c66;
+    --fill-one: #6841ea;
+    --fill-dark: #000;
+    --border-color-one: #6841ea;
+    --border-color-gr: #4f59661f;
+    --stroke-one: #6841ea;
+}
+
+.background-one {
+    background-color: var(--background-one) !important;
+}
+
+.background-two {
+    background-color: var(--background-two) !important;
+}
+
+.background-three {
+    background-color: var(--background-three) !important;
+}
+
+.background-white {
+    background-color: var(--background-white) !important;
+}
+
+.background-white-light {
+    background-color: var(--background-white-light) !important;
+}
+
+.dark-background {
+    background-color: var(--dark-background) !important;
+}
+
+.color-one {
+    color: var(--color-one) !important;
+}
+
+.white-color {
+    color: var(--white-color) !important;
+}
+
+.dark-color {
+    color: var(--dark-color) !important;
+}
+
+.dec-color {
+    color: var(--dec-color) !important;
+}
+
+.fill-one {
+    fill: var(--fill-one) !important;
+}
+
+.fill-dark {
+    fill: var(--fill-dark) !important;
+}
+
+.border-color-one {
+    border-color: var(--border-color-one) !important;
+}
+
+.border-color-gr {
+    border-color: var(--border-color-gr) !important;
+}
+
+.stroke-one {
+    stroke: var(--stroke-one) !important;
+}
+
+
+h1 {
+    --max-size: 69;
+    --min-size: 30;
+    font-size: var(--responsive) !important;
+    line-height: 80px;
+}
+
+h2 {
+    --max-size: 45;
+    --min-size: 23;
+    font-size: var(--responsive) !important;
+    line-height: 50px;
+}
+
+h3 {
+    --max-size: 50;
+    --min-size: 20;
+    font-size: var(--responsive) !important;
+}
+
+h4 {
+    --max-size: 20;
+    --min-size: 15;
+    font-size: var(--responsive) !important;
+}
+
+h5 {
+    --max-size: 23;
+    --min-size: 18;
+    font-size: var(--responsive) !important;
+}
+
+h6 {
+    --max-size: 14;
+    --min-size: 13;
+    font-size: var(--responsive) !important;
+}
+
+p {
+    --max-size: 19;
+    --min-size: 16;
+    font-size: var(--responsive) !important;
+    line-height: 28px;
+}
+
+a {
+    --max-size: 19;
+    --min-size: 15;
+    font-size: var(--responsive);
+    transition: all 0.5s;
+}
+
+.transition {
+    transition: all 0.5s !important;
+}
+
+body,
+.font_poppins {
+    font-family: "Poppins", Sans-serif !important;
+}
+
+section {
+    padding-top: 8%;
+    padding-bottom: 8%;
+}
+
+.overlay-before:before,
+.overlay-after:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.5s;
+}
+
+/*--global--*/

@@ -20,6 +20,7 @@
  * - Utilizes Tailwind CSS classes for layout and styling, with responsive adjustments for smaller screens.
  */
 import { useSelector } from "react-redux";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../common/utils/logoUtils";
 import { selectUser } from "../redux/selector/usersSelector";
 import { useState } from "react";
@@ -36,8 +37,8 @@ const Header = () => {
         chrome.runtime.sendMessage({ type: "removeCookies" });
     };
     return (
-        <div className="border-s-0 border-e-0 bordere7e9f6 border border-t-0 header-baar flex flex-col pr-7 max-[650px]:pr-3 bg-white c-padding-r fixed w-full z-10">
-            <div className="flex h-14 flex-col justify-center">
+        <div className="header-baar flex flex-col c-padding-r fixed pl-[280px] pr-[30px] w-full z-10">
+            <div className="flex flex-col justify-center bg-white relative g-box mt-5 px-8 py-5">
                 <div className="flex justify-between items-center">
 
                     <div className="header-r-menu flex items-center gap-8 ms-auto">
@@ -61,11 +62,12 @@ const Header = () => {
                                         toggleDropdown();
                                     }}
                                 >
-                                    <span className="icon w-7 h-7 rounded-full overflow-hidden">
+                                    {/* <span className="icon w-7 h-7 rounded-full overflow-hidden ">
                                         <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
-                                    </span>
+                                    </span> */}
                                     <span className="text-base max-[1350px]:text-sm font-medium">{loginUser.name}</span>
-                                    <i className="fa-regular fa-chevron-down text-sm"></i>
+                                    <i className="fa-solid fa-chevron-down"></i>
+
                                 </a>
                                 {dropdownOpen && (
                                     <div className="absolute right-3.5 mt-2 bg-white shadow-lg rounded-md p-2 w-40">
