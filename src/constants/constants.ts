@@ -1,4 +1,5 @@
 export const TONES = [
+    "Tone",
     "Analytical",
     "Assertive",
     "Authoritative",
@@ -27,6 +28,7 @@ export const TONES = [
 ];
 
 export const LANGUAGES = [
+    "Language",
     "English",
     "Spanish",
     "French",
@@ -55,7 +57,7 @@ export const COMMENT_MOTIVES = [
     "Provide Resources",
 ];
 export const POSTING_MOTIVES = [
-    "Ask a Question",
+    "Motive",
     "Celebrating Others",
     "Challenges and Solutions",
     "Common Myths",

@@ -4,6 +4,8 @@ import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../consta
 import { ArticleInfo, PostData } from "../../constants/types";
 import { getAuthTokenFromLocalStorage, getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
 import SignIn from "./Signin";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { getImage } from "../../common/utils/logoUtils";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -40,7 +42,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [isTextGenerated, setIsTextGenerated] = useState(false);
-    const [isAuth, setIsAuth] = useState(false);
+    const [isAuth, setIsAuth] = useState(true);
     if (!isOpen) return null;
 
     const handleSubmit = () => {
@@ -111,82 +113,126 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
     return (
         <div className={`popup-overlay ${isOpen ? "open" : ""} fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
-            <div className="popup-container bg-white rounded-lg shadow-lg p-6 w-96 relative">
-                <h2 className="popup-title text-xl font-semibold text-gray-800">Curate Your Comment</h2>
-                <span
-                    onClick={onClose}
-                    className="close-box absolute top-4 right-4 w-6 h-6 bg-no-repeat bg-center cursor-pointer"
-                    style={{ backgroundImage: `url(${chrome.runtime.getURL("/close.png")})` }}
-                ></span>
+            <div className="popup-container bg-white rounded-lg shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl overflow-hidden">
+                <div className="header-top p-9 py-10 flex justify-between item-center">
+                    <h4 className="popup-title font-semibold text-xl">Ask to Cureate Ai</h4>
+                    <span
+                        onClick={onClose}
+                        className="close-box absolute top-6 right-6 w-6 h-6 bg-no-repeat bg-center cursor-pointer"
+
+                    ><img src={getImage('close')} alt="img" className="w-full h-full rounded-full" /></span>
+                </div>
                 {!isAuth && <SignIn />}
                 {isAuth && <React.Fragment>
-                    <label className="popup-label block mt-4 text-gray-700 font-medium">Motive:</label>
-                    <select
-                        value={motives}
-                        onChange={(e) => setMotive(e.target.value)}
-                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200"
-                        disabled={loading}
-                    >
-                        {(popupTriggeredFrom === "create-post" ? POSTING_MOTIVES : COMMENT_MOTIVES).map(
-                            (motive, index) => (
-                                <option key={index} value={motive}>
-                                    {motive}
-                                </option>
-                            )
-                        )}
-                    </select>
+                    <div className="p-9 flex justify-between item-center flex-col gap-5">
 
-                    <label className="popup-label block mt-4 text-gray-700 font-medium">Language:</label>
-                    <select
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
-                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200"
-                        disabled={loading}
-                    >
-                        {LANGUAGES.map((lang, index) => (
-                            <option key={index} value={lang}>
-                                {lang}
-                            </option>
-                        ))}
-                    </select>
+                        <div className="flex justify-between item-center gap-5">
+                            <div className="w-full input-group">
 
-                    <label className="popup-label block mt-4 text-gray-700 font-medium">Tone:</label>
-                    <select
-                        value={tone}
-                        onChange={(e) => setTone(e.target.value)}
-                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200"
-                        disabled={loading}
-                    >
-                        {TONES.map((toneOption, index) => (
-                            <option key={index} value={toneOption}>
-                                {toneOption}
-                            </option>
-                        ))}
-                    </select>
 
-                    <label className="popup-label block mt-4 text-gray-700 font-medium">Your Comment:</label>
-                    <textarea
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        className="popup-textarea w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 h-24 resize-none"
-                        disabled={loading}
-                    ></textarea>
+                                <span className="relative ">
+                                    <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
+                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Motive:</label> */}
+                                    <select
+                                        value={motives}
+                                        onChange={(e) => setMotive(e.target.value)}
+                                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200"
+                                        disabled={loading}
+                                    >
+                                        {(popupTriggeredFrom === "create-post" ? POSTING_MOTIVES : COMMENT_MOTIVES).map(
+                                            (motive, index) => (
+                                                <option key={index} value={motive}>
+                                                    {motive}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                </span>
 
-                    <div className="popup-buttons mt-4 justify-end space-x-2">
-                        {isTextGenerated && (
-                            <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
-                                Insert
+                            </div>
+                            <div className="w-full input-group ">
+                                <span className="relative ">
+                                    <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
+                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
+                                    <select
+                                        value={language}
+                                        onChange={(e) => setLanguage(e.target.value)}
+                                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200"
+                                        disabled={loading}
+                                    >
+                                        {LANGUAGES.map((lang, index) => (
+                                            <option key={index} value={lang}>
+                                                {lang}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </span>
+
+
+                            </div>
+                            <div className="w-full input-group">
+
+                                <span className="relative ">
+                                    <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
+                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
+                                    <select
+                                        value={tone}
+                                        onChange={(e) => setTone(e.target.value)}
+                                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200"
+                                        disabled={loading}
+                                    >
+                                        {TONES.map((toneOption, index) => (
+                                            <option key={index} value={toneOption}>
+                                                {toneOption}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </span>
+                            </div>                         
+
+
+                        </div>
+
+                        <div className="w-full textarea-group relative">
+
+                        <span className=" ">
+                            <span className="flex gap-1 item-center absolute right-3.5 top-1.5">
+                                Copy
+                            <img src={getImage('copyIcon')} alt="img" className="w-4" />
+                            </span>
+                            {/* <label className="popup-label block text-gray-700 font-medium text-sm">Your Comment:</label> */}
+                            <textarea
+                                placeholder="Tell me how you want to modify"
+                                value={text}
+                                onChange={(e) => setText(e.target.value)}
+                                className="popup-textarea w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 h-24 resize-none"
+                                disabled={loading}
+                            ></textarea>
+                        </span>
+                        </div>
+                     
+                        <div className="popup-buttons justify-end space-x-2 text-right relative">
+                            
+
+                            {isTextGenerated && (
+                                <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
+                                    Insert
+                                </button>
+                            )}
+                            <button
+                                className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
+                                onClick={handleSubmit}
+                                disabled={loading}
+                            ><img src={getImage('sendIcon')} alt="img" className="w-4" />
+                                {loading ? (isTextGenerated ? "Regenerating..." : "Generating...") : isTextGenerated ? "Regenerate" : "Generate"}
                             </button>
-                        )}
-                        <button
-                            className="popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
-                            onClick={handleSubmit}
-                            disabled={loading}
-                        >
-                            {loading ? (isTextGenerated ? "Regenerating..." : "Generating...") : isTextGenerated ? "Regenerate" : "Generate"}
-                        </button>
+
+                            <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
+                                {error && <div className="popup-error text-red-500 mt-0">{error}</div>}
+                            </div>
+                        </div>
                     </div>
-                    {error && <div className="popup-error text-red-500 mt-2">{error}</div>}
+
                 </React.Fragment>}
             </div>
         </div>

@@ -3,6 +3,7 @@ import InputAiPopup from "../components/aiPopup/InputAiPopup";
 import { PostData, ArticleInfo } from "../constants/types";
 import { LINKEDIN_CLASS_NAMES, LINKEDIN_ID_NAMES } from "../constants/linkedinSelectors";
 import { sleep, removeEmojis, trimAllWhiteSpaces, isLinkedInArticlePage } from "../helpers/commonHelper";
+import SaveProfileForm from "../components/aiPopup/SaveProfileForm";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -667,6 +668,7 @@ const LinkedIn = () => {
                     articleInfo={articleInfo}
                     lastMessages={lastMessages}
                 />
+                {/* <SaveProfileForm/> */}
             </div>
         );
     }

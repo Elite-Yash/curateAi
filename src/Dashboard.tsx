@@ -1,4 +1,10 @@
 import "../src/css/popup.css";
+import Header from "./components/Header";
+import SideBar from "./components/SideBar";
+import CustomIframe from "./CustomIframe";
+import dashboardStyles from "./css/dashboard.css?inline";
+import Router from "./routes/Router";
+
 // Check if chrome.runtime is available
 /**
  * Main application component.
@@ -13,7 +19,16 @@ import "../src/css/popup.css";
  */
 
 const Dashboard = () => {
-  return <div>Dashboard</div>
+  return <>
+    <CustomIframe>
+      <style>
+        {dashboardStyles}
+      </style>
+      <div className="overflow-x-hidden relative w-full background-three">
+        <Router />
+      </div>
+    </CustomIframe>
+  </>
 };
 
 export default Dashboard;

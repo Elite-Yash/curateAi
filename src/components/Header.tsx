@@ -20,6 +20,7 @@
  * - Utilizes Tailwind CSS classes for layout and styling, with responsive adjustments for smaller screens.
  */
 import { useSelector } from "react-redux";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../common/utils/logoUtils";
 import { selectUser } from "../redux/selector/usersSelector";
 import { useState } from "react";
@@ -36,8 +37,8 @@ const Header = () => {
         chrome.runtime.sendMessage({ type: "removeCookies" });
     };
     return (
-        <div className="border-s-0 border-e-0 bordere7e9f6 border border-t-0 header-baar flex flex-col pr-7 max-[650px]:pr-3 bg-white c-padding-r fixed w-full z-10">
-            <div className="flex h-14 flex-col justify-center">
+        <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-[280px] pr-[30px]">
+            <div className="flex flex-col justify-center  bg-white relative g-box mt-5 px-8 py-3">
                 <div className="flex justify-between items-center">
 
                     <div className="header-r-menu flex items-center gap-8 ms-auto">
@@ -55,25 +56,27 @@ const Header = () => {
                             <li>
                                 <a
                                     href="#"
-                                    className="color00517C flex items-center font-light gap-1 overlay-before relative"
+                                    className="color00517C flex items-center font-light gap-2 overlay-before relative"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         toggleDropdown();
                                     }}
                                 >
-                                    <span className="icon w-7 h-7 rounded-full overflow-hidden">
-                                        <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
+                                    {/* <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" /> */}
+                                    <span className="icon w-8 h-8 rounded-full overflow-hidden border border-2 border-solid	border-white outline-1 outline-green-950	outline">
+                                          <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
                                     </span>
-                                    <span className="text-base max-[1350px]:text-sm font-medium">{loginUser.name}</span>
-                                    <i className="fa-regular fa-chevron-down text-sm"></i>
+                                    <span className="text-sm dec-color font-normal ">Emma Kwan</span>
+                                    <i className="text-xs fa-solid fa-chevron-down dec-color"></i>
                                 </a>
                                 {dropdownOpen && (
-                                    <div className="absolute right-3.5 mt-2 bg-white shadow-lg rounded-md p-2 w-40">
+                                    <div className="absolute right-3.5 mt-2 bg-white g-box w-40 drop-menu">
                                         <button
-                                            className="w-full text-left px-2 py-2 text-sm text-gray-700 hover:bg-gray5"
+                                            className="w-full text-left px-3 py-3 text-sm transition rounded-xl	 flex items-center gap-2"
                                             onClick={handleLogout}
                                         >
-                                            Log Out
+                                            <i className="fa-solid fa-power-off color-one transition"></i>
+                                            Log Out 
                                         </button>
                                     </div>
                                 )}

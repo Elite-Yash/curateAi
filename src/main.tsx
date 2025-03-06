@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import { MemoryRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
-import Dashboard from "./dashboard.tsx";
+import Dashboard from "./Dashboard.tsx";
 import PopUp from "./popup.tsx";
 
 

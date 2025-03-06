@@ -1,5 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import Section from "../pages/Section";
+import Home from "../components/Home/Home";
+import SaveProfile from "../components/SaveProfile/SaveProfile";
+import Comments from "../components/Comments/Comments";
 
 /**
  * Router component that defines the application's routing structure.
@@ -16,31 +19,23 @@ const Router = () => {
         path={"/"}
         element={
           <Section>
-
+            <Home />
           </Section>
         }
       />
       <Route
-        path={"/comment"}
+        path={"/comments"}
         element={
           <Section>
-
+            <Comments />
           </Section>
         }
       />
       <Route
-        path={"/post"}
+        path={"/save-profile"}
         element={
           <Section>
-
-          </Section>
-        }
-      />
-      <Route
-        path={"/join-crm"}
-        element={
-          <Section>
-
+            <SaveProfile />
           </Section>
         }
       />
