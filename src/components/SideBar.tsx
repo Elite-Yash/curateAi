@@ -51,6 +51,7 @@ const SideBar = () => {
                             <span className="white-color font-normal">Save Profile</span>
                         </Link>
                     </li>
+
                 </ul>
             </div>
             <div className="mt-auto"></div>
