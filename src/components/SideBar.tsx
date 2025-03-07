@@ -4,7 +4,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { selectUser } from "../redux/selector/usersSelector";
 import { useSelector } from "react-redux";
 
-const SideBar = () => { 
+const SideBar = () => {
     const loginUser = useSelector(selectUser);
     const location = useLocation();
 
@@ -19,9 +19,9 @@ const SideBar = () => {
                     </div>
                 </button>
             </div>
-            <div className="logo p-4 pt-5"> 
+            <div className="logo p-4 pt-5">
                 <Link to="/" className="logo flex justify-center items-center w-full gap-2 bg-white color-one rounded-xl py-3">
-                    <img src={getImage('iconLogo')} className="re-logo-b-o transition w-9" alt="img" />
+                    <img src={getImage('iconLogo')} className="re-logo-b-o transition w-7" alt="img" />
                     <span className="color-one uppercase larger font-semibold">Curate ai</span>
                 </Link>
             </div>

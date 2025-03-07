@@ -3,7 +3,6 @@ import InputAiPopup from "../components/aiPopup/InputAiPopup";
 import { PostData, ArticleInfo } from "../constants/types";
 import { LINKEDIN_CLASS_NAMES, LINKEDIN_ID_NAMES } from "../constants/linkedinSelectors";
 import { sleep, removeEmojis, trimAllWhiteSpaces, isLinkedInArticlePage } from "../helpers/commonHelper";
-import SaveProfileForm from "../components/aiPopup/SaveProfileForm";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -541,18 +540,36 @@ const LinkedIn = () => {
         if (element.querySelector(".curateai-open-popup-icon")) return;
 
         // Create and append the custom icon
-        const customIcon = document.createElement("div");
-        customIcon.style.backgroundImage = `url(${chrome.runtime.getURL("/icon.png")})`;
-        customIcon.style.backgroundSize = "contain"; // Ensures the image fits inside
-        customIcon.style.backgroundRepeat = "no-repeat";
-        customIcon.style.backgroundPosition = "center";
+        const customIcon = document.createElement("span");
         customIcon.className = "curateai-open-popup-icon";
-        customIcon.style.cursor = "pointer";
-        customIcon.style.width = "24px";
-        customIcon.style.height = "24px";
+        customIcon.style.cssText = "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: linear-gradient(101deg, #B059F8 14.23%, #118FF1 88.5%); border-radius: 50px; padding: 2px;";
+
+        const contentsSpan = document.createElement("span");
+        contentsSpan.className = "contents";
+        contentsSpan.style.cssText = "border-radius: 50px; padding: 3px 8px 2px 2px; display: flex; align-items: center;background: #fff;";
+
+        // Create image span
+        const imgSpan = document.createElement("span");
+        const imgElement = document.createElement("img");
+        imgElement.src = chrome.runtime.getURL("/icon.svg");
+        imgElement.alt = "Replay";
+        imgSpan.style.cssText = "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer;";
+        imgSpan.appendChild(imgElement);
+
+        // Create text span
+        const textSpan = document.createElement("span");
+        textSpan.innerText = "Replay";
+        textSpan.style.cssText = "margin-left: 5px; font-size: 15px; color: #6841ea;";
+
+        // Append image and text spans to contents span
+        contentsSpan.appendChild(imgSpan);
+        contentsSpan.appendChild(textSpan);
+
+        // Append contents span to main span
+        customIcon.appendChild(contentsSpan);
 
         customIcon.addEventListener("click", () => {
-            console.log("post");
+            console.log("Icon clicked, triggering popup.");
             setPopupTriggeredFrom("create-post");
             setOpenAiPopup(true);
         });
@@ -668,7 +685,6 @@ const LinkedIn = () => {
                     articleInfo={articleInfo}
                     lastMessages={lastMessages}
                 />
-                {/* <SaveProfileForm/> */}
             </div>
         );
     }

@@ -188,31 +188,31 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                         ))}
                                     </select>
                                 </span>
-                            </div>                         
+                            </div>
 
 
                         </div>
 
                         <div className="w-full textarea-group relative">
 
-                        <span className=" ">
-                            <span className="flex gap-1 item-center absolute right-3.5 top-1.5">
-                                Copy
-                            <img src={getImage('copyIcon')} alt="img" className="w-4" />
+                            <span className=" ">
+                                <span className="flex gap-1 item-center absolute right-3.5 top-1.5">
+                                    Copy
+                                    <img src={getImage('copyIcon')} alt="img" className="w-4" />
+                                </span>
+                                {/* <label className="popup-label block text-gray-700 font-medium text-sm">Your Comment:</label> */}
+                                <textarea
+                                    placeholder="Tell me how you want to modify"
+                                    value={text}
+                                    onChange={(e) => setText(e.target.value)}
+                                    className="popup-textarea w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 h-24 resize-none"
+                                    disabled={loading}
+                                ></textarea>
                             </span>
-                            {/* <label className="popup-label block text-gray-700 font-medium text-sm">Your Comment:</label> */}
-                            <textarea
-                                placeholder="Tell me how you want to modify"
-                                value={text}
-                                onChange={(e) => setText(e.target.value)}
-                                className="popup-textarea w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 h-24 resize-none"
-                                disabled={loading}
-                            ></textarea>
-                        </span>
                         </div>
-                     
+
                         <div className="popup-buttons justify-end space-x-2 text-right relative">
-                            
+
 
                             {isTextGenerated && (
                                 <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
@@ -220,7 +220,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 </button>
                             )}
                             <button
-                                className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
+                                // className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
+                                className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
                                 onClick={handleSubmit}
                                 disabled={loading}
                             ><img src={getImage('sendIcon')} alt="img" className="w-4" />

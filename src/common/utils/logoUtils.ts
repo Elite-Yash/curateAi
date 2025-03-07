@@ -8,10 +8,11 @@ import deleteIcon from "../../images/delete.svg";
 import message from "../../images/message.svg";
 import tools from "../../images/tools.svg";
 import user from "../../images/user.svg";
-import iconLogo from "../../../public/icon.png";
+import iconLogo from "../../../public/icon.svg";
 import sendIcon from "../../images/send-icon.svg";
 import translate from "../../images/translate.svg";
 import copyIcon from "../../images/copy-icon.svg";
+import saveProfileIcon from "../../images/saveProfileIcon.svg";
 
 
 const imagePath: any = {
@@ -27,7 +28,8 @@ const imagePath: any = {
   user,
   sendIcon,
   translate,
-  copyIcon
+  copyIcon,
+  saveProfileIcon
 };
 
 // Get Logo image
