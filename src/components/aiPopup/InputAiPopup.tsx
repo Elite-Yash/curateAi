@@ -114,8 +114,11 @@ const InputAiPopup: React.FC<ModalProps> = ({
     return (
         <div className={`popup-overlay ${isOpen ? "open" : ""} fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
             <div className="popup-container bg-white rounded-lg shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl overflow-hidden">
-                <div className="header-top p-9 py-10 flex justify-between item-center">
-                    <h4 className="popup-title font-semibold text-xl">Ask to Cureate Ai</h4>
+                <div className="header-top p-9 py-10 flex justify-start item-center">
+                    <span className="relative mr-3 pr-9">
+                        <img src={getImage('iconLogo')} alt="img" className="absolute w-11" />
+                    </span>
+                    <h4 className="popup-title font-semibold text-xl mt-0.5">Ask to Cureate Ai</h4>
                     <span
                         onClick={onClose}
                         className="close-box absolute top-6 right-6 w-6 h-6 bg-no-repeat bg-center cursor-pointer"
@@ -196,7 +199,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         <div className="w-full textarea-group relative">
 
                             <span className=" ">
-                                <span className="flex gap-1 item-center absolute right-3.5 top-1.5">
+                                <span className="flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer">
                                     Copy
                                     <img src={getImage('copyIcon')} alt="img" className="w-4" />
                                 </span>

@@ -37,7 +37,7 @@ const Header = () => {
         chrome.runtime.sendMessage({ type: "removeCookies" });
     };
     return (
-        <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-[280px] pr-[30px]">
+        <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-8 pr-[30px]">
             <div className="flex flex-col justify-center  bg-white relative g-box mt-5 px-8 py-3">
                 <div className="flex justify-between items-center">
 
@@ -64,7 +64,7 @@ const Header = () => {
                                 >
                                     {/* <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" /> */}
                                     <span className="icon w-8 h-8 rounded-full overflow-hidden border border-2 border-solid	border-white outline-1 outline-green-950	outline">
-                                          <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
+                                        <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
                                     </span>
                                     <span className="text-sm dec-color font-normal ">Emma Kwan</span>
                                     <i className="text-xs fa-solid fa-chevron-down dec-color"></i>
@@ -76,7 +76,7 @@ const Header = () => {
                                             onClick={handleLogout}
                                         >
                                             <i className="fa-solid fa-power-off color-one transition"></i>
-                                            Log Out 
+                                            Log Out
                                         </button>
                                     </div>
                                 )}

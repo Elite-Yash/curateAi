@@ -47,9 +47,9 @@ import SideBar from "../components/SideBar";
 const Section = ({ children }: any) => {
   return (
     <div id="wrapper" className="bge7e9f6">
-      <SideBar />
+      {/* <SideBar /> */}
       <div className="right-baar-div transition">
-        <Header />
+        {/* <Header /> */}
         {children}
       </div>
     </div >

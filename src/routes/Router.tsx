@@ -3,6 +3,11 @@ import Section from "../pages/Section";
 import Home from "../components/Home/Home";
 import SaveProfile from "../components/SaveProfile/SaveProfile";
 import Comments from "../components/Comments/Comments";
+import SingUp from "../components/SingUp/SingUp";
+import SignIn from "../components/SignIn/SignIn";
+import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
+import ChangePassword from "../components/ChangePassword/ChangePassword";
+
 
 /**
  * Router component that defines the application's routing structure.
@@ -16,15 +21,48 @@ const Router = () => {
   return (
     <Routes>
       <Route
-        path={"/"}
+        path="/"
         element={
           <Section>
-            <Home />
+            {/* <Home /> */}
+            <SingUp />
           </Section>
         }
       />
       <Route
-        path={"/comments"}
+        path="/signup"
+        element={
+          <Section>
+            <SingUp />
+          </Section>
+        }
+      />
+      <Route
+        path="/signin"
+        element={
+          <Section>
+            <SignIn />
+          </Section>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <Section>
+            <ForgotPassword />
+          </Section>
+        }
+      />
+      <Route
+        path="/change-password"
+        element={
+          <Section>
+            <ChangePassword />
+          </Section>
+        }
+      />
+      <Route
+        path="/comments"
         element={
           <Section>
             <Comments />
@@ -32,7 +70,7 @@ const Router = () => {
         }
       />
       <Route
-        path={"/save-profile"}
+        path="/save-profile"
         element={
           <Section>
             <SaveProfile />

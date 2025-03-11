@@ -13,7 +13,10 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         <>
             <div className="inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="popup-container bg-white shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl overflow-hidden w-400">
-                    <div className="header-top p-9 py-10 flex justify-between item-center">
+                    <div className="header-top p-9 py-10 flex justify-start item-center">
+                        <span className="relative mr-3 pr-9">
+                            <img src={getImage('iconLogo')} alt="img" className="absolute w-11" />
+                        </span>
                         <h4 className="popup-title font-semibold text-xl">Save Profile</h4>
                         <span onClick={onClose} className="close-box absolute top-6 right-6 w-6 h-6 bg-no-repeat bg-center cursor-pointer">
                             <img src={getImage('close')} alt="img" className="w-full h-full rounded-full" />

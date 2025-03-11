@@ -22,7 +22,7 @@ setTimeout(() => {
             ReactDOM.createRoot(root).render(
                 <Router>
                     <Provider store={store}>
-                        <PopUp />
+                        <App />
                     </Provider>
                 </Router>
             );
