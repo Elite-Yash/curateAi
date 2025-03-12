@@ -47,7 +47,7 @@ const Popup: React.FC<PopupProps> = () => {
                     type="button"
                     onClick={() => goToDashBoard()}
                     // className="text-white background-one focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                    className="text-white bg-gradient-to-r from-purple-500 to-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    className="text-white bg-gradient-to-r background-one font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
                     Open DashBoard
                 </button>
