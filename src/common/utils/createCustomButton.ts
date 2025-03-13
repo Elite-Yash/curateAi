@@ -1,7 +1,7 @@
 function createCustomButton(label: any, imgSrc: any, altText: any) {
 
     const customeSpan = document.createElement("span");
-    customeSpan.setAttribute("style", "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: linear-gradient(101deg, #B059F8 14.23%, #118FF1 88.5%); border-radius: 50px; padding: 1px;margin-bottom: 10px;");
+    customeSpan.setAttribute("style", "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: #ff5c35; border-radius: 50px; padding: 1px;margin-bottom: 10px;");
 
     // Create contents span
     const contentsSpan = document.createElement("span");

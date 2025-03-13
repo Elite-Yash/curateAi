@@ -8,13 +8,9 @@ const ChangePassword = () => {
             <div className="form-section bg-white p-10 rounded-2xl">
                 <div className="form-title flex flex-col gap-3">
                     <div className="logo">
-                        <a href="#" className="logo flex items-center w-full gap-2 color-one justify-center">
-                            <img
-                                src={getImage('iconLogo')}
-                                className="re-logo-b-o transition w-7"
-                                alt="img"
-                            />
-                            <span className="color-one uppercase larger font-semibold">Curate ai</span>
+                        <a href="#" className="logo flex items-center w-full gap-2 color-one justify-center mb-6">
+                            <img src={getImage('logoBlack')} className="re-logo-b-o transition w-32" alt="img" />
+                            {/* <span className="color-one uppercase larger font-semibold">Evarobo</span> */}
                         </a>
                     </div>
                     <span className="dark-color font-semibold text-3xl">Change Password</span>
@@ -27,7 +23,7 @@ const ChangePassword = () => {
                             <input
                                 type="password"
                                 placeholder="New Password"
-                                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:outline-none"
+                                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff9479]"
                             />
                         </span>
                     </div>
@@ -37,7 +33,7 @@ const ChangePassword = () => {
                             <input
                                 type="password"
                                 placeholder="Confirm Password"
-                                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:outline-none"
+                                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff9479]"
                             />
                         </span>
                     </div>
@@ -46,7 +42,7 @@ const ChangePassword = () => {
                         <button
                             type="button"
                             onClick={() => navigate("/signin")}
-                            className="w-full h-14 text-white background-one font-medium rounded-lg text-base px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                            className="w-full h-14 text-white background-one font-medium rounded-lg text-base px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-[#ff9479] dark:focus:ring-blue-800"
                         >
                             Change Password
                         </button>

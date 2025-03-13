@@ -7,6 +7,7 @@ import SingUp from "../components/SingUp/SingUp";
 import SignIn from "../components/SignIn/SignIn";
 import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
+import { useEffect, useState } from "react";
 
 
 /**
@@ -18,14 +19,30 @@ import ChangePassword from "../components/ChangePassword/ChangePassword";
  * @returns {JSX.Element} The routes configuration for the application.
  */
 const Router = () => {
+
+  const [login, setLogin] = useState<string | null>(null);
+  useEffect(() => {
+    const checkToken = () => {
+      chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
+        if (response && response.success) {
+          setLogin(response.token);
+        } else {
+          console.log("No token found.");
+          setLogin('');
+        }
+      });
+    };
+    // Initial check
+    checkToken();
+  }, []);
+
   return (
     <Routes>
       <Route
         path="/"
         element={
           <Section>
-            {/* <Home /> */}
-            <SingUp />
+            {login ? <Home /> : <SignIn />}
           </Section>
         }
       />

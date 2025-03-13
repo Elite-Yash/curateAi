@@ -19,25 +19,40 @@
  * @styles
  * - Utilizes Tailwind CSS classes for layout and styling, with responsive adjustments for smaller screens.
  */
-import { useSelector } from "react-redux";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../common/utils/logoUtils";
-import { selectUser } from "../redux/selector/usersSelector";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const loginUser = useSelector(selectUser);
+    const [login, setLogin] = useState<string | null>(null);
+    const navigate = useNavigate();
+    // Fetch the token from Chrome storage on component mount
+    useEffect(() => {
+        chrome.storage.local.get(["token"], (result) => {
+            if (result.token) {
+                setLogin(result.token);
+            } else {
+                setLogin(null);
+                console.log("No token found in Chrome storage.");
+            }
+        });
+    }, [login]);
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
-    const handleLogout = () => {
-        chrome.runtime.sendMessage({ type: "removeCookies" });
+    // Send a message to background.js to handle logout
+    const LogOut = () => {
+        chrome.runtime.sendMessage({ type: "LogOut" }, () => { });
+        setDropdownOpen(!dropdownOpen);
+        navigate("/signin")
+        setLogin(null)
     };
     return (
-        <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-8 pr-[30px]">
+        <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-[280px] pr-[30px]">
             <div className="flex flex-col justify-center  bg-white relative g-box mt-5 px-8 py-3">
                 <div className="flex justify-between items-center">
 
@@ -73,7 +88,7 @@ const Header = () => {
                                     <div className="absolute right-3.5 mt-2 bg-white g-box w-40 drop-menu">
                                         <button
                                             className="w-full text-left px-3 py-3 text-sm transition rounded-xl	 flex items-center gap-2"
-                                            onClick={handleLogout}
+                                            onClick={LogOut}
                                         >
                                             <i className="fa-solid fa-power-off color-one transition"></i>
                                             Log Out

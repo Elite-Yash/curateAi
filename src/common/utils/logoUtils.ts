@@ -13,6 +13,9 @@ import sendIcon from "../../images/send-icon.svg";
 import translate from "../../images/translate.svg";
 import copyIcon from "../../images/copy-icon.svg";
 import saveProfileIcon from "../../images/saveProfileIcon.svg";
+import logoWhite from "../../../public/logo-white.png";
+import logoBlack from "../../../public/logo.png";
+import fLogo from "../../../public/f-logo.png";
 
 
 const imagePath: any = {
@@ -29,7 +32,10 @@ const imagePath: any = {
   sendIcon,
   translate,
   copyIcon,
-  saveProfileIcon
+  saveProfileIcon,
+  logoWhite,
+  fLogo,
+  logoBlack
 };
 
 // Get Logo image

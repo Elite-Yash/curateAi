@@ -192,7 +192,7 @@ body,
 .left-menu a.active i,
 .left-menu a:hover i,
 .left-menu a:hover span {
-    color: #6841ea !important;
+    color: #ff5e37 !important;
 }
 
 .g-box {
@@ -294,7 +294,7 @@ body,
 } */
 .drop-menu button:hover,
 .leftmenu-bottom a.bg-white:hover {
-    background: #6841ea;
+    background: #ff5e37 !important;
     color: #fff !important;
 }
 
@@ -306,7 +306,8 @@ body,
 
 
 .backgroundgradient6841ea {
-    background: linear-gradient(184deg, #6841ea 0%, #a387ff 100%);
+    /* background: linear-gradient(184deg, #6841ea 0%, #a387ff 100%); */
+    background: linear-gradient(184deg, #ff5c35 0%, #fe987f 100%);
 }
 
 

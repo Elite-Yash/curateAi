@@ -4,7 +4,6 @@ import SideBar from "./components/SideBar";
 import CustomIframe from "./CustomIframe";
 import dashboardStyles from "./css/dashboard.css?inline";
 import Router from "./routes/Router";
-import { ToastContainer } from "react-toastify";
 
 // Check if chrome.runtime is available
 /**
@@ -26,7 +25,6 @@ const Dashboard = () => {
         {dashboardStyles}
       </style>
       <div className="overflow-x-hidden relative w-full background-three">
-        <ToastContainer position="top-right" autoClose={3000} />
         <Router />
       </div>
     </CustomIframe>

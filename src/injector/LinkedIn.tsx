@@ -542,7 +542,7 @@ const LinkedIn = () => {
         // Create and append the custom icon
         const customIcon = document.createElement("span");
         customIcon.className = "curateai-open-popup-icon";
-        customIcon.style.cssText = "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: linear-gradient(101deg, #B059F8 14.23%, #118FF1 88.5%); border-radius: 50px; padding: 2px;";
+        customIcon.style.cssText = "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: #ff5c35; border-radius: 50px; padding: 2px;";
 
         const contentsSpan = document.createElement("span");
         contentsSpan.className = "contents";
@@ -551,15 +551,15 @@ const LinkedIn = () => {
         // Create image span
         const imgSpan = document.createElement("span");
         const imgElement = document.createElement("img");
-        imgElement.src = chrome.runtime.getURL("/icon.svg");
+        imgElement.src = chrome.runtime.getURL("/f-logo.png");
         imgElement.alt = "Replay";
-        imgSpan.style.cssText = "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer;";
+        imgSpan.style.cssText = "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer;border: 2px solid #ff5c35; border-radius: 50%;";
         imgSpan.appendChild(imgElement);
 
         // Create text span
         const textSpan = document.createElement("span");
         textSpan.innerText = "Replay";
-        textSpan.style.cssText = "margin-left: 5px; font-size: 15px; color: #6841ea;";
+        textSpan.style.cssText = "margin-left: 5px; font-size: 15px; color: #ff5c35;";
 
         // Append image and text spans to contents span
         contentsSpan.appendChild(imgSpan);

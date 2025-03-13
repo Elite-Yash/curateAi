@@ -41,15 +41,51 @@
  * - The matched names dropdown is positioned absolutely and styled to appear over other content with a z-index of 9999.
  */
 
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import SideBar from "../components/SideBar";
+import { useLocation } from "react-router-dom";
 
 const Section = ({ children }: any) => {
+
+  const [login, setLogin] = useState<string | null>(null);
+  const location = useLocation();
+  const [hideSidebarHeader, setHideSidebarHeader] = useState(false);
+
+  useEffect(() => {
+    const checkToken = () => {
+      chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
+        if (response && response.success) {
+          setLogin(response.token);
+        } else {
+          console.log("No token found.");
+          setLogin('');
+        }
+      });
+    };
+
+    // Listen for storage changes
+    chrome.storage.onChanged.addListener(checkToken);
+
+    // Initial check
+    checkToken();
+
+    return () => {
+      chrome.storage.onChanged.removeListener(checkToken);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const authRoutes = ["/signup", "/signin", "/forgot-password", "/change-password"];
+    setHideSidebarHeader(authRoutes.includes(location.pathname));
+  }, [location.pathname])
+
   return (
     <div id="wrapper" className="bge7e9f6">
-      {/* <SideBar /> */}
+      {!hideSidebarHeader && login ? <SideBar /> : null}
       <div className="right-baar-div transition">
-        {/* <Header /> */}
+        {!hideSidebarHeader && login ? <Header /> : null}
         {children}
       </div>
     </div >

@@ -55,10 +55,6 @@ const LinkedInProfile = () => {
         }
     }, []);
 
-    // console.log("Profile Name: ", profileName);
-    // console.log("Position: ", position);
-    // console.log("Company: ", company);
-
     if (openAiPopup) {
         return (
             <div

@@ -20,6 +20,23 @@ chrome.webNavigation.onCompleted.addListener((details) => {
 // background.js
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+    // Retrieve Token from Chrome Storage
+    if (request.type === "getCookies") {
+        chrome.storage.local.get(["token"], (result) => {
+            console.log("Stored Token:", result.token);
+            sendResponse({ success: true, token: result.token });
+        });
+
+        return true; // Keep async response channel open
+    }
+
+    // Check if the message type is "LogOut"
+    if (request.type === "LogOut") {
+        chrome.storage.local.remove("token", () => { });
+        return true; // Keep the message channel open for async response
+    }
+
     if (request.type === "GENERATE_CONTENT") {
         const { language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages, currentUserName, authToken } = request.data;
         console.log('request.data: ', request.data);
@@ -35,7 +52,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 "Authorization": `Bearer ${authToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages , currentUserName}),
+            body: JSON.stringify({ language, tone, postText, authorName, contentType, command, platform, commentAuthorName, commentText, goal, articleInfo, lastMessages, currentUserName }),
         })
             .then((response) => response.json())
             .then((data) => {

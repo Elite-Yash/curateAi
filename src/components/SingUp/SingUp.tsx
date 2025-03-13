@@ -1,10 +1,9 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { fetchAPI, Method, Endpoints } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import { API_URL } from "../../common/config/constMessage";
+
 interface SignUpFormData {
     name: string;
     email: string;
@@ -20,7 +19,7 @@ const SignUp = () => {
         password: "",
         confirmPassword: "",
     });
-
+    const [message, setMessage] = useState<{ text: string; type: "success" | "error" | "" }>({ text: "", type: "" });
     // Handle input changes
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,46 +30,53 @@ const SignUp = () => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
 
+    // Show message for 1.5 seconds
+    const showMessage = (text: string, type: "success" | "error") => {
+        setMessage({ text, type });
+        setTimeout(() => {
+            setMessage({ text: "", type: "" });
+        }, 2000);
+    };
+
     // Handle form submission
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         const { name, email, password, confirmPassword } = formData;
-        console.log("formData", formData)
         // Validation checks
         if (!name || !email || !password || !confirmPassword) {
-            toast.error("All fields are required.");
+            showMessage("All fields are required.", "error");
             return;
         }
 
         if (!isValidEmail(email)) {
-            toast.error("Invalid email format.");
+            showMessage("Invalid email format.", "error");
             return;
         }
 
         if (password.length < 6) {
-            toast.error("Password must be at least 6 characters long.");
+            showMessage("Password must be at least 6 characters long.", "error");
             return;
         }
 
         if (password !== confirmPassword) {
-            toast.error("Passwords do not match.");
+            showMessage("Passwords do not match.", "error");
             return;
         }
 
         try {
-            const url = API_URL + Endpoints.register;
+            const url = `${API_URL + "/" + Endpoints.register}`;
             const response = await fetchAPI(url, { method: Method.post, data: formData });
 
-            if (response.success) {
-                toast.success("Account created successfully!");
+            if (response && response.success) {
+                setMessage({ text: "Account created successfully!", type: "success" });
                 setFormData({ name: "", email: "", password: "", confirmPassword: "", });
-                setTimeout(() => navigate("/signin"), 1500);
+                setTimeout(() => navigate("/signin"), 2500);
             } else {
-                toast.error(response.message || "Sign-up failed. Try again.");
+                setMessage({ text: response.message || "Sign-up failed. Try again.", type: "error" });
             }
         } catch (error) {
-            toast.error("Something went wrong. Please try again.");
+            setMessage({ text: "Something went wrong. Please try again.", type: "error" });
             console.error("Sign-up error:", error);
         }
     };
@@ -80,9 +86,9 @@ const SignUp = () => {
             <div className="form-section bg-white p-10 rounded-2xl">
                 <div className="form-title flex flex-col gap-3">
                     <div className="logo">
-                        <a href="#" className="logo flex items-center w-full gap-2 color-one justify-center">
-                            <img src={getImage('iconLogo')} className="re-logo-b-o transition w-7" alt="img" />
-                            <span className="color-one uppercase larger font-semibold">Curate ai</span>
+                        <a href="#" className="logo flex items-center w-full gap-2 color-one justify-center mb-6">
+                            <img src={getImage('logoBlack')} className="re-logo-b-o transition w-32" alt="img" />
+                            {/* <span className="color-one uppercase larger font-semibold">Evarobo</span> */}
                         </a>
                     </div>
                     <span className="dark-color font-semibold text-3xl">Sign Up</span>
@@ -96,7 +102,7 @@ const SignUp = () => {
                         placeholder="Name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:outline-none"
+                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff9479]"
                     />
                     <input
                         type="email"
@@ -104,7 +110,7 @@ const SignUp = () => {
                         placeholder="Email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:outline-none"
+                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff9479]"
                     />
                     <input
                         type="password"
@@ -112,7 +118,7 @@ const SignUp = () => {
                         placeholder="Password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:outline-none"
+                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff9479]"
                     />
                     <input
                         type="password"
@@ -120,7 +126,7 @@ const SignUp = () => {
                         placeholder="Confirm Password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:outline-none"
+                        className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff9479]"
                     />
                     <button
                         type="submit"
@@ -135,6 +141,15 @@ const SignUp = () => {
                         </a>
                     </span>
                 </form>
+                {/* Error/Success Message Box */}
+                {message.text && (
+                    <div
+                        className={`text-center text-[17px] mt-3 border p-2 rounded-md 
+                            ${message.type === "error" ? "text-red border-red" : "text-green border-green"}`}
+                    >
+                        {message.text}
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -11,7 +11,7 @@ const SideBar = () => {
     return (
         <div className="backgroundgradient6841ea flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform background-one rounded-[11px] -translate-y-1/2">
             <div className="menu-baar-d absolute -right-14">
-                <button data-collapse-toggle="navbar-default" type="button" className="max-[1023px]:ms-auto max-[1150px]:block inline-flex items-center p-2 justify-center text-sm text-white hidden  focus:outline-none" aria-controls="navbar-default" aria-expanded="false">
+                <button data-collapse-toggle="navbar-default" type="button" className="max-[1023px]:ms-auto max-[1150px]:block inline-flex items-center p-2 justify-center text-sm text-white hidden  focus:ring-[#ff9479]" aria-controls="navbar-default" aria-expanded="false">
                     <div className="toggle relative w-11 h-10 max-[1023px]:h-8 bgFF3E3A rounded-xl flex items-center justify-center cursor-pointer overflow-hidden">
                         <span className="bg-white absolute transition left-0 w-5 h-0.5 left-1.5 rounded-full"></span>
                         <span className="bg-white absolute transition left-0 w-5 h-0.5 left-1.5 rounded-full"></span>
@@ -21,8 +21,8 @@ const SideBar = () => {
             </div>
             <div className="logo p-4 pt-5">
                 <Link to="/" className="logo flex justify-center items-center w-full gap-2 bg-white color-one rounded-xl py-3">
-                    <img src={getImage('iconLogo')} className="re-logo-b-o transition w-7" alt="img" />
-                    <span className="color-one uppercase larger font-semibold">Curate ai</span>
+                    <img src={getImage('logoBlack')} className="re-logo-b-o transition w-32" alt="img" />
+                    {/* <span className="color-one uppercase larger font-semibold">Evarobo</span> */}
                 </Link>
             </div>
             <div className="left-menu pt-12">
