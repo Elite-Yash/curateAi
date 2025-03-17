@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/InputAiPopup.css";
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants";
 import { ArticleInfo, PostData } from "../../constants/types";
@@ -6,6 +6,8 @@ import { getAuthTokenFromLocalStorage, getCurrentLinkedInUsernameFromLocalStorag
 import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
+import { fetchAPI, Method, Endpoints } from "../../common/config/apiService"; // Import API function
+import { API_URL } from "../../common/config/constMessage";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -90,16 +92,43 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     if (response.success) {
                         setText(response.data.data);
                         setIsTextGenerated(true);
+                        const payload = {
+                            comment: response.data.data,
+                            post_url: window.location.href,
+                            user_id: 1
+                        }
+                        const requestUrl = `${API_URL}//${Endpoints.createComments}`;
+                        fetchAPI(requestUrl, {
+                            method: Method.post,
+                            data: payload,
+                            headers: {
+                                Authorization: `Bearer ${authToken}`,
+                                "Content-Type": "application/json",
+                            },
+                        })
+                            .then((result) => {
+                                if (result?.statusCode === 201 && result?.message === "Comment created successfully") {
+                                    console.log("API call successful", result);
+                                } else {
+                                    throw new Error(result.message);
+                                }
+                            })
+                            .catch((err) => {
+                                console.error("API error:", err);
+                            })
+                            .finally(() => {
+                                setLoading(false);
+                            });
                     } else {
                         setError("Failed to submit the comment. Please try again.");
+                        setLoading(false);
                     }
-                    setLoading(false);
                 }
             );
+
+
         });
     };
-
-
 
     const insertContent = () => {
         if (
@@ -201,9 +230,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </div>
 
                         <div className="w-full textarea-group relative">
-
-                            <span className=" ">
-                                <span className="flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer">
+                            <span>
+                                <span className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
                                     Copy
                                     <img src={getImage('copyIcon')} alt="img" className="w-4" />
                                 </span>
@@ -212,13 +240,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                     placeholder="Tell me how you want to modify"
                                     value={text}
                                     onChange={(e) => setText(e.target.value)}
-                                    className="popup-textarea w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479] h-24 resize-none"
+                                    className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                     disabled={loading}
                                 ></textarea>
                             </span>
                         </div>
 
-                        <div className="popup-buttons justify-end space-x-2 text-right relative">
+                        <div className="popup-buttons justify-end space-x-2 text-right relative flex">
 
 
                             {isTextGenerated && (
@@ -228,7 +256,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             )}
                             <button
                                 // className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
-                                className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-[#ff5c35] text-white rounded-md hover:bg-[#c64e30] disabled:bg-gray-400"
+                                className={`flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 ${isTextGenerated ? "bg-green" : "bg-[#ff5c35]"}  text-white rounded-md ${isTextGenerated ? "hover:bg-[#008234]" : "hover:bg-[#c64e30]"}  disabled:bg-gray-40`}
                                 onClick={handleSubmit}
                                 disabled={loading}
                             ><img src={getImage('sendIcon')} alt="img" className="w-4" />

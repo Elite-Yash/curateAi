@@ -29,7 +29,9 @@ export const Endpoints = {
     login: "auth/login",
     getComments: "comments",
     createComments: "comments",
-    deleteComments: "comments/:id"
+    deleteComments: "comments/:id",
+    createProfile: "profiles",
+    deleteProfile: "profiles/1",
 } as const;
 
 export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Promise<ApiResponse<T>> => {

@@ -459,7 +459,7 @@ const LinkedIn = () => {
             const button = document.createElement("button");
             const icon = document.createElement("img");
             icon.setAttribute("style", "width: 18px; height: 18px;");
-            icon.src = chrome.runtime.getURL("/icon.png");
+            icon.src = chrome.runtime.getURL("/f-logo.png");
             icon.alt = "curateai-open-popup-icon";
             button.setAttribute(
                 "style",
@@ -510,7 +510,7 @@ const LinkedIn = () => {
             let appendIcon = box.querySelector(".comments-comment-box__detour-container") as HTMLElement;
             // Create and append the custom icon
             const customIcon = document.createElement("div");
-            customIcon.style.backgroundImage = `url(${chrome.runtime.getURL("/icon.png")})`;
+            customIcon.style.backgroundImage = `url(${chrome.runtime.getURL("/f-logo.png")})`;
             customIcon.style.backgroundSize = "contain"; // Ensures the image fits inside
             customIcon.style.backgroundRepeat = "no-repeat";
             customIcon.style.backgroundPosition = "center";
@@ -519,6 +519,9 @@ const LinkedIn = () => {
             customIcon.style.width = "21px";
             customIcon.style.height = "21px";
             customIcon.style.margin = "9px 7px 10px 8px";
+            customIcon.style.border = "2px solid #ff5c35";
+            customIcon.style.borderRadius = "50%";
+            customIcon.style.padding = "10px";
 
             customIcon.addEventListener("click", () => {
                 setSelectedCommentBoxId(commentBoxCrId);
@@ -552,13 +555,13 @@ const LinkedIn = () => {
         const imgSpan = document.createElement("span");
         const imgElement = document.createElement("img");
         imgElement.src = chrome.runtime.getURL("/f-logo.png");
-        imgElement.alt = "Replay";
+        imgElement.alt = "Post";
         imgSpan.style.cssText = "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer;border: 2px solid #ff5c35; border-radius: 50%;";
         imgSpan.appendChild(imgElement);
 
         // Create text span
         const textSpan = document.createElement("span");
-        textSpan.innerText = "Replay";
+        textSpan.innerText = "Post";
         textSpan.style.cssText = "margin-left: 5px; font-size: 15px; color: #ff5c35;";
 
         // Append image and text spans to contents span

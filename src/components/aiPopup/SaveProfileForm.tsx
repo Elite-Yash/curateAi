@@ -1,4 +1,7 @@
+import { useEffect, useState } from "react";
 import { getImage } from "../../common/utils/logoUtils";
+import { fetchAPI, Method, Endpoints } from "../../common/config/apiService"; // Import API function
+import { API_URL } from "../../common/config/constMessage";
 
 // Define the props interface
 interface SaveProfileFormProps {
@@ -9,6 +12,98 @@ interface SaveProfileFormProps {
 }
 
 const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName, position, company }) => {
+    const [name, setName] = useState(profileName);
+    const [positionState, setPosition] = useState(position);
+    const [companyState, setCompany] = useState(company);
+    const [email, setEmail] = useState(""); // Handle email input
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState<string | null>(null); // Error handling
+    const [success, setSuccess] = useState(false); // Success message
+
+    useEffect(() => {
+        setName(profileName);
+        setPosition(position);
+        setCompany(company);
+    }, [profileName, position, company]);
+
+    const getAuthToken = (): Promise<string | null> => {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
+                if (!response || !response.success || !response.token) {
+                    reject("Failed to retrieve auth token.");
+                } else {
+                    resolve(response.token);
+                }
+            });
+        });
+    };
+
+    const validateForm = () => {
+        if (!name.trim()) return "Name is required.";
+        if (!email.trim()) return "Email is required.";
+        if (!positionState.trim()) return "Position is required.";
+        if (!companyState.trim()) return "Company is required.";
+        return null;
+    };
+
+
+    const handleSave = async () => {
+        setLoading(true);
+        setError(null);
+        setSuccess(false);
+
+        const validationError = validateForm();
+        if (validationError) {
+            setError(validationError);
+            setTimeout(() => setError(null), 2000);
+            setLoading(false);
+            return;
+        }
+
+        const payload = {
+            name,
+            email,
+            position: positionState,
+            organization: companyState,
+            url: window.location.href,
+            profile: window.location.href,
+        };
+
+
+
+        try {
+            const authToken = await getAuthToken();
+            if (!authToken) throw new Error("Authentication token is missing.");
+
+            const requestUrl = `${API_URL}/${Endpoints.createProfile}`;
+
+            const result = await fetchAPI(requestUrl, {
+                method: Method.post,
+                data: payload,
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (result?.status === 200 && result?.message === "Profile saved successfully") {
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false);
+                    onClose();
+                }, 2000);
+            } else {
+                throw new Error(result.message || "Failed to save profile.");
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "An unknown error occurred.");
+            setTimeout(() => setError(null), 2000);
+        } finally {
+            setLoading(false);
+        }
+
+    };
+
     return (
         <>
             <div className="inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -26,20 +121,22 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                     </div>
                     <div className="p-9 flex justify-between item-center flex-col gap-5">
                         <div className="w-full input-group">
-                            <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Name" value={profileName} />
+                            <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
                         </div>
                         <div className="w-full input-group">
-                            <input type="email" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Email" />
+                            <input type="email" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="w-full input-group">
-                            <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Position" value={position} />
+                            <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Position" value={positionState} onChange={(e) => setPosition(e.target.value)} />
                         </div>
                         <div className="w-full input-group">
-                            <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Company/Institution" value={company} />
+                            <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Company/Institution" value={companyState} onChange={(e) => setCompany(e.target.value)} />
                         </div>
-                        <div className="popup-buttons justify-end space-x-2 text-right relative">
-                            <button className="justify-center flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 bg-[#ff5c35] text-white rounded-md hover:bg-[#c64e30] disabled:bg-gray-400" style={{ "width": "80px" }}>
-                                Save
+                        <div className="popup-buttons justify-end space-x-2 text-right relative flex items-center">
+                            {error && <p className="text-red text-xl ml-2.5 absolute left-0">{error}</p>}
+                            {success && <p className="text-green text-xl ml-2.5 absolute left-0">Profile saved successfully!</p>}
+                            <button onClick={handleSave} disabled={loading} className="justify-center flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 bg-[#ff5c35] text-white rounded-md hover:bg-[#c64e30] disabled:bg-gray-400" style={{ "width": "80px" }}>
+                                {loading ? "Saving..." : "Save"}
                             </button>
                         </div>
                     </div>

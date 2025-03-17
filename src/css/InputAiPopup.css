@@ -159,7 +159,8 @@ h4.popup-title {
 /* .popup-button-submit {background: #6841ea !important;color: #fff;} */
 
 .popup-button-insert {
-    background-color: #28a745;
+    /* background-color: #28a745; */
+    background-color: #ff5c35;
     color: #fff;
 }
 
@@ -196,11 +197,11 @@ span.close-box {
     width: 400px;
 }
 
-.textarea-group span {
+.textarea-group span.c-btn {
     top: 15px;
-    right: 12px;
+    right: 17px;
     font-size: 13px;
-    color: #ff5c35;
+    color: #585858;
 }
 
 .popup-container .p-logo {
