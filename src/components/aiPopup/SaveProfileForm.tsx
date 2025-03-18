@@ -9,9 +9,10 @@ interface SaveProfileFormProps {
     profileName: string;
     position: string;
     company: string;
+    profileImg: string;
 }
 
-const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName, position, company }) => {
+const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName, position, company, profileImg }) => {
     const [name, setName] = useState(profileName);
     const [positionState, setPosition] = useState(position);
     const [companyState, setCompany] = useState(company);
@@ -66,7 +67,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
             position: positionState,
             organization: companyState,
             url: window.location.href,
-            profile: window.location.href,
+            profile: profileImg,
         };
 
 

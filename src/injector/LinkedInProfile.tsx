@@ -9,6 +9,7 @@ const LinkedInProfile = () => {
     const [email, setEmail] = useState("");
     const [position, setPosition] = useState("");
     const [company, setCompany] = useState("");
+    const [profileImg, setProfileImg] = useState("")
 
     const scrapeProfileData = () => {
         const profileNameElement = document.querySelector("div.ph5 div.mt2.relative h1");
@@ -19,17 +20,19 @@ const LinkedInProfile = () => {
         const profileNameText = profileNameElement?.textContent.trim() || "";
         const positionText = positionElement?.textContent.trim() || "";
         const companyText = companyElement?.textContent.trim() || "";
-
+        const ProfileImage = document.querySelector("main section div.ph5 div.pv-top-card__non-self-photo-wrapper img");
         const cleanCompanyText = companyText.split("·")[0].trim();
         if (companyText.includes("yrs") || companyText.includes("mos") || companyText.includes("mo")) {
             const position = experienceData?.querySelector("div.pvs-entity__sub-components ul li div.display-flex.flex-column.align-self-center.flex-grow-1 div.display-flex.full-width span");
             setPosition(position?.textContent.trim() || "");
             setCompany(positionText);
             setProfileName(profileNameText);
+            setProfileImg(ProfileImage?.src)
         } else {
             setProfileName(profileNameText);
             setPosition(positionText);
             setCompany(cleanCompanyText);
+            setProfileImg(ProfileImage?.src)
         }
     };
 
@@ -71,7 +74,7 @@ const LinkedInProfile = () => {
                     zIndex: 21213123,
                 }}
             >
-                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} />
+                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} />
             </div>
         );
     }

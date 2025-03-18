@@ -25,14 +25,14 @@ const Popup: React.FC = () => {
             if (result.token) {
                 setLogin(result.token);
             } else {
-                console.log("No token found in Chrome storage.");
+                // console.log("No token found in Chrome storage.");
             }
         });
     }, []);
 
     // Send a message to background.js to handle logout
     const LogOut = () => {
-        chrome.runtime.sendMessage({ type: "LogOut" }, () => { });
+        chrome.runtime.sendMessage({ type: "LogOut", action: "PopupLogout" }, () => { });
 
         setLogin(null)
     };

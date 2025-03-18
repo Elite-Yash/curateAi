@@ -28,7 +28,7 @@ const SideBar = () => {
             <div className="left-menu pt-12">
                 <ul className="flex flex-col">
                     <li className="px-4 py-1">
-                        <Link to="/" className={`text-base flex items-center font-light color5a5783 gap-2 transition p-3 relative overlay-before rounded-xl ${location.pathname === "/" ? "active" : ""}`}>
+                        <Link to="/" className={`text-base flex items-center font-light color5a5783 gap-2 transition p-3 relative overlay-before rounded-xl ${location.pathname === "/" || location.pathname === "/home" ? "active" : ""}`}>
                             <span className="icon">
                                 <i className="fa-solid fa-house white-color"></i>
                             </span>

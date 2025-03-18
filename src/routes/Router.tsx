@@ -94,6 +94,14 @@ const Router = () => {
           </Section>
         }
       />
+      <Route
+        path="/home"
+        element={
+          <Section>
+            <Home />
+          </Section>
+        }
+      />
     </Routes>
   );
 };

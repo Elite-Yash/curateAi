@@ -63,15 +63,20 @@ const Section = ({ children }: any) => {
         }
       });
     };
+    const storageListener = () => {
+      setTimeout(() => {
+        checkToken();
+      }, 2500);
+    };
 
     // Listen for storage changes
-    chrome.storage.onChanged.addListener(checkToken);
+    chrome.storage.onChanged.addListener(storageListener);
 
     // Initial check
     checkToken();
 
     return () => {
-      chrome.storage.onChanged.removeListener(checkToken);
+      chrome.storage.onChanged.removeListener(storageListener);
     };
   }, []);
 

@@ -63,8 +63,11 @@ const SignIn = () => {
                 chrome.storage.local.set({ token: authToken }, () => { });
                 setFormData({ email: "", password: "" });
                 showMessage("Login successful!", "success");
-                navigate("/signin")
-                setTimeout(() => { window.close() }, 2500);
+                setTimeout(() => {
+                    navigate("/home")
+                    window.location.reload();
+                    // window.close() 
+                }, 2500);
             } else {
                 showMessage(response.message || "Login failed. Try again.", "error");
             }

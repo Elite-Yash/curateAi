@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../css/InputAiPopup.css";
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants";
 import { ArticleInfo, PostData } from "../../constants/types";
@@ -177,7 +177,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
 
                                 <span className="relative ">
-                                    <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
+                                    {/* <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" /> */}
                                     {/* <label className="popup-label block text-gray-700 font-medium text-sm">Motive:</label> */}
                                     <select
                                         value={motives}
@@ -219,7 +219,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             <div className="w-full input-group">
 
                                 <span className="relative ">
-                                    <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
+                                    {/* <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" /> */}
                                     {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
                                     <select
                                         value={tone}

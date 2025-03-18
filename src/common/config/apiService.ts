@@ -32,6 +32,7 @@ export const Endpoints = {
     deleteComments: "comments/:id",
     createProfile: "profiles",
     deleteProfile: "profiles/1",
+    getProfiles: "profiles?page=1&limit=0"
 } as const;
 
 export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Promise<ApiResponse<T>> => {
@@ -46,7 +47,7 @@ export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Prom
             },
         };
 
-        if (data) {
+        if (data && method !== "GET") {
             fetchOptions.body = JSON.stringify(data);
         }
 

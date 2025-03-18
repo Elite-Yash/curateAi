@@ -35,7 +35,7 @@ const Header = () => {
                 setLogin(result.token);
             } else {
                 setLogin(null);
-                console.log("No token found in Chrome storage.");
+                // console.log("No token found in Chrome storage.");
             }
         });
     }, [login]);
