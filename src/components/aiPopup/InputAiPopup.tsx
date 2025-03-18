@@ -45,6 +45,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const [error, setError] = useState("");
     const [isTextGenerated, setIsTextGenerated] = useState(false);
     const [isAuth, setIsAuth] = useState(true);
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        if (text.trim()) {
+            navigator.clipboard.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500); // Reset after 1.5s
+        }
+    };
+
     if (!isOpen) return null;
 
     const handleSubmit = () => {
@@ -97,7 +107,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             post_url: window.location.href,
                             user_id: 1
                         }
-                        const requestUrl = `${API_URL}//${Endpoints.createComments}`;
+                        const requestUrl = `${API_URL}/${Endpoints.createComments}`;
                         fetchAPI(requestUrl, {
                             method: Method.post,
                             data: payload,
@@ -231,8 +241,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                         <div className="w-full textarea-group relative">
                             <span>
-                                <span className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
-                                    Copy
+                                <span onClick={handleCopy} className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
+                                    {copied ? "Copied!" : "Copy"}
                                     <img src={getImage('copyIcon')} alt="img" className="w-4" />
                                 </span>
                                 {/* <label className="popup-label block text-gray-700 font-medium text-sm">Your Comment:</label> */}
