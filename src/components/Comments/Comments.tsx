@@ -52,7 +52,7 @@ const Comments = () => {
   }, [fetchComments]);
 
   // Open modal with full comment
-  const openModal = (comment) => {
+  const openModal = (comment: any) => {
     setModalData(comment);
   };
 
@@ -132,7 +132,7 @@ const Comments = () => {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={"4"} className="px-4 py-3 text-center whitespace-nowrap">
+                      <td colSpan={4} className="px-4 py-3 text-center whitespace-nowrap">
                         No comments found
                       </td>
                     </tr>

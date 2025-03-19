@@ -134,8 +134,8 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                             <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Company/Institution" value={companyState} onChange={(e) => setCompany(e.target.value)} />
                         </div>
                         <div className="popup-buttons justify-end space-x-2 text-right relative flex items-center">
-                            {error && <p className="text-red text-xl ml-2.5 absolute left-0">{error}</p>}
-                            {success && <p className="text-green text-xl ml-2.5 absolute left-0">Profile saved successfully!</p>}
+                            {error && <p className="text-red text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">{error}</p>}
+                            {success && <p className="text-green text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">Profile saved successfully!</p>}
                             <button onClick={handleSave} disabled={loading} className="justify-center flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 bg-[#ff5c35] text-white rounded-md hover:bg-[#c64e30] disabled:bg-gray-400" style={{ "width": "80px" }}>
                                 {loading ? "Saving..." : "Save"}
                             </button>

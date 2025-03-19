@@ -24,7 +24,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Retrieve Token from Chrome Storage
     if (request.type === "getCookies") {
         chrome.storage.local.get(["token"], (result) => {
-            sendResponse({ success: true, token: result.token });
+            if (result.token) {
+                sendResponse({ success: true, token: result.token });
+            }
         });
 
         return true; // Keep async response channel open

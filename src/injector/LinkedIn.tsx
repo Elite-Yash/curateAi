@@ -30,6 +30,7 @@ const LinkedIn = () => {
     });
     const [lastMessages, setLastMessages] = useState<LinkedInMessage[]>([]);
     const [selectedMessageBoxContainer, setSelectedMessageBoxContainer] = useState<HTMLElement | null>(null);
+    const [post_url, setPost_url] = useState<string | "">("")
 
     const getPostText = (commentBoxEditor: HTMLElement): string => {
         let parentElement = commentBoxEditor.parentElement;
@@ -525,6 +526,12 @@ const LinkedIn = () => {
 
             customIcon.addEventListener("click", () => {
                 setSelectedCommentBoxId(commentBoxCrId);
+                if (box) {
+                    const anchorElement = box.closest("div.feed-shared-update-v2__control-menu-container")
+                        ?.querySelector(".fie-impression-container div.relative div.display-flex.align-items-flex-start div.update-components-actor__container a");
+                    const postUrl = anchorElement instanceof HTMLAnchorElement ? anchorElement.href : "No URL found";
+                    setPost_url(postUrl);
+                }
                 if (isLinkedInArticlePage(window.location.href)) {
                     getArticlePageInfo(box);
                 } else {
@@ -687,6 +694,7 @@ const LinkedIn = () => {
                     popupTriggeredFrom={popupTriggeredFrom}
                     articleInfo={articleInfo}
                     lastMessages={lastMessages}
+                    post_url={post_url}
                 />
             </div>
         );

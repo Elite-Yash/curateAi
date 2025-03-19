@@ -189,7 +189,7 @@ span.close-box {
     left: 14px;
 }
 
-.popup-select {
+.popup-select.data {
     padding-left: 35px !important;
 }
 

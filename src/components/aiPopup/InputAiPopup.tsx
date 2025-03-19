@@ -23,6 +23,7 @@ interface ModalProps {
     popupTriggeredFrom: string;
     articleInfo?: ArticleInfo | null;
     lastMessages: LinkedInMessage[];
+    post_url: string;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -34,6 +35,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     popupTriggeredFrom,
     articleInfo,
     lastMessages,
+    post_url
 }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]);
     const [tone, setTone] = useState(TONES[0]);
@@ -104,8 +106,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         setIsTextGenerated(true);
                         const payload = {
                             comment: response.data.data,
-                            post_url: window.location.href,
-                            user_id: 1
+                            post_url: post_url ? post_url : window.location.href,
+                            // user_id: 1
                         }
                         const requestUrl = `${API_URL}/${Endpoints.createComments}`;
                         fetchAPI(requestUrl, {
@@ -182,7 +184,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                     <select
                                         value={motives}
                                         onChange={(e) => setMotive(e.target.value)}
-                                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
+                                        className="popup-select  w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
                                         disabled={loading}
                                     >
                                         {(popupTriggeredFrom === "create-post" ? POSTING_MOTIVES : COMMENT_MOTIVES).map(
@@ -203,7 +205,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                     <select
                                         value={language}
                                         onChange={(e) => setLanguage(e.target.value)}
-                                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
+                                        className="popup-select data w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
                                         disabled={loading}
                                     >
                                         {LANGUAGES.map((lang, index) => (
