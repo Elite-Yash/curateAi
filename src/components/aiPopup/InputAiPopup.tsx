@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import "../../css/InputAiPopup.css";
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants";
 import { ArticleInfo, PostData } from "../../constants/types";
-import { getAuthTokenFromLocalStorage, getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
+import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
 import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
@@ -23,7 +23,7 @@ interface ModalProps {
     popupTriggeredFrom: string;
     articleInfo?: ArticleInfo | null;
     lastMessages: LinkedInMessage[];
-    post_url: string;
+    post_url?: string;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -76,6 +76,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             if (!response || !response.success || !response.token) {
                 setError("Failed to retrieve auth token.");
                 setLoading(false);
+                setIsAuth(true);
                 return;
             }
 

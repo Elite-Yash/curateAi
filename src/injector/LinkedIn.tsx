@@ -552,7 +552,7 @@ const LinkedIn = () => {
         // Create and append the custom icon
         const customIcon = document.createElement("span");
         customIcon.className = "curateai-open-popup-icon";
-        customIcon.style.cssText = "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: #ff5c35; border-radius: 50px; padding: 2px;";
+        customIcon.style.cssText = "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 0px; background: #ff5c35; border-radius: 50px; padding: 2px;";
 
         const contentsSpan = document.createElement("span");
         contentsSpan.className = "contents";

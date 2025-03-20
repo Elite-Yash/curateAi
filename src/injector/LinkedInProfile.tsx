@@ -6,7 +6,7 @@ import { createCustomButton } from "../common/utils/createCustomButton";
 const LinkedInProfile = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
     const [profileName, setProfileName] = useState("");
-    const [email, setEmail] = useState("");
+    // const [email, setEmail] = useState("");
     const [position, setPosition] = useState("");
     const [company, setCompany] = useState("");
     const [profileImg, setProfileImg] = useState("")
@@ -17,23 +17,24 @@ const LinkedInProfile = () => {
         const experienceData = experienceSection?.lastElementChild;
         const positionElement = experienceData?.querySelector("div.display-flex.flex-column .t-bold span");
         const companyElement = experienceData?.querySelector("div.display-flex.flex-column .t-14.t-normal span");
-        const profileNameText = profileNameElement?.textContent.trim() || "";
-        const positionText = positionElement?.textContent.trim() || "";
-        const companyText = companyElement?.textContent.trim() || "";
-        const ProfileImage = document.querySelector("main section div.ph5 div.pv-top-card__non-self-photo-wrapper img");
+
+        const profileNameText = profileNameElement?.textContent?.trim() || "";
+        const positionText = positionElement?.textContent?.trim() || "";
+        const companyText = companyElement?.textContent?.trim() || "";
+
+        const ProfileImage = document.querySelector("main section div.ph5 div.pv-top-card__non-self-photo-wrapper img") as HTMLImageElement | null;
         const cleanCompanyText = companyText.split("·")[0].trim();
         if (companyText.includes("yrs") || companyText.includes("mos") || companyText.includes("mo")) {
-            const position = experienceData?.querySelector("div.pvs-entity__sub-components ul li div.display-flex.flex-column.align-self-center.flex-grow-1 div.display-flex.full-width span");
-            setPosition(position?.textContent.trim() || "");
+            const position = experienceData?.querySelector("div.pvs-entity__sub-components ul li div.display-flex.flex-column.align-self-center.flex-grow-1 div.display-flex.full-width span") as HTMLElement | null;
+            setPosition(position?.textContent?.trim() || "");
             setCompany(positionText);
-            setProfileName(profileNameText);
-            setProfileImg(ProfileImage?.src)
         } else {
-            setProfileName(profileNameText);
             setPosition(positionText);
             setCompany(cleanCompanyText);
-            setProfileImg(ProfileImage?.src)
         }
+
+        setProfileName(profileNameText);
+        setProfileImg(ProfileImage?.src || "");
     };
 
     const handleClick = () => {
@@ -44,9 +45,9 @@ const LinkedInProfile = () => {
     useEffect(() => {
         const spans = document.querySelector("div.ph5 div.mt2.relative")?.querySelectorAll("span");
 
-        if (spans?.length > 0) {
+        if (spans && spans.length > 0) {
             const customSpan = createCustomButton('Save', getImage("saveProfileIcon"), 'Save Profile');
-            spans[0].closest("div").appendChild(customSpan);
+            spans[0].closest("div")?.appendChild(customSpan);
 
             // Add event listener to the button
             customSpan.addEventListener("click", handleClick);

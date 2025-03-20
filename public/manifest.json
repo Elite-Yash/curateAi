@@ -1,7 +1,7 @@
 {
   "name": "CurateAi",
   "description": "CurateAi Extension",
-  "version": "1.1.7",
+  "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
     "16": "./f-logo.png",

@@ -2,10 +2,19 @@ import { useEffect, useState, useCallback } from "react";
 import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
 import { API_URL } from "../../common/config/constMessage";
 import { getImage } from "../../common/utils/logoUtils";
+import Loader from "../Loader/Loader";
+
+interface Comment {
+  comment: string;
+  post_url: string;
+  comment_type: string;
+  created_at: string;
+}
 
 const Comments = () => {
-  const [commentsData, setCommentsData] = useState([]);
-  const [modalData, setModalData] = useState(null); // Store selected comment for modal
+  const [commentsData, setCommentsData] = useState<Comment[]>([])
+  const [modalData, setModalData] = useState<Comment | null>(null);
+  const [load, setLoad] = useState(true)
 
   const fetchComments = useCallback(async () => {
     try {
@@ -37,13 +46,16 @@ const Comments = () => {
         },
       });
 
-      if (result?.statusCode === 200) {
-        setCommentsData(result.data || []);
+      if (result.statusCode === 200 && Array.isArray(result.data)) {
+        setCommentsData(result.data);
       } else {
+        setCommentsData([]);
         throw new Error(result.message || "Failed to fetch comments.");
       }
     } catch (err) {
       console.error("An unexpected error occurred.");
+    } finally {
+      setLoad(false)
     }
   }, []);
 
@@ -62,10 +74,10 @@ const Comments = () => {
   };
 
   return (
-    <div className="c-padding-r pt-24 h-screen relative w-[84%] left-[280px]">
+    <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
       <div className="flex justify-between gap-5 w-full">
         <div className="rounded-2xl w-full">
-          <div className="p-5 bg-white g-box g-box-table">
+          <div className="p-5 bg-white g-box g-box-table ">
             <div className="d-table h-connect-table !w-full">
               <div className="g-box-title">
                 <h4 className="font-medium mb-3">Comments</h4>
@@ -87,57 +99,69 @@ const Comments = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                  {commentsData.length > 0 ? (
-                    commentsData.map((comment, index) => {
-                      const fullComment = comment?.comment || "N/A";
-                      return (
-                        <tr key={index}>
-                          <td className="px-4 py-3">
-                            {fullComment.length > 200
-                              ? fullComment.slice(0, 200) + "..."
-                              : fullComment}
 
-                            {fullComment.length > 200 && (
-                              <button
-                                className="text-blue-500 ml-2"
-                                onClick={() => openModal(fullComment)}
-                              >
-                                Read More
-                              </button>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            {comment.post_url ? (
-                              <a
-                                href={comment.post_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className=""
-                              >
-                                {comment.post_url.length > 29
-                                  ? comment.post_url.substring(0, 29) + "..."
-                                  : comment.post_url}
-                              </a>
-                            ) : (
-                              "N/A"
-                            )}
-                          </td>
-                          <td className="px-4 py-3">{comment.comment_type || "N/A"}</td>
-                          <td className="px-4 py-3">
-                            {new Date(comment.created_at).toLocaleDateString("en-GB") || "N/A"}
+                {
+                  load ?
+                    <tbody>
+                      <tr>
+                        <td colSpan={4} className="p-4">
+                          <Loader />
+                        </td>
+                      </tr>
+                    </tbody>
+                    :
+                    <tbody>
+                      {commentsData.length > 0 ? (
+                        commentsData.map((comment, index) => {
+                          const fullComment = comment?.comment || "N/A";
+                          return (
+                            <tr key={index}>
+                              <td className="px-4 py-3">
+                                {fullComment.length > 200
+                                  ? fullComment.slice(0, 200) + "..."
+                                  : fullComment}
+
+                                {fullComment.length > 200 && (
+                                  <button
+                                    className="text-blue-500 ml-2"
+                                    onClick={() => openModal(fullComment)}
+                                  >
+                                    Read More
+                                  </button>
+                                )}
+                              </td>
+                              <td className="px-4 py-3">
+                                {comment.post_url ? (
+                                  <a
+                                    href={comment.post_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className=""
+                                  >
+                                    {comment.post_url.length > 29
+                                      ? comment.post_url.substring(0, 29) + "..."
+                                      : comment.post_url}
+                                  </a>
+                                ) : (
+                                  "N/A"
+                                )}
+                              </td>
+                              <td className="px-4 py-3">{comment.comment_type || "N/A"}</td>
+                              <td className="px-4 py-3">
+                                {new Date(comment.created_at).toLocaleDateString("en-GB") || "N/A"}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan={4} className="px-4 py-3 text-center whitespace-nowrap">
+                            No comments found
                           </td>
                         </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan={4} className="px-4 py-3 text-center whitespace-nowrap">
-                        No comments found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+                      )}
+                    </tbody>
+                }
               </table>
             </div>
           </div>
@@ -155,10 +179,12 @@ const Comments = () => {
               <h4 className="popup-title font-semibold text-xl leading-10">Entire Comment</h4>
               <span
                 onClick={closeModal}
+                role="button"
+                aria-label="Close modal"
                 className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer">
                 <img src={getImage('close')} alt="img" className="w-3 h-3 rounded-full m-2.5" /></span>
             </div>
-            <p className="text-gray-700 mt-2.5">{modalData}</p>
+            <p className="text-gray-700 mt-2.5">{modalData.comment}</p>
           </div>
         </div>
       )}

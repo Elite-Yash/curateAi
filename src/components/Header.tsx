@@ -1,3 +1,8 @@
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { getImage } from "../common/utils/logoUtils";
+
 /**
  * @component
  * @description
@@ -19,23 +24,19 @@
  * @styles
  * - Utilizes Tailwind CSS classes for layout and styling, with responsive adjustments for smaller screens.
  */
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import { getImage } from "../common/utils/logoUtils";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [login, setLogin] = useState<string | null>(null);
     const navigate = useNavigate();
-    // Fetch the token from Chrome storage on component mount
+    const dropdownRef = useRef<HTMLLIElement | null>(null);
+
     useEffect(() => {
         chrome.storage.local.get(["token"], (result) => {
             if (result.token) {
                 setLogin(result.token);
             } else {
                 setLogin(null);
-                // console.log("No token found in Chrome storage.");
             }
         });
     }, [login]);
@@ -44,31 +45,34 @@ const Header = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
-    // Send a message to background.js to handle logout
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: any) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const LogOut = () => {
         chrome.runtime.sendMessage({ type: "LogOut" }, () => { });
-        setDropdownOpen(!dropdownOpen);
-        navigate("/signin")
-        setLogin(null)
+        setDropdownOpen(false);
+        navigate("/signin");
+        setLogin(null);
     };
+
     return (
         <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-[280px] pr-[30px]">
-            <div className="flex flex-col justify-center  bg-white relative g-box mt-5 px-8 py-3">
+            <div className="flex flex-col justify-center bg-white relative g-box mt-5 px-8 py-3">
                 <div className="flex justify-between items-center">
-
                     <div className="header-r-menu flex items-center gap-8 ms-auto">
                         <ul className="flex gap-5 items-center">
-                            <li>
-                                <a href="#" className="color00517C flex items-center font-light gap-1 overlay-before relative">
-                                    {/* <i className="fa-solid fa-envelope"></i> */}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="color00517C flex items-center font-light gap-1 overlay-before relative">
-                                    {/* <i className="fa-solid fa-bell"></i> */}
-                                </a>
-                            </li>
-                            <li>
+                            <li ref={dropdownRef}>
                                 <a
                                     href="#"
                                     className="color00517C flex items-center font-light gap-2 overlay-before relative"
@@ -77,8 +81,7 @@ const Header = () => {
                                         toggleDropdown();
                                     }}
                                 >
-                                    {/* <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" /> */}
-                                    <span className="icon w-8 h-8 rounded-full overflow-hidden border border-2 border-solid	border-white outline-1 outline-green-950	outline">
+                                    <span className="icon w-8 h-8 rounded-full overflow-hidden border-2 border-solid border-white outline-1 outline-green-950 outline">
                                         <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
                                     </span>
                                     <span className="text-sm dec-color font-normal ">Emma Kwan</span>
@@ -86,8 +89,12 @@ const Header = () => {
                                 </a>
                                 {dropdownOpen && (
                                     <div className="absolute right-3.5 mt-2 bg-white g-box w-40 drop-menu">
+                                        <button onClick={() => { navigate("/setting"); setDropdownOpen(false); }} className="w-full text-left px-3 py-3 text-sm transition rounded-xl flex items-center gap-2">
+                                            <i className="fa-solid fa-gear color-one transition"></i>
+                                            Setting
+                                        </button>
                                         <button
-                                            className="w-full text-left px-3 py-3 text-sm transition rounded-xl	 flex items-center gap-2"
+                                            className="w-full text-left px-3 py-3 text-sm transition rounded-xl flex items-center gap-2"
                                             onClick={LogOut}
                                         >
                                             <i className="fa-solid fa-power-off color-one transition"></i>

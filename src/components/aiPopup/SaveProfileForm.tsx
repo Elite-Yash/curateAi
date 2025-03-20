@@ -85,9 +85,8 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                     Authorization: `Bearer ${authToken}`,
                     "Content-Type": "application/json",
                 },
-            });
-
-            if (result?.status === 200 && result?.message === "Profile saved successfully") {
+            }); 
+            if (result?.status === 201 && result?.message === "Profile saved successfully") {
                 setSuccess(true);
                 setTimeout(() => {
                     setSuccess(false);

@@ -8,6 +8,8 @@ import SignIn from "../components/SignIn/SignIn";
 import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import { useEffect, useState } from "react";
+import UserProfile from "../components/UserProfile/UserProfile";
+import PricingPage from "../components/PricingPage/PricingPage";
 
 
 /**
@@ -99,6 +101,22 @@ const Router = () => {
         element={
           <Section>
             <Home />
+          </Section>
+        }
+      />
+      <Route
+        path="/setting"
+        element={
+          <Section>
+            <UserProfile />
+          </Section>
+        }
+      />
+      <Route
+        path="/pricing"
+        element={
+          <Section>
+            <PricingPage />
           </Section>
         }
       />

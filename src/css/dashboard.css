@@ -239,8 +239,10 @@ body,
 }
 
 
+
 .dashboard-box article p span,
-.dashboard-box article p a {
+.dashboard-box article p a,
+.price-box li {
     --max-size: 16;
     --min-size: 15;
     font-size: var(--responsive) !important;
@@ -330,4 +332,37 @@ body,
 
 .form-section textarea {
     height: 150px !important;
+}
+
+.loader:before {
+    content: "";
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    top: -8px;
+    left: -8px;
+    transform: translate(-50%, -50%);
+    background: url(/src/images/loader.svg);
+    border-radius: 100%;
+    animation: rotation 5s infinite linear;
+    background-size: cover;
+    z-index: 0;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+.price-box.g-box {
+    border: 2px solid #e6e6e6;
+}
+
+.price-box.g-box.active {
+    border: 2px solid #ff5e37;
 }

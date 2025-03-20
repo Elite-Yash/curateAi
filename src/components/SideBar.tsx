@@ -1,12 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { getImage } from "../common/utils/logoUtils";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { selectUser } from "../redux/selector/usersSelector";
-import { useSelector } from "react-redux";
 
 const SideBar = () => {
-    const loginUser = useSelector(selectUser);
     const location = useLocation();
+    const manifestData = chrome.runtime.getManifest();
 
     return (
         <div className="backgroundgradient6841ea flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform background-one rounded-[11px] -translate-y-1/2">
@@ -67,7 +65,7 @@ const SideBar = () => {
                     <li>
                         <a href="#" className="white-color w-full text-center text-base flex flex-col items-center justify-center">
                             <span className="font-normal transition">Version</span>
-                            <span className="font-normal transition">1.1.7</span>
+                            <span className="font-normal transition">{manifestData.version}</span>
                         </a>
                     </li>
                 </ul>

@@ -1,6 +1,4 @@
 import "../src/css/popup.css";
-import Header from "./components/Header";
-import SideBar from "./components/SideBar";
 import CustomIframe from "./CustomIframe";
 import dashboardStyles from "./css/dashboard.css?inline";
 import Router from "./routes/Router";

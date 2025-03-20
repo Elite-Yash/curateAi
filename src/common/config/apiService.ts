@@ -8,6 +8,8 @@ export interface ApiResponse<T = any> {
     success?: boolean;
     message?: string;
     data?: T;
+    status?: number;
+    statusCode?: number;
 }
 
 /**
@@ -37,7 +39,7 @@ export const Endpoints = {
     changePassword: "auth/reset-password",
 } as const;
 
-export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Promise<ApiResponse<T>> => {
+export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Promise<ApiResponse<T> & { status: number, statusCode: number }> => {
     try {
         const { method = "GET", data, headers = {} } = options;
 
@@ -60,9 +62,14 @@ export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Prom
             throw new Error(result.message || "Something went wrong");
         }
 
-        return result;
+        return {
+            ...result,
+            status: response.status,
+            statusCode: result.statusCode ?? response.status // Use response.status if statusCode is not in API response
+        };
     } catch (error) {
         console.error("API Error:", error);
         throw error;
     }
 };
+

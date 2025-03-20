@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
 import { API_URL } from "../../common/config/constMessage";
 import { getImage } from "../../common/utils/logoUtils";
+import Loader from "../Loader/Loader";
 
 /**
  * @component
@@ -24,8 +25,24 @@ import { getImage } from "../../common/utils/logoUtils";
  * @styles
  * - Utilizes Tailwind CSS classes for layout and styling, with responsive adjustments for smaller screens.
  */
+
+interface Profile {
+  profile?: string;
+  name?: string;
+  email?: string;
+  position?: string;
+  organization?: string;
+  url?: string;
+  created_at?: string;
+}
+
+interface ApiResponse {
+  profiles: Profile[];
+}
+
 const SaveProfile = () => {
-  const [profilesData, setProfilesData] = useState([]);
+  const [profilesData, setProfilesData] = useState<Profile[]>([]);
+  const [load, setLoad] = useState(true)
 
   const fetchProfiles = useCallback(async () => {
     try {
@@ -49,7 +66,7 @@ const SaveProfile = () => {
 
       const requestUrl = `${API_URL}/${Endpoints.getProfiles}`;
 
-      const result = await fetchAPI(requestUrl, {
+      const result = await fetchAPI<ApiResponse>(requestUrl, {
         method: Method.get,
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -58,13 +75,15 @@ const SaveProfile = () => {
       });
 
       // console.log("result", result)
-      if (result?.status === 200) {
+      if (result?.status === 200 && result.data?.profiles) {
         setProfilesData(result.data.profiles || []);
       } else {
         throw new Error(result.message || "Failed to fetch profiles.");
       }
     } catch (err) {
       console.error("An unexpected error occurred.");
+    } finally {
+      setLoad(false)
     }
   }, []);
 
@@ -74,7 +93,7 @@ const SaveProfile = () => {
 
   return (
     <>
-      <div className="c-padding-r pt-24 h-screen relative w-[84%] left-[280px]">
+      <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
         <div className="flex justify-between gap-5 w-full">
           <div className="rounded-2xl w-full">
             <div className="p-5 bg-white g-box g-box-table">
@@ -99,57 +118,68 @@ const SaveProfile = () => {
                       <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Created At</span></th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {profilesData.length > 0 ? (
-                      profilesData.map((profile, index) => {
-                        return (
-                          <tr key={index}>
-                            <td className="px-4 py-3">
-                              <span className="flex items-center gap-2">
-                                {profile.profile?.startsWith("data:image") ? (
-                                  <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
-                                    <img src={getImage('fLogo')} alt="img" className="" />
+                  {
+                    load ?
+                      <tbody>
+                        <tr>
+                          <td colSpan={6} className="p-4">
+                            <Loader />
+                          </td>
+                        </tr>
+                      </tbody>
+                      :
+                      <tbody>
+                        {profilesData.length > 0 ? (
+                          profilesData.map((profile, index) => {
+                            return (
+                              <tr key={index}>
+                                <td className="px-4 py-3">
+                                  <span className="flex items-center gap-2">
+                                    {profile.profile?.startsWith("data:image") ? (
+                                      <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
+                                        <img src={getImage('fLogo')} alt="img" className="" />
+                                      </span>
+                                    ) : (
+                                      <span className="rounded-full overflow-hidden w-12 h-12">
+                                        <img className="object-cover h-full w-full" src={`${profile.profile}`} />
+                                      </span>
+                                    )}
+                                    <span>{profile.name || "N/A"}</span>
                                   </span>
-                                ) : (
-                                  <span className="rounded-full overflow-hidden w-12 h-12">
-                                    <img className="object-cover h-full w-full" src={`${profile.profile}`} />
-                                  </span>
-                                )}
-                                <span>{profile.name || "N/A"}</span>
-                              </span>
-                            </td>
+                                </td>
 
-                            <td className="px-4 py-3">{profile.email || "N/A"}</td>
-                            <td className="px-4 py-3">{profile.position || "N/A"}</td>
-                            <td className="px-4 py-3">{profile.organization || "N/A"}</td>
-                            <td className="px-4 py-3">
-                              {profile.url ? (
-                                <a
-                                  href={profile.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className=""
-                                >
-                                  {profile.url.length > 35
-                                    ? profile.url.substring(0, 35) + "..."
-                                    : profile.url}
-                                </a>
-                              ) : (
-                                "N/A"
-                              )}
+                                <td className="px-4 py-3">{profile.email || "N/A"}</td>
+                                <td className="px-4 py-3">{profile.position || "N/A"}</td>
+                                <td className="px-4 py-3">{profile.organization || "N/A"}</td>
+                                <td className="px-4 py-3">
+                                  {profile.url ? (
+                                    <a
+                                      href={profile.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className=""
+                                    >
+                                      {profile.url.length > 35
+                                        ? profile.url.substring(0, 35) + "..."
+                                        : profile.url}
+                                    </a>
+                                  ) : (
+                                    "N/A"
+                                  )}
+                                </td>
+                                <td className="px-4 py-3">{profile.created_at ? new Date(profile.created_at).toLocaleDateString("en-GB") : "N/A"}</td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan={6} className="px-4 py-3 text-center">
+                              No Profiles found
                             </td>
-                            <td className="px-4 py-3">{new Date(profile.created_at).toLocaleDateString('en-GB') || "N/A"}</td>
                           </tr>
-                        );
-                      })
-                    ) : (
-                      <tr>
-                        <td colSpan={"6"} className="px-4 py-3 text-center">
-                          No Profiles found
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
+                        )}
+                      </tbody>
+                  }
                 </table>
               </div>
             </div>
