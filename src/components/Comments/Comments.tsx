@@ -136,7 +136,7 @@ const Comments = () => {
                                     href={comment.post_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className=""
+                                    className="hover:text-[#ff5c35]"
                                   >
                                     {comment.post_url.length > 29
                                       ? comment.post_url.substring(0, 29) + "..."

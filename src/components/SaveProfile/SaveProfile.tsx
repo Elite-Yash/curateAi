@@ -157,7 +157,7 @@ const SaveProfile = () => {
                                       href={profile.url}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className=""
+                                      className="hover:text-[#ff5c35]"
                                     >
                                       {profile.url.length > 35
                                         ? profile.url.substring(0, 35) + "..."

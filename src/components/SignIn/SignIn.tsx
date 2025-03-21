@@ -79,10 +79,10 @@ const SignIn = () => {
                 setFormData({ email: "", password: "" });
                 showMessage("Login successful!", "success");
                 setTimeout(() => {
+                    setLoad(true)
                     navigate("/home")
                     window.location.reload();
-                    // window.close() 
-                }, 2500);
+                }, 2000);
             } else {
                 showMessage(response.message || "Login failed. Try again.", "error");
             }
