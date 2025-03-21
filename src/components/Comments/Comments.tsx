@@ -124,7 +124,7 @@ const Comments = () => {
                                 {fullComment.length > 200 && (
                                   <button
                                     className="text-blue-500 ml-2"
-                                    onClick={() => openModal(fullComment)}
+                                    onClick={() => openModal(comment)}
                                   >
                                     Read More
                                   </button>
@@ -171,7 +171,7 @@ const Comments = () => {
       {/* Modal Popup */}
       {modalData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[500px] max-w-full shadow-lg">
+          <div className="bg-white rounded-lg p-6 w-auto h-auto  max-w-full shadow-lg my-0 mx-[30%]">
             <div className="relative header-top p-9 py-2 flex justify-between item-center">
               <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
                 <img src={getImage('fLogo')} alt="img" className="" />
