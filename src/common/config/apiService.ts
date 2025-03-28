@@ -10,6 +10,7 @@ export interface ApiResponse<T = any> {
     data?: T;
     status?: number;
     statusCode?: number;
+    subscriptions?: T| any;
 }
 
 /**
@@ -37,6 +38,10 @@ export const Endpoints = {
     getProfiles: "profiles?page=1&limit=0",
     forgotPassword: "auth/forgot-password",
     changePassword: "auth/reset-password",
+    getAllPlans: "plans",
+    createActivePlan: "user-subscription/create-subscription",
+    upgradeActivePlan: "user-subscription/upgrade-subscription",
+    checkActivePlan: "user-subscription/check-subscription",
 } as const;
 
 export const fetchAPI = async <T>(url: string, options: FetchOptions = {}): Promise<ApiResponse<T> & { status: number, statusCode: number }> => {

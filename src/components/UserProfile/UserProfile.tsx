@@ -2,16 +2,50 @@ import { useEffect, useState } from "react";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../common/config/constMessage";
+import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
 
 const UserProfile = () => {
     const navigate = useNavigate();
-    const [load, setLoad] = useState(true);
+    const [load, setLoad] = useState<any>(true);
+    const [activePlan, setActiveplan] = useState(false);
+
+    const getAuthToken = (): Promise<string | null> => {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
+                if (!response || !response.success || !response.token) {
+                    reject("Failed to retrieve auth token.");
+                } else {
+                    resolve(response.token);
+                }
+            });
+        });
+    };
+    const checkActivePlan = async () => {
+        try {
+            const authToken = await getAuthToken();
+            const url = `${API_URL}/${Endpoints.checkActivePlan}`;
+            const result = await fetchAPI(
+                url,
+                {
+                    method: Method.get,
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+            if (result.status === 200 && result.message === "User does not have an active subscription.") {
+                setActiveplan(true)
+            }
+        } catch (error) {
+            console.error("Error fetching plans:", error);
+        } finally {
+            setLoad(false);
+        }
+    };
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setLoad(false);
-        }, 500);
-        return () => clearTimeout(timeout);
+        checkActivePlan();
     }, []);
 
     return (
@@ -94,10 +128,23 @@ const UserProfile = () => {
                                         <div className="d-table h-connect-table !w-full">
                                             <div className="g-box-title">
                                                 <h4 className="font-medium mb-3">Manage your billing here.</h4>
-                                                <div className="flex space-x-4 mt-4">
-                                                    <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform">Manage Subscription</button>
-                                                    <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Upgrade / Downgrade</button>
-                                                    <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform">Cancel Subscription</button>
+                                                <div className="flex space-x-4 mt-4 items-center">
+
+                                                    {activePlan ?
+                                                        <>
+                                                            <span className="text-base">
+                                                                Join Now and Explore Everything Evarobo Offers
+                                                            </span>
+                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Subscribe</button>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform">Manage Subscription</button>
+                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Upgrade / Downgrade</button>
+                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform">Cancel Subscription</button>
+                                                        </>
+                                                    }
+
                                                 </div>
                                             </div>
                                         </div>
