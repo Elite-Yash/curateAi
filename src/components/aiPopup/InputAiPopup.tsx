@@ -24,6 +24,7 @@ interface ModalProps {
     articleInfo?: ArticleInfo | null;
     lastMessages: LinkedInMessage[];
     post_url?: string;
+    activePlan?: boolean;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -35,7 +36,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
     popupTriggeredFrom,
     articleInfo,
     lastMessages,
-    post_url
+    post_url,
+    activePlan
 }) => {
     const [language, setLanguage] = useState(LANGUAGES[0]);
     const [tone, setTone] = useState(TONES[0]);
@@ -159,7 +161,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
     return (
         <div className={`popup-overlay ${isOpen ? "open" : ""} fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
-            <div className="popup-container bg-white rounded-lg shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl overflow-hidden">
+            <div className={`popup-container bg-white rounded-lg shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl overflow-hidden ${!activePlan ? "!w-[42rem]" : ""}`}>
                 <div className="relative header-top p-9 py-10 flex justify-between item-center">
                     <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
                         <img src={getImage('fLogo')} alt="img" className="" />
@@ -172,117 +174,125 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     ><img src={getImage('close')} alt="img" className="w-full h-full rounded-full" /></span>
                 </div>
                 {!isAuth && <SignIn />}
-                {isAuth && <React.Fragment>
-                    <div className="p-9 flex justify-between item-center flex-col gap-5">
+                {isAuth && activePlan ?
+                    <React.Fragment>
+                        <div className="p-9 flex justify-between item-center flex-col gap-5">
+                            <div className="flex justify-between item-center gap-5">
+                                <div className="w-full input-group">
+                                    <span className="relative ">
+                                        {/* <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" /> */}
+                                        {/* <label className="popup-label block text-gray-700 font-medium text-sm">Motive:</label> */}
+                                        <select
+                                            value={motives}
+                                            onChange={(e) => setMotive(e.target.value)}
+                                            className="popup-select  w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
+                                            disabled={loading}
+                                        >
+                                            {(popupTriggeredFrom === "create-post" ? POSTING_MOTIVES : COMMENT_MOTIVES).map(
+                                                (motive, index) => (
+                                                    <option key={index} value={motive}>
+                                                        {motive}
+                                                    </option>
+                                                )
+                                            )}
+                                        </select>
+                                    </span>
 
-                        <div className="flex justify-between item-center gap-5">
-                            <div className="w-full input-group">
-
-
-                                <span className="relative ">
-                                    {/* <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" /> */}
-                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Motive:</label> */}
-                                    <select
-                                        value={motives}
-                                        onChange={(e) => setMotive(e.target.value)}
-                                        className="popup-select  w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
-                                        disabled={loading}
-                                    >
-                                        {(popupTriggeredFrom === "create-post" ? POSTING_MOTIVES : COMMENT_MOTIVES).map(
-                                            (motive, index) => (
-                                                <option key={index} value={motive}>
-                                                    {motive}
+                                </div>
+                                <div className="w-full input-group ">
+                                    <span className="relative ">
+                                        <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
+                                        {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
+                                        <select
+                                            value={language}
+                                            onChange={(e) => setLanguage(e.target.value)}
+                                            className="popup-select data w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
+                                            disabled={loading}
+                                        >
+                                            {LANGUAGES.map((lang, index) => (
+                                                <option key={index} value={lang}>
+                                                    {lang}
                                                 </option>
-                                            )
-                                        )}
-                                    </select>
-                                </span>
+                                            ))}
+                                        </select>
+                                    </span>
+
+
+                                </div>
+                                <div className="w-full input-group">
+
+                                    <span className="relative ">
+                                        {/* <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" /> */}
+                                        {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
+                                        <select
+                                            value={tone}
+                                            onChange={(e) => setTone(e.target.value)}
+                                            className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
+                                            disabled={loading}
+                                        >
+                                            {TONES.map((toneOption, index) => (
+                                                <option key={index} value={toneOption}>
+                                                    {toneOption}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </span>
+                                </div>
+
 
                             </div>
-                            <div className="w-full input-group ">
-                                <span className="relative ">
-                                    <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" />
-                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
-                                    <select
-                                        value={language}
-                                        onChange={(e) => setLanguage(e.target.value)}
-                                        className="popup-select data w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
+
+                            <div className="w-full textarea-group relative">
+                                <span>
+                                    <span onClick={handleCopy} className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
+                                        {copied ? "Copied!" : "Copy"}
+                                        <img src={getImage('copyIcon')} alt="img" className="w-4" />
+                                    </span>
+                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Your Comment:</label> */}
+                                    <textarea
+                                        placeholder="Tell me how you want to modify"
+                                        value={text}
+                                        onChange={(e) => setText(e.target.value)}
+                                        className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                         disabled={loading}
-                                    >
-                                        {LANGUAGES.map((lang, index) => (
-                                            <option key={index} value={lang}>
-                                                {lang}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </span>
-
-
-                            </div>
-                            <div className="w-full input-group">
-
-                                <span className="relative ">
-                                    {/* <img src={getImage('translate')} alt="img" className="w-4 absolute left-3.5 top-1.5" /> */}
-                                    {/* <label className="popup-label block text-gray-700 font-medium text-sm">Language:</label> */}
-                                    <select
-                                        value={tone}
-                                        onChange={(e) => setTone(e.target.value)}
-                                        className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]"
-                                        disabled={loading}
-                                    >
-                                        {TONES.map((toneOption, index) => (
-                                            <option key={index} value={toneOption}>
-                                                {toneOption}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    ></textarea>
                                 </span>
                             </div>
 
+                            <div className="popup-buttons justify-end space-x-2 text-right relative flex">
 
+
+                                {isTextGenerated && (
+                                    <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
+                                        Insert
+                                    </button>
+                                )}
+                                <button
+                                    // className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
+                                    className={`flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 ${isTextGenerated ? "bg-green" : "bg-[#ff5c35]"}  text-white rounded-md ${isTextGenerated ? "hover:bg-[#008234]" : "hover:bg-[#c64e30]"}  disabled:bg-gray-40`}
+                                    onClick={handleSubmit}
+                                    disabled={loading}
+                                ><img src={getImage('sendIcon')} alt="img" className="w-4" />
+                                    {loading ? (isTextGenerated ? "Regenerating..." : "Generating...") : isTextGenerated ? "Regenerate" : "Generate"}
+                                </button>
+
+                                <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
+                                    {error && <div className="popup-error text-red-500 mt-0">{error}</div>}
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="w-full textarea-group relative">
-                            <span>
-                                <span onClick={handleCopy} className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
-                                    {copied ? "Copied!" : "Copy"}
-                                    <img src={getImage('copyIcon')} alt="img" className="w-4" />
-                                </span>
-                                {/* <label className="popup-label block text-gray-700 font-medium text-sm">Your Comment:</label> */}
-                                <textarea
-                                    placeholder="Tell me how you want to modify"
-                                    value={text}
-                                    onChange={(e) => setText(e.target.value)}
-                                    className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
-                                    disabled={loading}
-                                ></textarea>
+                    </React.Fragment>
+                    :
+                    <>
+                        <div className="p-9 flex justify-between item-center flex-col gap-5">
+                            <span className="text-center text-5xl font-bold text-red">!! Alert !!</span>
+                            <span className="text-justify">
+                                Hey User, you don’t have an active plan on Evarobo yet.Subscribe now and start enjoying all the amazing features!
                             </span>
                         </div>
-
-                        <div className="popup-buttons justify-end space-x-2 text-right relative flex">
-
-
-                            {isTextGenerated && (
-                                <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
-                                    Insert
-                                </button>
-                            )}
-                            <button
-                                // className="flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-400"
-                                className={`flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 ${isTextGenerated ? "bg-green" : "bg-[#ff5c35]"}  text-white rounded-md ${isTextGenerated ? "hover:bg-[#008234]" : "hover:bg-[#c64e30]"}  disabled:bg-gray-40`}
-                                onClick={handleSubmit}
-                                disabled={loading}
-                            ><img src={getImage('sendIcon')} alt="img" className="w-4" />
-                                {loading ? (isTextGenerated ? "Regenerating..." : "Generating...") : isTextGenerated ? "Regenerate" : "Generate"}
-                            </button>
-
-                            <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
-                                {error && <div className="popup-error text-red-500 mt-0">{error}</div>}
-                            </div>
-                        </div>
-                    </div>
-
-                </React.Fragment>}
+                    </>
+                }
             </div>
         </div>
     );

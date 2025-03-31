@@ -10,6 +10,7 @@ const LinkedInProfile = () => {
     const [position, setPosition] = useState("");
     const [company, setCompany] = useState("");
     const [profileImg, setProfileImg] = useState("")
+    const [activePlan, setActiveplan] = useState(false);
 
     const scrapeProfileData = () => {
         const profileNameElement = document.querySelector("div.ph5 div.mt2.relative h1");
@@ -58,6 +59,11 @@ const LinkedInProfile = () => {
             };
         }
     }, []);
+    useEffect(() => {
+        chrome.runtime.sendMessage({ type: "getActivePlan" }, (response) => {
+            setActiveplan(response.activePlan);
+        });
+    }, []);
 
     if (openAiPopup) {
         return (
@@ -75,7 +81,7 @@ const LinkedInProfile = () => {
                     zIndex: 21213123,
                 }}
             >
-                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} />
+                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} activePlan={activePlan} />
             </div>
         );
     }

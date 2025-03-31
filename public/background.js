@@ -89,4 +89,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Return true to indicate that the response will be sent asynchronously
         return true;
     }
+
+    if (request.type === "reload") {
+        sendResponse({ success: true })
+        return true;
+    }
+
+    if (request.type === "saveActivePlan") {
+        if (request.data) {
+            if (request.data.message === "User does not have an active subscription.") {
+                chrome.storage.local.set({ activePlan: false }, () => { });
+            }
+            else if (request.data.message === "User has an active subscription.") {
+                chrome.storage.local.set({ activePlan: true }, () => { });
+            }
+        }
+
+        return true; // Keep async response channel open
+    }
+
+    if (request.type === "getActivePlan") {
+        chrome.storage.local.get(["activePlan"], (result) => {
+            if (result) {
+                sendResponse({ activePlan: result.activePlan });
+            }
+        });
+
+        return true; // Keep async response channel open
+    }
+
 });

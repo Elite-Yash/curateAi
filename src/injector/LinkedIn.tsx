@@ -31,6 +31,7 @@ const LinkedIn = () => {
     const [lastMessages, setLastMessages] = useState<LinkedInMessage[]>([]);
     const [selectedMessageBoxContainer, setSelectedMessageBoxContainer] = useState<HTMLElement | null>(null);
     const [post_url, setPost_url] = useState<string | "">("")
+    const [activePlan, setActiveplan] = useState();
 
     const getPostText = (commentBoxEditor: HTMLElement): string => {
         let parentElement = commentBoxEditor.parentElement;
@@ -667,6 +668,11 @@ const LinkedIn = () => {
             observer.disconnect();
         };
     }, []);
+    useEffect(() => {
+        chrome.runtime.sendMessage({ type: "getActivePlan" }, (response) => {
+            setActiveplan(response.activePlan)
+        });
+    }, []);
 
     if (openAiPopup) {
         return (
@@ -695,6 +701,7 @@ const LinkedIn = () => {
                     articleInfo={articleInfo}
                     lastMessages={lastMessages}
                     post_url={post_url}
+                    activePlan={activePlan}
                 />
             </div>
         );

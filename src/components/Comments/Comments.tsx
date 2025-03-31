@@ -171,7 +171,7 @@ const Comments = () => {
       {/* Modal Popup */}
       {modalData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-auto h-auto  max-w-full shadow-lg my-0 mx-[30%]">
+          <div className="bg-white rounded-lg p-6 w-auto h-auto  max-w-full shadow-lg my-0 mx-[15%]">
             <div className="relative header-top p-9 py-2 flex justify-between item-center">
               <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
                 <img src={getImage('fLogo')} alt="img" className="" />
@@ -184,7 +184,8 @@ const Comments = () => {
                 className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer">
                 <img src={getImage('close')} alt="img" className="w-3 h-3 rounded-full m-2.5" /></span>
             </div>
-            <p className="text-gray-700 mt-2.5">{modalData.comment}</p>
+            {/* <p className="text-gray-700 mt-2.5">{modalData.comment}</p> */}
+            <p className="text-gray-700 mt-2.5" dangerouslySetInnerHTML={{ __html: modalData.comment.replace(/\n/g, '<br />') }} />
           </div>
         </div>
       )}
