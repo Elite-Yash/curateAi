@@ -56,7 +56,6 @@ const PricingPage = () => {
             console.error("Error fetching plans:", error);
         } finally {
             setLoad(false);
-            chrome.runtime.sendMessage({ type: "saveActivePlan", data: result }, () => { });
         }
     };
 

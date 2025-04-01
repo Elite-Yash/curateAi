@@ -3,6 +3,8 @@ import InputAiPopup from "../components/aiPopup/InputAiPopup";
 import { PostData, ArticleInfo } from "../constants/types";
 import { LINKEDIN_CLASS_NAMES, LINKEDIN_ID_NAMES } from "../constants/linkedinSelectors";
 import { sleep, removeEmojis, trimAllWhiteSpaces, isLinkedInArticlePage } from "../helpers/commonHelper";
+import { API_URL } from "../common/config/constMessage";
+import { Endpoints, fetchAPI, Method } from "../common/config/apiService";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -31,7 +33,7 @@ const LinkedIn = () => {
     const [lastMessages, setLastMessages] = useState<LinkedInMessage[]>([]);
     const [selectedMessageBoxContainer, setSelectedMessageBoxContainer] = useState<HTMLElement | null>(null);
     const [post_url, setPost_url] = useState<string | "">("")
-    const [activePlan, setActiveplan] = useState();
+    const [activePlan, setActiveplan] = useState(false);
 
     const getPostText = (commentBoxEditor: HTMLElement): string => {
         let parentElement = commentBoxEditor.parentElement;
@@ -669,9 +671,32 @@ const LinkedIn = () => {
         };
     }, []);
     useEffect(() => {
-        chrome.runtime.sendMessage({ type: "getActivePlan" }, (response) => {
-            setActiveplan(response.activePlan)
-        });
+        const checkActivePlan = async () => {
+            chrome.runtime.sendMessage({ type: "getCookies" }, async (response) => {
+                if (!response || !response.success || !response.token) {
+                    console.error("Failed to retrieve auth token.");
+                } else {
+                    try {
+                        const authToken = response.token;
+                        const url = `${API_URL}/${Endpoints.checkActivePlan}`;
+                        const result = await fetchAPI(url, {
+                            method: Method.get, headers: {
+                                Authorization: `Bearer ${authToken}`,
+                                "Content-Type": "application/json",
+                            },
+                        });
+                        if (result.status === 200 && result.success === false) {
+                            setActiveplan(false);
+                        } else {
+                            setActiveplan(true)
+                        }
+                    } catch (error) {
+                        console.error("Error fetching plans:", error);
+                    }
+                }
+            });
+        };
+        checkActivePlan();
     }, []);
 
     if (openAiPopup) {

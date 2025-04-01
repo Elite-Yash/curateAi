@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import SaveProfileForm from "../components/aiPopup/SaveProfileForm";
 import { getImage } from "../common/utils/logoUtils";
 import { createCustomButton } from "../common/utils/createCustomButton";
+import { API_URL } from "../common/config/constMessage";
+import { Endpoints, fetchAPI, Method } from "../common/config/apiService";
 
 const LinkedInProfile = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
@@ -44,25 +46,61 @@ const LinkedInProfile = () => {
     };
 
     useEffect(() => {
-        const spans = document.querySelector("div.ph5 div.mt2.relative")?.querySelectorAll("span");
+        // Function to append the custom button
+        const appendCustomButton = () => {
+            const spans = document.querySelector("div.ph5 div.mt2.relative")?.querySelectorAll("span");
 
-        if (spans && spans.length > 0) {
-            const customSpan = createCustomButton('Save', getImage("saveProfileIcon"), 'Save Profile');
-            spans[0].closest("div")?.appendChild(customSpan);
+            if (spans && spans.length > 0) {
+                const customSpan = createCustomButton('Save', getImage("saveProfileIcon"), 'Save Profile');
+                spans[0].closest("div")?.appendChild(customSpan);
 
-            // Add event listener to the button
-            customSpan.addEventListener("click", handleClick);
+                // Add event listener to the button
+                customSpan.addEventListener("click", handleClick);
 
-            // Cleanup function to remove event listener
-            return () => {
-                customSpan.removeEventListener("click", handleClick);
-            };
+                // Cleanup function to remove event listener
+                return () => {
+                    customSpan.removeEventListener("click", handleClick);
+                };
+            }
         }
+        const checkActivePlan = async () => {
+            chrome.runtime.sendMessage({ type: "getCookies" }, async (response) => {
+                if (!response || !response.success || !response.token) {
+                    console.error("Failed to retrieve auth token.");
+                } else {
+                    try {
+                        const authToken = response.token;
+                        const url = `${API_URL}/${Endpoints.checkActivePlan}`;
+                        const result = await fetchAPI(
+                            url,
+                            {
+                                method: Method.get,
+                                headers: {
+                                    Authorization: `Bearer ${authToken}`,
+                                    "Content-Type": "application/json",
+                                },
+                            });
+                        console.log("result", result)
+                        if (result.status === 200 && result.success === false) {
+                            setActiveplan(false);
+                        } else {
+                            setActiveplan(true)
+                        }
+                    } catch (error) {
+                        console.error("Error fetching plans:", error);
+                    }
+                    finally {
+                        appendCustomButton();
+                    }
+                }
+            });
+        };
+        checkActivePlan();
     }, []);
+
+
     useEffect(() => {
-        chrome.runtime.sendMessage({ type: "getActivePlan" }, (response) => {
-            setActiveplan(response.activePlan);
-        });
+
     }, []);
 
     if (openAiPopup) {
