@@ -91,6 +91,36 @@ const SaveProfile = () => {
     fetchProfiles();
   }, [fetchProfiles]);
 
+  const exportToCSV = () => {
+    if (!profilesData.length) {
+      alert("No data available to export.");
+      return;
+    }
+
+    const headers = ["Name", "Email", "Position", "Organization", "URL", "Created At"];
+    const csvRows = profilesData.map((profile) => [
+      profile.name || "N/A",
+      profile.email || "N/A",
+      profile.position || "N/A",
+      profile.organization || "N/A",
+      profile.url || "N/A",
+      profile.created_at ? new Date(profile.created_at).toLocaleDateString("en-GB") : "N/A",
+    ]);
+
+    // Convert to CSV string
+    const csvString = [headers, ...csvRows].map((row) => row.join(",")).join("\n");
+
+    // Create Blob and download
+    const blob = new Blob([csvString], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "profiles.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+
   return (
     <>
       <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
@@ -98,10 +128,21 @@ const SaveProfile = () => {
           <div className="rounded-2xl w-full">
             <div className="p-5 bg-white g-box g-box-table">
               <div className="d-table h-connect-table !w-full">
-                <div className="g-box-title">
+                {/* <div className="g-box-title">
                   <h4 className="font-medium mb-3">SaveProfile</h4>
+                </div> */}
+                <div className="flex justify-between">
+                  <div className="g-box-title mt-3">
+                    <h4 className="font-medium mb-3">Pricing</h4>
+                  </div>
+                  <div className="flex space-x-4 items-center">
+                    <button onClick={exportToCSV} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
+                      <span><i className="fa-solid fa-file-arrow-down"></i></span>
+                      <span> Export CSV</span>
+                    </button>
+                  </div>
                 </div>
-                <table className="w-full overflow-auto g-table">
+                <table className="w-full overflow-auto g-table mt-3">
                   <thead>
                     <tr>
                       <th className="font-light text-base px-4 color00517C py-3 text-left">

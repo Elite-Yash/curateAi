@@ -4,6 +4,17 @@ import Loader from "../Loader/Loader";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../common/config/constMessage";
 import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
+import Swal from "sweetalert2";
+import { openWindowTab } from "../../common/helpers/commonHelpers";
+
+
+interface ApiResponse<T> {
+    success: boolean;
+    message: string;
+    data?: T; // Ensure this is typed correctly
+    status: number;
+    statusCode: number;
+}
 
 const UserProfile = () => {
     const navigate = useNavigate();
@@ -35,6 +46,7 @@ const UserProfile = () => {
                     },
                 });
             if (result.status === 200 && result.message === "User does not have an active subscription.") {
+                console.log("result", result)
                 setActiveplan(true)
             }
         } catch (error) {
@@ -47,6 +59,71 @@ const UserProfile = () => {
     useEffect(() => {
         checkActivePlan();
     }, []);
+
+    const cancelActivePlan = async () => {
+        const confirmAction = await Swal.fire({
+            title: "Are you sure?",
+            text: "Do you really want to cancel your subscription?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#ff5c35",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, cancel it!",
+            cancelButtonText: "No, keep it",
+        });
+
+        if (!confirmAction.isConfirmed) {
+            return; // If the user cancels, do nothing
+        }
+
+        try {
+            setLoad(true);
+            const authToken = await getAuthToken();
+            const url = `${API_URL}/${Endpoints.cancelActivePlan}`;
+
+            const result = await fetchAPI(url, {
+                method: Method.get,
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (result.message === "Subscription cancelled successfully" && result.status === 200) {
+                Swal.fire({ icon: "success", title: "Cancelled!", text: "Your subscription has been cancelled successfully.", confirmButtonColor: "#ff5c35", });
+                checkActivePlan();
+            } else {
+                Swal.fire({ icon: "error", title: "Failed!", text: result.message || "Failed to cancel the subscription.", confirmButtonColor: "#ff5c35", });
+            }
+
+        } catch (error) {
+            console.error("Error cancelling subscription:", error);
+            Swal.fire({ icon: "error", title: "Error!", text: "Something went wrong while cancelling the subscription.", confirmButtonColor: "#ff5c35", });
+        } finally {
+            setLoad(false)
+        }
+    };
+
+    const getCustomePortalLink = async () => {
+        try {
+            const authToken = await getAuthToken();
+            const url = `${API_URL}/${Endpoints.getCustomerPortalLink}`;
+            const result = await fetchAPI(
+                url,
+                {
+                    method: Method.get,
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                        "Content-Type": "application/json",
+                    },
+                }) as ApiResponse<any>;
+            if (result.message === "Customer portal link fetched successfully" && result.success && result.data) {
+                openWindowTab(result.data);
+            }
+        } catch (error) {
+            console.error("Error fetching plans:", error);
+        }
+    }
 
     return (
         <>
@@ -139,9 +216,9 @@ const UserProfile = () => {
                                                         </>
                                                         :
                                                         <>
-                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform">Manage Subscription</button>
+                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={getCustomePortalLink}>Manage Subscription</button>
                                                             <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Upgrade / Downgrade</button>
-                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform">Cancel Subscription</button>
+                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={cancelActivePlan}>Cancel Subscription</button>
                                                         </>
                                                     }
 

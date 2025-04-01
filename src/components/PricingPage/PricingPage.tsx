@@ -85,6 +85,8 @@ const PricingPage = () => {
                 text: 'Are you sure you want to subscribe to this plan?',
                 icon: 'warning',
                 showCancelButton: true,
+                confirmButtonColor: "#ff5c35",
+                cancelButtonColor: "#6c757d",
                 confirmButtonText: 'Yes, subscribe!',
                 cancelButtonText: 'No, cancel'
             });
@@ -122,6 +124,8 @@ const PricingPage = () => {
             text: `Are you sure you want to ${activePlanDetails?.price > data?.price ? "Downgrade" : "Upgrade"} your subscription?`,
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: "#ff5c35",
+            cancelButtonColor: "#6c757d",
             confirmButtonText: `Yes, ${activePlanDetails?.price > data?.price ? "downgrade!" : "upgrade!"}`,
             cancelButtonText: 'No, cancel'
         });
