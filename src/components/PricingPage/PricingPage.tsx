@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
-import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
-import { API_URL } from "../../common/config/constMessage";
+import { apiService } from "../../common/config/apiService";
 import Swal from 'sweetalert2';
-
-interface createSubscriptionResponse {
-    success: boolean;
-    data: URL | string | any;
-}
 
 const PricingPage = () => {
 
@@ -16,42 +10,25 @@ const PricingPage = () => {
     const [activePlan, setActiveplan] = useState(false);
     const [activePlanDetails, setActiveplanDetails] = useState<any>([]);
 
-    const getAuthToken = (): Promise<string | null> => {
-        return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-                if (!response || !response.success || !response.token) {
-                    reject("Failed to retrieve auth token.");
-                } else {
-                    resolve(response.token);
-                }
-            });
-        });
-    };
-
     const checkActivePlan = async () => {
-        let result = null
         try {
-            const authToken = await getAuthToken();
-            const url = `${API_URL}/${Endpoints.checkActivePlan}`;
-            result = await fetchAPI(
-                url,
-                {
-                    method: Method.get,
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                        "Content-Type": "application/json",
-                    },
-                });
-
-            if (result.status === 200 && result.success === false) {
-                setActiveplan(false);
-                setActiveplanDetails([]);
-                return result?.message;
-            } else {
-                setActiveplan(true)
-                setActiveplanDetails(result?.subscriptions[0])
-                return result?.subscriptions[0];
-            }
+            await apiService.commonAPIRequest(
+                `${apiService.EndPoint.checkActivePlan}`,
+                apiService.Method.get,
+                undefined,
+                {},
+                (response: any) => {
+                    if (response.status === 200 && response.data.success === false) {
+                        setActiveplan(false);
+                        setActiveplanDetails([]);
+                        return response?.data.message;
+                    } else {
+                        setActiveplan(true);
+                        setActiveplanDetails(response?.data.subscriptions[0]);
+                        return response?.data.subscriptions[0];
+                    }
+                }
+            );
         } catch (error) {
             console.error("Error fetching plans:", error);
         } finally {
@@ -61,11 +38,17 @@ const PricingPage = () => {
 
     const getAllPlans = async () => {
         try {
-            const url = `${API_URL}/${Endpoints.getAllPlans}`;
-            const result = await fetchAPI(url, { method: Method.get });
-            if (result && result.data) {
-                setAllPlans(result.data);
-            }
+            await apiService.commonAPIRequest(
+                `${apiService.EndPoint.getAllPlans}`,
+                apiService.Method.get,
+                undefined,
+                {},
+                (response: any) => {
+                    if (response.status === 200 && response.data) {
+                        setAllPlans(response.data.data);
+                    }
+                }
+            );
         } catch (error) {
             console.error("Error fetching plans:", error);
         } finally {
@@ -76,9 +59,6 @@ const PricingPage = () => {
     const createSubscription = async (data: any) => {
         try {
             const priceId = data?.price_id;
-            const authToken = await getAuthToken();
-            const url = `${API_URL}/${Endpoints.createActivePlan}`;
-
             const result = await Swal.fire({
                 title: 'Confirm Subscription',
                 text: 'Are you sure you want to subscribe to this plan?',
@@ -91,20 +71,19 @@ const PricingPage = () => {
             });
 
             if (result.isConfirmed) {
-                const apiResult = await fetchAPI(url, {
-                    method: Method.post,
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                        "Content-Type": "application/json",
-                    },
-                    data: { planId: priceId }
-                }) as createSubscriptionResponse;
-
-                if (apiResult.success && apiResult?.data) {
-                    window.open(apiResult?.data, '_blank');
-                } else {
-                    Swal.fire("Error", "Subscription failed. Please try again later.", "error");
-                }
+                await apiService.commonAPIRequest(
+                    `${apiService.EndPoint.createActivePlan}`,
+                    apiService.Method.post,
+                    undefined,
+                    { planId: priceId },
+                    (response: any) => {
+                        if (response.status === 201 && response?.data.data) {
+                            window.open(response?.data.data, '_blank');
+                        } else {
+                            Swal.fire("Error", "Subscription failed. Please try again later.", "error");
+                        }
+                    }
+                );
             }
         } catch (error) {
             console.error("Error creating subscription:", error);
@@ -114,10 +93,6 @@ const PricingPage = () => {
 
     const upgradeSubscription = async (data: any) => {
         const priceId = data?.price_id;
-        const authToken = await getAuthToken();
-        const url = `${API_URL}/${Endpoints.upgradeActivePlan}`;
-
-        // Confirm action with the user
         const result = await Swal.fire({
             title: 'Confirm Upgrade',
             text: `Are you sure you want to ${activePlanDetails?.price > data?.price ? "Downgrade" : "Upgrade"} your subscription?`,
@@ -130,31 +105,26 @@ const PricingPage = () => {
         });
 
         if (result.isConfirmed) {
-            const response = await fetchAPI(
-                url,
-                {
-                    method: Method.post,
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                        "Content-Type": "application/json",
-                    },
-                    data: {
-                        planId: priceId
+            await apiService.commonAPIRequest(
+                `${apiService.EndPoint.upgradeActivePlan}`,
+                apiService.Method.post,
+                undefined,
+                { planId: priceId },
+                (response: any) => {
+                    if (response.data.success && response.status === 201) {
+                        chrome.runtime.sendMessage({ type: "reload" }, (response) => {
+                            if (response?.success) {
+                                refresh();
+                            } else {
+                                console.error("Failed to reload");
+                            }
+                        });
                     }
-                });
-
-            if (response.success && response.status === 201) {
-                chrome.runtime.sendMessage({ type: "reload" }, (response) => {
-                    if (response?.success) {
-                        refresh();
-                    } else {
-                        console.error("Failed to reload");
-                    }
-                });
-            }
-            // You can handle the response here if needed
+                }
+            );
         }
     };
+
 
     useEffect(() => {
         const fetchData = async () => {

@@ -1,8 +1,7 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchAPI, Method, Endpoints } from "../../common/config/apiService";
+import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
-import { API_URL } from "../../common/config/constMessage";
 import Loader from "../Loader/Loader";
 
 const ChangePassword = () => {
@@ -38,20 +37,27 @@ const ChangePassword = () => {
 
         setLoading(true);
         try {
-            const response = await fetchAPI(`${API_URL}/${Endpoints.changePassword}`, {
-                method: Method.post,
-                data: {
-                    password: newPassword,   // Ensure both fields are sent correctly
-                    confirmPassword: confirmPassword
-                }
-            });
+            // Prepare payload for the API request
+            const payload = {
+                password: newPassword,  // Ensure both fields are sent correctly
+                confirmPassword: confirmPassword,
+            };
 
-            if (response?.success) {
-                showMessage("Password changed successfully!", "success");
-                setTimeout(() => navigate("/signin"), 2500);
-            } else {
-                showMessage(response?.message || "Failed to change password. Try again.", "error");
-            }
+            // API call using apiService
+            await apiService.commonAPIRequest(
+                `${apiService.EndPoint.changePassword}`,
+                apiService.Method.post,
+                undefined, // No query parameters
+                payload, // Sending the payload
+                (response: any) => {
+                    if (response.status === 201 && response.data.message === "Password reset successful") {
+                        showMessage("Password changed successfully!", "success");
+                        setTimeout(() => navigate("/signin"), 2500);
+                    } else {
+                        showMessage(response?.message || "Failed to change password. Try again.", "error");
+                    }
+                }
+            );
         } catch (error) {
             console.error("Change Password error:", error);
             showMessage("Something went wrong. Please try again.", "error");

@@ -1,8 +1,7 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchAPI, Method, Endpoints } from "../../common/config/apiService";
+import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
-import { API_URL } from "../../common/config/constMessage";
 import Loader from "../Loader/Loader";
 
 interface SignUpFormData {
@@ -51,6 +50,7 @@ const SignUp = () => {
         e.preventDefault();
 
         const { name, email, password, confirmPassword } = formData;
+
         // Validation checks
         if (!name || !email || !password || !confirmPassword) {
             showMessage("All fields are required.", "error");
@@ -73,16 +73,22 @@ const SignUp = () => {
         }
 
         try {
-            const url = `${API_URL + "/" + Endpoints.register}`;
-            const response = await fetchAPI(url, { method: Method.post, data: formData });
-
-            if (response && response.success) {
-                setMessage({ text: "Account created successfully!", type: "success" });
-                setFormData({ name: "", email: "", password: "", confirmPassword: "", });
-                setTimeout(() => navigate("/signin"), 2500);
-            } else {
-                setMessage({ text: response.message || "Sign-up failed. Try again.", type: "error" });
-            }
+            // Using apiService for the API call
+            await apiService.commonAPIRequest(
+                apiService.EndPoint.userRegister,
+                apiService.Method.post,
+                undefined, // No query parameters
+                formData, // Sending formData as payload
+                (response: any) => {
+                    if (response?.status === 201 && response.data.message === "User registered successfully") {
+                        setMessage({ text: "Account created successfully!", type: "success" });
+                        setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+                        setTimeout(() => navigate("/signin"), 2500);
+                    } else {
+                        setMessage({ text: response?.message || "Sign-up failed. Try again.", type: "error" });
+                    }
+                }
+            );
         } catch (error) {
             setMessage({ text: "Something went wrong. Please try again.", type: "error" });
             console.error("Sign-up error:", error);

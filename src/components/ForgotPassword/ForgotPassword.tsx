@@ -1,8 +1,7 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchAPI, Method, Endpoints } from "../../common/config/apiService";
+import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
-import { API_URL } from "../../common/config/constMessage";
 import Loader from "../Loader/Loader";
 
 const ForgotPassword = () => {
@@ -49,18 +48,27 @@ const ForgotPassword = () => {
             return;
         }
 
-        try {
-            const url = `${API_URL + "/" + Endpoints.forgotPassword}`;
-            const response = await fetchAPI(url, { method: Method.post, data: { email } });
+        const data = {
+            email,
+        };
 
-            if (response && response.success) {
-                showMessage("Password reset link sent to your email!", "success");
-                setTimeout(() => {
-                    navigate("/change-password");
-                }, 2500);
-            } else {
-                showMessage(response.message || "Failed to send reset link. Try again.", "error");
-            }
+        try {
+            apiService.commonAPIRequest(
+                apiService.EndPoint.forgotPassword,
+                apiService.Method.post,
+                undefined,
+                data,
+                (response: any) => {
+                    if (response.status === 201 && response.data.message === "Password reset email sent successfully") {
+                        showMessage("Password reset link sent to your email!", "success");
+                        setTimeout(() => {
+                            navigate("/change-password");
+                        }, 2500);
+                    } else {
+                        showMessage(response.message || "Failed to send reset link. Try again.", "error");
+                    }
+                }
+            );
         } catch (error) {
             showMessage("Something went wrong. Please try again.", "error");
             console.error("Forgot Password error:", error);

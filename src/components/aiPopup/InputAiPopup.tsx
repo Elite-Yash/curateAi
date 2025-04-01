@@ -6,8 +6,7 @@ import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/common
 import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
-import { fetchAPI, Method, Endpoints } from "../../common/config/apiService"; // Import API function
-import { API_URL } from "../../common/config/constMessage";
+import { apiService } from "../../common/config/apiService"; // Import API function
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -101,45 +100,42 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 authToken,
             };
 
-            chrome.runtime.sendMessage(
-                { type: "GENERATE_CONTENT", data: requestData },
-                (response) => {
-                    if (response.success) {
-                        setText(response.data.data);
-                        setIsTextGenerated(true);
-                        const payload = {
-                            comment: response.data.data,
-                            post_url: post_url ? post_url : window.location.href,
-                            // user_id: 1
+            chrome.runtime.sendMessage({ type: "GENERATE_CONTENT", data: requestData }, (response) => {
+                if (response.success) {
+                    setText(response.data.data);
+                    setIsTextGenerated(true);
+
+                    const payload = {
+                        comment: response.data.data,
+                        post_url: post_url ? post_url : window.location.href,
+                    };
+
+                    const requestUrl = apiService.EndPoint.createComments;
+
+                    apiService.commonAPIRequest(
+                        requestUrl,
+                        apiService.Method.post,
+                        undefined, // No query params for this request
+                        payload,
+                        (result: any) => {
+                            if (result?.status === 201 && result?.data.message === "Comment created successfully") {
+                                console.log("Comment created successfully");
+                            } else {
+                                throw new Error(result.message || "Failed to create comment.");
+                            }
                         }
-                        const requestUrl = `${API_URL}/${Endpoints.createComments}`;
-                        fetchAPI(requestUrl, {
-                            method: Method.post,
-                            data: payload,
-                            headers: {
-                                Authorization: `Bearer ${authToken}`,
-                                "Content-Type": "application/json",
-                            },
-                        })
-                            .then((result) => {
-                                if (result?.statusCode === 201 && result?.message === "Comment created successfully") {
-                                    console.log("API call successful", result);
-                                } else {
-                                    throw new Error(result.message);
-                                }
-                            })
-                            .catch((err) => {
-                                console.error("API error:", err);
-                            })
-                            .finally(() => {
-                                setLoading(false);
-                            });
-                    } else {
-                        setError("Failed to submit the comment. Please try again.");
-                        setLoading(false);
-                    }
+                    )
+                        .catch((err: any) => {
+                            console.error("API error:", err);
+                        }).finally(() => {
+                            setLoading(false);
+                        });
+
+                } else {
+                    setError("Failed to submit the comment. Please try again.");
+                    setLoading(false);
                 }
-            );
+            });
 
 
         });

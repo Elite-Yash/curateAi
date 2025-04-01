@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
-import { API_URL } from "../../common/config/constMessage";
+import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 
@@ -36,10 +35,6 @@ interface Profile {
   created_at?: string;
 }
 
-interface ApiResponse {
-  profiles: Profile[];
-}
-
 const SaveProfile = () => {
   const [profilesData, setProfilesData] = useState<Profile[]>([]);
   const [load, setLoad] = useState(true)
@@ -50,40 +45,26 @@ const SaveProfile = () => {
         throw new Error("Chrome API is not available.");
       }
 
-      const getAuthToken = () =>
-        new Promise((resolve, reject) => {
-          chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-            if (!response || !response.success || !response.token) {
-              reject("Failed to retrieve auth token.");
-            } else {
-              resolve(response.token);
-            }
-          });
-        });
+      const requestUrl = `${apiService.EndPoint.getProfiles}`;
 
-      const authToken = await getAuthToken();
-      if (!authToken) throw new Error("Authentication token is missing.");
-
-      const requestUrl = `${API_URL}/${Endpoints.getProfiles}`;
-
-      const result = await fetchAPI<ApiResponse>(requestUrl, {
-        method: Method.get,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      // console.log("result", result)
-      if (result?.status === 200 && result.data?.profiles) {
-        setProfilesData(result.data.profiles || []);
-      } else {
-        throw new Error(result.message || "Failed to fetch profiles.");
-      }
+      await apiService.commonAPIRequest(
+        requestUrl,
+        apiService.Method.get,
+        undefined,
+        {},
+        (response: any) => {
+          console.log("fetchProfiles", response)
+          if (response?.status === 200 && response?.data?.data.profiles) {
+            setProfilesData(response?.data?.data.profiles || []);
+          } else {
+            console.error(response?.message || "Failed to fetch profiles.");
+          }
+        }
+      );
     } catch (err) {
-      console.error("An unexpected error occurred.");
+      console.error("An unexpected error occurred:", err);
     } finally {
-      setLoad(false)
+      setLoad(false);
     }
   }, []);
 
@@ -119,7 +100,6 @@ const SaveProfile = () => {
     a.click();
     window.URL.revokeObjectURL(url);
   };
-
 
   return (
     <>

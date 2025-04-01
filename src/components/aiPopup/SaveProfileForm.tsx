@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getImage } from "../../common/utils/logoUtils";
-import { fetchAPI, Method, Endpoints } from "../../common/config/apiService"; // Import API function
-import { API_URL } from "../../common/config/constMessage";
+import { apiService } from "../../common/config/apiService"; // Import API function
 
 // Define the props interface
 interface SaveProfileFormProps {
@@ -28,18 +27,6 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         setCompany(company);
     }, [profileName, position, company]);
 
-    const getAuthToken = (): Promise<string | null> => {
-        return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-                if (!response || !response.success || !response.token) {
-                    reject("Failed to retrieve auth token.");
-                } else {
-                    resolve(response.token);
-                }
-            });
-        });
-    };
-
     const validateForm = () => {
         if (!name.trim()) return "Name is required.";
         if (!email.trim()) return "Email is required.";
@@ -47,7 +34,6 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         if (!companyState.trim()) return "Company is required.";
         return null;
     };
-
 
     const handleSave = async () => {
         setLoading(true);
@@ -71,39 +57,37 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
             profile: profileImg,
         };
 
-
-
         try {
-            const authToken = await getAuthToken();
-            if (!authToken) throw new Error("Authentication token is missing.");
+            const requestUrl = `${apiService.EndPoint.createProfile}`;
 
-            const requestUrl = `${API_URL}/${Endpoints.createProfile}`;
-
-            const result = await fetchAPI(requestUrl, {
-                method: Method.post,
-                data: payload,
-                headers: {
-                    Authorization: `Bearer ${authToken}`,
-                    "Content-Type": "application/json",
-                },
-            }); 
-            if (result?.status === 201 && result?.message === "Profile saved successfully") {
-                setSuccess(true);
-                setTimeout(() => {
-                    setSuccess(false);
-                    onClose();
-                }, 2000);
-            } else {
-                throw new Error(result.message || "Failed to save profile.");
-            }
+            // Since headers and Authorization are handled inside the apiService, no need to pass them here
+            await apiService.commonAPIRequest(
+                requestUrl,
+                apiService.Method.post,
+                undefined, // No query params here
+                payload,  // The payload data
+                (response: any) => {
+                    if (response?.status === 201 && response?.data.message === "Profile saved successfully") {
+                        setSuccess(true);
+                        setTimeout(() => {
+                            setSuccess(false);
+                            onClose();
+                        }, 2000);
+                    } else {
+                        throw new Error(response?.data.message || "Failed to save profile.");
+                    }
+                }
+            );
         } catch (err) {
             setError(err instanceof Error ? err.message : "An unknown error occurred.");
             setTimeout(() => setError(null), 2000);
         } finally {
             setLoading(false);
         }
-
     };
+
+
+
 
     return (
         <>

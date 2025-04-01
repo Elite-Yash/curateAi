@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
-import { API_URL } from "../../common/config/constMessage";
+import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 
@@ -22,40 +21,27 @@ const Comments = () => {
         throw new Error("Chrome API is not available.");
       }
 
-      const getAuthToken = () =>
-        new Promise((resolve, reject) => {
-          chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-            if (!response || !response.success || !response.token) {
-              reject("Failed to retrieve auth token.");
-            } else {
-              resolve(response.token);
-            }
-          });
-        });
+      const requestUrl = apiService.EndPoint.getComments;
 
-      const authToken = await getAuthToken();
-      if (!authToken) throw new Error("Authentication token is missing.");
-
-      const requestUrl = `${API_URL}/${Endpoints.getComments}`;
-
-      const result = await fetchAPI(requestUrl, {
-        method: Method.get,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (result.statusCode === 200 && Array.isArray(result.data)) {
-        setCommentsData(result.data);
-      } else {
-        setCommentsData([]);
-        throw new Error(result.message || "Failed to fetch comments.");
-      }
+      // Make the API request to fetch comments
+      await apiService.commonAPIRequest(
+        requestUrl,
+        apiService.Method.get,
+        undefined, // No query parameters
+        {}, // No request body
+        (result: any) => {
+          if (result?.status === 200 && Array.isArray(result?.data.data)) {
+            setCommentsData(result.data.data);
+          } else {
+            setCommentsData([]);
+            throw new Error(result?.message || "Failed to fetch comments.");
+          }
+        }
+      );
     } catch (err) {
-      console.error("An unexpected error occurred.");
+      console.error("An unexpected error occurred:", err);
     } finally {
-      setLoad(false)
+      setLoad(false);
     }
   }, []);
 

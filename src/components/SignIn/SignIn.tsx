@@ -1,20 +1,12 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchAPI, Method, Endpoints } from "../../common/config/apiService";
+import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
-import { API_URL } from "../../common/config/constMessage";
 import Loader from "../Loader/Loader";
 
 interface SignInFormData {
     email: string;
     password: string;
-}
-interface LoginResponse {
-    success: boolean;
-    message?: string;
-    data?: {
-        auth_token: string;
-    };
 }
 
 const SignIn = () => {
@@ -69,28 +61,41 @@ const SignIn = () => {
             return;
         }
 
-        try {
-            const url = `${API_URL + "/" + Endpoints.login}`;
-            const response = await fetchAPI(url, { method: Method.post, data: formData }) as LoginResponse;
+        // Prepare request payload
+        const data = {
+            email,
+            password,
+        };
 
-            if (response && response.success && response.data) {
-                const authToken = response.data.auth_token;
-                chrome.storage.local.set({ token: authToken }, () => { });
-                setFormData({ email: "", password: "" });
-                showMessage("Login successful!", "success");
-                setTimeout(() => {
-                    setLoad(true)
-                    navigate("/home")
-                    window.location.reload();
-                }, 2000);
-            } else {
-                showMessage(response.message || "Login failed. Try again.", "error");
-            }
+        try {
+            // Make the API request using apiService.commonAPIRequest
+            apiService.commonAPIRequest(
+                apiService.EndPoint.userLogin,
+                apiService.Method.post,
+                undefined,
+                data,
+                (response: any) => {
+                    if (response && response.status === 201 && response.data) {
+                        const authToken = response.data.data.auth_token;
+                        chrome.storage.local.set({ token: authToken }, () => { });
+                        setFormData({ email: "", password: "" });
+                        showMessage("Login successful!", "success");
+                        setTimeout(() => {
+                            setLoad(true);
+                            navigate("/home");
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage(response.message || "Login failed. Try again.", "error");
+                    }
+                }
+            );
         } catch (error) {
             showMessage("Something went wrong. Please try again.", "error");
             console.error("Login error:", error);
         }
     };
+
 
     return (
         <div className="flex justify-center items-center min-h-screen background-three">

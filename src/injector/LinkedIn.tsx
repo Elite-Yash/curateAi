@@ -3,8 +3,7 @@ import InputAiPopup from "../components/aiPopup/InputAiPopup";
 import { PostData, ArticleInfo } from "../constants/types";
 import { LINKEDIN_CLASS_NAMES, LINKEDIN_ID_NAMES } from "../constants/linkedinSelectors";
 import { sleep, removeEmojis, trimAllWhiteSpaces, isLinkedInArticlePage } from "../helpers/commonHelper";
-import { API_URL } from "../common/config/constMessage";
-import { Endpoints, fetchAPI, Method } from "../common/config/apiService";
+import { apiService } from "../common/config/apiService";
 
 export interface LinkedInMessage {
     messageSpeaker: string;
@@ -670,31 +669,28 @@ const LinkedIn = () => {
             observer.disconnect();
         };
     }, []);
+
     useEffect(() => {
         const checkActivePlan = async () => {
-            chrome.runtime.sendMessage({ type: "getCookies" }, async (response) => {
-                if (!response || !response.success || !response.token) {
-                    console.error("Failed to retrieve auth token.");
-                } else {
-                    try {
-                        const authToken = response.token;
-                        const url = `${API_URL}/${Endpoints.checkActivePlan}`;
-                        const result = await fetchAPI(url, {
-                            method: Method.get, headers: {
-                                Authorization: `Bearer ${authToken}`,
-                                "Content-Type": "application/json",
-                            },
-                        });
-                        if (result.status === 200 && result.success === false) {
+            try {
+                const url = apiService.EndPoint.checkActivePlan;
+                // Call the API
+                await apiService.commonAPIRequest(
+                    url,
+                    apiService.Method.get,
+                    undefined, // No query params for this request
+                    {}, // No body required for GET request
+                    (result: any) => {
+                        if (result.status === 200 && result.data.success === false) {
                             setActiveplan(false);
                         } else {
-                            setActiveplan(true)
+                            setActiveplan(true);
                         }
-                    } catch (error) {
-                        console.error("Error fetching plans:", error);
                     }
-                }
-            });
+                );
+            } catch (error) {
+                console.error("Error checking active plan:", error);
+            }
         };
         checkActivePlan();
     }, []);

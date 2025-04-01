@@ -95,4 +95,59 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 
+    // Fetch API call
+    if (request.type === "api-request") {
+        const response = {
+            data: null,
+            status: 0,
+        };
+
+        // Rebuild FormData if required
+        const formRequest = Object.keys(request.formData).length ? true : false;
+        const form = new FormData();
+        if (formRequest) {
+            for (const key in request.formData) {
+                if (Object.prototype.hasOwnProperty.call(request.formData, key)) {
+                    form.append(key, request.formData[key]);
+                }
+            }
+        }
+
+        // Perform the fetch call
+        fetch(request.requestUrl, {
+            method: request.method, // GET or POST
+            headers: request.header,
+            body: formRequest ? form : request.body,
+        })
+            .then((res) => {
+                response.status = res.status;
+
+                // Determine response type based on Content-Type header
+                const contentType = res.headers.get("Content-Type");
+                if (contentType) {
+                    if (contentType.includes("application/json")) {
+                        return res.json(); // Handle JSON
+                    } else if (contentType.includes("text/html")) {
+                        return res.text(); // Handle HTML as plain text
+                    } else if (contentType.includes("text/plain")) {
+                        return res.text(); // Handle plain text
+                    }
+                }
+
+                // Default fallback if content type is unknown
+                return res.text();
+            })
+            .then((data) => {
+                response.data = data || null; // Assign the fetched data
+                sendResponse(response); // Send the response back
+            })
+            .catch((error) => {
+                console.error("Fetch error:", error); // Log the error for debugging
+                response.status = 500; // Set status to 500 for server errors
+                sendResponse(response);
+            });
+
+        return true; // Required for async sendResponse
+    }
+
 });

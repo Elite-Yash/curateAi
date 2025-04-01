@@ -2,53 +2,31 @@ import { useEffect, useState } from "react";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../common/config/constMessage";
-import { Endpoints, fetchAPI, Method } from "../../common/config/apiService";
+import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
 import { openWindowTab } from "../../common/helpers/commonHelpers";
 
-
-interface ApiResponse<T> {
-    success: boolean;
-    message: string;
-    data?: T; // Ensure this is typed correctly
-    status: number;
-    statusCode: number;
-}
 
 const UserProfile = () => {
     const navigate = useNavigate();
     const [load, setLoad] = useState<any>(true);
     const [activePlan, setActiveplan] = useState(false);
 
-    const getAuthToken = (): Promise<string | null> => {
-        return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-                if (!response || !response.success || !response.token) {
-                    reject("Failed to retrieve auth token.");
-                } else {
-                    resolve(response.token);
-                }
-            });
-        });
-    };
     const checkActivePlan = async () => {
         try {
-            const authToken = await getAuthToken();
-            const url = `${API_URL}/${Endpoints.checkActivePlan}`;
-            const result = await fetchAPI(
-                url,
-                {
-                    method: Method.get,
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                        "Content-Type": "application/json",
-                    },
-                });
-            if (result.status === 200 && result.message === "User does not have an active subscription.") {
-                console.log("result", result)
-                setActiveplan(true)
-            }
+            const requestUrl = apiService.EndPoint.checkActivePlan;
+            // Make the API request to check the active plan status
+            await apiService.commonAPIRequest(
+                requestUrl,
+                apiService.Method.get,
+                undefined, // No query parameters
+                {}, // No request body
+                (result: any) => {
+                    if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") {
+                        setActiveplan(true);
+                    }
+                }
+            );
         } catch (error) {
             console.error("Error fetching plans:", error);
         } finally {
@@ -78,52 +56,66 @@ const UserProfile = () => {
 
         try {
             setLoad(true);
-            const authToken = await getAuthToken();
-            const url = `${API_URL}/${Endpoints.cancelActivePlan}`;
+            const requestUrl = apiService.EndPoint.cancelActivePlan;
 
-            const result = await fetchAPI(url, {
-                method: Method.get,
-                headers: {
-                    Authorization: `Bearer ${authToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (result.message === "Subscription cancelled successfully" && result.status === 200) {
-                Swal.fire({ icon: "success", title: "Cancelled!", text: "Your subscription has been cancelled successfully.", confirmButtonColor: "#ff5c35", });
-                checkActivePlan();
-            } else {
-                Swal.fire({ icon: "error", title: "Failed!", text: result.message || "Failed to cancel the subscription.", confirmButtonColor: "#ff5c35", });
-            }
-
+            // Make the API request to cancel the active plan
+            await apiService.commonAPIRequest(
+                requestUrl,
+                apiService.Method.get,
+                undefined, // No query parameters
+                {}, // No request body
+                (result: any) => {
+                    if (result?.status === 200 && result?.data.message === "Subscription cancelled successfully") {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Cancelled!",
+                            text: "Your subscription has been cancelled successfully.",
+                            confirmButtonColor: "#ff5c35",
+                        });
+                        checkActivePlan(); // Refresh the active plan status
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Failed!",
+                            text: result?.message || "Failed to cancel the subscription.",
+                            confirmButtonColor: "#ff5c35",
+                        });
+                    }
+                }
+            );
         } catch (error) {
             console.error("Error cancelling subscription:", error);
-            Swal.fire({ icon: "error", title: "Error!", text: "Something went wrong while cancelling the subscription.", confirmButtonColor: "#ff5c35", });
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Something went wrong while cancelling the subscription.",
+                confirmButtonColor: "#ff5c35",
+            });
         } finally {
-            setLoad(false)
+            setLoad(false);
         }
     };
-
     const getCustomePortalLink = async () => {
         try {
-            const authToken = await getAuthToken();
-            const url = `${API_URL}/${Endpoints.getCustomerPortalLink}`;
-            const result = await fetchAPI(
-                url,
-                {
-                    method: Method.get,
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                        "Content-Type": "application/json",
-                    },
-                }) as ApiResponse<any>;
-            if (result.message === "Customer portal link fetched successfully" && result.success && result.data) {
-                openWindowTab(result.data);
-            }
+            const requestUrl = apiService.EndPoint.getCustomerPortalLink;
+
+            // Make the API request to fetch the customer portal link
+            await apiService.commonAPIRequest(
+                requestUrl,
+                apiService.Method.get,
+                undefined, // No query parameters
+                {}, // No request body
+                (result: any) => {
+                    console.log("getCustomePortalLink", result)
+                    if (result?.data.message === "Customer portal link fetched successfully" && result?.status === 200) {
+                        openWindowTab(result?.data.data); // Open the customer portal in a new tab
+                    }
+                }
+            );
         } catch (error) {
-            console.error("Error fetching plans:", error);
+            console.error("Error fetching customer portal link:", error);
         }
-    }
+    };
 
     return (
         <>
