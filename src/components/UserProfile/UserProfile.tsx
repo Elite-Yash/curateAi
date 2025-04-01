@@ -22,7 +22,8 @@ const UserProfile = () => {
                 undefined, // No query parameters
                 {}, // No request body
                 (result: any) => {
-                    if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") {
+                    // if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") 
+                    if (result?.status === 200 && result.data.userDetails.isTrialExpired) {
                         setActiveplan(true);
                     }
                 }
@@ -106,7 +107,6 @@ const UserProfile = () => {
                 undefined, // No query parameters
                 {}, // No request body
                 (result: any) => {
-                    console.log("getCustomePortalLink", result)
                     if (result?.data.message === "Customer portal link fetched successfully" && result?.status === 200) {
                         openWindowTab(result?.data.data); // Open the customer portal in a new tab
                     }

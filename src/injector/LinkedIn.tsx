@@ -681,7 +681,8 @@ const LinkedIn = () => {
                     undefined, // No query params for this request
                     {}, // No body required for GET request
                     (result: any) => {
-                        if (result.status === 200 && result.data.success === false) {
+                        // if (result.status === 200 && result.data.success === false) {
+                        if (result.status === 200 && result.data.userDetails.isTrialExpired) {
                             setActiveplan(false);
                         } else {
                             setActiveplan(true);
