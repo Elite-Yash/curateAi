@@ -68,8 +68,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
         let platform = currentUrl.includes("linkedin.com") ? "linkedin" : currentUrl.includes("x.com") ? "twitter" : "";
 
         const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
-        console.log("currentUserName:", currentUserName);
-        console.log("postData, articleInfo:", postData, articleInfo);
+        // console.log("currentUserName:", currentUserName);
+        // console.log("postData, articleInfo:", postData, articleInfo);
 
         // Fetch auth token before sending the request
         chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
@@ -100,10 +100,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 authToken,
             };
 
+            let apiCalled = false;
             chrome.runtime.sendMessage({ type: "GENERATE_CONTENT", data: requestData }, (response) => {
-                if (response.success) {
+                if (response.success && !apiCalled) {
                     setText(response.data.data);
                     setIsTextGenerated(true);
+                    apiCalled = true;
 
                     const payload = {
                         comment: response.data.data,
@@ -119,7 +121,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         payload,
                         (result: any) => {
                             if (result?.status === 201 && result?.data.message === "Comment created successfully") {
-                                console.log("Comment created successfully");
+                                // console.log("Comment created successfully");
                             } else {
                                 throw new Error(result.message || "Failed to create comment.");
                             }

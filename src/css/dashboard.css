@@ -366,3 +366,31 @@ body,
 .price-box.g-box.active {
     border: 2px solid #ff5e37;
 }
+
+.price-box i.fa-solid::before {
+    line-height: 20px;
+}
+
+.custom-tooltip {
+    color: #ffffff;
+    /* Text color */
+    background-color: #000000;
+    /* Background color */
+    border-radius: 4px;
+    /* Optional: adjust the border radius */
+    padding: 0.5rem;
+    /* Optional: adjust padding */
+}
+
+.custom-tooltip::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 0px;
+    left: 50%;
+    bottom: 6px;
+    border: 15px solid transparent;
+    border-bottom: 0;
+    border-top: 14px solid #000;
+    transform: translate(-50%, calc(100% + -1px));
+}

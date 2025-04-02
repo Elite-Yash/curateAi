@@ -53,7 +53,6 @@ const SaveProfile = () => {
         undefined,
         {},
         (response: any) => {
-          console.log("fetchProfiles", response)
           if (response?.status === 200 && response?.data?.data.profiles) {
             setProfilesData(response?.data?.data.profiles || []);
           } else {

@@ -24,8 +24,6 @@ const Popup: React.FC = () => {
         chrome.storage.local.get(["token"], (result) => {
             if (result.token) {
                 setLogin(result.token);
-            } else {
-                // console.log("No token found in Chrome storage.");
             }
         });
     }, []);

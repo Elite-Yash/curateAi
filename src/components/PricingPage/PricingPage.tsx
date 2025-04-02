@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
 import { apiService } from "../../common/config/apiService";
 import Swal from 'sweetalert2';
+import { Tooltip } from "flowbite-react";
 
 const PricingPage = () => {
 
@@ -172,10 +173,12 @@ const PricingPage = () => {
                                                 <h4 className="font-medium mb-3">Pricing</h4>
                                             </div>
                                             <div className="flex space-x-4 items-center">
-                                                <button onClick={refresh} className="background-white border border-[#ff5c35] text-[#ff5c35] px-5 py-3 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
-                                                    <span><i className="fas fa-sync-alt"></i></span>
-                                                    <span> Refresh</span>
-                                                </button>
+                                                <Tooltip content="Sync & Refresh" className="custom-tooltip">
+                                                    <button onClick={refresh} className="background-white border border-[#ff5c35] text-[#ff5c35] px-5 py-3 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
+                                                        <span><i className="fas fa-sync-alt"></i></span>
+                                                        <span> Refresh</span>
+                                                    </button>
+                                                </Tooltip>
                                             </div>
                                         </div>
                                         <div className="gap-5 !flex justify-center items-center mt-3">
@@ -203,10 +206,10 @@ const PricingPage = () => {
                                                 </div>
                                                 <hr className="my-4 border-gray-300" />
                                                 <ul className="text-gray-700 space-y-2">
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Create Post</span></li>
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Send Professional Replays</span></li>
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Create Comments</span></li>
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Save Profiles</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Create Post</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Send Professional Replays</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Create Comments</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Save Profiles</span></li>
                                                 </ul>
                                             </div>
                                             {/* Plan 2: Subscribed */}
@@ -233,10 +236,10 @@ const PricingPage = () => {
                                                 </div>
                                                 <hr className="my-4 border-gray-300" />
                                                 <ul className="text-gray-700 space-y-2">
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Create Post</span></li>
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Send Professional Replays</span></li>
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Create Comments</span></li>
-                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one"></i><span className="dec-color ml-2">Save Profiles</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Create Post</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Send Professional Replays</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Create Comments</span></li>
+                                                    <li className="flex items-center"><i className="fa-solid fa-check color-one w-4.5 h-4.5 flex justify-center items-center bg-white border border-color-one p-0 rounded-full text-[10px]"></i><span className="dec-color ml-2">Save Profiles</span></li>
                                                 </ul>
                                             </div>
                                         </div>

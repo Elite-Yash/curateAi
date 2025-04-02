@@ -5,15 +5,9 @@ import Twitter from "../injector/Twitter";
 
 const Layout = () => {
     const [platform, setPlatform] = useState<string | null>(null);
-    useEffect(() => {
-        if (platform) {
-            console.log("Detected platform:", platform);
-        }
-    }, [platform]);
 
     useEffect(() => {
         chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-            console.log("response", response)
             if (response.token && response.success) {
                 const hostname = window.location.hostname;
                 let platformName = "Unknown";

@@ -58,7 +58,6 @@ const Section = ({ children }: any) => {
         if (response && response.success) {
           setLogin(response.token);
         } else {
-          console.log("No token found.");
           setLogin('');
         }
       });

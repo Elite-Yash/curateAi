@@ -56,7 +56,7 @@ const SideBar = () => {
             <div className="pt-2 px-4 py-1">
                 <ul>
                     <li>
-                        <a href="#" className="white-color w-full text-center text-base flex items-center justify-center">Need Help ?</a>
+                        <a href="https://evarobo.ai/contact-us/" target="_blank" className="white-color w-full text-center text-base flex items-center justify-center">Need Help ?</a>
                     </li>
                 </ul>
             </div>

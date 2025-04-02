@@ -318,7 +318,7 @@ const LinkedIn = () => {
 
     const insertGeneratedCommentLinkedin = (comment: string) => {
 
-        console.log('selectedMessageBoxContainer: ', selectedMessageBoxContainer);
+        // console.log('selectedMessageBoxContainer: ', selectedMessageBoxContainer);
         if (selectedMessageBoxContainer) {
             const messageEditor = selectedMessageBoxContainer?.querySelector(`.${LINKEDIN_CLASS_NAMES.MESSAGE_EDITOR}`) as HTMLElement;
             const cleanedMessage = removeEmojis(comment);
@@ -484,7 +484,7 @@ const LinkedIn = () => {
 
             messageBoxFooter.appendChild(button);
         } else {
-            console.log("Footer not found");
+            // console.log("Footer not found");
         }
     };
 
@@ -581,7 +581,7 @@ const LinkedIn = () => {
         customIcon.appendChild(contentsSpan);
 
         customIcon.addEventListener("click", () => {
-            console.log("Icon clicked, triggering popup.");
+            // console.log("Icon clicked, triggering popup.");
             setPopupTriggeredFrom("create-post");
             setOpenAiPopup(true);
         });

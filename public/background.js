@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Check if the message type is "LogOut"
     if (request.type === "LogOut") {
         if (request.action === "PopupLogout") {
-            console.log("log out from Popup");
+            
             chrome.storage.local.remove("token", () => {
                 // Get the dynamic extension URL
                 const extensionBaseUrl = `chrome-extension://${chrome.runtime.id}/dashboard.html`;
