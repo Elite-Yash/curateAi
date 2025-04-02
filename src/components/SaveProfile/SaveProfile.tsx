@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
+import Swal from "sweetalert2";
+import { Tooltip } from "flowbite-react";
 
 /**
  * @component
@@ -26,6 +28,7 @@ import Loader from "../Loader/Loader";
  */
 
 interface Profile {
+  id: string;
   profile?: string;
   name?: string;
   email?: string;
@@ -67,13 +70,55 @@ const SaveProfile = () => {
     }
   }, []);
 
+  const deleteProfile = async (id: any) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ff5c35",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const requestUrl = `${apiService.EndPoint.deleteProfile.replace(':id', id)}`;
+
+        await apiService.commonAPIRequest(
+          requestUrl,
+          apiService.Method.delete,
+          undefined,
+          {},
+          (response: any) => {
+            console.log("result", response)
+            if (response?.status === 200 && response.data.message === "Saved profile removed successfully") {
+              fetchProfiles();
+              Swal.fire({ title: "Deleted!", text: "Profile has been deleted.", icon: "success", confirmButtonColor: "#ff5c35" });
+            } else {
+              Swal.fire({ title: "Error!", text: response?.message || "Failed to delete profile.", icon: "error", confirmButtonColor: "#ff5c35" });
+            }
+          }
+        );
+      } catch (err) {
+        console.error("Error deleting profile:", err);
+        Swal.fire({ title: "Error!", text: "An unexpected error occurred.", icon: "error", confirmButtonColor: "#ff5c35" });
+      }
+    }
+  };
+
   useEffect(() => {
     fetchProfiles();
   }, [fetchProfiles]);
 
   const exportToCSV = () => {
     if (!profilesData.length) {
-      alert("No data available to export.");
+      Swal.fire({
+        icon: "warning",
+        title: "No Data Available",
+        text: "There is no data to export.",
+        confirmButtonColor: "#ff5c35",
+      });
       return;
     }
 
@@ -136,6 +181,7 @@ const SaveProfile = () => {
                       <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Organization</span></th>
                       <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Url</span></th>
                       <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Created At</span></th>
+                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Action</span></th>
                     </tr>
                   </thead>
                   {
@@ -169,7 +215,15 @@ const SaveProfile = () => {
                                 </td>
 
                                 <td className="px-4 py-3">{profile.email || "N/A"}</td>
-                                <td className="px-4 py-3">{profile.position || "N/A"}</td>
+                                <td className="px-4 py-3">
+                                  {profile.position && profile.position.length > 17 ? (
+                                    <Tooltip content={profile.position} className="custom-tooltip">
+                                      {profile.position.substring(0, 17) + "..."}
+                                    </Tooltip>
+                                  ) : (
+                                    profile.position || "N/A"
+                                  )}
+                                </td>
                                 <td className="px-4 py-3">{profile.organization || "N/A"}</td>
                                 <td className="px-4 py-3">
                                   {profile.url ? (
@@ -188,12 +242,15 @@ const SaveProfile = () => {
                                   )}
                                 </td>
                                 <td className="px-4 py-3">{profile.created_at ? new Date(profile.created_at).toLocaleDateString("en-GB") : "N/A"}</td>
+                                <td onClick={() => deleteProfile(profile.id)} className="px-4 py-3 text-center text-blue-300 cursor-pointer">
+                                  <i className="fa-solid fa-trash"></i>
+                                </td>
                               </tr>
                             );
                           })
                         ) : (
                           <tr>
-                            <td colSpan={6} className="px-4 py-3 text-center">
+                            <td colSpan={7} className="px-4 py-3 text-center">
                               No Profiles found
                             </td>
                           </tr>

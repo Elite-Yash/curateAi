@@ -49,6 +49,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const [isTextGenerated, setIsTextGenerated] = useState(false);
     const [isAuth, setIsAuth] = useState(true);
     const [copied, setCopied] = useState(false);
+    let apiCalled = false;
 
     const handleCopy = () => {
         if (text.trim()) {
@@ -100,7 +101,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 authToken,
             };
 
-            let apiCalled = false;
+
             chrome.runtime.sendMessage({ type: "GENERATE_CONTENT", data: requestData }, (response) => {
                 if (response.success && !apiCalled) {
                     setText(response.data.data);

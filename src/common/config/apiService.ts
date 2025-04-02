@@ -30,7 +30,7 @@ export class apiService {
         createComments: "comments",
         deleteComments: "comments/:id",
         createProfile: "profiles",
-        deleteProfile: "profiles/1",
+        deleteProfile: "profiles/:id",
         getProfiles: "profiles?page=1&limit=0",
         forgotPassword: "auth/forgot-password",
         changePassword: "auth/reset-password",

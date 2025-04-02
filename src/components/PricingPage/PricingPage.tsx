@@ -78,17 +78,18 @@ const PricingPage = () => {
                     undefined,
                     { planId: priceId },
                     (response: any) => {
-                        if (response.status === 201 && response?.data.data) {
+                        if (response.status === 201 && response?.data.data && response?.data.success) {
                             window.open(response?.data.data, '_blank');
                         } else {
-                            Swal.fire("Error", "Subscription failed. Please try again later.", "error");
+                            Swal.fire({ title: "Error", text: "Subscription failed. Please try again later.", icon: "error", confirmButtonColor: "#ff5c35" });
+
                         }
                     }
                 );
             }
         } catch (error) {
             console.error("Error creating subscription:", error);
-            Swal.fire("Error", "Something went wrong. Please try again later.", "error");
+            Swal.fire({ title: "Error", text: "Something went wrong. Please try again later.", icon: "error", confirmButtonColor: "#ff5c35" });
         }
     };
 

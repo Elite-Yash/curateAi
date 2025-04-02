@@ -147,8 +147,8 @@ const UserProfile = () => {
                                                         <img src={getImage('user')} alt="img" className="w-full h-full rounded-full object-cover" />
                                                     </span>
                                                     <div>
-                                                        <p className="text-lg font-semibold">nilay soni</p>
-                                                        <p className="text-gray-500">nilaypsoni@gmail.com</p>
+                                                        <p className="text-lg font-semibold">Emma Kwan</p>
+                                                        <p className="text-gray-500">emmakwan@gmail.com</p>
                                                     </div>
                                                 </div>
                                             </div>
