@@ -22,8 +22,9 @@ const UserProfile = () => {
                 undefined, // No query parameters
                 {}, // No request body
                 (result: any) => {
-                    // if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") 
-                    if (result?.status === 200 && result.data.userDetails.isTrialExpired) {
+                    if (result?.status === 200 && result.data.userDetails.isTrialExpired && result?.data.message === "User does not have an active subscription.") {
+                        setActiveplan(false);
+                    } else {
                         setActiveplan(true);
                     }
                 }
@@ -199,7 +200,7 @@ const UserProfile = () => {
                                                 <h4 className="font-medium mb-3">Manage your billing here.</h4>
                                                 <div className="flex space-x-4 mt-4 items-center">
 
-                                                    {activePlan ?
+                                                    {!activePlan ?
                                                         <>
                                                             <span className="text-base">
                                                                 Join Now and Explore Everything Evarobo Offers

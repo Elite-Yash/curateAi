@@ -73,7 +73,7 @@ const LinkedInProfile = () => {
                     undefined, // No query params for this request
                     {}, // No body required for GET request
                     (result: any) => {
-                        if (result.status === 200 && result.data.userDetails.isTrialExpired) {
+                        if (result.status === 200 && result.data.userDetails.isTrialExpired && result?.data.message === "User does not have an active subscription.") {
                             setActiveplan(false);
                         } else {
                             setActiveplan(true);
