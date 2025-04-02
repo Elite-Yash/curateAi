@@ -75,7 +75,7 @@ const SignIn = () => {
                 undefined,
                 data,
                 (response: any) => {
-                    if (response && response.status === 201 && response.data) {
+                    if (response && response.status === 201 && response.data.message === "Login successful") {
                         const authToken = response.data.data.auth_token;
                         chrome.storage.local.set({ token: authToken }, () => { });
                         setFormData({ email: "", password: "" });
