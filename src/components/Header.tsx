@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../common/utils/logoUtils";
+import { apiService } from "../common/config/apiService";
 
 /**
  * @component
@@ -30,7 +31,9 @@ const Header = () => {
     const [login, setLogin] = useState<string | null>(null);
     const navigate = useNavigate();
     const dropdownRef = useRef<HTMLLIElement | null>(null);
-
+    const [userDetails, seUserDetails] = useState({
+        name: "",
+    });
     useEffect(() => {
         chrome.storage.local.get(["token"], (result) => {
             if (result.token) {
@@ -47,6 +50,7 @@ const Header = () => {
 
     // Close dropdown when clicking outside
     useEffect(() => {
+        checkActivePlan();
         function handleClickOutside(event: any) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setDropdownOpen(false);
@@ -66,6 +70,25 @@ const Header = () => {
         setLogin(null);
     };
 
+    const checkActivePlan = async () => {
+        try {
+            const requestUrl = apiService.EndPoint.checkActivePlan;
+            // Make the API request to check the active plan status
+            await apiService.commonAPIRequest(
+                requestUrl,
+                apiService.Method.get,
+                undefined, // No query parameters
+                {}, // No request body
+                (result: any) => {
+                    seUserDetails({
+                        name: result.data.userDetails.name,
+                    })
+                }
+            );
+        } catch (error) {
+            console.error("Error fetching plans:", error);
+        }
+    };
     return (
         <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-[280px] pr-[30px]">
             <div className="flex flex-col justify-center bg-white relative g-box mt-5 px-8 py-3">
@@ -84,7 +107,7 @@ const Header = () => {
                                     <span className="icon w-8 h-8 rounded-full overflow-hidden border-2 border-solid border-white outline-1 outline-green-950 outline">
                                         <img src={getImage('user')} alt="img" className="w-full h-full rounded-full" />
                                     </span>
-                                    <span className="text-sm dec-color font-normal ">Emma Kwan</span>
+                                    <span className="text-sm dec-color font-normal ">{userDetails.name ? userDetails.name : ""}</span>
                                     <i className="text-xs fa-solid fa-chevron-down dec-color"></i>
                                 </a>
                                 {dropdownOpen && (

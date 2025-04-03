@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
+import Swal from "sweetalert2";
 
 interface SignUpFormData {
     name: string;
@@ -83,6 +84,14 @@ const SignUp = () => {
                     if (response?.status === 201 && response.data.message === "User registered successfully") {
                         setMessage({ text: "Account created successfully!", type: "success" });
                         setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+                        Swal.fire({
+                            title: "Enjoy Your Free Trial!",
+                            text: "Your 3-day trial plan has been activated successfully.",
+                            icon: "success",
+                            confirmButtonColor: "#ff5c35",
+                            cancelButtonColor: "#6c757d",
+                            confirmButtonText: "Got it!",
+                        });
                         setTimeout(() => navigate("/signin"), 2500);
                     } else {
                         setMessage({ text: response?.message || "Sign-up failed. Try again.", type: "error" });

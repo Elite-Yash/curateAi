@@ -4,6 +4,7 @@ import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
 import { Tooltip } from "flowbite-react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * @component
@@ -40,7 +41,9 @@ interface Profile {
 
 const SaveProfile = () => {
   const [profilesData, setProfilesData] = useState<Profile[]>([]);
-  const [load, setLoad] = useState(true)
+  const [load, setLoad] = useState(true);
+  const [activePlan, setActiveplan] = useState(false);
+  const navigate = useNavigate();
 
   const fetchProfiles = useCallback(async () => {
     try {
@@ -109,7 +112,36 @@ const SaveProfile = () => {
 
   useEffect(() => {
     fetchProfiles();
+    checkActivePlan();
   }, [fetchProfiles]);
+
+  const checkActivePlan = async () => {
+    try {
+      const requestUrl = apiService.EndPoint.checkActivePlan;
+      // Make the API request to check the active plan status
+      await apiService.commonAPIRequest(
+        requestUrl,
+        apiService.Method.get,
+        undefined, // No query parameters
+        {}, // No request body
+        (result: any) => {
+          if (result.data.userDetails.isTrialExpired) {
+            if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") {
+              setActiveplan(false);
+            } else {
+              setActiveplan(true);
+            }
+          } else {
+            setActiveplan(true);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    } finally {
+      setLoad(false);
+    }
+  };
 
   const exportToCSV = () => {
     if (!profilesData.length) {
@@ -121,6 +153,27 @@ const SaveProfile = () => {
       });
       return;
     }
+
+    if (!activePlan) {
+      Swal.fire({
+        icon: "warning",
+        title: "Subscription Required",
+        text: "You need an active subscription to export data. Please subscribe.",
+        confirmButtonColor: "#ff5c35",
+        showCancelButton: true,
+        cancelButtonText: "Maybe Later",
+        confirmButtonText: "Subscribe Now",
+        customClass: {
+          title: "!text-[2.5rem] font-bold",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/pricing");
+        }
+      });
+      return;
+    }
+
 
     const headers = ["Name", "Email", "Position", "Organization", "URL", "Created At"];
     const csvRows = profilesData.map((profile) => [
@@ -160,10 +213,12 @@ const SaveProfile = () => {
                     <h4 className="font-medium mb-3">Pricing</h4>
                   </div>
                   <div className="flex space-x-4 items-center">
-                    <button onClick={exportToCSV} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
-                      <span><i className="fa-solid fa-file-arrow-down"></i></span>
-                      <span> Export CSV</span>
-                    </button>
+                    <Tooltip content="Download your data as a CSV file" className="custom-tooltip ex">
+                      <button onClick={exportToCSV} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
+                        <span><i className="fa-solid fa-file-arrow-down"></i></span>
+                        <span> Export CSV</span>
+                      </button>
+                    </Tooltip>
                   </div>
                 </div>
                 <table className="w-full overflow-auto g-table mt-3">

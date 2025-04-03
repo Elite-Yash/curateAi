@@ -5,13 +5,24 @@ import { useNavigate } from "react-router-dom";
 import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
 import { openWindowTab } from "../../common/helpers/commonHelpers";
+import { Tooltip } from "flowbite-react";
 
+interface PlanDetails {
+    interval: string;
+    start_date: string;
+    end_date: string;
+}
 
 const UserProfile = () => {
     const navigate = useNavigate();
     const [load, setLoad] = useState<any>(true);
     const [activePlan, setActiveplan] = useState(false);
-
+    const [userDetails, seUserDetails] = useState({
+        name: "",
+        email: "",
+    });
+    const [userTrialPlan, setUserTrialPlan] = useState(false)
+    const [activePlanDetails, setActiveplanDetails] = useState<PlanDetails>()
     const checkActivePlan = async () => {
         try {
             const requestUrl = apiService.EndPoint.checkActivePlan;
@@ -27,10 +38,16 @@ const UserProfile = () => {
                             setActiveplan(false);
                         } else {
                             setActiveplan(true);
+                            setActiveplanDetails(result?.data.subscriptions[0])
                         }
                     } else {
                         setActiveplan(true);
+                        setUserTrialPlan(true);
                     }
+                    seUserDetails({
+                        name: result.data.userDetails.name,
+                        email: result.data.userDetails.email
+                    })
                 }
             );
         } catch (error) {
@@ -151,8 +168,8 @@ const UserProfile = () => {
                                                         <img src={getImage('user')} alt="img" className="w-full h-full rounded-full object-cover" />
                                                     </span>
                                                     <div>
-                                                        <p className="text-lg font-semibold">Emma Kwan</p>
-                                                        <p className="text-gray-500">emmakwan@gmail.com</p>
+                                                        <p className="text-lg font-semibold">{userDetails.name ? userDetails.name : ""}</p>
+                                                        <p className="text-gray-500">{userDetails.email ? userDetails.email : ""}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -171,24 +188,58 @@ const UserProfile = () => {
                                             </div>
                                             <table className="w-full overflow-auto g-table">
                                                 <thead>
-                                                    <tr>
-                                                        <th className="font-light text-base px-4 color00517C py-3 text-left">
-                                                            <span className="inline-block connect-table-checkbox float-left relative">
-                                                            </span>
-                                                            <span className="info w-auto block text-left">
-                                                                <span className="text-base uppercase font-semibold whitespace-nowrap">Plan Name</span><br />
-                                                            </span>
-                                                        </th>
-                                                        <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Plan Start Date</span></th>
-                                                        <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Plan End Date</span></th>
-                                                    </tr>
+                                                    {
+                                                        userTrialPlan ?
+                                                            <tr>
+                                                                <th rowSpan={3} className="font-light text-base px-4 color00517C py-3 text-center"><span className="text-base uppercase font-semibold whitespace-nowrap text-center">Active Plan</span></th>
+                                                            </tr>
+                                                            :
+                                                            <tr>
+                                                                <th className="font-light text-base px-4 color00517C py-3 text-left">
+                                                                    <span className="inline-block connect-table-checkbox float-left relative">
+                                                                    </span>
+                                                                    <span className="info w-auto block text-left">
+                                                                        <span className="text-base uppercase font-semibold whitespace-nowrap">Plan Name</span><br />
+                                                                    </span>
+                                                                </th>
+                                                                <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Plan Start Date</span></th>
+                                                                <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Plan End Date</span></th>
+                                                            </tr>
+                                                    }
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td className="px-4 py-3">Every 3 months (ACTIVE)</td>
-                                                        <td className="px-4 py-3"> 11-03-2025</td>
-                                                        <td className="px-4 py-3">11-06-2025</td>
-                                                    </tr>
+                                                    {
+                                                        userTrialPlan ?
+                                                            <tr>
+                                                                <td colSpan={3} className="px-4 py-3 text-green font-bold text-center !text-xl">Enjoy your 3 Day free access!</td>
+                                                            </tr>
+                                                            :
+                                                            !activePlan ?
+                                                                <tr>
+                                                                    <td colSpan={3} className="px-4 py-3 text-center font-bold text-red">
+                                                                        You currently do not have an active plan. Consider upgrading to continue enjoying our services!
+                                                                    </td>
+                                                                </tr>
+                                                                :
+                                                                <tr>
+                                                                    <td className="px-4 py-3">
+                                                                        {activePlanDetails?.interval === "year"
+                                                                            ? "Yearly Plan (ACTIVE)"
+                                                                            : "Monthly Plan (ACTIVE)"}
+                                                                    </td>
+                                                                    <td className="px-4 py-3">
+                                                                        {activePlanDetails?.start_date
+                                                                            ? new Date(activePlanDetails.start_date).toLocaleDateString()
+                                                                            : "N/A"}
+                                                                    </td>
+
+                                                                    <td className="px-4 py-3">
+                                                                        {activePlanDetails?.end_date
+                                                                            ? new Date(activePlanDetails.end_date).toLocaleDateString()
+                                                                            : "N/A"}
+                                                                    </td>
+                                                                </tr>
+                                                    }
                                                 </tbody>
                                             </table>
                                         </div>
@@ -209,13 +260,33 @@ const UserProfile = () => {
                                                             <span className="text-base">
                                                                 Join Now and Explore Everything Evarobo Offers
                                                             </span>
-                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Subscribe</button>
+                                                            <Tooltip content="Subscribe to unlock premium features" className="custom-tooltip">
+                                                                <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Subscribe</button>
+                                                            </Tooltip>
                                                         </>
                                                         :
                                                         <>
-                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={getCustomePortalLink}>Manage Subscription</button>
-                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={() => navigate("/pricing")}>Upgrade / Downgrade</button>
-                                                            <button className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform" onClick={cancelActivePlan}>Cancel Subscription</button>
+                                                            <Tooltip content="Manage your current subscription settings" className="custom-tooltip">
+                                                                <button
+                                                                    className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
+                                                                    onClick={getCustomePortalLink}>
+                                                                    Manage Subscription
+                                                                </button>
+                                                            </Tooltip>
+                                                            <Tooltip content="Upgrade or downgrade your plan" className="custom-tooltip">
+                                                                <button
+                                                                    className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
+                                                                    onClick={() => navigate("/pricing")}>
+                                                                    Upgrade / Downgrade
+                                                                </button>
+                                                            </Tooltip>
+                                                            <Tooltip content="Cancel your current subscription" className="custom-tooltip">
+                                                                <button
+                                                                    className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
+                                                                    onClick={cancelActivePlan}>
+                                                                    Cancel Subscription
+                                                                </button>
+                                                            </Tooltip>
                                                         </>
                                                     }
 

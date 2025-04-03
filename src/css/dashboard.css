@@ -382,6 +382,16 @@ body,
     /* Optional: adjust padding */
 }
 
+.custom-tooltip.ex {
+    color: #ffffff;
+    /* Text color */
+    background-color: #000000;
+    /* Background color */
+    padding: 0.5rem;
+    /* Optional: adjust padding */
+    width: 240px;
+}
+
 .custom-tooltip::before {
     content: "";
     position: absolute;
