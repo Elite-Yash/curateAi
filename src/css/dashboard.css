@@ -88,7 +88,8 @@
     fill: var(--fill-dark) !important;
 }
 
-.border-color-one {
+.border-color-one,
+.left-menu a.active {
     border-color: var(--border-color-one) !important;
 }
 
@@ -403,4 +404,8 @@ body,
     border-bottom: 0;
     border-top: 14px solid #000;
     transform: translate(-50%, calc(100% + -1px));
+}
+
+.border-color-gr2 {
+    border-color: #4f59662b !important;
 }
