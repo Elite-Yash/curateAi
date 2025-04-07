@@ -72,7 +72,7 @@ const Twitter = () => {
 
             // Create and append the custom icon
             const customIcon = document.createElement("img");
-            customIcon.src = chrome.runtime.getURL("/icon.png");
+            customIcon.src = chrome.runtime.getURL("/f-logo.png");
             customIcon.alt = "curateai-open-popup-icon";
             customIcon.className = "curateai-open-popup-icon";
             customIcon.style.cursor = "pointer";

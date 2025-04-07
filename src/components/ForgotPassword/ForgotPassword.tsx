@@ -61,9 +61,9 @@ const ForgotPassword = () => {
                 (response: any) => {
                     if (response.status === 201 && response.data.message === "Password reset email sent successfully") {
                         showMessage("Password reset link sent to your email!", "success");
-                        setTimeout(() => {
-                            navigate("/change-password");
-                        }, 2500);
+                        // setTimeout(() => {
+                        // navigate("/change-password");
+                        // }, 2500);
                     } else {
                         showMessage(response.message || "Failed to send reset link. Try again.", "error");
                     }

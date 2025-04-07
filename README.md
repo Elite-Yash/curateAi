@@ -1,6 +1,6 @@
-## CurateAi Chrome Plugin
+## Evarobo Chrome Plugin
 
-CurateAi.
+Evarobo.
 
 ###Supported browsers
 For now **Chrome** is supported.

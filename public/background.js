@@ -2,21 +2,6 @@
 console.log("Background...!");
 importScripts('./apiUrlConfig.js');
 
-// When toolbar icon is clicked, toggle popup in the current tab
-chrome.action.onClicked.addListener(function (tab) {
-    chrome.tabs.create({ url: "https://www.linkedin.com" });
-});
-
-
-// Background script or content script
-chrome.webNavigation.onCompleted.addListener((details) => {
-    if (details.url.includes("linkedin.com/m/logout")) {
-        // Clear localStorage when the user logs out
-        localStorage.clear();
-    }
-}, { url: [{ hostContains: 'linkedin.com' }] });
-
-
 // background.js
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

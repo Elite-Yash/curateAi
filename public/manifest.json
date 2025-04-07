@@ -1,6 +1,6 @@
 {
-  "name": "CurateAi",
-  "description": "CurateAi Extension",
+  "name": "Evarobo",
+  "description": "Evarobo is an AI LinkedIn assistant that automates outreach, writes smart messages, and helps teams generate leads faster.",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
@@ -13,7 +13,7 @@
   },
   "action": {
     "default_icon": "f-logo.png",
-    "default_title": "CurateAi",
+    "default_title": "Evarobo",
     "default_popup": "popup.html"
   },
   "permissions": [
@@ -21,13 +21,11 @@
     "tabs",
     "storage",
     "cookies",
-    "notifications",
-    "alarms",
-    "scripting",
-    "webNavigation"
+    "scripting"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "https://*.linkedin.com/*",
+    "https://*.x.com/*"
   ],
   "web_accessible_resources": [
     {
@@ -35,7 +33,8 @@
         "*"
       ],
       "matches": [
-        "<all_urls>"
+        "https://*.linkedin.com/*",
+        "https://*.x.com/*"
       ]
     }
   ],

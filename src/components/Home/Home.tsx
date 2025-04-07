@@ -32,7 +32,7 @@ const Home = () => {
                                 </span>
                                 <span className="uppercase dec-color background-three px-2.5 rounded-3xl">+1.23%</span>
                             </div>
-                            <h4 className="font-bold pt-2">$ 599.250</h4>
+                            <h4 className="font-bold pt-2">$ 0.0</h4>
                             <p className="flex items-center justify-between">
                                 <span className="uppercase dec-color">Total Earnings</span>
                                 <a href="#" className="underline color-one">Detail</a>
@@ -47,7 +47,7 @@ const Home = () => {
                                 </span>
                                 <span className="uppercase dec-color background-three px-2.5 rounded-3xl">+1.23%</span>
                             </div>
-                            <h4 className="font-bold pt-2">$ 599.250</h4>
+                            <h4 className="font-bold pt-2">$ 0.0</h4>
                             <p className="flex items-center justify-between">
                                 <span className="uppercase dec-color">Total Earnings</span>
                                 <a href="#" className="underline color-one">Detail</a>
@@ -62,7 +62,7 @@ const Home = () => {
                                 </span>
                                 <span className="uppercase dec-color background-three px-2.5 rounded-3xl">+1.23%</span>
                             </div>
-                            <h4 className="font-bold pt-2">$ 599.250</h4>
+                            <h4 className="font-bold pt-2">$ 0.0</h4>
                             <p className="flex items-center justify-between">
                                 <span className="uppercase dec-color">Total Earnings</span>
                                 <a href="#" className="underline color-one">Detail</a>
@@ -77,7 +77,7 @@ const Home = () => {
                                 </span>
                                 <span className="uppercase dec-color background-three px-2.5 rounded-3xl">+1.23%</span>
                             </div>
-                            <h4 className="font-bold pt-2">$ 599.250</h4>
+                            <h4 className="font-bold pt-2">$ 0.0</h4>
                             <p className="flex items-center justify-between">
                                 <span className="uppercase dec-color">Total Earnings</span>
                                 <a href="#" className="underline color-one">Detail</a>
