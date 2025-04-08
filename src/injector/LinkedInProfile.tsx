@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import SaveProfileForm from "../components/aiPopup/SaveProfileForm";
 import { getImage } from "../common/utils/logoUtils";
 import { createCustomButton } from "../common/utils/createCustomButton";
@@ -7,7 +7,7 @@ import { apiService } from "../common/config/apiService";
 const LinkedInProfile = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
     const [profileName, setProfileName] = useState("");
-    // const [email, setEmail] = useState("");
+    const [email, setEmail] = useState("");
     const [position, setPosition] = useState("");
     const [company, setCompany] = useState("");
     const [profileImg, setProfileImg] = useState("")
@@ -40,9 +40,66 @@ const LinkedInProfile = () => {
     };
 
     const handleClick = () => {
-        scrapeProfileData();
-        setOpenAiPopup(true);
+        findemailfun();
+        // scrapeProfileData();
+        // setOpenAiPopup(true);
     };
+
+    // const findemailfun = () => {
+    //     return new Promise<void>((resolve) => {
+    //         const findemail = document.querySelector("div.ph5 div.mt2 .mt2 a");
+    //         if (findemail) {
+    //             (findemail as HTMLAnchorElement).click();
+    //             setTimeout(() => {
+    //                 function findEmailsOnPage() {
+    //                     const bodyText = document.body.innerText;
+    //                     const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/gi;
+    //                     const emails = bodyText.match(emailRegex);
+    //                     return emails ? [...new Set(emails)] : [];
+    //                 }
+
+    //                 const emails = findEmailsOnPage();
+    //                 const firstEmail = emails[0];
+    //                 setEmail(firstEmail); // Set the email state
+
+    //                 // const closeBtn = document.querySelector('button[aria-label="Dismiss"]');
+    //                 // if (closeBtn) {
+    //                 //     (closeBtn as HTMLAnchorElement).click();
+    //                 // }
+
+    //                 // Resolve the promise after setting the email
+    //                 resolve();
+    //             }, 2500);
+    //         } else {
+    //             resolve(); // Resolve immediately if no email link found
+    //         }
+    //     });
+    // };
+
+
+    const findemailfun = useCallback(() => {
+        const emailUrl = `${window.location.href}overlay/contact-info/`;
+        const iframe = document.createElement('iframe');
+        iframe.src = emailUrl;
+        iframe.id = 'emailFinder';
+        iframe.style.width = '1px';
+        iframe.style.height = '1px';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
+
+        iframe.onload = () => {
+            const iframeDocument = (iframe.contentDocument || iframe.contentWindow?.document) as Document;
+            if (iframeDocument) {
+                const bodyText = iframeDocument.body.innerText;
+                const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/gi;
+                const emails = bodyText.match(emailRegex);
+                const emailData = emails ? emails[0] : ""
+                setEmail(emailData);
+                scrapeProfileData();
+                setOpenAiPopup(true);
+            }
+        };
+    }, [scrapeProfileData]);
 
     useEffect(() => {
         // Function to append the custom button
@@ -96,10 +153,6 @@ const LinkedInProfile = () => {
     }, []);
 
 
-    useEffect(() => {
-
-    }, []);
-
     if (openAiPopup) {
         return (
             <div
@@ -116,7 +169,7 @@ const LinkedInProfile = () => {
                     zIndex: 21213123,
                 }}
             >
-                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} activePlan={activePlan} />
+                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} activePlan={activePlan} findemail={email} />
             </div>
         );
     }

@@ -10,13 +10,14 @@ interface SaveProfileFormProps {
     company: string;
     profileImg: string;
     activePlan: boolean;
+    findemail?: string | any;
 }
 
-const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName, position, company, profileImg, activePlan }) => {
+const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName, position, company, profileImg, activePlan, findemail }) => {
     const [name, setName] = useState(profileName);
     const [positionState, setPosition] = useState(position);
     const [companyState, setCompany] = useState(company);
-    const [email, setEmail] = useState(""); // Handle email input
+    const [email, setEmail] = useState(findemail); // Handle email input
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState<string | null>(null); // Error handling
     const [success, setSuccess] = useState(false); // Success message
@@ -25,13 +26,14 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         setName(profileName);
         setPosition(position);
         setCompany(company);
-    }, [profileName, position, company]);
+        setEmail(findemail);
+    }, [profileName, position, company, findemail]);
 
     const validateForm = () => {
-        if (!name.trim()) return "Name is required.";
-        if (!email.trim()) return "Email is required.";
-        if (!positionState.trim()) return "Position is required.";
-        if (!companyState.trim()) return "Company is required.";
+        if (!name || !name.trim()) return "Name is required.";
+        if (!email || !email.trim()) return "Email is required.";
+        if (!positionState || !positionState.trim()) return "Position is required.";
+        if (!companyState || !companyState.trim()) return "Company is required.";
         return null;
     };
 
