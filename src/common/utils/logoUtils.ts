@@ -7,6 +7,7 @@ import copyIcon from "../../images/copy-icon.svg";
 import saveProfileIcon from "../../images/saveProfileIcon.svg";
 import logoBlack from "../../../public/logo.png";
 import fLogo from "../../../public/f-logo.png";
+import loader from "../../images/loader.svg";
 
 
 const imagePath: any = {
@@ -17,13 +18,13 @@ const imagePath: any = {
   copyIcon,
   saveProfileIcon,
   fLogo,
-  logoBlack
+  logoBlack,
+  loader
 };
 
 // Get Logo image
 export const getImage = (imageName: string) => {
   if (window.chrome) {
-
     return chrome.runtime.getURL(imagePath[imageName]);
   }
 };

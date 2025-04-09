@@ -41,8 +41,8 @@ const LinkedInProfile = () => {
 
     const handleClick = () => {
         findemailfun();
-        // scrapeProfileData();
-        // setOpenAiPopup(true);
+        scrapeProfileData();
+        setOpenAiPopup(true);
     };
 
     // const findemailfun = () => {
@@ -95,8 +95,7 @@ const LinkedInProfile = () => {
                 const emails = bodyText.match(emailRegex);
                 const emailData = emails ? emails[0] : ""
                 setEmail(emailData);
-                scrapeProfileData();
-                setOpenAiPopup(true);
+                document.body.removeChild(iframe);
             }
         };
     }, [scrapeProfileData]);

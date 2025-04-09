@@ -14,19 +14,31 @@ interface SaveProfileFormProps {
 }
 
 const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName, position, company, profileImg, activePlan, findemail }) => {
-    const [name, setName] = useState(profileName);
-    const [positionState, setPosition] = useState(position);
-    const [companyState, setCompany] = useState(company);
-    const [email, setEmail] = useState(findemail); // Handle email input
+    const [name, setName] = useState("");
+    const [positionState, setPosition] = useState("");
+    const [companyState, setCompany] = useState("");
+    const [email, setEmail] = useState(""); // Handle email input
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState<string | null>(null); // Error handling
     const [success, setSuccess] = useState(false); // Success message
+    const [load, setLoad] = useState(true);
 
     useEffect(() => {
         setName(profileName);
         setPosition(position);
         setCompany(company);
         setEmail(findemail);
+
+        const missingFields: string[] = [];
+
+        if (!findemail || findemail.trim() === "") missingFields.push("Email");
+        if (!company || company.trim() === "") missingFields.push("Company");
+        if (!position || position.trim() === "") missingFields.push("Position");
+
+        if (missingFields.length > 0) {
+            setError(`${missingFields.join(", ")} not found`);
+            setTimeout(() => setError(null), 5000);
+        }
     }, [profileName, position, company, findemail]);
 
     const validateForm = () => {
@@ -88,7 +100,11 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         }
     };
 
-
+    useEffect(() => {
+        setTimeout(() => {
+            setLoad(false)
+        }, 2000)
+    }, [])
 
 
     return (
@@ -107,35 +123,51 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                         ><img src={getImage('close')} alt="img" className="w-full h-full rounded-full" /></span>
                     </div>
                     {
-                        activePlan ?
-                            <div className="p-9 flex justify-between item-center flex-col gap-5">
-                                <div className="w-full input-group">
-                                    <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+
+                        load ?
+                            <>
+                                <div className="flex justify-center h-80">
+                                    <div className="flex flex-col justify-center items-center">
+                                        <span
+                                            className="loader relative w-32 h-32 object-cover p-2"
+                                            style={{ '--loader-url': `url(${getImage('loader')})` } as React.CSSProperties}
+                                        >
+                                            <img src={getImage('fLogo')} alt="img" className="w-full h-full" />
+                                        </span>
+                                        <span className="text-[#ff5c35] !text-2xl font-light">Loading...</span>
+                                    </div >
                                 </div>
-                                <div className="w-full input-group">
-                                    <input type="email" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                </div>
-                                <div className="w-full input-group">
-                                    <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Position" value={positionState} onChange={(e) => setPosition(e.target.value)} />
-                                </div>
-                                <div className="w-full input-group">
-                                    <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Company/Institution" value={companyState} onChange={(e) => setCompany(e.target.value)} />
-                                </div>
-                                <div className="popup-buttons justify-end space-x-2 text-right relative flex items-center">
-                                    {error && <p className="text-red text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">{error}</p>}
-                                    {success && <p className="text-green text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">Profile saved successfully!</p>}
-                                    <button onClick={handleSave} disabled={loading} className="justify-center flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 bg-[#ff5c35] text-white rounded-md hover:bg-[#c64e30] disabled:bg-gray-400" style={{ "width": "80px" }}>
-                                        {loading ? "Saving..." : "Save"}
-                                    </button>
-                                </div>
-                            </div>
+                            </>
                             :
-                            <div className="p-9 flex justify-between item-center flex-col gap-5">
-                                <span className="text-center text-5xl font-bold text-red">!! Alert !!</span>
-                                <span className="text-justify">
-                                    Hey User, you don’t have an active plan on Evarobo yet. Subscribe now and start enjoying all the amazing features!
-                                </span>
-                            </div>
+                            activePlan ?
+                                <div className="p-9 flex justify-between item-center flex-col gap-5">
+                                    <div className="w-full input-group">
+                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+                                    </div>
+                                    <div className="w-full input-group">
+                                        <input type="email" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    </div>
+                                    <div className="w-full input-group">
+                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Position" value={positionState} onChange={(e) => setPosition(e.target.value)} />
+                                    </div>
+                                    <div className="w-full input-group">
+                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Company/Institution" value={companyState} onChange={(e) => setCompany(e.target.value)} />
+                                    </div>
+                                    <div className="popup-buttons justify-end space-x-2 text-right relative flex items-center">
+                                        {error && <p className="text-red text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">{error}</p>}
+                                        {success && <p className="text-green text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">Profile saved successfully!</p>}
+                                        <button onClick={handleSave} disabled={loading} className="justify-center flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 bg-[#ff5c35] text-white rounded-md hover:bg-[#c64e30] disabled:bg-gray-400" style={{ "width": "80px" }}>
+                                            {loading ? "Saving..." : "Save"}
+                                        </button>
+                                    </div>
+                                </div>
+                                :
+                                <div className="p-9 flex justify-between item-center flex-col gap-5">
+                                    <span className="text-center text-5xl font-bold text-red">!! Alert !!</span>
+                                    <span className="text-justify">
+                                        Hey User, you don’t have an active plan on Evarobo yet. Subscribe now and start enjoying all the amazing features!
+                                    </span>
+                                </div>
                     }
                 </div>
             </div>

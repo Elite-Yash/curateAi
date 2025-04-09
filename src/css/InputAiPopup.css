@@ -226,3 +226,32 @@ span.close-box {
 .popup-container .s-logo {
     width: 45px;
 }
+
+.loader:before {
+    content: "";
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    top: -20px;
+    left: -15px;
+    transform: translate(-50%, -50%);
+    /* background: url(../images/loader.svg); */
+    border-radius: 100%;
+    animation: rotation 5s infinite linear;
+    background-size: cover;
+    z-index: 0;
+}
+
+.loader::before {
+    background-image: var(--loader-url);
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
