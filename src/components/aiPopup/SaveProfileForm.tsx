@@ -23,22 +23,29 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
     const [success, setSuccess] = useState(false); // Success message
     const [load, setLoad] = useState(true);
 
+    // useEffect(() => {
+    //     setName(profileName);
+    //     setPosition(position);
+    //     setCompany(company);
+    //     setEmail(findemail);
+
+    //     const missingFields: string[] = [];
+
+    //     if (!findemail || findemail.trim() === "") missingFields.push("Email");
+    //     if (!company || company.trim() === "") missingFields.push("Company");
+    //     if (!position || position.trim() === "") missingFields.push("Position");
+
+    //     if (missingFields.length > 0) {
+    //         setError(`${missingFields.join(", ")} not found`);
+    //         setTimeout(() => setError(null), 5000);
+    //     }
+    // }, [profileName, position, company, findemail]);
+
     useEffect(() => {
-        setName(profileName);
-        setPosition(position);
-        setCompany(company);
-        setEmail(findemail);
-
-        const missingFields: string[] = [];
-
-        if (!findemail || findemail.trim() === "") missingFields.push("Email");
-        if (!company || company.trim() === "") missingFields.push("Company");
-        if (!position || position.trim() === "") missingFields.push("Position");
-
-        if (missingFields.length > 0) {
-            setError(`${missingFields.join(", ")} not found`);
-            setTimeout(() => setError(null), 5000);
-        }
+        setName(profileName || "");
+        setPosition(position || "");
+        setCompany(company || "");
+        setEmail(findemail || "");
     }, [profileName, position, company, findemail]);
 
     const validateForm = () => {
@@ -145,13 +152,13 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                                         <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
                                     </div>
                                     <div className="w-full input-group">
-                                        <input type="email" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                        <input type="email" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder={!email ? "Email not found" : "Email"} value={email} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                     <div className="w-full input-group">
-                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Position" value={positionState} onChange={(e) => setPosition(e.target.value)} />
+                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder={!positionState ? "Position not found" : "Position"} value={positionState} onChange={(e) => setPosition(e.target.value)} />
                                     </div>
                                     <div className="w-full input-group">
-                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder="Company/Institution" value={companyState} onChange={(e) => setCompany(e.target.value)} />
+                                        <input type="text" className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring focus:ring-[#ff9479]" placeholder={!companyState ? "Company not found" : "Company"} value={companyState} onChange={(e) => setCompany(e.target.value)} />
                                     </div>
                                     <div className="popup-buttons justify-end space-x-2 text-right relative flex items-center">
                                         {error && <p className="text-red text-xl ml-2.5 absolute left-0 border border-solid p-4 rounded-lg">{error}</p>}
