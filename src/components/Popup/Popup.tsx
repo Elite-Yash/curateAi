@@ -66,7 +66,7 @@ const Popup: React.FC = () => {
             </p>
             <p className="dec-color mb-3 mt-3 font-normal leading-7 text-center">
                 {login
-                    ? "How to use the Evarobo pleas click here"
+                    ? "How to use the Evarobo please click here"
                     : ""
                 }
             </p>
