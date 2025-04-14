@@ -40,6 +40,7 @@ export class apiService {
         checkActivePlan: "user-subscription/check-subscription",
         cancelActivePlan: "user-subscription/cancel-subscription",
         getCustomerPortalLink: "user-subscription/get-customer-portal-link",
+        saveGooglegrive: "profiles/export-to-google-sheet",
     };
 
     static Method = {

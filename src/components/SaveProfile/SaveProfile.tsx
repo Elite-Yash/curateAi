@@ -198,6 +198,105 @@ const SaveProfile = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const saveToDrive = async () => {
+
+    if (!profilesData.length) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Data Available",
+        text: "There is no data to export.",
+        confirmButtonColor: "#ff5c35",
+      });
+      return;
+    }
+
+    if (!activePlan) {
+      Swal.fire({
+        icon: "warning",
+        title: "Subscription Required",
+        text: "You need an active subscription to export data. Please subscribe.",
+        confirmButtonColor: "#ff5c35",
+        showCancelButton: true,
+        cancelButtonText: "Maybe Later",
+        confirmButtonText: "Subscribe Now",
+        customClass: {
+          title: "!text-[2.5rem] font-bold",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/pricing");
+        }
+      });
+      return;
+    }
+
+    const { value: sheetUrl } = await Swal.fire({
+      title: 'Enter Google Sheet URL',
+      html: `
+            <p class="color-one mb-2">Please follow these steps:</p>
+            <ul class="list-disc space-y-2 pl-5 text-justify">
+              <li>Make sure you are logged into your <strong>Google</strong> account.</li>
+              <li>Open a new tab and create a <strong>blank Google Sheet</strong> by visiting 
+                <a href="https://sheets.new" target="_blank" class="text-blue-400 underline">sheets.new</a>.
+              </li> 
+              <li>Click on the <strong>Share</strong> button in the top-right corner.</li>
+              <li>Change <strong>Restricted</strong> to <strong>Anyone with the link</strong>.</li>
+              <li>Set the permission from <strong>Viewer</strong> to <strong>Editor</strong>.</li>
+              <li>Click on the <strong>Copy link</strong> button.</li>
+              <li>Paste the copied URL here in the input field below.</li>
+            </ul>
+            `,
+      input: 'url',
+      inputPlaceholder: 'Paste your Google Sheet URL here...',
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      confirmButtonColor: '#ff5c35',
+      customClass: {
+        title: '!text-3xl font-semibold',
+        actions: 'flex justify-end w-full gap-2 px-4',
+      },
+      inputValidator: (value) => {
+        if (!value) return 'Please enter the URL!'
+        const isValid = /^https:\/\/docs\.google\.com\/spreadsheets\/d\/.+/.test(value)
+        if (!isValid) return 'Please enter a valid Google Sheet URL!'
+      }
+    })
+
+    if (sheetUrl) {
+      // Call your API here
+      const payload = {
+        google_sheet_url: sheetUrl,
+      }
+      try {
+        Swal.fire({
+          title: 'Saving...',
+          text: 'Please wait while we save your file.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => Swal.showLoading()
+        })
+        const requestUrl = apiService.EndPoint.saveGooglegrive;
+        // Make the API request to check the active plan status
+        await apiService.commonAPIRequest(
+          requestUrl,
+          apiService.Method.post,
+          undefined, // No query parameters
+          payload, // No request body
+          (result: any) => {
+            if (result.data.status === 200 && result.data.message === "Profiles exported successfully.") {
+              Swal.fire('Success!', 'Your file has been saved to Google Drive.', 'success')
+            } else {
+              Swal.fire('Something went wrong', result.data.message || 'Something issue at server.', 'error')
+            }
+          }
+        );
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+        Swal.fire('Error', 'Something went wrong while connecting to the server.', 'error')
+      }
+    }
+  }
+
   return (
     <>
       <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
@@ -213,6 +312,12 @@ const SaveProfile = () => {
                     <h4 className="font-medium mb-3">Pricing</h4>
                   </div>
                   <div className="flex space-x-4 items-center">
+                    <Tooltip content="Send a copy to Google Drive" className="custom-tooltip ex !w-auto">
+                      <button onClick={saveToDrive} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
+                        <span><i className="fa-brands fa-google-drive"></i></span>
+                        <span> Save to Drive</span>
+                      </button>
+                    </Tooltip>
                     <Tooltip content="Download your data as a CSV file" className="custom-tooltip ex">
                       <button onClick={exportToCSV} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
                         <span><i className="fa-solid fa-file-arrow-down"></i></span>
