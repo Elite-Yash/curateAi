@@ -186,7 +186,7 @@ const SaveProfile = () => {
     ]);
 
     // Convert to CSV string
-    const csvString = [headers, ...csvRows].map((row) => row.join(",")).join("\n");
+    const csvString = [headers, ...csvRows].map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
 
     // Create Blob and download
     const blob = new Blob([csvString], { type: "text/csv" });
