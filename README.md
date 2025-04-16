@@ -1,6 +1,6 @@
-## Salesmagnet Chrome Plugin
+## Evarobo Chrome Plugin
 
-Salesmagnet.
+Evarobo.
 
 ###Supported browsers
 For now **Chrome** is supported.

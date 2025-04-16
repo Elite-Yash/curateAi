@@ -14,7 +14,17 @@ export default defineConfig({
           entry: "../src/main.tsx", // Entry file for the main app
           filename: "index.html",
           template: "public/index.html",
-        }
+        },
+        {
+          entry: "../src/main.tsx", // Entry file for the main app
+          filename: "popup.html",
+          template: "public/popup.html",
+        },
+        {
+          entry: "../src/main.tsx", // Entry file for the main app
+          filename: "dashboard.html",
+          template: "public/dashboard.html",
+        },
       ],
     }),
     viteStaticCopy({ // Updated to use named import
@@ -23,6 +33,11 @@ export default defineConfig({
         //   src: "public/index.html", // Copy template
         //   dest: "",                  // Destination root in the build
         //   rename: "popup.html",      // Rename as popup.html
+        // },
+        // {
+        //   src: "public/index.html", // Copy template
+        //   dest: "",                  // Destination root in the build
+        //   rename: "dashboard.html",      // Rename as popup.html
         // },
         // {
         //   src: "src/ContentScript/content.tsx", // Ensure blank script is copied

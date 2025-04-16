@@ -1,29 +1,22 @@
+import "../src/css/popup.css";
+import Popup from "./components/Popup/Popup";
+// Check if chrome.runtime is available
 /**
- * Entry point for the React application.
- * This script initializes the root DOM element and renders the main React component, `App`, into it.
- * It also sets up routing with `MemoryRouter` from `react-router-dom` and integrates Redux state management
- * with the `Provider` component from `react-redux`.
+ * Main application component.
  *
- * @module
- * @requires react-dom/client
- * @requires react-router-dom
- * @requires react-redux
- * @requires ./App.tsx
- * @requires ./index.css
+ * This component handles the main logic of the application, including:
+ * - Toggle functionality for opening/closing the main content.
+ * - Drag-and-drop functionality for a draggable icon.
+ * - Application of dynamic styles to iframes.
+ * - Interaction with Chrome's storage and runtime APIs.
+ *
+ * @returns {JSX.Element} The rendered component.
  */
 
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "../src/assets/css/index.css";
-import { MemoryRouter as Router } from "react-router-dom";
-// Create a new <div> element to serve as the root container for the React app
-const root = document.querySelector("body");
+const PopUp = () => {
+  return <>
+    <Popup />
+  </>
+};
 
-// Render the React application into the root container
-if (root) {
-  ReactDOM.createRoot(root).render(
-    <Router>
-        <App />
-    </Router>
-  );
-}
+export default PopUp;
