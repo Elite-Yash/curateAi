@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/InputAiPopup.css";
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants";
 import { ArticleInfo, PostData } from "../../constants/types";
@@ -157,6 +157,30 @@ const InputAiPopup: React.FC<ModalProps> = ({
             insertGeneratedPost(text);
         }
     };
+
+    useEffect(() => {
+        // Load saved selections from Chrome storage
+        chrome.storage.sync.get(['selectedLanguage', 'selectedTone', 'selectedMotive'], (result) => {
+            if (result.selectedLanguage) {
+                setLanguage(result.selectedLanguage);
+            }
+            if (result.selectedTone) {
+                setTone(result.selectedTone);
+            }
+            if (result.selectedMotive) {
+                setMotive(result.selectedMotive);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        // Save selections to Chrome storage whenever they change
+        chrome.storage.sync.set({
+            selectedLanguage: language,
+            selectedTone: tone,
+            selectedMotive: motives
+        });
+    }, [language, tone, motives]);
 
     return (
         <div className={`popup-overlay ${isOpen ? "open" : ""} fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
