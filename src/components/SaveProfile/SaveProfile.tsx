@@ -44,6 +44,7 @@ const SaveProfile = () => {
   const [load, setLoad] = useState(true);
   const [activePlan, setActiveplan] = useState(false);
   const navigate = useNavigate();
+  const [user_id, setUser_id] = useState<number | string>("");
 
   const fetchProfiles = useCallback(async () => {
     try {
@@ -94,7 +95,6 @@ const SaveProfile = () => {
           undefined,
           {},
           (response: any) => {
-            console.log("result", response)
             if (response?.status === 200 && response.data.message === "Saved profile removed successfully") {
               fetchProfiles();
               Swal.fire({ title: "Deleted!", text: "Profile has been deleted.", icon: "success", confirmButtonColor: "#ff5c35" });
@@ -134,6 +134,7 @@ const SaveProfile = () => {
           } else {
             setActiveplan(true);
           }
+          setUser_id(result?.data?.userDetails?.id)
         }
       );
     } catch (error) {
@@ -253,7 +254,8 @@ const SaveProfile = () => {
       confirmButtonColor: '#ff5c35',
       customClass: {
         title: '!text-3xl font-semibold',
-        actions: 'flex justify-end w-full gap-2 px-4',
+        actions: 'flex justify-end w-full gap-2 px-7',
+        input: "w-[87%] mx-auto mt-4 outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl m-0 swal2-input",
       },
       inputValidator: (value) => {
         if (!value) return 'Please enter the URL!'
@@ -297,6 +299,132 @@ const SaveProfile = () => {
     }
   }
 
+  const connectToCRM = async () => {
+
+    if (!activePlan) {
+      Swal.fire({
+        icon: "warning",
+        title: "Subscription Required",
+        text: "You need an active subscription to connect CRM. Please subscribe.",
+        confirmButtonColor: "#ff5c35",
+        showCancelButton: true,
+        cancelButtonText: "Maybe Later",
+        confirmButtonText: "Subscribe Now",
+        customClass: {
+          title: "!text-[2.5rem] font-bold",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/pricing");
+        }
+      });
+      return;
+    }
+
+    const { value: formValues } = await Swal.fire({
+      title: 'Connect With CRM',
+      html: `
+        <label for="crm-select" class="block text-left mb-1 text-sm font-medium">Select your CRM:</label>
+        <select id="crm-select" class="swal2-input w-full outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl">
+          <option value="">-- Select CRM --</option>
+          <option value="zendesk">Zendesk</option>
+        </select>
+  
+        <div id="zendesk-fields" style="display:none;">
+          <label class="block text-left mt-4 mb-1 text-sm font-medium">Zendesk URL</label>
+          <input type="text" id="zendesk-url" class="w-full outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl m-0 swal2-input" placeholder="https://yourcompany.zendesk.com" />
+  
+          <label class="block text-left mt-4 mb-1 text-sm font-medium">Zendesk Token</label>
+          <input type="text" id="zendesk-token" class="w-full outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl m-0 swal2-input" placeholder="Enter your token" />
+  
+          <div class="mt-6 text-left text-sm bg-gray-100 p-0 rounded">
+            <p class="font-font-semibold mb-2">How to get your Zendesk URL & Token:</p>
+            <ol class="list-decimal ml-5 space-y-1 text-gray-700">
+              <li>Your Zendesk URL is like: https://yourcompany.zendesk.com</li>
+              <li>Go to <strong>Zendesk Admin</strong> → Channels → API</li>
+              <li>Enable <strong>Token Access</strong> and generate a new token</li>
+              <li>Copy & paste the token here</li>
+            </ol>
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Connect',
+      confirmButtonColor: '#ff5c35',
+      customClass: {
+        title: '!text-3xl font-semibold',
+        actions: 'flex justify-end w-full gap-2 px-7',
+      },
+      didOpen: () => {
+        const crmSelect = document.getElementById('crm-select') as HTMLSelectElement | null;
+        const zendeskFields = document.getElementById('zendesk-fields') as HTMLElement | null;
+
+        if (crmSelect && zendeskFields) {
+          crmSelect.addEventListener('change', (e: Event) => {
+            const target = e.target as HTMLSelectElement | null;
+            if (target) {
+              zendeskFields.style.display = target.value === 'zendesk' ? 'block' : 'none';
+            }
+          });
+        }
+      },
+      preConfirm: () => {
+        const crm = (document.getElementById('crm-select') as HTMLSelectElement).value;
+        if (crm === 'zendesk') {
+          const url = (document.getElementById('zendesk-url') as HTMLInputElement).value.trim();
+          const token = (document.getElementById('zendesk-token') as HTMLInputElement).value.trim();
+          if (!url || !token) {
+            Swal.showValidationMessage('Please enter both Zendesk URL and token');
+          }
+          return { crm, url, token };
+        } else {
+          Swal.showValidationMessage('Please select a CRM');
+        }
+      }
+    });
+
+    if (formValues?.crm === 'zendesk') {
+      const { url, token } = formValues;
+
+      try {
+        Swal.fire({
+          title: 'Connecting...',
+          text: 'Please wait while we connect your CRM.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        const payload = {
+          crm_name: 'zendesk',
+          crm_url: url,
+          token: token,
+          user_id: user_id,
+        };
+
+        const requestUrl = apiService.EndPoint.connectToCRM;
+
+        await apiService.commonAPIRequest(
+          requestUrl,
+          apiService.Method.post,
+          undefined,
+          payload,
+          (result: any) => {
+            if (result.status === 201 && result?.data?.message === "Connected Successfully") {
+              Swal.fire('Success!', 'Your CRM is now connected.', 'success');
+            } else {
+              Swal.fire('Failed', result.data.message || 'Unable to connect CRM.', 'error');
+            }
+          }
+        );
+      } catch (error) {
+        console.error("CRM Connection Error:", error);
+        Swal.fire('Error', 'Something went wrong while connecting CRM.', 'error');
+      }
+    }
+  };
+
+
   return (
     <>
       <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
@@ -312,6 +440,13 @@ const SaveProfile = () => {
                     <h4 className="font-medium mb-3">Pricing</h4>
                   </div>
                   <div className="flex space-x-4 items-center">
+                    <Tooltip content="Sync with your CRM system" className="custom-tooltip ex !w-auto">
+                      <button onClick={connectToCRM} className="bg-white border border-[#ff5c35] text-[#ff5c35] px-4 py-2 text-base rounded-lg hover:bg-[#ff5c35] hover:text-white flex items-center gap-2 transition-transform duration-200 ease-in-out">
+                        <span><i className="fa-solid fa-globe"></i></span>
+                        <span>Connect to CRM</span>
+                      </button>
+                    </Tooltip>
+
                     <Tooltip content="Send a copy to Google Drive" className="custom-tooltip ex !w-auto">
                       <button onClick={saveToDrive} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
                         <span><i className="fa-brands fa-google-drive"></i></span>

@@ -41,6 +41,8 @@ export class apiService {
         cancelActivePlan: "user-subscription/cancel-subscription",
         getCustomerPortalLink: "user-subscription/get-customer-portal-link",
         saveGooglegrive: "profiles/export-to-google-sheet",
+        connectToCRM: "crm",
+        savToCRM: "crm/add-to-crm",
     };
 
     static Method = {
