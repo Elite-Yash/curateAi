@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Clear specific data when the extension is unloaded
 chrome.runtime.onSuspend.addListener(() => {
-    chrome.storage.local.remove(["token", "isInstalled"]);
+    chrome.storage.local.remove(["token", "isInstalled", "crmData"]);
     chrome.storage.sync.remove(['selectedLanguage', 'selectedTone', 'selectedMotive']);
 });
 

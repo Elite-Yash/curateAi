@@ -255,3 +255,34 @@ span.close-box {
         transform: rotate(359deg);
     }
 }
+
+.custom-tooltip.popup-ex {
+    color: #ffffff;
+    /* Text color */
+    background-color: #000000;
+    /* Background color */
+    padding: 0.5rem;
+    /* Optional: adjust padding */
+    width: 240px;
+    top: -9px !important;
+    font-size: 14px !important;
+    font-weight: 400;
+    padding: 6px;
+}
+
+.custom-tooltip::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 0px;
+    left: 50%;
+    bottom: 6px;
+    border: 15px solid transparent;
+    border-bottom: 0;
+    border-top: 14px solid #000;
+    transform: translate(-50%, calc(100% + -1px));
+}
+
+.w-fit {
+    margin-left: auto !important;
+}

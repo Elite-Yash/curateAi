@@ -45,6 +45,21 @@ const SaveProfile = () => {
   const [activePlan, setActiveplan] = useState(false);
   const navigate = useNavigate();
   const [user_id, setUser_id] = useState<number | string>("");
+  const [crmConnection, setCrmConnection] = useState({
+    crmConnection: false,
+    crmName: null,
+    token: null,
+    url: null,
+  });
+
+  useEffect(() => {
+    chrome.storage.local.get(["crmData"], (response) => {
+      const { crmConnection, crmName, token, url } = response.crmData;
+      if (crmConnection) {
+        setCrmConnection({ crmConnection, crmName, token, url })
+      }
+    });
+  }, []);
 
   const fetchProfiles = useCallback(async () => {
     try {
@@ -301,6 +316,20 @@ const SaveProfile = () => {
 
   const connectToCRM = async () => {
 
+    if (crmConnection.crmConnection) {
+      Swal.fire({
+        icon: "warning",
+        title: "Connection Status: CRM Active",
+        text: `You have successfully linked your account with ${crmConnection.crmName}.`,
+        confirmButtonColor: "#ff5c35",
+        confirmButtonText: "OK",
+        customClass: {
+          title: "!text-[1.7rem] font-bold",
+        },
+      });
+      return;
+    }
+
     if (!activePlan) {
       Swal.fire({
         icon: "warning",
@@ -411,7 +440,16 @@ const SaveProfile = () => {
           payload,
           (result: any) => {
             if (result.status === 201 && result?.data?.message === "Connected Successfully") {
+              const crmData = {
+                crmConnection: true,
+                crmName: "zendesk",
+                token: payload?.token || "",
+                url: payload?.crm_url,
+              };
+              chrome.storage.local.set({ crmData });
               Swal.fire('Success!', 'Your CRM is now connected.', 'success');
+            } else if (result?.data?.message.includes("Duplicate entry")) {
+              Swal.fire('Error', 'Connection Error: This CRM is already connected.', 'error');
             } else {
               Swal.fire('Failed', result.data.message || 'Unable to connect CRM.', 'error');
             }
@@ -432,14 +470,11 @@ const SaveProfile = () => {
           <div className="rounded-2xl w-full">
             <div className="p-5 bg-white g-box g-box-table">
               <div className="d-table h-connect-table !w-full">
-                {/* <div className="g-box-title">
-                  <h4 className="font-medium mb-3">SaveProfile</h4>
-                </div> */}
                 <div className="flex justify-between">
                   <div className="g-box-title mt-3">
-                    <h4 className="font-medium mb-3">Pricing</h4>
+                    <h4 className="font-medium mb-3">SaveProfile</h4>
                   </div>
-                  <div className="flex space-x-4 items-center">
+                  <div className="flex space-x-4 items-center gap-4">
                     <Tooltip content="Sync with your CRM system" className="custom-tooltip ex !w-auto">
                       <button onClick={connectToCRM} className="bg-white border border-[#ff5c35] text-[#ff5c35] px-4 py-2 text-base rounded-lg hover:bg-[#ff5c35] hover:text-white flex items-center gap-2 transition-transform duration-200 ease-in-out">
                         <span><i className="fa-solid fa-globe"></i></span>
