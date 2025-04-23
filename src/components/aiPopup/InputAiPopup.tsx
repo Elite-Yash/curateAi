@@ -189,7 +189,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
                         <img src={getImage('fLogo')} alt="img" className="" />
                     </span>
-                    <h4 className="popup-title font-semibold text-xl leading-10">Ask to Evarobo</h4>
+                    <h4 className="popup-title font-semibold text-xl leading-10">Ask to Eva</h4>
                     <span
                         onClick={onClose}
                         className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer"
