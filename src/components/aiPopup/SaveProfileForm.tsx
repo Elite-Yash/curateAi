@@ -183,7 +183,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         <>
             <div className="inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="popup-container bg-white shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl w-400">
-                    <div className="relative header-top p-9 py-6 flex justify item-center">
+                    <div className="relative save-pr header-top p-9 py-6 flex justify item-center">
                         <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
                             <img src={getImage('fLogo')} alt="img" className="" />
                         </span>

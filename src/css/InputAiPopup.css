@@ -283,6 +283,6 @@ span.close-box {
     transform: translate(-50%, calc(100% + -1px));
 }
 
-.w-fit {
-    margin-left: auto !important;
+.save-pr .w-fit {
+    margin-left: auto;
 }
