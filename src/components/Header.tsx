@@ -90,7 +90,7 @@ const Header = () => {
         }
     };
     return (
-        <div className="header-baar flex flex-col c-padding-r fixed w-full z-10 pl-[280px] pr-[30px]">
+        <div className="header-baar flex flex-col c-padding-r fixed w-full z-20 pl-[280px] pr-[30px]">
             <div className="flex flex-col justify-center bg-white relative g-box mt-5 px-8 py-3">
                 <div className="flex justify-between items-center">
                     <div className="header-r-menu flex items-center gap-8 ms-auto">
@@ -111,7 +111,7 @@ const Header = () => {
                                     <i className="text-xs fa-solid fa-chevron-down dec-color"></i>
                                 </a>
                                 {dropdownOpen && (
-                                    <div className="absolute right-3.5 mt-2 bg-white g-box w-40 drop-menu">
+                                    <div className="absolute right-3.5 mt-2 bg-white g-box w-40 drop-menu z-50">
                                         <button onClick={() => { navigate("/setting"); setDropdownOpen(false); }} className="w-full text-left px-3 py-3 text-sm transition rounded-xl flex items-center gap-2">
                                             <i className="fa-solid fa-gear color-one transition"></i>
                                             Setting
