@@ -465,30 +465,30 @@ const SaveProfile = () => {
 
   return (
     <>
-      <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
+      <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px] overflow-hidden">
         <div className="flex justify-between gap-5 w-full">
           <div className="rounded-2xl w-full">
             <div className="p-5 bg-white g-box g-box-table">
-              <div className="d-table h-connect-table !w-full">
-                <div className="flex justify-between">
-                  <div className="g-box-title mt-3">
-                    <h4 className="font-medium mb-3">SaveProfile</h4>
+              <div className="d-table h-connect-table !w-full max-h-[580px] overflow-auto overflow-x-hidden">
+                <div className="flex justify-between sticky top-0 bg-white pb-[14px] z-10">
+                  <div className="g-box-title">
+                    <h4 className="font-medium mb-3">Save Profile</h4>
                   </div>
-                  <div className="flex space-x-4 items-center gap-4">
-                    <Tooltip content="Sync with your CRM system" className="custom-tooltip ex !w-auto">
+                  <div className="flex items-center gap-2">
+                    <Tooltip content="Sync with your CRM system" className="custom-tooltip c-bottom-t ex !w-auto">
                       <button onClick={connectToCRM} className="bg-white border border-[#ff5c35] text-[#ff5c35] px-4 py-2 text-base rounded-lg hover:bg-[#ff5c35] hover:text-white flex items-center gap-2 transition-transform duration-200 ease-in-out">
                         <span><i className="fa-solid fa-globe"></i></span>
                         <span>Connect to CRM</span>
                       </button>
                     </Tooltip>
 
-                    <Tooltip content="Send a copy to Google Drive" className="custom-tooltip ex !w-auto">
+                    <Tooltip content="Send a copy to Google Drive" className="custom-tooltip c-bottom-t ex !w-auto">
                       <button onClick={saveToDrive} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
                         <span><i className="fa-brands fa-google-drive"></i></span>
                         <span> Save to Drive</span>
                       </button>
                     </Tooltip>
-                    <Tooltip content="Download your data as a CSV file" className="custom-tooltip ex">
+                    <Tooltip content="Download your data as a CSV file" className="custom-tooltip c-bottom-t ex">
                       <button onClick={exportToCSV} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
                         <span><i className="fa-solid fa-file-arrow-down"></i></span>
                         <span> Export CSV</span>
@@ -496,8 +496,8 @@ const SaveProfile = () => {
                     </Tooltip>
                   </div>
                 </div>
-                <table className="w-full overflow-auto g-table mt-3">
-                  <thead>
+                <table className="w-full overflow-auto g-table">
+                  <thead className="sticky top-[55px]">
                     <tr>
                       <th className="font-light text-base px-4 color00517C py-3 text-left">
                         <span className="inline-block connect-table-checkbox float-left relative">
@@ -540,21 +540,30 @@ const SaveProfile = () => {
                                         <img className="object-cover h-full w-full" src={`${profile.profile}`} />
                                       </span>
                                     )}
-                                    <span>{profile.name || "N/A"}</span>
+                                    <span className="whitespace-nowrap">{profile.name || "N/A"}</span>
                                   </span>
                                 </td>
 
                                 <td className="px-4 py-3">{profile.email || "N/A"}</td>
-                                <td className="px-4 py-3">
-                                  {profile.position && profile.position.length > 17 ? (
+                                <td className="px-4 py-3 *:whitespace-nowrap">
+                                  {profile.position && profile.position.length > 13 ? (
                                     <Tooltip content={profile.position} className="custom-tooltip">
-                                      {profile.position.substring(0, 17) + "..."}
+                                      {profile.position.substring(0, 13) + "..."}
                                     </Tooltip>
                                   ) : (
                                     profile.position || "N/A"
                                   )}
                                 </td>
-                                <td className="px-4 py-3">{profile.organization || "N/A"}</td>
+                                <td className="px-4 py-3 *:whitespace-nowrap">
+                                  {profile.organization && profile.organization.length > 13 ? (
+                                    <Tooltip content={profile.organization} className="custom-tooltip">
+                                      {profile.organization.substring(0, 13) + "..."}
+                                    </Tooltip>
+                                  ) : (
+                                    profile.organization || "N/A"
+                                  )}
+                                </td>
+                                {/* <td className="px-4 py-3 whitespace-nowrap">{profile.organization || "N/A"}</td> */}
                                 <td className="px-4 py-3">
                                   {profile.url ? (
                                     <a
@@ -563,8 +572,8 @@ const SaveProfile = () => {
                                       rel="noopener noreferrer"
                                       className="hover:text-[#ff5c35]"
                                     >
-                                      {profile.url.length > 35
-                                        ? profile.url.substring(0, 35) + "..."
+                                      {profile.url.length > 25
+                                        ? profile.url.substring(0, 25) + "..."
                                         : profile.url}
                                     </a>
                                   ) : (

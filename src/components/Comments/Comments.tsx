@@ -111,12 +111,12 @@ const Comments = () => {
       <div className="flex justify-between gap-5 w-full">
         <div className="rounded-2xl w-full">
           <div className="p-5 bg-white g-box g-box-table ">
-            <div className="d-table h-connect-table !w-full">
-              <div className="g-box-title">
-                <h4 className="font-medium mb-3">Comments</h4>
+            <div className="d-table h-connect-table !w-full max-h-[580px] overflow-auto">
+              <div className="g-box-title sticky top-0 bg-white">
+                <h4 className="font-medium pb-3">Comments</h4>
               </div>
-              <table className="w-full overflow-auto g-table Comments">
-                <thead>
+              <table className="w-full overflow-auto g-table Comments ">
+                <thead className="sticky top-[40px]">
                   <tr>
                     <th className="font-light text-base px-4 color00517C py-3 text-left">
                       <span className="text-base uppercase font-semibold whitespace-nowrap">Comment</span>
