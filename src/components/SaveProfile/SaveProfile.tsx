@@ -52,13 +52,16 @@ const SaveProfile = () => {
     url: null,
   });
 
-  useEffect(() => {
+  const getCRMdData = () => {
     chrome.storage.local.get(["crmData"], (response) => {
       const { crmConnection, crmName, token, url } = response.crmData;
       if (crmConnection) {
         setCrmConnection({ crmConnection, crmName, token, url })
       }
     });
+  }
+  useEffect(() => {
+    getCRMdData();
   }, []);
 
   const fetchProfiles = useCallback(async () => {
@@ -448,6 +451,7 @@ const SaveProfile = () => {
               };
               chrome.storage.local.set({ crmData });
               Swal.fire('Success!', 'Your CRM is now connected.', 'success');
+              getCRMdData();
             } else if (result?.data?.message.includes("Duplicate entry")) {
               Swal.fire('Error', 'Connection Error: This CRM is already connected.', 'error');
             } else {
