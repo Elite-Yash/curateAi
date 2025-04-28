@@ -319,20 +319,6 @@ const SaveProfile = () => {
 
   const connectToCRM = async () => {
 
-    if (crmConnection.crmConnection) {
-      Swal.fire({
-        icon: "warning",
-        title: "Connection Status: CRM Active",
-        text: `You have successfully linked your account with ${crmConnection.crmName}.`,
-        confirmButtonColor: "#ff5c35",
-        confirmButtonText: "OK",
-        customClass: {
-          title: "!text-[1.7rem] font-bold",
-        },
-      });
-      return;
-    }
-
     if (!activePlan) {
       Swal.fire({
         icon: "warning",
@@ -349,6 +335,20 @@ const SaveProfile = () => {
         if (result.isConfirmed) {
           navigate("/pricing");
         }
+      });
+      return;
+    }
+
+    if (crmConnection.crmConnection) {
+      Swal.fire({
+        icon: "warning",
+        title: "Connection Status: CRM Active",
+        text: `You have successfully linked your account with ${crmConnection.crmName}.`,
+        confirmButtonColor: "#ff5c35",
+        confirmButtonText: "OK",
+        customClass: {
+          title: "!text-[1.7rem] font-bold",
+        },
       });
       return;
     }
