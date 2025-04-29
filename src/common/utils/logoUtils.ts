@@ -8,6 +8,7 @@ import saveProfileIcon from "../../images/saveProfileIcon.svg";
 import logoBlack from "../../../public/logo.png";
 import fLogo from "../../../public/f-logo.png";
 import loader from "../../images/loader.svg";
+import evalogo from "../../images/evalogo.png";
 
 
 const imagePath: any = {
@@ -19,7 +20,8 @@ const imagePath: any = {
   saveProfileIcon,
   fLogo,
   logoBlack,
-  loader
+  loader,
+  evalogo,
 };
 
 // Get Logo image

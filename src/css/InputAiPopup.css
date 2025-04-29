@@ -185,7 +185,7 @@ span.close-box {
 
 .input-group img {
     position: absolute;
-    top: 5px;
+    top: 20px;
     left: 14px;
 }
 
@@ -286,3 +286,38 @@ span.close-box {
 .save-pr .w-fit {
     margin-left: auto;
 }
+
+@keyframes enterFromRight {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes floatIdle {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes floatHover {
+    from {
+        transform: translateY(-5px);
+    }
+
+    to {
+        transform: translateY(-20px);
+    }
+}
+
+/* img:hover {
+    animation: floatHover 1.5s ease-in-out infinite alternate !important;
+} */
+
+/* .textarea-group span.c-btn img {
+    position: static;
+} */
