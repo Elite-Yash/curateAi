@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../css/InputAiPopup.css";
 import { LANGUAGES, TONES, COMMENT_MOTIVES, POSTING_MOTIVES } from "../../constants/constants";
 import { ArticleInfo, PostData } from "../../constants/types";
@@ -54,6 +54,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const [currentPage, setCurrentPage] = useState(0);
     const [newUser, setNewUser] = useState(false)
     const [displayedText, setDisplayedText] = useState("");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleCopy = () => {
         if (text.trim()) {
@@ -68,7 +69,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setLoading(true); // Disable buttons when typing starts
             setDisplayedText(""); // Reset displayed text on new input
             let index = -1;
-            const typingSpeed = 30; // Speed of typing in milliseconds
+            const typingSpeed = 20; // Speed of typing in milliseconds
 
             const type = () => {
                 index++;
@@ -84,6 +85,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
             type(); // Start typing effect
         }
     }, [text]);
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+        }
+    }, [displayedText]);
 
     if (!isOpen) return null;
 
@@ -370,6 +377,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                                                                 placeholder="Tell me what you want to write about?"
                                                                                 // value={text}
                                                                                 value={displayedText}
+                                                                                ref={textareaRef}
                                                                                 onChange={(e) => setText(e.target.value)}
                                                                                 className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                                                                 disabled={loading}
@@ -508,6 +516,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                             placeholder="Tell me what you want to write about?"
                                             // value={text}
                                             value={displayedText}
+                                            ref={textareaRef}
                                             onChange={(e) => setText(e.target.value)}
                                             className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                             disabled={loading}
