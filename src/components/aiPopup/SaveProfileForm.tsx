@@ -65,10 +65,10 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         }
 
         const payload: any = {
-            ...(name && name !== "N/A" && { name }),
-            ...(email && email !== "N/A" && emailRegex.test(email) && { email }),
-            ...(positionState && positionState !== "N/A" && { position: positionState }),
-            ...(companyState && companyState !== "N/A" && { organization: companyState }),
+            ...(name && name !== "N/A" && name !== "NA" && { name }),
+            ...(email && email !== "N/A" && email !== "NA" && emailRegex.test(email) && { email }),
+            ...(positionState && positionState !== "N/A" && positionState !== "NA" && { position: positionState }),
+            ...(companyState && companyState !== "N/A" && companyState !== "NA" && { organization: companyState }),
             ...(window.location.href && { url: window.location.href }),
             ...(profileImg && { profile: profileImg }),
         };
@@ -135,10 +135,10 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
     // }
 
     // const payload: any = {
-    //     ...(name && name !== "N/A" && { name }),
-    //     ...(email && email !== "N/A" && emailRegex.test(email) && { email }),
-    //     ...(positionState && positionState !== "N/A" && { position: positionState }),
-    //     ...(companyState && companyState !== "N/A" && { organization: companyState }),
+    //     ...(name && name !== "N/A" && name !== "NA" && { name }),
+    //     ...(email && email !== "N/A" && email !== "NA" && emailRegex.test(email) && { email }),
+    //     ...(positionState && positionState !== "N/A" && positionState !== "NA" && { position: positionState }),
+    //     ...(companyState && companyState !== "N/A" && companyState !== "NA" && { organization: companyState }),
     //     ...(window.location.href && { url: window.location.href }),
     //     ...(profileImg && { profile: profileImg }),
     // };

@@ -53,6 +53,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     let apiCalled = false;
     const [currentPage, setCurrentPage] = useState(0);
     const [newUser, setNewUser] = useState(false)
+    const [displayedText, setDisplayedText] = useState("");
 
     const handleCopy = () => {
         if (text.trim()) {
@@ -61,6 +62,28 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setTimeout(() => setCopied(false), 1500); // Reset after 1.5s
         }
     };
+
+    useEffect(() => {
+        if (text) {
+            setLoading(true); // Disable buttons when typing starts
+            setDisplayedText(""); // Reset displayed text on new input
+            let index = -1;
+            const typingSpeed = 30; // Speed of typing in milliseconds
+
+            const type = () => {
+                index++;
+                if (index < text.length) {
+                    setDisplayedText((prev) => prev + text[index]);
+                    setTimeout(type, typingSpeed);
+                } else {
+                    setLoading(false); // Enable buttons after typing completes
+                    setIsTextGenerated(true);
+                }
+            };
+
+            type(); // Start typing effect
+        }
+    }, [text]);
 
     if (!isOpen) return null;
 
@@ -107,7 +130,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             chrome.runtime.sendMessage({ type: "GENERATE_CONTENT", data: requestData }, (response) => {
                 if (response.success && !apiCalled) {
                     setText(response.data.data);
-                    setIsTextGenerated(true);
+                    // setIsTextGenerated(true);
                     apiCalled = true;
 
                     const payload = {
@@ -133,7 +156,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         .catch((err: any) => {
                             console.error("API error:", err);
                         }).finally(() => {
-                            setLoading(false);
+                            // setLoading(false);
                         });
 
                 } else {
@@ -339,13 +362,14 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                                                     </div>
                                                                     <div className="w-full textarea-group relative">
                                                                         <span>
-                                                                            <span onClick={handleCopy} className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
+                                                                            <span onClick={handleCopy} className={`c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858] ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} style={{ pointerEvents: loading ? 'none' : 'auto' }}>
                                                                                 {copied ? "Copied!" : "Copy"}
-                                                                                <img src={getImage('copyIcon')} alt="img" className="w-4 !static" />
+                                                                                <img src={getImage('copyIcon')} alt="img" className="w-4" />
                                                                             </span>
                                                                             <textarea
-                                                                                placeholder="Tell me how you want to modify"
-                                                                                value={text}
+                                                                                placeholder="Tell me what you want to write about?"
+                                                                                // value={text}
+                                                                                value={displayedText}
                                                                                 onChange={(e) => setText(e.target.value)}
                                                                                 className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                                                                 disabled={loading}
@@ -365,7 +389,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                                                     </h4>
                                                                     <div className="popup-buttons justify-end space-x-2 text-right relative flex">
                                                                         {isTextGenerated && (
-                                                                            <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
+                                                                            <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent} disabled={loading}>
                                                                                 Insert
                                                                             </button>
                                                                         )}
@@ -476,13 +500,14 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 </div>
                                 <div className="w-full textarea-group relative">
                                     <span>
-                                        <span onClick={handleCopy} className="c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858]">
+                                        <span onClick={handleCopy} className={`c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858] ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} style={{ pointerEvents: loading ? 'none' : 'auto' }}>
                                             {copied ? "Copied!" : "Copy"}
                                             <img src={getImage('copyIcon')} alt="img" className="w-4" />
                                         </span>
                                         <textarea
-                                            placeholder="Tell me how you want to modify"
-                                            value={text}
+                                            placeholder="Tell me what you want to write about?"
+                                            // value={text}
+                                            value={displayedText}
                                             onChange={(e) => setText(e.target.value)}
                                             className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                             disabled={loading}
@@ -502,15 +527,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 </h4>
                                 <div className="popup-buttons justify-end space-x-2 text-right relative flex">
                                     {isTextGenerated && (
-                                        <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent}>
+                                        <button className="popup-button-insert px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" onClick={insertContent} disabled={loading}>
                                             Insert
                                         </button>
                                     )}
                                     <button
-                                        className={`flex gap-2 ml-auto leading-6	 popup-button-submit px-4 py-2 ${isTextGenerated ? "bg-green" : "bg-[#ff5c35]"}  text-white rounded-md ${isTextGenerated ? "hover:bg-[#008234]" : "hover:bg-[#c64e30]"}  disabled:bg-gray-40`}
+                                        className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 ${isTextGenerated ? "bg-green" : "bg-[#ff5c35]"} text-white rounded-md ${isTextGenerated ? "hover:bg-[#008234]" : "hover:bg-[#c64e30]"} disabled:bg-gray-40`}
                                         onClick={handleSubmit}
                                         disabled={loading}
-                                    ><img src={getImage('sendIcon')} alt="img" className="w-4 !static" />
+                                    >
+                                        <img src={getImage('sendIcon')} alt="img" className="w-4 !static" />
                                         {loading ? (isTextGenerated ? "Regenerating..." : "Generating...") : isTextGenerated ? "Regenerate" : "Generate"}
                                     </button>
 
