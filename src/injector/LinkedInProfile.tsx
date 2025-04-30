@@ -26,7 +26,7 @@ const LinkedInProfile = () => {
 
         const ProfileImage = document.querySelector("main section div.ph5 div.pv-top-card__non-self-photo-wrapper img") as HTMLImageElement | null;
         const cleanCompanyText = companyText.split("·")[0].trim();
-        if (companyText.includes("yrs") || companyText.includes("mos") || companyText.includes("mo")) {
+        if (companyText.split(" ").includes("yrs") || companyText.split(" ").includes("mos") || companyText.split(" ").includes("mo")) {
             const position = experienceData?.querySelector("div.pvs-entity__sub-components ul li div.display-flex.flex-column.align-self-center.flex-grow-1 div.display-flex.full-width span") as HTMLElement | null;
             setPosition(position?.textContent?.trim() || "");
             setCompany(positionText);

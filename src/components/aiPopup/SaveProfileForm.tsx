@@ -23,6 +23,8 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
     const [error, setError] = useState<string | null>(null); // Error handling
     const [success, setSuccess] = useState(false); // Success message
     const [load, setLoad] = useState(true);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     // const [crmError, setCrmError] = useState<string | null>(null);
     // const [crmSuccess, setCrmSuccess] = useState<string | null>(null);
     // const [crmConnection, setCrmConnection] = useState({
@@ -53,19 +55,34 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         setError(null);
         setSuccess(false);
 
+        if (email && !emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            setLoading(false);
+            setTimeout(() => {
+                setError(null);
+            }, 1500)
+            return;
+        }
+
         const payload: any = {
-            ...(name && { name }),
-            ...(email && { email }),
-            ...(positionState && { position: positionState }),
-            ...(companyState && { organization: companyState }),
+            ...(name && name !== "N/A" && { name }),
+            ...(email && email !== "N/A" && emailRegex.test(email) && { email }),
+            ...(positionState && positionState !== "N/A" && { position: positionState }),
+            ...(companyState && companyState !== "N/A" && { organization: companyState }),
             ...(window.location.href && { url: window.location.href }),
             ...(profileImg && { profile: profileImg }),
         };
 
+        // Check if the payload is empty
+        if (Object.keys(payload).length === 0) {
+            setError("No valid data to save.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const requestUrl = `${apiService.EndPoint.createProfile}`;
 
-            // Since headers and Authorization are handled inside the apiService, no need to pass them here
             await apiService.commonAPIRequest(
                 requestUrl,
                 apiService.Method.post,
@@ -111,14 +128,20 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
     //         return;
     //     }
 
-    //     const payload: any = {
-    //         ...(name && { name }),
-    //         ...(email && { email }),
-    //         ...(positionState && { position: positionState }),
-    //         ...(companyState && { organization: companyState }),
-    //         ...(window.location.href && { url: window.location.href }),
-    //         ...(profileImg && { profile: profileImg }),
-    //     };
+    // if (email && !emailRegex.test(email)) {
+    //     setError("Please enter a valid email address.");
+    //     setLoading(false);
+    //     return;
+    // }
+
+    // const payload: any = {
+    //     ...(name && name !== "N/A" && { name }),
+    //     ...(email && email !== "N/A" && emailRegex.test(email) && { email }),
+    //     ...(positionState && positionState !== "N/A" && { position: positionState }),
+    //     ...(companyState && companyState !== "N/A" && { organization: companyState }),
+    //     ...(window.location.href && { url: window.location.href }),
+    //     ...(profileImg && { profile: profileImg }),
+    // };
 
     //     // Create the payload for the profile
     //     const crmPayload: any = {};
