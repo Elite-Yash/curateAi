@@ -381,6 +381,7 @@ body,
     /* Optional: adjust the border radius */
     padding: 0.5rem;
     /* Optional: adjust padding */
+    z-index: 20;
 }
 
 .custom-tooltip.ex {
