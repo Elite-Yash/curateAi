@@ -57,34 +57,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleCopy = () => {
-        if (text.trim()) {
-            navigator.clipboard.writeText(text);
+        if (displayedText.trim()) {
+            navigator.clipboard.writeText(displayedText);
             setCopied(true);
             setTimeout(() => setCopied(false), 1500); // Reset after 1.5s
         }
     };
-
-    useEffect(() => {
-        if (text) {
-            setLoading(true); // Disable buttons when typing starts
-            setDisplayedText(""); // Reset displayed text on new input
-            let index = -1;
-            const typingSpeed = 20; // Speed of typing in milliseconds
-
-            const type = () => {
-                index++;
-                if (index < text.length) {
-                    setDisplayedText((prev) => prev + text[index]);
-                    setTimeout(type, typingSpeed);
-                } else {
-                    setLoading(false); // Enable buttons after typing completes
-                    setIsTextGenerated(true);
-                }
-            };
-
-            type(); // Start typing effect
-        }
-    }, [text]);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -136,8 +114,28 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
             chrome.runtime.sendMessage({ type: "GENERATE_CONTENT", data: requestData }, (response) => {
                 if (response.success && !apiCalled) {
-                    setText(response.data.data);
+                    // setText(response.data.data);
                     // setIsTextGenerated(true);
+                    setLoading(true);
+                    setDisplayedText(""); // Reset displayed text for typing animation
+
+                    const generatedMessage = response.data.data;
+                    let index = -1;
+                    const typingSpeed = 20; // Speed of typing in milliseconds
+
+                    const type = () => {
+                        index++;
+                        if (index < generatedMessage.length) {
+                            setDisplayedText((prev) => prev + generatedMessage[index]);
+                            setTimeout(type, typingSpeed);
+                        } else {
+                            setLoading(false); // Enable buttons after typing completes
+                            setIsTextGenerated(true);
+                        }
+                    };
+
+                    type();
+
                     apiCalled = true;
 
                     const payload = {
@@ -184,9 +182,11 @@ const InputAiPopup: React.FC<ModalProps> = ({
             popupTriggeredFrom === "article-comment-reply" ||
             popupTriggeredFrom === "message-reply"
         ) {
-            insertGeneratedComment(text);
+            // insertGeneratedComment(text);
+            insertGeneratedComment(displayedText);
         } else if (popupTriggeredFrom === "create-post") {
-            insertGeneratedPost(text);
+            // insertGeneratedPost(text);
+            insertGeneratedPost(displayedText);
         }
     };
 
@@ -375,10 +375,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                                                             </span>
                                                                             <textarea
                                                                                 placeholder="Tell me what you want to write about?"
-                                                                                // value={text}
-                                                                                value={displayedText}
+                                                                                value={loading ? displayedText : isTextGenerated ? displayedText : text} // Show displayedText during loading, otherwise show user input
                                                                                 ref={textareaRef}
-                                                                                onChange={(e) => setText(e.target.value)}
+                                                                                onChange={(e) => {
+                                                                                    if (!loading) { // Allow updates only when not loading
+                                                                                        setText(e.target.value); // Update user input
+                                                                                    }
+                                                                                }}
                                                                                 className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                                                                 disabled={loading}
                                                                             ></textarea>
@@ -514,10 +517,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                         </span>
                                         <textarea
                                             placeholder="Tell me what you want to write about?"
-                                            // value={text}
-                                            value={displayedText}
+                                            value={loading ? displayedText : isTextGenerated ? displayedText : text} // Show displayedText during loading, otherwise show user input
                                             ref={textareaRef}
-                                            onChange={(e) => setText(e.target.value)}
+                                            onChange={(e) => {
+                                                if (!loading) { // Allow updates only when not loading
+                                                    setText(e.target.value); // Update user input
+                                                }
+                                            }}
                                             className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-[#ff5c35] focus:ring focus:ring-[#ff9479] h-24 resize-none"
                                             disabled={loading}
                                         ></textarea>
