@@ -381,6 +381,7 @@ body,
     /* Optional: adjust the border radius */
     padding: 0.5rem;
     /* Optional: adjust padding */
+    z-index: 20;
 }
 
 .custom-tooltip.ex {
@@ -390,7 +391,8 @@ body,
     /* Background color */
     padding: 0.5rem;
     /* Optional: adjust padding */
-    width: 240px;
+    max-width: 140px;
+    text-align: center;
 }
 
 .custom-tooltip::before {
@@ -404,6 +406,10 @@ body,
     border-bottom: 0;
     border-top: 14px solid #000;
     transform: translate(-50%, calc(100% + -1px));
+}
+
+.custom-tooltip.c-bottom-t::before {
+    transform: translate(-50%, calc(-346% - 1px)) rotate(180deg);
 }
 
 .border-color-gr2 {

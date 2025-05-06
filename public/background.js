@@ -4,6 +4,17 @@ importScripts('./apiUrlConfig.js');
 
 // background.js
 
+// Set a flag when the extension is installed
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.set({ isInstalled: true });
+});
+
+// Clear specific data when the extension is unloaded
+chrome.runtime.onSuspend.addListener(() => {
+    chrome.storage.local.remove(["token", "isInstalled", "crmData"]);
+    chrome.storage.local.remove(['selectedLanguage', 'selectedTone', 'selectedMotive']);
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     // Retrieve Token from Chrome Storage

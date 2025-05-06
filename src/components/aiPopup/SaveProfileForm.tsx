@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getImage } from "../../common/utils/logoUtils";
 import { apiService } from "../../common/config/apiService"; // Import API function
+// import { Tooltip } from "flowbite-react";
 
 // Define the props interface
 interface SaveProfileFormProps {
@@ -22,24 +23,25 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
     const [error, setError] = useState<string | null>(null); // Error handling
     const [success, setSuccess] = useState(false); // Success message
     const [load, setLoad] = useState(true);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // const [crmError, setCrmError] = useState<string | null>(null);
+    // const [crmSuccess, setCrmSuccess] = useState<string | null>(null);
+    // const [crmConnection, setCrmConnection] = useState({
+    //     crmConnection: false,
+    //     crmName: null,
+    //     token: null,
+    //     url: null,
+    // });
 
     // useEffect(() => {
-    //     setName(profileName);
-    //     setPosition(position);
-    //     setCompany(company);
-    //     setEmail(findemail);
-
-    //     const missingFields: string[] = [];
-
-    //     if (!findemail || findemail.trim() === "") missingFields.push("Email");
-    //     if (!company || company.trim() === "") missingFields.push("Company");
-    //     if (!position || position.trim() === "") missingFields.push("Position");
-
-    //     if (missingFields.length > 0) {
-    //         setError(`${missingFields.join(", ")} not found`);
-    //         setTimeout(() => setError(null), 5000);
-    //     }
-    // }, [profileName, position, company, findemail]);
+    //     chrome.storage.local.get(["crmData"], (response) => {
+    //         const { crmConnection, crmName, token, url } = response.crmData;
+    //         if (crmConnection) {
+    //             setCrmConnection({ crmConnection, crmName, token, url })
+    //         }
+    //     });
+    // }, []);
 
     useEffect(() => {
         setName(profileName || "");
@@ -48,40 +50,39 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         setEmail(findemail || "");
     }, [profileName, position, company, findemail]);
 
-    const validateForm = () => {
-        if (!name || !name.trim()) return "Name is required.";
-        if (!email || !email.trim()) return "Email is required.";
-        if (!positionState || !positionState.trim()) return "Position is required.";
-        if (!companyState || !companyState.trim()) return "Company is required.";
-        return null;
-    };
-
     const handleSave = async () => {
         setLoading(true);
         setError(null);
         setSuccess(false);
 
-        const validationError = validateForm();
-        if (validationError) {
-            setError(validationError);
-            setTimeout(() => setError(null), 2000);
+        if (email && !emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            setLoading(false);
+            setTimeout(() => {
+                setError(null);
+            }, 1500)
+            return;
+        }
+
+        const payload: any = {
+            ...(name && name !== "N/A" && name !== "NA" && { name }),
+            ...(email && email !== "N/A" && email !== "NA" && emailRegex.test(email) && { email }),
+            ...(positionState && positionState !== "N/A" && positionState !== "NA" && { position: positionState }),
+            ...(companyState && companyState !== "N/A" && companyState !== "NA" && { organization: companyState }),
+            ...(window.location.href && { url: window.location.href }),
+            ...(profileImg && { profile: profileImg }),
+        };
+
+        // Check if the payload is empty
+        if (Object.keys(payload).length === 0) {
+            setError("No valid data to save.");
             setLoading(false);
             return;
         }
 
-        const payload = {
-            name,
-            email,
-            position: positionState,
-            organization: companyState,
-            url: window.location.href,
-            profile: profileImg,
-        };
-
         try {
             const requestUrl = `${apiService.EndPoint.createProfile}`;
 
-            // Since headers and Authorization are handled inside the apiService, no need to pass them here
             await apiService.commonAPIRequest(
                 requestUrl,
                 apiService.Method.post,
@@ -100,7 +101,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                 }
             );
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An unknown error occurred.");
+            setError(err instanceof Error ? err.message.includes("Duplicate entry") ? "Duplicate entry" : err.message : "An unknown error occurred.");
             setTimeout(() => setError(null), 2000);
         } finally {
             setLoading(false);
@@ -113,19 +114,111 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
         }, 2000)
     }, [])
 
+    // const saveToCRM = async () => {
+    //     setLoad(true);
+    //     setCrmError(null); // Reset error message
+
+    //     // Check if the CRM connection exists
+    //     if (!crmConnection.crmConnection) {
+    //         setCrmError("You must connect to the CRM to save your profile.");
+    //         setTimeout(() => {
+    //             setCrmError(null);
+    //         }, 3000);
+    //         setLoad(false); // Stop loading
+    //         return;
+    //     }
+
+    // if (email && !emailRegex.test(email)) {
+    //     setError("Please enter a valid email address.");
+    //     setLoading(false);
+    //     return;
+    // }
+
+    // const payload: any = {
+    //     ...(name && name !== "N/A" && name !== "NA" && { name }),
+    //     ...(email && email !== "N/A" && email !== "NA" && emailRegex.test(email) && { email }),
+    //     ...(positionState && positionState !== "N/A" && positionState !== "NA" && { position: positionState }),
+    //     ...(companyState && companyState !== "N/A" && companyState !== "NA" && { organization: companyState }),
+    //     ...(window.location.href && { url: window.location.href }),
+    //     ...(profileImg && { profile: profileImg }),
+    // };
+
+    //     // Create the payload for the profile
+    //     const crmPayload: any = {};
+
+    //     if (name) crmPayload.name = name;
+    //     if (email) crmPayload.email = email;
+    //     if (positionState) crmPayload.title = positionState;
+    //     if (companyState) crmPayload.industry = companyState;
+    //     if (crmConnection?.url) crmPayload.crm_url = crmConnection.url;
+    //     if (crmConnection?.token) crmPayload.token = crmConnection.token;
+
+    //     try {
+
+    //         // Create a new promise to handle the profile saving
+    //         await new Promise((resolve, reject) => {
+    //             apiService.commonAPIRequest(
+    //                 apiService.EndPoint.createProfile,
+    //                 apiService.Method.post,
+    //                 undefined,
+    //                 payload,
+    //                 (response: any) => {
+    //                     if (response?.status === 201 && response?.data.message === "Profile saved successfully") {
+    //                         resolve(response);
+    //                     } else {
+    //                         reject(new Error(response?.data.message || "Failed to save profile."));
+    //                     }
+    //                 }
+    //             );
+    //         });
+
+    //         // After successfully saving the profile, now save to CRM
+    //         await apiService.commonAPIRequest(
+    //             apiService.EndPoint.savToCRM,
+    //             apiService.Method.post,
+    //             undefined,
+    //             crmPayload,
+    //             (response: any) => {
+    //                 if (response?.status === 201 && response?.data.message === "Profile successfully added to CRM.") {
+    //                     setCrmSuccess("Success! The profile has been successfully saved to your CRM.");
+    //                     setTimeout(() => {
+    //                         setCrmSuccess(null);
+    //                     }, 3000);
+    //                     setTimeout(() => {
+    //                         onClose();
+    //                     }, 2000);
+    //                 } else {
+    //                     throw new Error(response?.data.message || "Failed to save profile.");
+    //                 }
+    //             }
+    //         );
+
+    //     } catch (err) {
+    //         setError(err instanceof Error ? err.message : "An unknown error occurred.");
+    //         setTimeout(() => setError(null), 2000);
+    //     } finally {
+    //         setLoad(false);
+    //     }
+    // };
+
 
     return (
         <>
             <div className="inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="popup-container bg-white shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl overflow-hidden w-400">
-                    <div className="relative header-top p-9 py-6 flex justify-between item-center">
+                <div className="popup-container bg-white shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl w-400">
+                    <div className="relative save-pr header-top p-9 py-6 flex justify item-center">
                         <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
                             <img src={getImage('fLogo')} alt="img" className="" />
                         </span>
                         <h4 className="popup-title font-semibold text-xl leading-10">Save Profile</h4>
+                        {/* <Tooltip content="Save To CRM" className="custom-tooltip popup-ex !w-auto ml-auto">
+                            <span onClick={saveToCRM} className="flex items-center justify-center ml-auto mr-2 relative w-12 h-12 p-1  border-[2.5px] border-solid rounded-full border-[#ff5c35] cursor-pointer">
+                                <svg className="relative !w-[16px] -top-px left-px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="#ff5c35" d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM504 312l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" /></svg>
+                            </span>
+                        </Tooltip> */}
                         <span
                             onClick={onClose}
-                            className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer"
+                            className="w-6 h-6 bg-no-repeat bg-center cursor-pointer ml-auto"
 
                         ><img src={getImage('close')} alt="img" className="w-full h-full rounded-full" /></span>
                     </div>
@@ -146,6 +239,15 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({ onClose, profileName,
                                 </div>
                             </>
                             :
+                            // !crmConnection.crmConnection && crmError || crmConnection.crmConnection && crmSuccess ?
+                            //     <div className="p-9 flex justify-between item-center flex-col gap-5">
+                            //         <span className={`text-center text-3xl font-bold ${crmError ? "text-red" : "text-green"}`}>{crmError ? "!! Connection Alert !!" : "!! Save To CRM !!"}</span>
+                            //         <span className={`text-justify`}>
+                            //             {crmError ? crmError : crmSuccess}
+
+                            //         </span>
+                            //     </div>
+                            //     :
                             activePlan ?
                                 <div className="p-9 flex justify-between item-center flex-col gap-5">
                                     <div className="w-full input-group">

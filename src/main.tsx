@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import Layout from "./contentScript/content.tsx";
 import cssStyles from "./css/InputAiPopup.css?inline"; // Ensure Vite inlines the CSS
 import App from "./App.tsx";
-import { MemoryRouter as Router } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
 import Dashboard from "./Dashboard.tsx";
