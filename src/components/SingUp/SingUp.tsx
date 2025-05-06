@@ -46,6 +46,59 @@ const SignUp = () => {
         }, 2000);
     };
 
+    const disposableDomains = [
+        "mailinator.com",
+        "tempmail.com",
+        "10minutemail.com",
+        "guerrillamail.com",
+        "yopmail.com",
+        "fakeinbox.com",
+        "throwawaymail.com",
+        "maildrop.cc",
+        "getnada.com",
+        "trashmail.com",
+        "temp-mail.org",
+        "dispostable.com",
+        "burnermail.io",
+        "minuteinbox.com",
+        "mailnesia.com",
+        "mailcatch.com",
+        "spambox.us",
+        "10minutemail.net",
+        "trashmail.net",
+        "fromhot.com",
+        "sharklasers.com",
+        "sneakemail.com",
+        "incognitomail.com",
+        "tempemail.co",
+        "tempmailo.com",
+        "mytemp.email",
+        "inbox.lv",
+        "meltmail.com",
+        "spamgourmet.com",
+        "tempemailaddress.com",
+        "temporaryemailaddress.com",
+        "tempinbox.com",
+        "temporarymail.com",
+        "emailondeck.com",
+        "guerrillamail.net",
+        "writemail.com",
+        "disposablemail.com",
+        "fake-mail.org",
+        "tempmail.net",
+        "spambox.me",
+        "dodgit.com",
+        "fakeinbox.net",
+        "spamfree24.com",
+        "moakt.com"
+    ];
+
+    // Check if email is from a disposable domain
+    const isDisposableEmail = (email: string): boolean => {
+        const domain = email.split("@")[1]?.toLowerCase();
+        return disposableDomains.includes(domain);
+    };
+
     // Handle form submission
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -60,6 +113,11 @@ const SignUp = () => {
 
         if (!isValidEmail(email)) {
             showMessage("Invalid email format.", "error");
+            return;
+        }
+
+        if (isDisposableEmail(email)) {
+            showMessage("Disposable email addresses are not allowed.", "error");
             return;
         }
 
@@ -85,14 +143,22 @@ const SignUp = () => {
                         setMessage({ text: "Account created successfully!", type: "success" });
                         setFormData({ name: "", email: "", password: "", confirmPassword: "" });
                         Swal.fire({
-                            title: "Enjoy Your Free Trial!",
-                            text: "Your 3-day trial plan has been activated successfully.",
+                            title: "Verify Your Email to Get Started!",
+                            html: `
+                                <p><strong>Please check your email</strong> and verify your account using the link we sent you.</p>
+                            `,
                             icon: "success",
                             confirmButtonColor: "#ff5c35",
                             cancelButtonColor: "#6c757d",
                             confirmButtonText: "Got it!",
+                            customClass: {
+                                title: '!text-2xl font-semibold'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                navigate("/signin");
+                            }
                         });
-                        setTimeout(() => navigate("/signin"), 2500);
                     } else {
                         setMessage({ text: response?.message || "Sign-up failed. Try again.", type: "error" });
                     }

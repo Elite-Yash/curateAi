@@ -110,9 +110,9 @@ const Header = () => {
         <div className="header-baar flex flex-col c-padding-r fixed w-full z-20 pl-[280px] pr-[30px]">
             <div className="flex flex-col justify-center bg-white relative g-box mt-5 px-8 py-3">
                 <div className="flex justify-between items-center gap-5">
-                    <div className="ms-auto flex gap-1 justify-center items-center background-one border border-color-one text-white px-3 py-1 !text-sm rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35]">
+                    <div onClick={() => goToLinkedIn()} className="ms-auto flex gap-1 justify-center items-center background-one border border-color-one text-white px-3 py-1 !text-sm rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] cursor-pointer">
                         <i className="fa-brands fa-linkedin text-lg"></i>
-                        <a onClick={() => goToLinkedIn()} href="#">Go To LinkedIn</a>
+                        <a href="#">Go To LinkedIn</a>
                     </div>
                     <div className="header-r-menu flex items-center gap-8 ">
                         <ul className="flex gap-5 items-center">

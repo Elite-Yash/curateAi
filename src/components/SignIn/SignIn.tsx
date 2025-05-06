@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
+import Swal from "sweetalert2";
 
 interface SignInFormData {
     email: string;
@@ -75,18 +76,32 @@ const SignIn = () => {
                 undefined,
                 data,
                 (response: any) => {
-                    if (response && response.status === 201 && response.data.message === "Login successful") {
-                        const authToken = response.data.data.auth_token;
-                        chrome.storage.local.set({ token: authToken }, () => { });
-                        setFormData({ email: "", password: "" });
-                        showMessage("Login successful!", "success");
-                        setTimeout(() => {
-                            setLoad(true);
-                            navigate("/home");
-                            window.location.reload();
-                        }, 2000);
+                    if (response.data.data.is_email_verified) {
+                        if (response && response.status === 201 && response.data.message === "Login successful") {
+                            const authToken = response.data.data.auth_token;
+                            chrome.storage.local.set({ token: authToken }, () => { });
+                            setFormData({ email: "", password: "" });
+                            showMessage("Login successful!", "success");
+                            setTimeout(() => {
+                                setLoad(true);
+                                navigate("/home");
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            showMessage(response.message || "Login failed. Try again.", "error");
+                        }
                     } else {
-                        showMessage(response.message || "Login failed. Try again.", "error");
+                        Swal.fire({
+                            title: "Please Verify Your Email!",
+                            html: `
+                                <p><strong>Your email is not verified yet.</strong></p>
+                                <p>Please check your inbox for the verification link.</p>
+                            `,
+                            icon: "warning",
+                            confirmButtonColor: "#ff5c35",
+                            cancelButtonColor: "#6c757d",
+                            confirmButtonText: "Got it!",
+                        });
                     }
                 }
             );
