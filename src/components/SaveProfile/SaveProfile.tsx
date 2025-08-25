@@ -1,16 +1,25 @@
 import { useEffect, useState, useCallback } from "react";
 import { apiService } from "../../common/config/apiService";
-import { getImage } from "../../common/utils/logoUtils";
-import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
 import { Tooltip } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
+import { IoSearchOutline } from "react-icons/io5";
+
+import {
+  FiUsers,
+  FiUserCheck,
+  FiStar,
+  FiBriefcase,
+  FiTrendingUp,
+  FiGlobe,
+} from "react-icons/fi";
+import Profilecard from "./Profilecard";
 
 /**
  * @component
  * @description
- * The `SaveProfile` component renders a page header section with navigation breadcrumbs and a dropdown menu. 
- * It includes a title, breadcrumb navigation links, and a campaign selection dropdown, making it ideal 
+ * The `SaveProfile` component renders a page header section with navigation breadcrumbs and a dropdown menu.
+ * It includes a title, breadcrumb navigation links, and a campaign selection dropdown, making it ideal
  * for a "SaveProfile" page or similar SaveProfile structure.
  *
  * @example
@@ -51,15 +60,51 @@ const SaveProfile = () => {
     token: null,
     url: null,
   });
+  const [activeButton, setActiveButton] = useState("all");
+
+  // Search term state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [starredIds, setStarredIds] = useState<number[]>([]);
+
+  // Load starred ids from localStorage on refresh
+  useEffect(() => {
+    const saved = localStorage.getItem("starredIds");
+    if (saved) {
+      setStarredIds(JSON.parse(saved));
+    }
+  }, []);
+  // Search + Starred filter combine
+  const filteredProfiles = profilesData
+    // search logic
+    .filter(
+      (profile) =>
+        profile.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        profile.organization?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    // starred filter
+    .filter((profile) =>
+      activeButton === "starred" ? starredIds.includes(profile.id) : true
+    );
+  // Star feature
+  const toggleStar = (id: number) => {
+    let updated: number[];
+    if (starredIds.includes(id)) {
+      updated = starredIds.filter((i) => i !== id);
+    } else {
+      updated = [...starredIds, id];
+    }
+    setStarredIds(updated);
+    localStorage.setItem("starredIds", JSON.stringify(updated)); // persist
+  };
 
   const getCRMdData = () => {
     chrome.storage.local.get(["crmData"], (response) => {
       const { crmConnection, crmName, token, url } = response.crmData;
       if (crmConnection) {
-        setCrmConnection({ crmConnection, crmName, token, url })
+        setCrmConnection({ crmConnection, crmName, token, url });
       }
     });
-  }
+  };
   useEffect(() => {
     getCRMdData();
   }, []);
@@ -98,14 +143,17 @@ const SaveProfile = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ff5c35",
+      confirmButtonColor: "#2563eb",
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Yes, delete it!",
     });
 
     if (result.isConfirmed) {
       try {
-        const requestUrl = `${apiService.EndPoint.deleteProfile.replace(':id', id)}`;
+        const requestUrl = `${apiService.EndPoint.deleteProfile.replace(
+          ":id",
+          id
+        )}`;
 
         await apiService.commonAPIRequest(
           requestUrl,
@@ -113,17 +161,35 @@ const SaveProfile = () => {
           undefined,
           {},
           (response: any) => {
-            if (response?.status === 200 && response.data.message === "Saved profile removed successfully") {
+            if (
+              response?.status === 200 &&
+              response.data.message === "Saved profile removed successfully"
+            ) {
               fetchProfiles();
-              Swal.fire({ title: "Deleted!", text: "Profile has been deleted.", icon: "success", confirmButtonColor: "#ff5c35" });
+              Swal.fire({
+                title: "Deleted!",
+                text: "Profile has been deleted.",
+                icon: "success",
+                confirmButtonColor: "#2563eb",
+              });
             } else {
-              Swal.fire({ title: "Error!", text: response?.message || "Failed to delete profile.", icon: "error", confirmButtonColor: "#ff5c35" });
+              Swal.fire({
+                title: "Error!",
+                text: response?.message || "Failed to delete profile.",
+                icon: "error",
+                confirmButtonColor: "#ff52563ebc35",
+              });
             }
           }
         );
       } catch (err) {
         console.error("Error deleting profile:", err);
-        Swal.fire({ title: "Error!", text: "An unexpected error occurred.", icon: "error", confirmButtonColor: "#ff5c35" });
+        Swal.fire({
+          title: "Error!",
+          text: "An unexpected error occurred.",
+          icon: "error",
+          confirmButtonColor: "#2563eb",
+        });
       }
     }
   };
@@ -144,7 +210,11 @@ const SaveProfile = () => {
         {}, // No request body
         (result: any) => {
           if (result.data.userDetails.isTrialExpired) {
-            if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") {
+            if (
+              result?.status === 200 &&
+              result?.data.message ===
+                "User does not have an active subscription."
+            ) {
               setActiveplan(false);
             } else {
               setActiveplan(true);
@@ -152,7 +222,7 @@ const SaveProfile = () => {
           } else {
             setActiveplan(true);
           }
-          setUser_id(result?.data?.userDetails?.id)
+          setUser_id(result?.data?.userDetails?.id);
         }
       );
     } catch (error) {
@@ -168,7 +238,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "No Data Available",
         text: "There is no data to export.",
-        confirmButtonColor: "#ff5c35",
+        confirmButtonColor: "#2563eb",
       });
       return;
     }
@@ -178,7 +248,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Subscription Required",
         text: "You need an active subscription to export data. Please subscribe.",
-        confirmButtonColor: "#ff5c35",
+        confirmButtonColor: "#2563eb",
         showCancelButton: true,
         cancelButtonText: "Maybe Later",
         confirmButtonText: "Subscribe Now",
@@ -193,19 +263,31 @@ const SaveProfile = () => {
       return;
     }
 
-
-    const headers = ["Name", "Email", "Position", "Organization", "URL", "Created At"];
+    const headers = [
+      "Name",
+      "Email",
+      "Position",
+      "Organization",
+      "URL",
+      "Created At",
+    ];
     const csvRows = profilesData.map((profile) => [
       profile.name || "N/A",
       profile.email || "N/A",
       profile.position || "N/A",
       profile.organization || "N/A",
       profile.url || "N/A",
-      profile.created_at ? new Date(profile.created_at).toLocaleDateString("en-GB") : "N/A",
+      profile.created_at
+        ? new Date(profile.created_at).toLocaleDateString("en-GB")
+        : "N/A",
     ]);
 
     // Convert to CSV string
-    const csvString = [headers, ...csvRows].map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csvString = [headers, ...csvRows]
+      .map((row) =>
+        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")
+      )
+      .join("\n");
 
     // Create Blob and download
     const blob = new Blob([csvString], { type: "text/csv" });
@@ -218,13 +300,12 @@ const SaveProfile = () => {
   };
 
   const saveToDrive = async () => {
-
     if (!profilesData.length) {
       Swal.fire({
         icon: "warning",
         title: "No Data Available",
         text: "There is no data to export.",
-        confirmButtonColor: "#ff5c35",
+        confirmButtonColor: "#2563eb",
       });
       return;
     }
@@ -234,7 +315,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Subscription Required",
         text: "You need an active subscription to export data. Please subscribe.",
-        confirmButtonColor: "#ff5c35",
+        confirmButtonColor: "#2563eb",
         showCancelButton: true,
         cancelButtonText: "Maybe Later",
         confirmButtonText: "Subscribe Now",
@@ -250,7 +331,7 @@ const SaveProfile = () => {
     }
 
     const { value: sheetUrl } = await Swal.fire({
-      title: 'Enter Google Sheet URL',
+      title: "Enter Google Sheet URL",
       html: `
             <p class="color-one mb-2">Please follow these steps:</p>
             <ul class="list-disc space-y-2 pl-5 text-justify">
@@ -265,36 +346,38 @@ const SaveProfile = () => {
               <li>Paste the copied URL here in the input field below.</li>
             </ul>
             `,
-      input: 'url',
-      inputPlaceholder: 'Paste your Google Sheet URL here...',
+      input: "url",
+      inputPlaceholder: "Paste your Google Sheet URL here...",
       showCancelButton: true,
-      confirmButtonText: 'Save',
-      confirmButtonColor: '#ff5c35',
+      confirmButtonText: "Save",
+      confirmButtonColor: "#2563eb",
       customClass: {
-        title: '!text-3xl font-semibold',
-        actions: 'flex justify-end w-full gap-2 px-7',
-        input: "w-[87%] mx-auto mt-4 outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl m-0 swal2-input",
+        title: "!text-3xl font-semibold",
+        actions: "flex justify-end w-full gap-2 px-7",
+        input:
+          "w-[87%] mx-auto mt-4 outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl m-0 swal2-input",
       },
       inputValidator: (value) => {
-        if (!value) return 'Please enter the URL!'
-        const isValid = /^https:\/\/docs\.google\.com\/spreadsheets\/d\/.+/.test(value)
-        if (!isValid) return 'Please enter a valid Google Sheet URL!'
-      }
-    })
+        if (!value) return "Please enter the URL!";
+        const isValid =
+          /^https:\/\/docs\.google\.com\/spreadsheets\/d\/.+/.test(value);
+        if (!isValid) return "Please enter a valid Google Sheet URL!";
+      },
+    });
 
     if (sheetUrl) {
       // Call your API here
       const payload = {
         google_sheet_url: sheetUrl,
-      }
+      };
       try {
         Swal.fire({
-          title: 'Saving...',
-          text: 'Please wait while we save your file.',
+          title: "Saving...",
+          text: "Please wait while we save your file.",
           allowOutsideClick: false,
           showConfirmButton: false,
-          didOpen: () => Swal.showLoading()
-        })
+          didOpen: () => Swal.showLoading(),
+        });
         const requestUrl = apiService.EndPoint.saveGooglegrive;
         // Make the API request to check the active plan status
         await apiService.commonAPIRequest(
@@ -303,28 +386,42 @@ const SaveProfile = () => {
           undefined, // No query parameters
           payload, // No request body
           (result: any) => {
-            if (result.data.status === 200 && result.data.message === "Profiles exported successfully.") {
-              Swal.fire('Success!', 'Your file has been saved to Google Drive.', 'success')
+            if (
+              result.data.status === 200 &&
+              result.data.message === "Profiles exported successfully."
+            ) {
+              Swal.fire(
+                "Success!",
+                "Your file has been saved to Google Drive.",
+                "success"
+              );
             } else {
-              Swal.fire('Something went wrong', result.data.message || 'Something issue at server.', 'error')
+              Swal.fire(
+                "Something went wrong",
+                result.data.message || "Something issue at server.",
+                "error"
+              );
             }
           }
         );
       } catch (error) {
         console.error("Error fetching plans:", error);
-        Swal.fire('Error', 'Something went wrong while connecting to the server.', 'error')
+        Swal.fire(
+          "Error",
+          "Something went wrong while connecting to the server.",
+          "error"
+        );
       }
     }
-  }
+  };
 
   const connectToCRM = async () => {
-
     if (!activePlan) {
       Swal.fire({
         icon: "warning",
         title: "Subscription Required",
         text: "You need an active subscription to connect CRM. Please subscribe.",
-        confirmButtonColor: "#ff5c35",
+        confirmButtonColor: "#2563eb",
         showCancelButton: true,
         cancelButtonText: "Maybe Later",
         confirmButtonText: "Subscribe Now",
@@ -344,7 +441,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Connection Status: CRM Active",
         text: `You have successfully linked your account with ${crmConnection.crmName}.`,
-        confirmButtonColor: "#ff5c35",
+        confirmButtonColor: "#2563eb",
         confirmButtonText: "OK",
         customClass: {
           title: "!text-[1.7rem] font-bold",
@@ -354,7 +451,7 @@ const SaveProfile = () => {
     }
 
     const { value: formValues } = await Swal.fire({
-      title: 'Connect With CRM',
+      title: "Connect With CRM",
       html: `
         <label for="crm-select" class="block text-left mb-1 text-sm font-medium">Select your CRM:</label>
         <select id="crm-select" class="swal2-input w-full outline-0 border placeholder-[#545c66] !border-[#4f59662b] text-[#545c66] bg-[#f6f9fc] text-base font-light color5a5783 transition p-3 relative  rounded-xl">
@@ -381,54 +478,66 @@ const SaveProfile = () => {
         </div>
       `,
       showCancelButton: true,
-      confirmButtonText: 'Connect',
-      confirmButtonColor: '#ff5c35',
+      confirmButtonText: "Connect",
+      confirmButtonColor: "#2563eb",
       customClass: {
-        title: '!text-3xl font-semibold',
-        actions: 'flex justify-end w-full gap-2 px-7',
+        title: "!text-3xl font-semibold",
+        actions: "flex justify-end w-full gap-2 px-7",
       },
       didOpen: () => {
-        const crmSelect = document.getElementById('crm-select') as HTMLSelectElement | null;
-        const zendeskFields = document.getElementById('zendesk-fields') as HTMLElement | null;
+        const crmSelect = document.getElementById(
+          "crm-select"
+        ) as HTMLSelectElement | null;
+        const zendeskFields = document.getElementById(
+          "zendesk-fields"
+        ) as HTMLElement | null;
 
         if (crmSelect && zendeskFields) {
-          crmSelect.addEventListener('change', (e: Event) => {
+          crmSelect.addEventListener("change", (e: Event) => {
             const target = e.target as HTMLSelectElement | null;
             if (target) {
-              zendeskFields.style.display = target.value === 'zendesk' ? 'block' : 'none';
+              zendeskFields.style.display =
+                target.value === "zendesk" ? "block" : "none";
             }
           });
         }
       },
       preConfirm: () => {
-        const crm = (document.getElementById('crm-select') as HTMLSelectElement).value;
-        if (crm === 'zendesk') {
-          const url = (document.getElementById('zendesk-url') as HTMLInputElement).value.trim();
-          const token = (document.getElementById('zendesk-token') as HTMLInputElement).value.trim();
+        const crm = (document.getElementById("crm-select") as HTMLSelectElement)
+          .value;
+        if (crm === "zendesk") {
+          const url = (
+            document.getElementById("zendesk-url") as HTMLInputElement
+          ).value.trim();
+          const token = (
+            document.getElementById("zendesk-token") as HTMLInputElement
+          ).value.trim();
           if (!url || !token) {
-            Swal.showValidationMessage('Please enter both Zendesk URL and token');
+            Swal.showValidationMessage(
+              "Please enter both Zendesk URL and token"
+            );
           }
           return { crm, url, token };
         } else {
-          Swal.showValidationMessage('Please select a CRM');
+          Swal.showValidationMessage("Please select a CRM");
         }
-      }
+      },
     });
 
-    if (formValues?.crm === 'zendesk') {
+    if (formValues?.crm === "zendesk") {
       const { url, token } = formValues;
 
       try {
         Swal.fire({
-          title: 'Connecting...',
-          text: 'Please wait while we connect your CRM.',
+          title: "Connecting...",
+          text: "Please wait while we connect your CRM.",
           allowOutsideClick: false,
           showConfirmButton: false,
-          didOpen: () => Swal.showLoading()
+          didOpen: () => Swal.showLoading(),
         });
 
         const payload = {
-          crm_name: 'zendesk',
+          crm_name: "zendesk",
           crm_url: url,
           token: token,
           user_id: user_id,
@@ -442,7 +551,10 @@ const SaveProfile = () => {
           undefined,
           payload,
           (result: any) => {
-            if (result.status === 201 && result?.data?.message === "Connected Successfully") {
+            if (
+              result.status === 201 &&
+              result?.data?.message === "Connected Successfully"
+            ) {
               const crmData = {
                 crmConnection: true,
                 crmName: "zendesk",
@@ -450,161 +562,273 @@ const SaveProfile = () => {
                 url: payload?.crm_url,
               };
               chrome.storage.local.set({ crmData });
-              Swal.fire('Success!', 'Your CRM is now connected.', 'success');
+              Swal.fire("Success!", "Your CRM is now connected.", "success");
               getCRMdData();
             } else if (result?.data?.message.includes("Duplicate entry")) {
-              Swal.fire('Error', 'Connection Error: This CRM is already connected.', 'error');
+              Swal.fire(
+                "Error",
+                "Connection Error: This CRM is already connected.",
+                "error"
+              );
             } else {
-              Swal.fire('Failed', result.data.message || 'Unable to connect CRM.', 'error');
+              Swal.fire(
+                "Failed",
+                result.data.message || "Unable to connect CRM.",
+                "error"
+              );
             }
           }
         );
       } catch (error) {
         console.error("CRM Connection Error:", error);
-        Swal.fire('Error', 'Something went wrong while connecting CRM.', 'error');
+        Swal.fire(
+          "Error",
+          "Something went wrong while connecting CRM.",
+          "error"
+        );
       }
     }
   };
 
-
   return (
     <>
       <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px] overflow-hidden">
-        <div className="flex justify-between gap-5 w-full">
-          <div className="rounded-2xl w-full">
-            <div className="p-5 bg-white g-box g-box-table">
-              <div className="d-table h-connect-table !w-full max-h-[580px] overflow-auto overflow-x-hidden">
-                <div className="flex justify-between sticky top-0 bg-white pb-[14px] z-10">
-                  <div className="g-box-title">
-                    <h4 className="font-medium mb-3">Save Profile</h4>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Tooltip content="Sync with your CRM system" className="custom-tooltip c-bottom-t ex !w-auto">
-                      <button onClick={connectToCRM} className="bg-white border border-[#ff5c35] text-[#ff5c35] px-4 py-2 text-base rounded-lg hover:bg-[#ff5c35] hover:text-white flex items-center gap-2 transition-transform duration-200 ease-in-out">
-                        <span><i className="fa-solid fa-globe"></i></span>
-                        <span>Connect to CRM</span>
-                      </button>
-                    </Tooltip>
+        {/* --- Header Section (Title + Search + Buttons) --- */}
+        <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
+          {/* Left Side: Title */}
+          <div className="g-box-title">
+            <h4 className="font-medium text-lg text-gray-800">Save Profile</h4>
+          </div>
 
-                    <Tooltip content="Send a copy to Google Drive" className="custom-tooltip c-bottom-t ex !w-auto">
-                      <button onClick={saveToDrive} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
-                        <span><i className="fa-brands fa-google-drive"></i></span>
-                        <span> Save to Drive</span>
-                      </button>
-                    </Tooltip>
-                    <Tooltip content="Download your data as a CSV file" className="custom-tooltip c-bottom-t ex">
-                      <button onClick={exportToCSV} className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-2 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform">
-                        <span><i className="fa-solid fa-file-arrow-down"></i></span>
-                        <span> Export CSV</span>
-                      </button>
-                    </Tooltip>
-                  </div>
-                </div>
-                <table className="w-full overflow-auto g-table">
-                  <thead className="sticky top-[55px]">
-                    <tr>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left">
-                        <span className="inline-block connect-table-checkbox float-left relative">
-                        </span>
-                        <span className="info w-auto block text-left">
-                          <span className="text-base uppercase font-semibold whitespace-nowrap">Name</span><br />
-                        </span>
-                      </th>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Email</span></th>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Position</span></th>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Organization</span></th>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Url</span></th>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Created At</span></th>
-                      <th className="font-light text-base px-4 color00517C py-3 text-left"><span className="text-base uppercase font-semibold whitespace-nowrap">Action</span></th>
-                    </tr>
-                  </thead>
-                  {
-                    load ?
-                      <tbody>
-                        <tr>
-                          <td colSpan={6} className="p-4">
-                            <Loader />
-                          </td>
-                        </tr>
-                      </tbody>
-                      :
-                      <tbody>
-                        {profilesData.length > 0 ? (
-                          profilesData.map((profile, index) => {
-                            return (
-                              <tr key={index}>
-                                <td className="px-4 py-3">
-                                  <span className="flex items-center gap-2">
-                                    {profile.profile?.startsWith("data:image") ? (
-                                      <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
-                                        <img src={getImage('fLogo')} alt="img" className="" />
-                                      </span>
-                                    ) : (
-                                      <span className="rounded-full overflow-hidden w-12 h-12">
-                                        <img className="object-cover h-full w-full" src={`${profile.profile}`} />
-                                      </span>
-                                    )}
-                                    <span className="whitespace-nowrap">{profile.name || "N/A"}</span>
-                                  </span>
-                                </td>
+          {/* Right Side: Search + Buttons */}
+          <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
+            {/* --- Button 1: Connect CRM --- */}
+            <Tooltip
+              content="Sync with your CRM system"
+              className="custom-tooltip c-bottom-t ex !w-auto"
+            >
+              <button
+                onClick={connectToCRM}
+                className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+              >
+                <i className="fa-solid fa-globe"></i>
+                <span>Connect to CRM</span>
+              </button>
+            </Tooltip>
 
-                                <td className="px-4 py-3">{profile.email || "N/A"}</td>
-                                <td className="px-4 py-3 *:whitespace-nowrap">
-                                  {profile.position && profile.position.length > 13 ? (
-                                    <Tooltip content={profile.position} className="custom-tooltip">
-                                      {profile.position.substring(0, 13) + "..."}
-                                    </Tooltip>
-                                  ) : (
-                                    profile.position || "N/A"
-                                  )}
-                                </td>
-                                <td className="px-4 py-3 *:whitespace-nowrap">
-                                  {profile.organization && profile.organization.length > 13 ? (
-                                    <Tooltip content={profile.organization} className="custom-tooltip">
-                                      {profile.organization.substring(0, 13) + "..."}
-                                    </Tooltip>
-                                  ) : (
-                                    profile.organization || "N/A"
-                                  )}
-                                </td>
-                                {/* <td className="px-4 py-3 whitespace-nowrap">{profile.organization || "N/A"}</td> */}
-                                <td className="px-4 py-3">
-                                  {profile.url ? (
-                                    <a
-                                      href={profile.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="hover:text-[#ff5c35]"
-                                    >
-                                      {profile.url.length > 25
-                                        ? profile.url.substring(0, 25) + "..."
-                                        : profile.url}
-                                    </a>
-                                  ) : (
-                                    "N/A"
-                                  )}
-                                </td>
-                                <td className="px-4 py-3">{profile.created_at ? new Date(profile.created_at).toLocaleDateString("en-GB") : "N/A"}</td>
-                                <td onClick={() => deleteProfile(profile.id)} className="px-4 py-3 text-center text-blue-300 cursor-pointer">
-                                  <i className="fa-solid fa-trash"></i>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <tr>
-                            <td colSpan={7} className="px-4 py-3 text-center">
-                              No Profiles found
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                  }
-                </table>
+            {/* --- Button 2: Save to Drive --- */}
+            <Tooltip
+              content="Send a copy to Google Drive"
+              className="custom-tooltip c-bottom-t ex !w-auto"
+            >
+              <button
+                onClick={saveToDrive}
+                className="flex items-center gap-2 border border-[#2563eb] text-[#2563eb] px-4 py-2 text-sm font-medium rounded-lg hover:bg-[#2563eb] hover:text-white transition"
+              >
+                <i className="fa-brands fa-google-drive"></i>
+                <span>Save to Drive</span>
+              </button>
+            </Tooltip>
+
+            {/* --- Button 3: Export CSV --- */}
+            <Tooltip
+              content="Download your data as a CSV file"
+              className="custom-tooltip c-bottom-t ex !w-auto"
+            >
+              <button
+                onClick={exportToCSV}
+                className="flex items-center gap-2 border border-[#2563eb] text-[#2563eb] px-4 py-2 text-sm font-medium rounded-lg hover:bg-[#2563eb] hover:text-white transition"
+              >
+                <i className="fa-solid fa-file-arrow-down"></i>
+                <span>Export CSV</span>
+              </button>
+            </Tooltip>
+          </div>
+        </div>
+
+        {/* All Box */}
+        <div className="grid grid-cols-6 gap-4 bg-white p-4 rounded-xl border border-[#e3e9f1] shadow-sm mb-4 g-box ">
+          {/* Box 1 */}
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
+              <FiUsers className="text-[#2563eb] text-lg" />
+            </div>
+            <div>
+              <div className="text-xl font-bold text-slate-900">
+                {profilesData.length}
               </div>
+              <div className="text-sm text-gray-600">Total Profiles</div>
+            </div>
+          </div>
+
+          {/* Box 2 */}
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#edfdf2]">
+              <FiUserCheck className="text-green text-lg" />
+            </div>
+            <div>
+              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-sm text-gray-600">1st Connections</div>
+            </div>
+          </div>
+
+          {/* Box 3 */}
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#fefce8]">
+              <FiStar className="text-yellow-400 text-lg" />
+            </div>
+            <div>
+              <div className="text-xl font-bold text-slate-900">
+                {starredIds.length}
+              </div>
+              <div className="text-sm text-gray-600">Starred</div>
+            </div>
+          </div>
+
+          {/* Box 4 */}
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
+              <FiBriefcase className="text-[#9333ea] text-lg" />
+            </div>
+            <div>
+              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-sm text-gray-600">Companies</div>
+            </div>
+          </div>
+
+          {/* Box 5 */}
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#f7ecde]">
+              <FiTrendingUp className="text-[#ea580c] text-lg" />
+            </div>
+            <div>
+              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-sm text-gray-600">High Engagement</div>
+            </div>
+          </div>
+
+          {/* Box 6 */}
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
+              <FiGlobe className="text-[#2563eb] text-lg" />
+            </div>
+            <div>
+              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-sm text-gray-600">Out of Network</div>
             </div>
           </div>
         </div>
+
+        {/* search and 3 buttons  */}
+        <div className="flex w-full bg-white justify-between items-center overflow-hidden mb-4 p-4 g-box gap-2">
+          {/* --- Search Box Left --- */}
+          <div className="flex items-center bg-white shadow-sm rounded-xl px-3 py-2 w-100 transition border border-[#2563eb] h-[38px]">
+            <IoSearchOutline className="w-5 h-5 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search profiles by name or company name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-2 text-sm border-none placeholder-gray-400 focus:outline-none focus:ring-0"
+            />
+          </div>
+
+          {/* --- Tabs Right --- */}
+          <div className="flex items-center gap-2">
+            {/* All Tab */}
+            <button
+              onClick={() => setActiveButton("all")}
+              className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
+                activeButton === "all"
+                  ? "bg-[#2563eb] text-white"
+                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+              }`}
+            >
+              <i className="fa-solid fa-user-group text-sm"></i>
+              All (0)
+            </button>
+
+            {/* Starred Tab */}
+            <button
+              onClick={() => setActiveButton("starred")}
+              className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
+                activeButton === "starred"
+                  ? "bg-[#2563eb] text-white"
+                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+              }`}
+            >
+              <i className="fa-solid fa-star text-sm"></i>
+              Starred
+            </button>
+
+            {/* Recent Tab */}
+            <button
+              onClick={() => setActiveButton("recent")}
+              className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
+                activeButton === "recent"
+                  ? "bg-[#2563eb] text-white"
+                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+              }`}
+            >
+              <i className="fa-solid fa-clock text-sm"></i>
+              Recent
+            </button>
+          </div>
+        </div>
+
+        {/* // Tab Content Section */}
+        {/* All Tab */}
+        {activeButton === "all" && (
+          <>
+            <Profilecard
+              profiles={filteredProfiles} // sabhi profiles
+              load={load}
+              deleteProfile={deleteProfile}
+              toggleStar={toggleStar}
+              TabButton={activeButton}
+              starredIds={starredIds}
+            />
+          </>
+        )}
+
+        {/* Starred Tab */}
+        {activeButton === "starred" && (
+          <>
+            <Profilecard
+              profiles={filteredProfiles.filter((p) =>
+                starredIds.includes(p.id)
+              )}
+              load={load}
+              deleteProfile={deleteProfile}
+              toggleStar={toggleStar}
+              TabButton={activeButton}
+              starredIds={starredIds}
+            />
+          </>
+        )}
+
+        {/* Recent Tab */}
+        {activeButton === "recent" && (
+          <>
+            <Profilecard
+              profiles={[...filteredProfiles]
+                .filter((p) => {
+                  const createdAt = new Date(p.created_at);
+                  const now = new Date();
+                  const diffInHours = (now - createdAt) / (1000 * 60 * 60);
+                  return diffInHours <= 24; // only 24hr
+                })
+                .sort(
+                  (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                )}
+              load={load}
+              deleteProfile={deleteProfile}
+              toggleStar={toggleStar}
+              TabButton={activeButton}
+              starredIds={starredIds}
+            />
+          </>
+        )}
       </div>
     </>
   );
