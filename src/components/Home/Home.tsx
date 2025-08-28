@@ -283,7 +283,7 @@ const Home = () => {
               </div>
 
               {/* Footer link */}
-              <div className="border-t border-[#e3e9f1] pt-3 mt-3">
+              <div className="border-t border-[#e3e9f1] pt-3 mt-8">
                 <a
                   href="#"
                   className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"

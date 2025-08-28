@@ -26,10 +26,10 @@ const Router = () => {
   useEffect(() => {
     const checkToken = () => {
       chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
-        if (response && response.success) {
+        if (response && response.success == true) {
           setLogin(response.token);
         } else {
-          setLogin('');
+          setLogin(null);
         }
       });
     };

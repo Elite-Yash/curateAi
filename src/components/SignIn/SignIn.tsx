@@ -90,6 +90,7 @@ const SignIn = () => {
             ) {
               const authToken = response.data.data.auth_token;
               chrome.storage.local.set({ token: authToken }, () => {});
+              
               setFormData({ email: "", password: "" });
               showMessage("Login successful!", "success");
               setTimeout(() => {

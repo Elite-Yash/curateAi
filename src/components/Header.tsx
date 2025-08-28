@@ -72,8 +72,9 @@ const Header = () => {
   const LogOut = () => {
     chrome.runtime.sendMessage({ type: "LogOut" }, () => {});
     setDropdownOpen(false);
-    navigate("/signin");
+    navigate("/signin", { replace: true });
     setLogin(null);
+    window.location.reload();
   };
 
   const checkActivePlan = async () => {

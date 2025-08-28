@@ -49,7 +49,9 @@ interface Profile {
 }
 
 const SaveProfile = () => {
-  const [profilesData, setProfilesData] = useState<Profile[]>([]);
+  const [profilesData, setProfilesData] =
+  
+  useState<Profile[]>([]);
   const [load, setLoad] = useState(true);
   const [activePlan, setActiveplan] = useState(false);
   const navigate = useNavigate();
@@ -62,6 +64,7 @@ const SaveProfile = () => {
   });
   const [activeButton, setActiveButton] = useState("all");
 
+
   // Search term state
   const [searchTerm, setSearchTerm] = useState("");
   const [starredIds, setStarredIds] = useState<number[]>([]);
@@ -73,6 +76,7 @@ const SaveProfile = () => {
       setStarredIds(JSON.parse(saved));
     }
   }, []);
+
   // Search + Starred filter combine
   const filteredProfiles = profilesData
     // search logic
@@ -85,6 +89,7 @@ const SaveProfile = () => {
     .filter((profile) =>
       activeButton === "starred" ? starredIds.includes(profile.id) : true
     );
+
   // Star feature
   const toggleStar = (id: number) => {
     let updated: number[];
@@ -605,6 +610,7 @@ const SaveProfile = () => {
             {/* --- Button 1: Connect CRM --- */}
             <Tooltip
               content="Sync with your CRM system"
+              placement="bottom"
               className="custom-tooltip c-bottom-t ex !w-auto"
             >
               <button
@@ -619,6 +625,7 @@ const SaveProfile = () => {
             {/* --- Button 2: Save to Drive --- */}
             <Tooltip
               content="Send a copy to Google Drive"
+              placement="bottom"
               className="custom-tooltip c-bottom-t ex !w-auto"
             >
               <button
@@ -633,6 +640,7 @@ const SaveProfile = () => {
             {/* --- Button 3: Export CSV --- */}
             <Tooltip
               content="Download your data as a CSV file"
+              placement="bottom"
               className="custom-tooltip c-bottom-t ex !w-auto"
             >
               <button
@@ -649,7 +657,10 @@ const SaveProfile = () => {
         {/* All Box */}
         <div className="grid grid-cols-6 gap-4 bg-white p-4 rounded-xl border border-[#e3e9f1] shadow-sm mb-4 g-box ">
           {/* Box 1 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+          <div
+            onClick={() => setActiveButton("all")}
+            className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
+          >
             <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
               <FiUsers className="text-[#2563eb] text-lg" />
             </div>
@@ -662,8 +673,8 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 2 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#edfdf2]">
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#edfdf2]">
               <FiUserCheck className="text-green text-lg" />
             </div>
             <div>
@@ -673,7 +684,10 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 3 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+          <div
+            onClick={() => setActiveButton("starred")}
+            className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
+          >
             <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#fefce8]">
               <FiStar className="text-yellow-400 text-lg" />
             </div>
@@ -686,7 +700,7 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 4 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
             <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
               <FiBriefcase className="text-[#9333ea] text-lg" />
             </div>
@@ -697,7 +711,7 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 5 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
             <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#f7ecde]">
               <FiTrendingUp className="text-[#ea580c] text-lg" />
             </div>
@@ -708,7 +722,7 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 6 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3">
+          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
             <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
               <FiGlobe className="text-[#2563eb] text-lg" />
             </div>
@@ -719,7 +733,7 @@ const SaveProfile = () => {
           </div>
         </div>
 
-        {/* search and 3 buttons  */}
+        {/* search and 3 buttons */}
         <div className="flex w-full bg-white justify-between items-center overflow-hidden mb-4 p-4 g-box gap-2">
           {/* --- Search Box Left --- */}
           <div className="flex items-center bg-white shadow-sm rounded-xl px-3 py-2 w-100 transition border border-[#2563eb] h-[38px]">
@@ -736,47 +750,65 @@ const SaveProfile = () => {
           {/* --- Tabs Right --- */}
           <div className="flex items-center gap-2">
             {/* All Tab */}
-            <button
-              onClick={() => setActiveButton("all")}
-              className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
-                activeButton === "all"
-                  ? "bg-[#2563eb] text-white"
-                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-              }`}
+            <Tooltip
+            placement="bottom"
+              content="View all saved profiles"
+              className="custom-tooltip c-bottom-t ex !w-auto"
             >
-              <i className="fa-solid fa-user-group text-sm"></i>
-              All (0)
-            </button>
+              <button
+                onClick={() => setActiveButton("all")}
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
+                  activeButton === "all"
+                    ? "bg-[#2563eb] text-white"
+                    : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                }`}
+              >
+                <i className="fa-solid fa-user-group text-sm"></i>
+                All (0)
+              </button>
+            </Tooltip>
 
             {/* Starred Tab */}
-            <button
-              onClick={() => setActiveButton("starred")}
-              className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
-                activeButton === "starred"
-                  ? "bg-[#2563eb] text-white"
-                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-              }`}
+            <Tooltip
+              content="View your starred profiles"
+              placement="bottom"
+              className="custom-tooltip c-bottom-t ex !w-auto"
             >
-              <i className="fa-solid fa-star text-sm"></i>
-              Starred
-            </button>
+              <button
+                onClick={() => setActiveButton("starred")}
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
+                  activeButton === "starred"
+                    ? "bg-[#2563eb] text-white"
+                    : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                }`}
+              >
+                <i className="fa-solid fa-star text-sm"></i>
+                Starred
+              </button>
+            </Tooltip>
 
             {/* Recent Tab */}
-            <button
-              onClick={() => setActiveButton("recent")}
-              className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
-                activeButton === "recent"
-                  ? "bg-[#2563eb] text-white"
-                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-              }`}
+            <Tooltip
+              content="View last 24 saved profiles"
+              placement="bottom"
+              className="custom-tooltip c-bottom-t ex !w-auto"
             >
-              <i className="fa-solid fa-clock text-sm"></i>
-              Recent
-            </button>
+              <button
+                onClick={() => setActiveButton("recent")}
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
+                  activeButton === "recent"
+                    ? "bg-[#2563eb] text-white"
+                    : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                }`}
+              >
+                <i className="fa-solid fa-clock text-sm"></i>
+                Recent
+              </button>
+            </Tooltip>
           </div>
         </div>
 
-        {/* // Tab Content Section */}
+        {/* // Tab Section */}
         {/* All Tab */}
         {activeButton === "all" && (
           <>

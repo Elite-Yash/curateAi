@@ -1,6 +1,6 @@
 import Loader from "../Loader/Loader";
 import { getImage } from "../../common/utils/logoUtils";
-import { IoPersonOutline } from "react-icons/io5";
+import { IoPersonOutline, IoLogoLinkedin } from "react-icons/io5";
 
 // Define Profile type
 type Profile = {
@@ -113,23 +113,44 @@ const Profilecard = ({
                       : profile.organization
                     : "N/A"}
                 </div>
-                <div>
+
+                {/* <div className="flex items-center gap-2">
+  <span className="font-medium text-[#00517C]">URL:</span>{" "}
+  {profile.url ? (
+    <a
+      href={profile.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-1 text-[#2563eb] hover:text-[#003ab6] underline text-base"
+    >
+      {profile.url.length > 25
+        ? profile.url.substring(0, 25) + "..."
+        : profile.url}
+      <IoLogoLinkedin className="text-xl text-[#2563eb]" />
+    </a>
+  ) : (
+    "N/A"
+  )}
+</div> */}
+                <div className="flex items-center gap-2">
                   <span className="font-medium text-[#00517C]">URL:</span>{" "}
                   {profile.url ? (
                     <a
                       href={profile.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#2563eb] hover:text-[#003ab6] underline text-base"
+                      className="flex items-center gap-1 text-[#2563eb] hover:text-[#003ab6] text-base"
                     >
-                      {profile.url.length > 25
-                        ? profile.url.substring(0, 25) + "..."
-                        : profile.url}
+                      <button className="text-[#2563eb] hover:text-[#003ab6] border border-[#2563eb] gap-2  ps-1 pe-1 rounded-sm flex">
+                        Go To Linkedin
+                        <IoLogoLinkedin className="text-xl text-[#2563eb] mt-0.5" />
+                      </button>
                     </a>
                   ) : (
                     "N/A"
                   )}
                 </div>
+
                 <div>
                   <span className="font-medium text-[#00517C]">
                     Created At:

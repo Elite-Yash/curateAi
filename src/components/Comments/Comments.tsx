@@ -3,6 +3,7 @@ import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
+import { IoLogoLinkedin } from "react-icons/io5";
 
 interface Comment {
   id: string;
@@ -119,164 +120,143 @@ const Comments = () => {
   };
 
   return (
-    <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
-      <div className="flex justify-between gap-5 w-full">
-        <div className="rounded-2xl w-full">
-          <div className="p-5 bg-white g-box g-box-table ">
-            <div className="d-table h-connect-table !w-full max-h-[580px] overflow-auto">
-              <div className="g-box-title sticky top-0 bg-white">
-                <h4 className="font-medium pb-3">Comments</h4>
-              </div>
-              <table className="w-full overflow-auto g-table Comments ">
-                <thead className="sticky top-[40px]">
-                  <tr>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Comment
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Url
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Type
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Created At
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Action
-                      </span>
-                    </th>
-                  </tr>
-                </thead>
+    <>
+      <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
+        <div className="g-box-title g-box bg-white sticky top-24 p-4 mb-4 z-10">
+          <h4 className="font-medium text-lg text-gray-800">
+            Comments Section{" "}
+          </h4>
+        </div>
 
-                {load ? (
-                  <tbody>
-                    <tr>
-                      <td colSpan={4} className="p-4">
-                        <Loader />
-                      </td>
-                    </tr>
-                  </tbody>
-                ) : (
-                  <tbody>
-                    {commentsData.length > 0 ? (
-                      commentsData.map((comment, index) => {
-                        const fullComment = comment?.comment || "N/A";
-                        return (
-                          <tr key={index}>
-                            <td className="px-4 py-3">
-                              {fullComment.length > 200
-                                ? fullComment.slice(0, 200) + "..."
-                                : fullComment}
+        <div className="flex justify-between gap-5 w-full">
+          <div className="rounded-2xl w-full">
+            <div className="bg-[#f5f8fc] g-box">
+              {load ? (
+                <div className="flex justify-center items-center py-10">
+                  <Loader />
+                </div>
+              ) : commentsData.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[755px] overflow-auto scrollbar-hide">
+                  {commentsData.map((comment, index) => {
+                    const fullComment = comment?.comment || "N/A";
+                    return (
+                      <div
+                        key={index}
+                        className="bg-white rounded-2xl shadow-md p-4 relative g-box"
+                      >
+                        {/* Icon + Heading */}
+                        <div className="flex items-center gap-3 justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E6F0FA] text-[#2563eb]">
+                              <i className="fa-regular fa-comment text-lg"></i>
+                            </div>
+                            <div className="g-box-title sticky top-0 bg-white">
+                              <h4 className="font-medium">
+                                {" "}
+                                {comment.comment_type || "Comments"}{" "}
+                              </h4>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => deleteComment(comment?.id)}
+                            className=" w-10 h-10 flex items-center justify-center rounded-full text-base cursor-pointer text-[#2563eb] hover:text-[#003ab6] ms-0.5"
+                            title="Delete Comment"
+                          >
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                        </div>
 
-                              {fullComment.length > 200 && (
-                                <button
-                                  className="text-blue-500 ml-2"
-                                  onClick={() => openModal(comment)}
-                                >
-                                  Read More
-                                </button>
-                              )}
-                            </td>
-                            <td className="px-4 py-3">
-                              {comment.post_url ? (
-                                <a
-                                  href={comment.post_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="hover:text-[#ff5c35]"
-                                >
-                                  {comment.post_url.length > 29
-                                    ? comment.post_url.substring(0, 29) + "..."
-                                    : comment.post_url}
-                                </a>
-                              ) : (
-                                "N/A"
-                              )}
-                            </td>
-                            <td className="px-4 py-3">
-                              {comment.comment_type || "N/A"}
-                            </td>
-                            <td className="px-4 py-3">
-                              {new Date(comment.created_at).toLocaleDateString(
-                                "en-GB"
-                              ) || "N/A"}
-                            </td>
-                            <td
-                              onClick={() => {
-                                deleteComment(comment?.id);
-                              }}
-                              className="px-4 py-3 text-center text-blue-300 cursor-pointer"
+                        {/* Comment Text */}
+                        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                          {fullComment.length > 120
+                            ? fullComment.slice(0, 120) + "..."
+                            : fullComment}
+                          {fullComment.length > 120 && (
+                            <button
+                              onClick={() => openModal(comment)}
+                              className="text-[#2563eb] hover:text-[#003ab6] text-sm font-medium hover:underline w-fit"
                             >
-                              <i className="fa-solid fa-trash"></i>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan={5}
-                          className="px-4 py-3 text-center whitespace-nowrap"
-                        >
-                          No comments found
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                )}
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+                              Read More
+                            </button>
+                          )}
+                        </p>
 
-      {/* Modal Popup */}
-      {modalData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
-            <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
-              <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12">
-                <img src={getImage("fLogo")} alt="img" className="" />
-              </span>
-              <h4 className="popup-title font-semibold text-xl leading-10">
-                Entire Comment
-              </h4>
-              <span
-                onClick={closeModal}
-                role="button"
-                aria-label="Close modal"
-                className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer"
-              >
-                <img
-                  src={getImage("close")}
-                  alt="img"
-                  className="w-3 h-3 rounded-full m-2.5"
-                />
-              </span>
-            </div>
-            {/* <p className="text-gray-700 mt-2.5">{modalData.comment}</p> */}
-            <div className="p-6">
-              <p
-                className="text-gray-700 mt-2.5"
-                dangerouslySetInnerHTML={{
-                  __html: modalData.comment.replace(/\n/g, "<br />"),
-                }}
-              />
+                        {/* Link */}
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={comment.post_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-sm text-[#2563eb] hover:text-[#003ab6] truncate"
+                          >
+                            <i className="fa-solid fa-location-dot text-xs"></i>
+                            {comment.post_url
+                              ? comment.post_url.length > 40
+                                ? comment.post_url.substring(0, 40) + "..."
+                                : comment.post_url
+                              : "N/A"}
+                            <IoLogoLinkedin className="text-xl text-[#2563eb]" />
+                          </a>
+                        </div>
+
+                        {/* Footer - Date + Delete */}
+                        <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
+                          <span>
+                            {new Date(comment.created_at).toLocaleDateString(
+                              "en-GB"
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-10 text-gray-500">
+                  No comments found
+                </div>
+              )}
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Modal (Same as before) */}
+        {modalData && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
+              <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
+                <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12">
+                  <img src={getImage("fLogo")} alt="img" className="" />
+                </span>
+                <h4 className="popup-title font-semibold text-xl leading-10">
+                  Entire Comment
+                </h4>
+                <span
+                  onClick={closeModal}
+                  role="button"
+                  aria-label="Close modal"
+                  className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer"
+                >
+                  <img
+                    src={getImage("close")}
+                    alt="img"
+                    className="w-8 h-8 rounded-full m-2.5"
+                  />
+                </span>
+              </div>
+              <div className="p-6">
+                <p
+                  className="text-gray-700 mt-2.5"
+                  dangerouslySetInnerHTML={{
+                    __html: modalData.comment.replace(/\n/g, "<br />"),
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -280,358 +280,224 @@ const InputAiPopup: React.FC<ModalProps> = ({
             newUser ? (
               <React.Fragment>
                 <div className="p-9 flex flex-col gap-5 item-center">
-                  <div
-                    className={`flex flex-col gap-5 item-center ${
-                      currentPage === 3 ? "" : "gap-5"
-                    } flex-col`}
-                  >
-                    <div className="pop-title">
-                      <h4 className="font-medium !text-[25px]">
-                        {currentPage === 0
-                          ? "What is your Moto for This Post ?"
-                          : currentPage === 1
-                          ? "What is your Mood for This Post ?"
-                          : currentPage === 2
-                          ? "What Language want to write this ?"
-                          : ""}
-                      </h4>
-                    </div>
-                    <div
-                      className={`grid ${
-                        currentPage === 3 ? "" : "grid-cols-1"
-                      } gap-5`}
-                    >
-                      <div className="w-full input-group  flex-col col-span-1 ">
-                        {currentPage === 0 ? (
-                          <span className="relative">
-                            <select
-                              value={motives}
-                              onChange={(e) => setMotive(e.target.value)}
-                              className="popup-select w-full mt-3 p-2 border border-gray-300 rounded-md focus:ring"
-                              disabled={loading}
-                            >
-                              {(popupTriggeredFrom === "create-post"
-                                ? POSTING_MOTIVES
-                                : COMMENT_MOTIVES
-                              ).map((motive, index) => {
-                                // Extract text-only value: remove emoji
-                                const textOnly = motive
-                                  .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                  .trim();
-                                return (
-                                  <option key={index} value={textOnly}>
-                                    {motive}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                          </span>
-                        ) : currentPage === 1 ? (
-                          <span className="relative">
-                            <select
-                              value={tone}
-                              onChange={(e) => setTone(e.target.value)}
-                              className="popup-select w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring "
-                              disabled={loading}
-                            >
-                              {TONES.map((toneOption, index) => {
-                                // Extract text-only value: remove emoji
-                                const textOnly = toneOption
-                                  .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                  .trim(); // Remove leading emojis
-                                return (
-                                  <option key={index} value={textOnly}>
-                                    {toneOption}{" "}
-                                    {/* Displaying the full tone option with emoji */}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                          </span>
-                        ) : currentPage === 2 ? (
-                          <span className="relative ">
-                            <img
-                              src={getImage("translate")}
-                              alt="img"
-                              className="w-4 absolute left-3.5 top-1.5"
-                            />
-                            <select
-                              value={language}
-                              onChange={(e) => setLanguage(e.target.value)}
-                              className="popup-select data w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring"
-                              disabled={loading}
-                            >
-                              {LANGUAGES.map((lang, index) => (
-                                <option key={index} value={lang}>
-                                  {lang}
-                                </option>
-                              ))}
-                            </select>
-                          </span>
-                        ) : (
-                          <React.Fragment>
-                            <div className="flex flex-col gap-5 item-center ">
-                              <div className="flex flex-col gap-5 item-center">
-                                <div className="w-full textarea-group relative">
-                                  <label className="block text-xl font-medium text-gray-700 ms-2">
-                                    Original Message
-                                  </label>
-                                  <span>
-                                    <span
-                                      onClick={handleCopy}
-                                      className={`c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858] ${
-                                        loading
-                                          ? "opacity-50 cursor-not-allowed"
-                                          : ""
-                                      }`}
-                                      style={{
-                                        pointerEvents: loading
-                                          ? "none"
-                                          : "auto",
-                                      }}
-                                    >
-                                      {copied ? "Copied!" : "Copy"}
-                                      <img
-                                        src={getImage("copyIcon")}
-                                        alt="img"
-                                        className="w-4"
-                                      />
-                                    </span>
-                                    <textarea
-                                      placeholder="Tell me what you want to write about?"
-                                      value={
-                                        loading
-                                          ? displayedText
-                                          : isTextGenerated
-                                          ? displayedText
-                                          : text
-                                      } // Show displayedText during loading, otherwise show user input
-                                      ref={textareaRef}
-                                      onChange={(e) => {
-                                        if (!loading) {
-                                          // Allow updates only when not loading
-                                          setText(e.target.value); // Update user input
-                                        }
-                                      }}
-                                      className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black focus:ring h-24 resize-none"
-                                      disabled={loading}
-                                    ></textarea>
-                                  </span>
-                                  <p className="text-xl text-[#8c97a9]">
-                                    💡 Include the full message for better
-                                    context understanding
-                                  </p>
-                                </div>
-
-                                <div className="w-full input-group">
-                                  <label className="block text-xl font-medium text-gray-700 ms-2">
-                                    Select Motive
-                                  </label>
-                                  <span className="relative ">
-                                    <select
-                                      value={motives}
-                                      onChange={(e) =>
-                                        setMotive(e.target.value)
-                                      }
-                                      className="popup-select  w-full p-2 border border-gray-300 rounded-md "
-                                      disabled={loading}
-                                    >
-                                      {(popupTriggeredFrom === "create-post"
-                                        ? POSTING_MOTIVES
-                                        : COMMENT_MOTIVES
-                                      ).map((motive, index) => {
-                                        // Extract text-only value: remove emoji
-                                        const textOnly = motive
-                                          .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                          .trim();
-                                        return (
-                                          <option key={index} value={textOnly}>
-                                            {motive}
-                                          </option>
-                                        );
-                                      })}
-                                    </select>
-                                  </span>
-                                </div>
-                                <div className="w-full input-group ">
-                                  <label className="block text-xl font-medium text-gray-700 ms-2">
-                                    Select Language
-                                  </label>
-                                  <span className="relative ">
-                                    <img
-                                      src={getImage("translate")}
-                                      alt="img"
-                                      className="w-4 absolute left-3.5 !top-[5px]"
-                                    />
-                                    <select
-                                      value={language}
-                                      onChange={(e) =>
-                                        setLanguage(e.target.value)
-                                      }
-                                      className="popup-select data w-full p-2 border border-gray-300 rounded-md "
-                                      disabled={loading}
-                                    >
-                                      {LANGUAGES.map((lang, index) => (
-                                        <option key={index} value={lang}>
-                                          {lang}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </span>
-                                </div>
-                                <div className="w-full input-group">
-                                  <label className="block text-xl font-medium text-gray-700 ms-2">
-                                    Select Tone
-                                  </label>
-                                  <span className="relative ">
-                                    <select
-                                      value={tone}
-                                      onChange={(e) => setTone(e.target.value)}
-                                      className="popup-select w-full p-2 border border-gray-300 rounded-md "
-                                      disabled={loading}
-                                    >
-                                      {TONES.map((toneOption, index) => {
-                                        // Extract text-only value: remove emoji
-                                        const textOnly = toneOption
-                                          .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                          .trim(); // Remove leading emojis
-                                        return (
-                                          <option key={index} value={textOnly}>
-                                            {toneOption}{" "}
-                                            {/* Displaying the full tone option with emoji */}
-                                          </option>
-                                        );
-                                      })}
-                                    </select>
-                                  </span>
-                                </div>
-                              </div>
-
-                              <h4 className="!my-0 text-base font-medium flex items-center gap-1.5 *:dec-color *:background-three *:px-2.5 *:rounded-3xl">
-                                <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
-                                  Motive:{" "}
-                                  <span className="font-semibold text-[#545c66]">
-                                    {motives}
-                                  </span>
-                                </span>
-                                <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
-                                  Language:{" "}
-                                  <span className="font-semibold text-[#545c66]">
-                                    {language}
-                                  </span>
-                                </span>
-                                <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
-                                  Tone:{" "}
-                                  <span className="font-semibold text-[#545c66]">
-                                    {tone}
-                                  </span>
-                                </span>
-                              </h4>
-                              <div className="justify-end space-x-2 text-right relative flex ">
-                                {isTextGenerated && (
-                                  <button
-                                    className="popup-button-insert px-4 py-2 bg-[#2563eb] text-white rounded-md hover:bg-green-600"
-                                    onClick={insertContent}
-                                    disabled={loading}
-                                  >
-                                    Insert
-                                  </button>
-                                )}
-                                <button
-                                  className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 w-[56rem] h-[4rem] rounded-[8px] justify-center${
-                                    isTextGenerated ? "bg-green" : "bg-green"
-                                  }  text-white rounded-md ${
-                                    isTextGenerated
-                                      ? "hover:bg-[#008234]"
-                                      : "hover:bg-[#008234]"
-                                  }  disabled:bg-gray-40`}
-                                  onClick={handleSubmit}
-                                  disabled={loading}
-                                >
-                                  <img
-                                    src={getImage("sendIcon")}
-                                    alt="img"
-                                    className="w-4 !static text-black"
-                                  />
-                                  {loading
-                                    ? isTextGenerated
-                                      ? "Regenerating..."
-                                      : "Generating..."
+                  <div className="grid grid-cols-1 gap-5">
+                    <div className="w-full input-group flex-col col-span-1">
+                      <div className="flex flex-col gap-5 item-center">
+                        <div className="flex flex-col gap-5 item-center">
+                          {/* Original Message */}
+                          <div className="w-full textarea-group relative">
+                            <label className="block text-xl font-medium text-gray-700 ms-2">
+                              Original Message
+                            </label>
+                            <span>
+                              <span
+                                onClick={handleCopy}
+                                className={`c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858] ${
+                                  loading ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
+                                style={{
+                                  pointerEvents: loading ? "none" : "auto",
+                                }}
+                              >
+                                {copied ? "Copied!" : "Copy"}
+                                <img
+                                  src={getImage("copyIcon")}
+                                  alt="img"
+                                  className="w-4"
+                                />
+                              </span>
+                              <textarea
+                                placeholder="Tell me what you want to write about?"
+                                value={
+                                  loading
+                                    ? displayedText
                                     : isTextGenerated
-                                    ? "Regenerate"
-                                    : "Generate Reply"}
-                                </button>
+                                    ? displayedText
+                                    : text
+                                }
+                                ref={textareaRef}
+                                onChange={(e) => {
+                                  if (!loading) {
+                                    setText(e.target.value);
+                                  }
+                                }}
+                                className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black focus:ring h-24 resize-none"
+                                disabled={loading}
+                              ></textarea>
+                            </span>
+                            <p className="text-xl text-[#8c97a9]">
+                              💡 Include the full message for better context
+                              understanding
+                            </p>
+                          </div>
 
-                                <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
-                                  {error && (
-                                    <div className="popup-error text-red-500 mt-0">
-                                      {error}
-                                    </div>
-                                  )}
-                                </div>
+                          {/* Select Motive */}
+                          <div className="w-full input-group">
+                            <label className="block text-xl font-medium text-gray-700 ms-2">
+                              Select Motive
+                            </label>
+                            <span className="relative">
+                              <select
+                                value={motives}
+                                onChange={(e) => setMotive(e.target.value)}
+                                className="popup-select w-full p-2 border border-gray-300 rounded-md"
+                                disabled={loading}
+                              >
+                                {(popupTriggeredFrom === "create-post"
+                                  ? POSTING_MOTIVES
+                                  : COMMENT_MOTIVES
+                                ).map((motive, index) => {
+                                  const textOnly = motive
+                                    .replace(/^[^\p{L}\p{N}\s]+/u, "")
+                                    .trim();
+                                  return (
+                                    <option key={index} value={textOnly}>
+                                      {motive}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            </span>
+                          </div>
+
+                          {/* Select Language */}
+                          <div className="w-full input-group">
+                            <label className="block text-xl font-medium text-gray-700 ms-2">
+                              Select Language
+                            </label>
+                            <span className="relative">
+                              <img
+                                src={getImage("translate")}
+                                alt="img"
+                                className="w-4 absolute left-3.5 !top-[5px]"
+                              />
+                              <select
+                                value={language}
+                                onChange={(e) => setLanguage(e.target.value)}
+                                className="popup-select data w-full p-2 border border-gray-300 rounded-md"
+                                disabled={loading}
+                              >
+                                {LANGUAGES.map((lang, index) => (
+                                  <option key={index} value={lang}>
+                                    {lang}
+                                  </option>
+                                ))}
+                              </select>
+                            </span>
+                          </div>
+
+                          {/* Select Tone */}
+                          <div className="w-full input-group">
+                            <label className="block text-xl font-medium text-gray-700 ms-2">
+                              Select Tone
+                            </label>
+                            <span className="relative">
+                              <select
+                                value={tone}
+                                onChange={(e) => setTone(e.target.value)}
+                                className="popup-select w-full p-2 border border-gray-300 rounded-md"
+                                disabled={loading}
+                              >
+                                {TONES.map((toneOption, index) => {
+                                  const textOnly = toneOption
+                                    .replace(/^[^\p{L}\p{N}\s]+/u, "")
+                                    .trim();
+                                  return (
+                                    <option key={index} value={textOnly}>
+                                      {toneOption}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Selected Info */}
+                        <h4 className="!my-0 text-base font-medium flex items-center gap-1.5 *:dec-color *:background-three *:px-2.5 *:rounded-3xl">
+                          <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
+                            Motive:{" "}
+                            <span className="font-semibold text-[#545c66]">
+                              {motives}
+                            </span>
+                          </span>
+                          <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
+                            Language:{" "}
+                            <span className="font-semibold text-[#545c66]">
+                              {language}
+                            </span>
+                          </span>
+                          <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
+                            Tone:{" "}
+                            <span className="font-semibold text-[#545c66]">
+                              {tone}
+                            </span>
+                          </span>
+                        </h4>
+
+                        {/* Action Buttons */}
+                        <div className="justify-end space-x-2 text-right relative flex">
+                          {isTextGenerated && (
+                            <button
+                              className="popup-button-insert px-4 py-2 bg-[#2563eb] text-white rounded-md hover:bg-green-600"
+                              onClick={insertContent}
+                              disabled={loading}
+                            >
+                              Insert
+                            </button>
+                          )}
+                          <button
+                            className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 w-[56rem] h-[4rem] rounded-[8px] justify-center bg-green text-white rounded-md hover:bg-[#008234] disabled:bg-gray-40`}
+                            onClick={handleSubmit}
+                            disabled={loading}
+                          >
+                            <img
+                              src={getImage("sendIcon")}
+                              alt="img"
+                              className="w-4 !static text-black"
+                            />
+                            {loading
+                              ? isTextGenerated
+                                ? "Regenerating..."
+                                : "Generating..."
+                              : isTextGenerated
+                              ? "Regenerate"
+                              : "Generate Reply"}
+                          </button>
+
+                          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
+                            {error && (
+                              <div className="popup-error text-red-500 mt-0">
+                                {error}
                               </div>
-                            </div>
-
-                            {/* Show Message  */}
-                            <div
-                              style={{
-                                backgroundColor:
-                                  "rgb(200 255 217 / var(--tw-bg-opacity, 1))",
-                              }}
-                              className="p-4 rounded-lg message-reply m-8 mt-0"
-                            >
-                              <h3 className="font-semibold text-[#2563eb] flex items-center gap-2">
-                                💬 Messaging Best Practices:
-                              </h3>
-                              <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
-                                <li>Respond within 24-48 hours</li>
-                                <li>Personalize with specific details</li>
-                                <li>Always provide clear next steps</li>
-                                <li>Keep messages concise and scannable</li>
-                              </ul>
-                            </div>
-                          </React.Fragment>
-                        )}
-                        <div className="flex flex-col gap-5 mt-auto">
-                          {currentPage !== 0 && currentPage !== 3 && (
-                            <a
-                              onClick={() => setCurrentPage(currentPage - 1)}
-                              className={`flex !gap-2 !leading-6	 popup-button-submit !px-4 !py-2.5 bg-[#ff5c35]  text-white rounded-md  hover:bg-[#c64e30]`}
-                            >
-                              <svg
-                                className="w-[12px] fill-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 448 512"
-                              >
-                                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-                              </svg>
-                              Back
-                            </a>
-                          )}
-                          {currentPage !== 3 && (
-                            <a
-                              onClick={() => setCurrentPage(currentPage + 1)}
-                              className={`flex !gap-2 ml-auto !leading-6	 popup-button-submit !px-4 !py-2.5 bg-[#ff5c35]  text-white rounded-md  hover:bg-[#c64e30]`}
-                            >
-                              Next
-                              <svg
-                                className="w-[12px] fill-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 448 512"
-                              >
-                                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
-                              </svg>
-                            </a>
-                          )}
+                            )}
+                          </div>
                         </div>
                       </div>
-                      {currentPage === 3 ? (
-                        ""
-                      ) : (
-                        <div className="w-full">
-                          <Evalogo />
-                        </div>
-                      )}
+
+                      {/* Best Practices */}
+                      <div
+                        style={{
+                          backgroundColor:
+                            "rgb(200 255 217 / var(--tw-bg-opacity, 1))",
+                        }}
+                        className="p-4 rounded-lg message-reply m-8 mt-0"
+                      >
+                        <h3 className="font-semibold text-[#2563eb] flex items-center gap-2">
+                          💬 Messaging Best Practices:
+                        </h3>
+                        <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
+                          <li>Respond within 24-48 hours</li>
+                          <li>Personalize with specific details</li>
+                          <li>Always provide clear next steps</li>
+                          <li>Keep messages concise and scannable</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Evalogo (always visible now) */}
+                    <div className="w-full">
+                      <Evalogo />
                     </div>
                   </div>
                 </div>
@@ -644,7 +510,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <label className="block text-2xl font-medium text-gray-700 ms-9">
                         Original Message auto Generate
                       </label>
-                      <span className=" text-black rounded-lg">
+                      <span className="text-black rounded-lg">
                         <textarea
                           placeholder="Tell me what you want to write about?"
                           value={
@@ -653,13 +519,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
                               : isTextGenerated
                               ? displayedText
                               : text
-                          } // Show displayedText during loading, otherwise show user input
+                          }
                           ref={textareaRef}
                           onChange={(e) => {
-                            if (!loading) {
-                              // Allow updates only when not loading
-                              setText(e.target.value); // Update user input
-                            }
+                            if (!loading) setText(e.target.value);
                           }}
                           className="w-[93%] text-xl mt-1 m-4 mb-0 h-[52rem] resize-none border rounded-lg p-4"
                           disabled={loading}
@@ -680,12 +543,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                       <button
                         className={`flex gap-4 leading-6 px-4 py-2 popup-button-submit h-[4rem] rounded-[8px] mb-4 justify-center text-white
-      ${
-        isTextGenerated
-          ? "w-[11rem] bg-green hover:bg-[#008234]"
-          : "w-[56rem] bg-green hover:bg-[#008234]"
-      }
-      disabled:bg-gray-400`}
+            ${
+              isTextGenerated
+                ? "w-[11rem] bg-green hover:bg-[#008234]"
+                : "w-[56rem] bg-green hover:bg-[#008234]"
+            }
+            disabled:bg-gray-400`}
                         onClick={handleSubmit}
                         disabled={loading}
                       >
@@ -715,6 +578,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 ) : (
                   <div className="p-9 flex flex-col gap-5 item-center">
                     <div className="flex flex-col item-center gap-5">
+                      {/* Original Message */}
                       <div className="w-full textarea-group relative">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Original Message
@@ -742,13 +606,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 : isTextGenerated
                                 ? displayedText
                                 : text
-                            } // Show displayedText during loading, otherwise show user input
+                            }
                             ref={textareaRef}
                             onChange={(e) => {
-                              if (!loading) {
-                                // Allow updates only when not loading
-                                setText(e.target.value); // Update user input
-                              }
+                              if (!loading) setText(e.target.value);
                             }}
                             className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
                             disabled={loading}
@@ -760,22 +621,22 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </p>
                       </div>
 
+                      {/* Motive */}
                       <div className="w-full input-group">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Select Motive
                         </label>
-                        <span className="relative ">
+                        <span className="relative">
                           <select
                             value={motives}
                             onChange={(e) => setMotive(e.target.value)}
-                            className="popup-select w-full p-2 border border-gray-300 rounded-md "
+                            className="popup-select w-full p-2 border border-gray-300 rounded-md"
                             disabled={loading}
                           >
                             {(popupTriggeredFrom === "create-post"
                               ? POSTING_MOTIVES
                               : COMMENT_MOTIVES
                             ).map((motive, index) => {
-                              // Extract text-only value: remove emoji
                               const textOnly = motive
                                 .replace(/^[^\p{L}\p{N}\s]+/u, "")
                                 .trim();
@@ -788,11 +649,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           </select>
                         </span>
                       </div>
-                      <div className="w-full input-group ">
+
+                      {/* Language */}
+                      <div className="w-full input-group">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Select Language
                         </label>
-                        <span className="relative ">
+                        <span className="relative">
                           <img
                             src={getImage("translate")}
                             alt="img"
@@ -812,11 +675,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           </select>
                         </span>
                       </div>
+
+                      {/* Tone */}
                       <div className="w-full input-group">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Select Tone
                         </label>
-                        <span className="relative ">
+                        <span className="relative">
                           <select
                             value={tone}
                             onChange={(e) => setTone(e.target.value)}
@@ -824,14 +689,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             disabled={loading}
                           >
                             {TONES.map((toneOption, index) => {
-                              // Extract text-only value: remove emoji
                               const textOnly = toneOption
                                 .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                .trim(); // Remove leading emojis
+                                .trim();
                               return (
                                 <option key={index} value={textOnly}>
-                                  {toneOption}{" "}
-                                  {/* Displaying the full tone option with emoji */}
+                                  {toneOption}
                                 </option>
                               );
                             })}
@@ -840,7 +703,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
                     </div>
 
-                    <h4 className="!my-2.5 !mb-4 text-base font-medium flex items-center gap-1.5 *:dec-color *:background-three *:px-2.5 *:rounded-3xl">
+                    {/* Display Selected Options */}
+                    <h4 className="!my-2.5 !mb-4 text-base font-medium flex items-center gap-1.5">
                       <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
                         Motive:{" "}
                         <span className="font-semibold text-[#545c66]">
@@ -860,6 +724,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </span>
                       </span>
                     </h4>
+
+                    {/* Submit Buttons */}
                     <div className="justify-end space-x-2 text-right relative flex">
                       {isTextGenerated && (
                         <button
@@ -873,12 +739,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                       <button
                         className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white
-      ${
-        isTextGenerated
-          ? "w-[11rem] bg-green hover:bg-[#008234]"
-          : "w-[56rem] bg-green hover:bg-[#008234]"
-      }
-      disabled:bg-gray-400`}
+            ${
+              isTextGenerated
+                ? "w-[11rem] bg-green hover:bg-[#008234]"
+                : "w-[56rem] bg-green hover:bg-[#008234]"
+            }
+            disabled:bg-gray-400`}
                         onClick={handleSubmit}
                         disabled={loading}
                       >
@@ -905,7 +771,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Show Message  */}
+                    {/* Best Practices */}
                     <div
                       style={{
                         backgroundColor:
