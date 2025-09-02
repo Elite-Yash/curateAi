@@ -9,7 +9,7 @@ const Contentstudio = () => {
 
   return (
     <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
-      <div className="flex flex-wrap items-center justify-between z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
+      <div className="flex flex-wrap items-center justify-between z-10 mb-4 p-4">
         {/* Left Side: Title */}
         <div className="mb-0">
           <div className="flex items-center gap-3 mb-4">
