@@ -39,11 +39,6 @@ const SideBar = () => {
           aria-controls="navbar-default"
           aria-expanded="false"
         >
-          <div className="toggle relative w-11 h-10 max-[1023px]:h-8 bgFF3E3A rounded-xl flex items-center justify-center cursor-pointer overflow-hidden">
-            <span className="bg-white absolute transition w-5 h-0.5 left-1.5 rounded-full"></span>
-            <span className="bg-white absolute transition w-5 h-0.5 left-1.5 rounded-full"></span>
-            <span className="bg-white absolute transition w-8 h-0.5 left-1.5 rounded-full"></span>
-          </div>
         </button>
       </div>
 
@@ -70,6 +65,29 @@ const SideBar = () => {
               </div>
             </Link>
           </li>
+
+          {/* Content studio */}
+          <li className="px-1 py-1">
+            <Link
+              to="/content-studio"
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
+                location.pathname === "/content-studio"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-slate-700 hover:bg-gray-100"
+              }`}
+            >
+              <span className="mt-1">
+                <i className="fa-solid fa-file text-sm"></i>
+              </span>
+              <div className="flex flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm ">Content studio</div>
+                <div className="text-sm text-[#6b7280] ">
+                  Generate posts & comments
+                </div>
+              </div>
+            </Link>
+          </li>
+          
 
           {/* Comments */}
           <li className="px-1 py-1">
@@ -120,7 +138,7 @@ const SideBar = () => {
             <Link
               to="/personas"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === ""
+                location.pathname === "/personas"
                   ? "bg-blue-50 text-blue-700 shadow-sm"
                   : "text-slate-700 hover:bg-gray-100"
               }`}

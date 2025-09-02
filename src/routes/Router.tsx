@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import UserProfile from "../components/UserProfile/UserProfile";
 import PricingPage from "../components/PricingPage/PricingPage";
 import Personas from "../components/Personas/Personas";
+import Contentstudio from "../components/Contentstudio/Contentstudio";
 
 
 /**
@@ -101,6 +102,14 @@ const Router = () => {
         element={
           <Section>
             <Home />
+          </Section>
+        }
+      />
+       <Route
+        path="/content-studio"
+        element={
+          <Section>
+            <Contentstudio/>
           </Section>
         }
       />

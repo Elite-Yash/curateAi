@@ -476,7 +476,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
 
                       {/* Best Practices */}
-                      {/* Best Practices */}
                       <div
                         style={{
                           backgroundColor:
