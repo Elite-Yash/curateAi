@@ -14,6 +14,7 @@ import {
   FiGlobe,
 } from "react-icons/fi";
 import Profilecard from "./Profilecard";
+import { Users } from "lucide-react";
 
 /**
  * @component
@@ -49,9 +50,7 @@ interface Profile {
 }
 
 const SaveProfile = () => {
-  const [profilesData, setProfilesData] =
-  
-  useState<Profile[]>([]);
+  const [profilesData, setProfilesData] = useState<Profile[]>([]);
   const [load, setLoad] = useState(true);
   const [activePlan, setActiveplan] = useState(false);
   const navigate = useNavigate();
@@ -63,7 +62,6 @@ const SaveProfile = () => {
     url: null,
   });
   const [activeButton, setActiveButton] = useState("all");
-
 
   // Search term state
   const [searchTerm, setSearchTerm] = useState("");
@@ -601,8 +599,27 @@ const SaveProfile = () => {
         {/* --- Header Section (Title + Search + Buttons) --- */}
         <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
           {/* Left Side: Title */}
-          <div className="g-box-title">
-            <h4 className="font-medium text-lg text-gray-800">Save Profile</h4>
+          <div className="mb-0">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="!text-3xl font-bold text-slate-900">
+                  Saved Profiles
+                </h1>
+                <p className="text-slate-600">
+                  Manage your LinkedIn contacts and prospects
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="text-sm text-slate-600">
+                {filteredProfiles.length} profiles saved
+              </span>
+            </div>
           </div>
 
           {/* Right Side: Search + Buttons */}
@@ -751,7 +768,7 @@ const SaveProfile = () => {
           <div className="flex items-center gap-2">
             {/* All Tab */}
             <Tooltip
-            placement="bottom"
+              placement="bottom"
               content="View all saved profiles"
               className="custom-tooltip c-bottom-t ex !w-auto"
             >
