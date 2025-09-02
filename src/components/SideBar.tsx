@@ -3,32 +3,24 @@ import { getImage } from "../common/utils/logoUtils";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { GoPerson } from "react-icons/go";
 import { FaRegChartBar } from "react-icons/fa";
+import { openWindowTab } from "../common/helpers/commonHelpers";
+import Header from "./UserProfile/Header";
 
 const SideBar = () => {
   const location = useLocation();
   const manifestData = chrome.runtime.getManifest();
 
+  const goToLinkedIn = () => {
+    openWindowTab("https://linkedin.com/");
+  };
+
   return (
-    <div className="bg-white g-box  flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform rounded-[11px] -translate-y-1/2">
-      <div className="menu-baar-d absolute -right-14">
-        <button
-          data-collapse-toggle="navbar-default"
-          type="button"
-          className="max-[1023px]:ms-auto max-[1150px]:block inline-flex items-center p-2 justify-center text-sm text-white hidden  focus:ring-[#ff9479]"
-          aria-controls="navbar-default"
-          aria-expanded="false"
-        >
-          <div className="toggle relative w-11 h-10 max-[1023px]:h-8 bgFF3E3A rounded-xl flex items-center justify-center cursor-pointer overflow-hidden">
-            <span className="bg-white absolute transition left-0 w-5 h-0.5 left-1.5 rounded-full"></span>
-            <span className="bg-white absolute transition left-0 w-5 h-0.5 left-1.5 rounded-full"></span>
-            <span className="bg-white absolute transition left-0 w-8 h-0.5 left-1.5 rounded-full"></span>
-          </div>
-        </button>
-      </div>
-      <div className="logo p-4 pt-5">
+    <div className="flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform rounded-[11px] -translate-y-1/2">
+      {/* 🔹 LOGO TOP ME */}
+      <div className="logo p-3 pt-3">
         <Link
           to="/"
-          className="logo flex justify-center items-center w-full gap-2 border-color-gr2 border bg-[#bfdbfe] color-one rounded-xl py-3"
+          className="logo flex w-full gap-2 border-color-gr2 color-one  py-3"
         >
           <img
             src={getImage("logoBlack")}
@@ -38,71 +30,158 @@ const SideBar = () => {
           {/* <span className="color-one uppercase larger font-semibold">Evarobo</span> */}
         </Link>
       </div>
-      <div className="left-menu pt-12">
+
+      <div className="menu-baar-d absolute -right-14">
+        <button
+          data-collapse-toggle="navbar-default"
+          type="button"
+          className="max-[1023px]:ms-auto max-[1150px]:block inline-flex items-center p-2 justify-center text-sm text-white   focus:ring-[#ff9479]"
+          aria-controls="navbar-default"
+          aria-expanded="false"
+        >
+          <div className="toggle relative w-11 h-10 max-[1023px]:h-8 bgFF3E3A rounded-xl flex items-center justify-center cursor-pointer overflow-hidden">
+            <span className="bg-white absolute transition w-5 h-0.5 left-1.5 rounded-full"></span>
+            <span className="bg-white absolute transition w-5 h-0.5 left-1.5 rounded-full"></span>
+            <span className="bg-white absolute transition w-8 h-0.5 left-1.5 rounded-full"></span>
+          </div>
+        </button>
+      </div>
+
+      <div className="left-menu pt-4">
         <ul className="flex flex-col">
-          <li className="px-4 py-1">
+          {/* Dashboard */}
+          <li className="px-1 py-1">
             <Link
               to="/"
-              className={`border border-color-gr2 text-base flex items-center font-light gap-2 transition p-3 relative overlay-before rounded-xl ${
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
                 location.pathname === "/" || location.pathname === "/home"
-                  ? "active"
-                  : ""
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-slate-700 hover:bg-gray-100"
               }`}
             >
-              <span className="icon">
-                <i className="fa-solid fa-house dark-color"></i>
+              <span className="mt-1">
+                <i className="fa-solid fa-house text-sm"></i>
               </span>
-              <span className="dark-color font-normal">Dashboard</span>
+              <div className="flex flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm ">Dashboard</div>
+                <div className="text-xs text-[#6b7280] ">
+                  AI-powered LinkedIn
+                </div>
+              </div>
             </Link>
           </li>
-          <li className="px-4 py-1">
+
+          {/* Comments */}
+          <li className="px-1 py-1">
             <Link
               to="/comments"
-              className={`border border-color-gr2 text-base flex items-center font-light gap-2 transition p-3 relative overlay-before rounded-xl ${
-                location.pathname === "/comments" ? "active" : ""
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
+                location.pathname === "/comments"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-slate-700 hover:bg-gray-100"
               }`}
             >
-              <span className="icon">
-                <i className="fa-solid fa-message dark-color"></i>
+              <span className="mt-1">
+                <i className="fa-solid fa-message text-sm"></i>
               </span>
-              <span className="dark-color font-normal">Comments</span>
+              <div className="flex text-sm flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm ">Comments</div>
+                <div className="text-sm text-[#6b7280] ">
+                  AI-powered LinkedIn
+                </div>
+              </div>
             </Link>
           </li>
-          <li className="px-4 py-1">
+
+          {/* Save Profile */}
+          <li className="px-1 py-1">
             <Link
               to="/save-profile"
-              className={`border border-color-gr2 text-base flex items-center font-light gap-3 transition p-3 relative overlay-before rounded-xl ${
-                location.pathname === "/save-profile" ? "active" : ""
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
+                location.pathname === "/save-profile"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-slate-700 hover:bg-gray-100"
               }`}
             >
-              <span className="icon">
-                <i className="fa-solid fa-user-plus dark-color"></i>
+              <span className="mt-1">
+                <i className="fa-solid fa-user-plus text-sm"></i>
               </span>
-              <span className="dark-color font-normal">Save Profile</span>
+              <div className="flex flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm ">Save Profile</div>
+                <div className="text-sm text-[#6b7280] ">
+                  AI-powered LinkedIn
+                </div>
+              </div>
             </Link>
           </li>
-          <li className="px-4 py-1">
+
+          {/* Personas */}
+          <li className="px-1 py-1">
             <Link
-              to=""
-              className={`border border-color-gr2 text-base flex items-center font-light gap-3 transition p-3 relative overlay-before rounded-xl ${
-                location.pathname === "" ? "active" : ""
+              to="/personas"
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
+                location.pathname === ""
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-slate-700 hover:bg-gray-100"
               }`}
             >
-              <i className="fa-solid fa-user-plus dark-color"></i>
-              <span className="dark-color font-normal">Personas</span>
+              <span className="mt-1">
+                <i className="fa-solid fa-user text-sm"></i>
+              </span>
+              <div className="flex flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm ">Personas</div>
+                <div className="text-xs text-[#6b7280] ">
+                  AI-powered LinkedIn
+                </div>
+              </div>
             </Link>
           </li>
-          <li className="px-4 py-1">
+
+          {/* Analytics */}
+          <li className="px-1 py-1">
             <Link
-              to=""
-              className={`border border-color-gr2 text-base flex items-center font-light gap-3 transition p-3 relative overlay-before rounded-xl ${
-                location.pathname === "" ? "active" : ""
+              to="/"
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
+                location.pathname === ""
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-slate-700 hover:bg-gray-100"
               }`}
             >
-              <i className="fa-solid fa-chart-column dark-color"></i>
-              <span className="dark-color font-normal">Analytics</span>
+              <span className="mt-1">
+                <i className="fa-solid fa-chart-column text-sm"></i>
+              </span>
+              <div className="flex flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm  ">Analytics</div>
+                <div className="text-sm text-[#6b7280]">
+                  AI-powered LinkedIn
+                </div>
+              </div>
             </Link>
           </li>
+
+          {/* LinkedIn  */}
+          <li className="px-1 py-1">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                goToLinkedIn();
+              }}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200
+                hover:bg-gray-100 text-slate-700`}
+            >
+              <span className="mt-1 text-blue-600">
+                <i className="fa-brands fa-linkedin text-sm"></i>
+              </span>
+              <div className="flex flex-col hover:text-[#2563eb]">
+                <div className="font-medium text-sm  ">Go To LinkedIn</div>
+                <div className="text-sm text-[#6b7280]">
+                  Visit your LinkedIn Profile
+                </div>
+              </div>
+            </a>
+          </li>
+      
         </ul>
       </div>
       <div className="mt-auto"></div>
@@ -119,7 +198,11 @@ const SideBar = () => {
           </li>
         </ul>
       </div>
-      <div className="leftmenu-bottom px-4 py-1 border-t-1 border-b-0 border-l-0 border-r-0  border border-color-gr2 ">
+      <hr className="w-full"/>
+          <div className="px-1 py-1">
+            <Header />
+          </div>
+      {/* <div className="leftmenu-bottom px-4 py-1 border-t-1 border-b-0 border-l-0 border-r-0  border border-color-gr2 ">
         <ul>
           <li>
             <a
@@ -133,7 +216,7 @@ const SideBar = () => {
             </a>
           </li>
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,4 +1,11 @@
-import { FaLightbulb } from "react-icons/fa";
+import {
+  FaLightbulb,
+  FaRegFileAlt,
+  FaRegCommentAlt,
+  FaUsers,
+  FaUser,
+  FaArrowRight,
+} from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 import { GiStarFormation } from "react-icons/gi";
@@ -13,13 +20,47 @@ import {
   FiArrowUpRight,
   FiArrowDownRight,
 } from "react-icons/fi";
+import { Link } from "react-router-dom";
+// import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Target } from "lucide-react";
+
+const actions = [
+  {
+    title: "Generate Post",
+    description: "Create engaging LinkedIn content",
+    icon: FaRegFileAlt,
+    color: "from-blue-500 to-blue-600",
+    link: "",
+  },
+  {
+    title: "Smart Reply",
+    description: "AI-powered message responses",
+    icon: FaRegCommentAlt,
+    color: "from-pink-500 to-pink-600",
+    link: "",
+  },
+  {
+    title: "Save Profile",
+    description: "Add LinkedIn profiles to CRM",
+    icon: FaUsers,
+    color: "from-purple-500 to-purple-600",
+    link: "save-profile",
+  },
+  {
+    title: "Switch Persona",
+    description: "Change communication style",
+    icon: FaUser,
+    color: "from-orange-500 to-orange-600",
+    link: "",
+  },
+];
 
 const Home = () => {
   return (
     <>
-      <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
-        {/* EVA Command Center Card */}
-        <div className="flex items-center justify-between p-6 mb-4 bg-white rounded-2xl shadow-md g-box">
+      <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
+        {/* EVA Command Center div */}
+        <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
           <div className="flex items-start gap-4">
             {/* Logo */}
@@ -55,9 +96,51 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="shadow-lg bg-white rounded-2xl p-6 mb-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-blue-600 text-lg">⚡</span>
+              <div className="text-xl font-bold ">Quick Actions</div>
+            </div>
+            <span className="text-sm text-slate-500">
+              Choose your next move
+            </span>
+          </div>
+
+          {/* Action Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
+            {actions.map((action, index) => (
+              <Link key={index} to={action.link}>
+                <div className="p-6 border border-[#e2e8f0] rounded-xl hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col items-center gap-4 group">
+                  {/* Icon */}
+                  <div
+                    className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}
+                  >
+                    <action.icon className="w-6 h-6 text-white" />
+                  </div>
+
+                  {/* Text */}
+                  <div className="text-center">
+                    <div className="font-medium text-slate-800">
+                      {action.title}
+                    </div>
+                    <div className="text-sm text-[#6b7280]">
+                      {action.description}
+                    </div>
+                  </div>
+
+                  {/* Arrow */}
+                  <FaArrowRight className="w-4 h-4 text-[#6b7280] group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-6 pb-12 ">
           {/* Left Side (Recent Activity + Performance) */}
-          <div className="w-full lg:w-2/3 flex flex-col gap-4">
+          <div className="w-full lg:w-2/3 flex flex-col gap-6">
             {/* Recent Activity Section */}
             <div className="bg-white shadow-md rounded-xl p-5 w-full g-box">
               {/* Header */}
@@ -74,7 +157,7 @@ const Home = () => {
               </div>
 
               {/* Empty State */}
-              <div className="flex flex-col items-center justify-center py-10">
+              <div className="flex flex-col items-center justify-center py-18">
                 <div className="text-[#9ca3af] text-xl">No recent activity</div>
                 <div className="text-[#9ca3af] text-sm mb-1">
                   Start generating content to see your activity here..
@@ -83,7 +166,7 @@ const Home = () => {
             </div>
 
             {/* This Week's Performance Section */}
-            <div className="rounded-xl border text-card-foreground border-none shadow-lg bg-white/80 backdrop-blur-sm g-box">
+            <div className="rounded-xl border text-div-foreground border-none shadow-lg bg-white/80 backdrop-blur-sm g-box">
               {/* Header */}
               <div className="flex flex-col space-y-1.5 p-6 pb-4">
                 <div className="font-semibold leading-none tracking-tight flex text-xl items-center gap-2">
@@ -92,7 +175,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Cards Grid */}
+              {/* divs Grid */}
               <div className="p-6 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Profile Views */}
@@ -180,7 +263,8 @@ const Home = () => {
           </div>
 
           {/* Right Side (baad me aur content aa sakta h) */}
-          <div className="w-full lg:w-1/3 g-box">
+
+          <div className="w-full lg:w-1/3 space-y-6">
             <div className="bg-white shadow-md rounded-xl p-5">
               {/* Heading */}
               <div className="flex items-center gap-2 mb-4">
@@ -193,7 +277,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Card 1 */}
+              {/* div 1 */}
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-4">
                 {/* Left Icon */}
                 <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
@@ -210,7 +294,7 @@ const Home = () => {
                       high
                     </span>
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#6b7280] mb-3">
                     Your audience is most active in 2 hours
                   </div>
                   <a
@@ -222,7 +306,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Card 2 */}
+              {/* div 2 */}
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition">
                 <div className="flex items-start gap-3">
                   {/* Icon */}
@@ -240,7 +324,7 @@ const Home = () => {
                         medium
                       </span>
                     </div>
-                    <div className="text-sm text-[#6b7280] mt-1">
+                    <div className="text-sm text-[#6b7280] mb-3">
                       Add industry hashtags to increase reach by 40%
                     </div>
                     <a
@@ -253,7 +337,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Card 3 */}
+              {/* div 3 */}
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-3">
                 {/* Icon Left */}
                 <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe] flex-shrink-0">
@@ -270,7 +354,7 @@ const Home = () => {
                       low
                     </span>
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#6b7280] mb-3">
                     5 mutual connections found in target companies
                   </div>
                   <a
@@ -295,6 +379,78 @@ const Home = () => {
                 </a>
               </div>
             </div>
+
+            {/* LinkedIn Tips */}
+            {/* <Card className="border-none shadow-lg bg-gradient-to-br from-[#fffbeb] to-orange-50">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Target className="w-5 h-5 text-amber-600" />
+                  LinkedIn Tips
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-700">
+                    Post at optimal times
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Tuesday-Thursday, 8-10 AM shows highest engagement
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-700">
+                    Use relevant hashtags
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    3-5 industry hashtags boost visibility by 40%
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-700">
+                    Engage authentically
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Meaningful comments get 5x more responses
+                  </p>
+                </div>
+              </CardContent>
+            </Card> */}
+                   <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
+              <div className="pb-3">
+                <div className="flex items-center gap-2 text-lg">
+                  <Target className="w-5 h-5 text-[#d97706]" />
+                  LinkedIn Tips
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <div className="font-semibold text-gray-800 text-base">
+                    Post at optimal times
+                  </div>
+                  <div className="text-sm text-[#6b7280] mt-1">
+                    Tuesday-Thursday, 8-10 AM shows highest engagement
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold text-gray-800 text-base">
+                    Use relevant hashtags
+                  </div>
+                  <div className="text-sm text-[#6b7280] mt-1">
+                    3-5 industry hashtags boost visibility by 40%
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold text-gray-800 text-base">
+                    Engage authentically
+                  </div>
+                  <div className="text-sm text-[#6b7280] mt-1">
+                    Meaningful comments get 5x more responses
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
           </div>
         </div>
       </div>

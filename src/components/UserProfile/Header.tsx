@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { getImage } from "../common/utils/logoUtils";
-import { apiService } from "../common/config/apiService";
-import { openWindowTab } from "../common/helpers/commonHelpers";
+import { getImage } from "../../common/utils/logoUtils";
+import { apiService } from "../../common/config/apiService";
 
-/**
+/**..
+ * ..
  * @component
  * @description
  * The `Header` component renders a page header section with navigation breadcrumbs and a dropdown menu.
@@ -112,22 +112,11 @@ const Header = () => {
     }
   };
 
-  const goToLinkedIn = () => {
-    openWindowTab("https://linkedin.com/");
-  };
-
   return (
-    <div className="header-baar flex flex-col c-padding-r fixed w-full z-20 pl-[280px] pr-[30px]">
-      <div className="flex flex-col justify-center bg-white relative g-box mt-5 px-8 py-3">
+    <div className="header-baar flex flex-col c-padding-r w-full mt-auto">
+      <div className="flex flex-col justify-centerrelative mt-5 px-8 py-3">
         <div className="flex justify-between items-center gap-5">
-          <div
-            onClick={() => goToLinkedIn()}
-            className="ms-auto flex gap-1 justify-center items-center background-one border border-color-one text-white px-3 py-1 !text-sm rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] cursor-pointer"
-          >
-            <i className="fa-brands fa-linkedin text-lg"></i>
-            <a href="#">Go To LinkedIn</a>
-          </div>
-          <div className="header-r-menu flex items-center gap-8 ">
+          <div className="header-r-menu flex items-center gap-8   ">
             <ul className="flex gap-5 items-center">
               <li ref={dropdownRef}>
                 <a
@@ -171,10 +160,10 @@ const Header = () => {
                       )}
                     </span>
                   </span>
-                  <i className="text-xs fa-solid fa-chevron-down dec-color"></i>
+                  <i className="text-xs fa-solid fa-chevron-down dec-color rotate-180"></i>
                 </a>
                 {dropdownOpen && (
-                  <div className="absolute right-3.5 mt-2 bg-white g-box w-40 drop-menu z-50">
+                  <div className="absolute bottom-[58px] right-0 left-8 mt-2 bg-white w-32 drop-menu z-50 shadow-lg rounded-xl">
                     <button
                       onClick={() => {
                         navigate("/setting");

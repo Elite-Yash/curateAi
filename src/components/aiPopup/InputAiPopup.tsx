@@ -476,12 +476,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
 
                       {/* Best Practices */}
+                      {/* Best Practices */}
                       <div
                         style={{
                           backgroundColor:
                             "rgb(200 255 217 / var(--tw-bg-opacity, 1))",
                         }}
-                        className="p-4 rounded-lg message-reply m-8 mt-0"
+                        className="p-4 rounded-lg message-reply mt-8"
                       >
                         <h3 className="font-semibold text-[#2563eb] flex items-center gap-2">
                           💬 Messaging Best Practices:
@@ -496,9 +497,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     </div>
 
                     {/* Evalogo (always visible now) */}
-                    <div className="w-full">
+                    {/* <div className="w-full">
                       <Evalogo />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </React.Fragment>
@@ -777,7 +778,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         backgroundColor:
                           "rgb(200 255 217 / var(--tw-bg-opacity, 1))",
                       }}
-                      className="p-4 rounded-lg message-reply"
+                      className="p-4 rounded-lg message-reply mt-4"
                     >
                       <h3 className="font-semibold text-[#2563eb] flex items-center gap-2">
                         💬 Messaging Best Practices:

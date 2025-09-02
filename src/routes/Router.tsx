@@ -10,6 +10,7 @@ import ChangePassword from "../components/ChangePassword/ChangePassword";
 import { useEffect, useState } from "react";
 import UserProfile from "../components/UserProfile/UserProfile";
 import PricingPage from "../components/PricingPage/PricingPage";
+import Personas from "../components/Personas/Personas";
 
 
 /**
@@ -116,6 +117,14 @@ const Router = () => {
         element={
           <Section>
             <PricingPage />
+          </Section>
+        }
+      />
+       <Route
+        path="/personas"
+        element={
+          <Section>
+            <Personas />
           </Section>
         }
       />

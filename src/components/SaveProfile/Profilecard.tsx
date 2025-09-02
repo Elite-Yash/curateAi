@@ -34,7 +34,7 @@ const Profilecard = ({
 }: ProfileCardType) => {
   return (
     <div
-      className={`w-full max-h-[529px] overflow-y-auto scrollbar-hide g-box ${
+      className={`w-full max-h-[565px] overflow-y-auto scrollbar-hide  ${
         profiles.length > 0
           ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           : "flex h-full justify-center items-center"

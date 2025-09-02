@@ -718,7 +718,7 @@ const LinkedIn = () => {
     imgElement.src = chrome.runtime.getURL("/f-logo.png");
     imgElement.alt = "Post";
     imgSpan.style.cssText =
-      "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer;border: 2px solid #2563eb; border-radius: 50%;";
+      "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer; border: 2px solid #2563eb; border-radius: 50%;";
     imgSpan.appendChild(imgElement);
 
     // Create text span

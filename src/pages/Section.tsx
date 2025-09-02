@@ -42,7 +42,7 @@
  */
 
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
+import Header from "../components/UserProfile/Header";
 import SideBar from "../components/SideBar";
 import { useLocation } from "react-router-dom";
 
@@ -89,7 +89,7 @@ const Section = ({ children }: any) => {
     <div id="wrapper" className="bge7e9f6">
       {!hideSidebarHeader && login ? <SideBar /> : null}
       <div className="right-baar-div transition">
-        {!hideSidebarHeader && login ? <Header /> : null}
+        {/* {!hideSidebarHeader && login ? <Header /> : null} */}
         {children}
       </div>
     </div >

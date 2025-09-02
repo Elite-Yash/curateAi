@@ -121,8 +121,8 @@ const Comments = () => {
 
   return (
     <>
-      <div className="c-padding-r pt-24 h-screen relative pl-[280px] pr-[30px]">
-        <div className="g-box-title g-box bg-white sticky top-24 p-4 mb-4 z-10">
+      <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
+        <div className="g-box-title g-box bg-white p-4 mb-4 z-10">
           <h4 className="font-medium text-lg text-gray-800">
             Comments Section{" "}
           </h4>
@@ -136,7 +136,7 @@ const Comments = () => {
                   <Loader />
                 </div>
               ) : commentsData.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[755px] overflow-auto scrollbar-hide">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[795px] overflow-auto scrollbar-hide">
                   {commentsData.map((comment, index) => {
                     const fullComment = comment?.comment || "N/A";
                     return (
