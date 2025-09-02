@@ -9,24 +9,28 @@ const Contentstudio = () => {
 
   return (
     <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
-      <div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
-        {/* Left Side */}
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center">
-            <FileText className="w-6 h-6 text-white" />
+      <div className="flex flex-wrap items-center justify-between z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
+        {/* Left Side: Title */}
+        <div className="mb-0">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="!text-3xl font-bold text-slate-900">
+                Content Studio
+              </h1>
+              <p className="text-slate-600">
+                Manage your LinkedIn contacts and prospects
+              </p>
+            </div>
           </div>
 
-          <div className="flex flex-col">
-            <div className="text-2xl font-bold text-slate-900">Content Studio</div>
-            <div className="text-sm text-[#717c8c]">
-              Create engaging LinkedIn content with AI
-            </div>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-slate-600">
-                AI Content Generator Ready
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green rounded-full"></div>
+            <span className="text-sm text-slate-600">
+              AI Content Generator Ready
+            </span>
           </div>
         </div>
       </div>
@@ -34,14 +38,17 @@ const Contentstudio = () => {
       {/* Tabs */}
       <div className="space-y-6">
         {/* Tab Buttons */}
-        <div className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm rounded-lg overflow-hidden">
+        <div
+          className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm overflow-hidden p-[5px] shadow-4 !rounded-[10px]"
+          style={{ border: "0.5px solid #d1d5db" }}
+        >
           <button
             onClick={() => setActiveTab("posts")}
-            className={`flex items-center justify-center gap-2 py-3 text-sm font-medium transition 
+            className={`flex items-center justify-center gap-2 !py-1 text-sm transition 
               ${
                 activeTab === "posts"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "bg-[#eff6ff] text-[#1d4ed8] rounded-sm shadow-3 !font-semibold"
+                  : "text-[#737373] hover:bg-[#f8fafc] font-medium"
               }`}
           >
             <FileText className="w-4 h-4" />
@@ -50,11 +57,11 @@ const Contentstudio = () => {
 
           <button
             onClick={() => setActiveTab("comments")}
-            className={`flex items-center justify-center gap-2 py-3 text-sm font-medium transition 
+            className={`flex items-center justify-center gap-2 !py-1 text-sm transition 
               ${
                 activeTab === "comments"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "bg-[#eff6ff] text-[#1d4ed8] rounded-sm shadow-3 !font-semibold"
+                  : "text-[#737373] hover:bg-[#f8fafc] font-medium"
               }`}
           >
             <MessageCircle className="w-4 h-4" />
@@ -63,11 +70,11 @@ const Contentstudio = () => {
 
           <button
             onClick={() => setActiveTab("history")}
-            className={`flex items-center justify-center gap-2 py-3 text-sm font-medium transition 
+            className={`flex items-center justify-center gap-2 !py-1 text-sm transition 
               ${
                 activeTab === "history"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-slate-600 hover:bg-slate-50"
+                  ? "bg-[#eff6ff] text-[#1d4ed8] rounded-sm shadow-3 !font-semibold"
+                  : "text-[#737373] hover:bg-[#f8fafc] font-medium"
               }`}
           >
             <Sparkles className="w-4 h-4" />

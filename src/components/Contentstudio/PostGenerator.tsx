@@ -6,7 +6,6 @@ import {
   Send,
   Sparkles,
   Wand2,
-  User,
 } from "lucide-react";
 
 const PostGenerator = () => {
@@ -52,26 +51,26 @@ const PostGenerator = () => {
 
         {/* Post Topic */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-semibold text-[#334155]">
             What do you want to post about?
           </label>
           <textarea
             placeholder="e.g., Share insights about remote work trends, celebrate a team achievement, ask for career advice..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            className="w-full min-h-24 resize-none border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
+            className="w-full min-h-24 resize-none border border-[#cbd5e1] rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         {/* Post Type */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-semibold text-[#334155]">
             Post Type
           </label>
           <select
             value={postType}
             onChange={(e) => setPostType(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg p-2 text-sm"
+            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
           >
             <option>Industry Insight</option>
             <option>Personal Story</option>
@@ -82,13 +81,13 @@ const PostGenerator = () => {
 
         {/* Persona Selection */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-semibold text-[#334155]">
             Writing Style
           </label>
           <select
             value={selectedPersona}
             onChange={(e) => setSelectedPersona(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg p-2 text-sm"
+            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
           >
             <option value="Professional">Professional</option>
             <option value="Casual & Friendly">Casual & Friendly</option>
@@ -100,7 +99,7 @@ const PostGenerator = () => {
         <button
           onClick={generatePost}
           disabled={!prompt.trim() || isGenerating}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+          className="w-full flex items-center justify-center gap-2  bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
         >
           {isGenerating ? (
             <>
@@ -116,11 +115,11 @@ const PostGenerator = () => {
         </button>
 
         {/* Quick Tips */}
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h4 className="font-semibold text-blue-900 mb-2">
+        <div className="p-4 bg-[#eff6ff] rounded-lg">
+          <h4 className="font-semibold text-[#1e3a8a] mb-2">
             💡 Tips for better posts:
           </h4>
-          <ul className="text-sm text-blue-800 space-y-1">
+          <ul className="text-sm text-[#1e40af] space-y-1">
             <li>• Be specific about your topic</li>
             <li>• Include personal experiences</li>
             <li>• Ask questions to encourage engagement</li>
@@ -140,13 +139,13 @@ const PostGenerator = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={regeneratePost}
-                className="p-2 rounded-lg hover:bg-slate-100"
+                className="p-2 rounded-lg hover:bg-[#f1f5f9]"
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
               <button
                 onClick={copyToClipboard}
-                className="p-2 rounded-lg hover:bg-slate-100"
+                className="p-2 rounded-lg hover:bg-[#f1f5f9]"
               >
                 <Copy className="w-4 h-4" />
               </button>
@@ -157,12 +156,12 @@ const PostGenerator = () => {
         {generatedPost ? (
           <div className="space-y-4">
             {/* Post Preview */}
-            <div className="p-4 border border-slate-200 rounded-lg bg-slate-50 whitespace-pre-wrap text-sm text-slate-800">
+            <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b]">
               {generatedPost}
             </div>
 
             {/* Post Stats */}
-            <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center justify-between text-xs text-[##64748b]">
               <div className="flex items-center gap-4">
                 <span>{generatedPost.length} characters</span>
                 <span>{generatedPost.split("\n").length} lines</span>
@@ -179,7 +178,7 @@ const PostGenerator = () => {
             <div className="flex gap-3">
               <button
                 onClick={copyToClipboard}
-                className="flex-1 flex items-center justify-center gap-2 border border-slate-300 rounded-lg py-2 hover:bg-slate-50"
+                className="flex-1 flex items-center justify-center gap-2 border border-[#cbd5e1] rounded-lg py-2 hover:bg-[#f8fafc]"
               >
                 <Copy className="w-4 h-4" />
                 Copy Post
@@ -192,13 +191,13 @@ const PostGenerator = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-slate-400" />
+            <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-8 h-8 text-[#94a3b8]" />
             </div>
-            <p className="text-slate-500 font-medium mb-2">
+            <p className="text-[#64748b] font-medium mb-2">
               No post generated yet
             </p>
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-[#94a3b8]">
               Fill out the form and click "Generate Post" to get started
             </div>
           </div>
