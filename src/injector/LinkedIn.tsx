@@ -735,9 +735,18 @@ const LinkedIn = () => {
     customIcon.appendChild(contentsSpan);
 
     customIcon.addEventListener("click", () => {
-      // console.log("Icon clicked, triggering popup.");
       setPopupTriggeredFrom("create-post");
-      setOpenAiPopup(true);
+      const errordev = document.getElementById("artdeco-modal-outlet") as HTMLElement | null;
+
+      if (errordev) {
+        errordev.style.display = "none";
+        setOpenAiPopup(true);
+        setTimeout(() => {
+          if (errordev) {
+            errordev.style.display = "block";
+          }
+        }, 50);
+      }
     });
 
     element?.insertBefore(customIcon, element.lastElementChild);
@@ -845,7 +854,7 @@ const LinkedIn = () => {
               if (
                 result?.status === 200 &&
                 result?.data.message ===
-                  "User does not have an active subscription."
+                "User does not have an active subscription."
               ) {
                 setActiveplan(false);
               } else {

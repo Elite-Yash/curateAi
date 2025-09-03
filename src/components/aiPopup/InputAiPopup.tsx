@@ -58,7 +58,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const [isAuth, setIsAuth] = useState(true);
   const [copied, setCopied] = useState(false);
   let apiCalled = false;
-  const [currentPage, setCurrentPage] = useState(0);
+  // const [currentPage, setCurrentPage] = useState(0);
   const [newUser, setNewUser] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -87,8 +87,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
     let platform = currentUrl.includes("linkedin.com")
       ? "linkedin"
       : currentUrl.includes("x.com")
-      ? "twitter"
-      : "";
+        ? "twitter"
+        : "";
 
     const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
     // console.log("currentUserName:", currentUserName);
@@ -246,14 +246,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
   return (
     <>
       <div
-        className={`popup-overlay ${
-          isOpen ? "open" : ""
-        } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}
+        className={`popup-overlay ${isOpen ? "open" : ""
+          } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}
       >
         <div
-          className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${
-            !activePlan ? "!w-[42rem]" : ""
-          }`}
+          className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[42rem]" : ""
+            }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">
             <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#2563eb]">
@@ -285,43 +283,42 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <div className="flex flex-col gap-5 item-center">
                         <div className="flex flex-col gap-5 item-center">
                           {/* Original Message */}
-                       <div className="w-full textarea-group relative">
-  <label className="block text-xl font-medium text-gray-700 ms-2">
-    Original Message
-  </label>
+                          <div className="w-full textarea-group relative">
+                            <label className="block text-xl font-medium text-gray-700 ms-2">
+                              Original Message
+                            </label>
 
-  {/* Copy Button - sibling of textarea */}
-  <span
-    onClick={handleCopy}
-    className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${
-      loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
-    }`}
-  >
-    {copied ? "Copied!" : "Copy"}
-    <img src={getImage("copyIcon")} alt="img" className="w-4" />
-  </span>
+                            {/* Copy Button - sibling of textarea */}
+                            <span
+                              onClick={handleCopy}
+                              className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+                                }`}
+                            >
+                              {copied ? "Copied!" : "Copy"}
+                              <img src={getImage("copyIcon")} alt="img" className="w-4" />
+                            </span>
 
-  <textarea
-    placeholder="Tell me what you want to write about?"
-    value={
-                              loading
-                                ? displayedText
-                                : isTextGenerated
-                                ? displayedText
-                                : text
-                            }
-    ref={textareaRef}
-    onChange={(e) => {
-      if (!loading) setText(e.target.value);
-    }}
-    className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-    disabled={loading}
-  ></textarea>
+                            <textarea
+                              placeholder="Tell me what you want to write about?"
+                              value={
+                                loading
+                                  ? displayedText
+                                  : isTextGenerated
+                                    ? displayedText
+                                    : text
+                              }
+                              ref={textareaRef}
+                              onChange={(e) => {
+                                if (!loading) setText(e.target.value);
+                              }}
+                              className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+                              disabled={loading}
+                            ></textarea>
 
-  <p className="text-xl text-[#8c97a9] mt-1">
-    💡 Include the full message for better context understanding
-  </p>
-</div>
+                            <p className="text-xl text-[#8c97a9] mt-1">
+                              💡 Include the full message for better context understanding
+                            </p>
+                          </div>
 
                           {/* Select Motive */}
                           <div className="w-full input-group">
@@ -453,8 +450,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 ? "Regenerating..."
                                 : "Generating..."
                               : isTextGenerated
-                              ? "Regenerate"
-                              : "Generate Reply"}
+                                ? "Regenerate"
+                                : "Generate Reply"}
                           </button>
 
                           <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
@@ -509,8 +506,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             loading
                               ? displayedText
                               : isTextGenerated
-                              ? displayedText
-                              : text
+                                ? displayedText
+                                : text
                           }
                           ref={textareaRef}
                           onChange={(e) => {
@@ -535,11 +532,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                       <button
                         className={`flex gap-4 leading-6 px-4 py-2 popup-button-submit h-[4rem] rounded-[8px] mb-4 justify-center text-white
-            ${
-              isTextGenerated
-                ? "w-[11rem] bg-green hover:bg-[#008234]"
-                : "w-[56rem] bg-green hover:bg-[#008234]"
-            }
+            ${isTextGenerated
+                            ? "w-[11rem] bg-green hover:bg-[#008234]"
+                            : "w-[56rem] bg-green hover:bg-[#008234]"
+                          }
             disabled:bg-gray-400`}
                         onClick={handleSubmit}
                         disabled={loading}
@@ -554,8 +550,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             ? "Regenerating..."
                             : "Generating..."
                           : isTextGenerated
-                          ? "Regenerate"
-                          : "Generate Reply"}
+                            ? "Regenerate"
+                            : "Generate Reply"}
                       </button>
 
                       <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
@@ -571,85 +567,42 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   <div className="p-9 flex flex-col gap-5 item-center">
                     <div className="flex flex-col item-center gap-5">
                       {/* Original Message */}
-                      {/* <div className="w-full textarea-group relative">
+                      <div className="w-full textarea-group relative">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Original Message
                         </label>
-                        <span>
-                          <span
-                            onClick={handleCopy}
-                            className={`c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858] ${
-                              loading ? "opacity-50 cursor-not-allowed" : ""
+
+                        {/* Copy Button - sibling of textarea */}
+                        <span
+                          onClick={handleCopy}
+                          className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
                             }`}
-                            style={{ pointerEvents: loading ? "none" : "auto" }}
-                          >
-                            {copied ? "Copied!" : "Copy"}
-                            <img
-                              src={getImage("copyIcon")}
-                              alt="img"
-                              className="w-4"
-                            />
-                          </span>
-                          <textarea
-                            placeholder="Tell me what you want to write about?"
-                            value={
-                              loading
-                                ? displayedText
-                                : isTextGenerated
-                                ? displayedText
-                                : text
-                            }
-                            ref={textareaRef}
-                            onChange={(e) => {
-                              if (!loading) setText(e.target.value);
-                            }}
-                            className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                            disabled={loading}
-                          ></textarea>
+                        >
+                          {copied ? "Copied!" : "Copy"}
+                          <img src={getImage("copyIcon")} alt="img" className="w-4" />
                         </span>
-                        <p className="text-xl text-[#8c97a9]">
-                          💡 Include the full message for better context
-                          understanding
-                        </p>
-                      </div> */}
 
-                      <div className="w-full textarea-group relative">
-  <label className="block text-xl font-medium text-gray-700 ms-2">
-    Original Message
-  </label>
-
-  {/* Copy Button - sibling of textarea */}
-  <span
-    onClick={handleCopy}
-    className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${
-      loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
-    }`}
-  >
-    {copied ? "Copied!" : "Copy"}
-    <img src={getImage("copyIcon")} alt="img" className="w-4" />
-  </span>
-
-  <textarea
-    placeholder="Tell me what you want to write about?"
-    value={
-                              loading
-                                ? displayedText
-                                : isTextGenerated
+                        <textarea
+                          placeholder="Tell me what you want to write about?"
+                          value={
+                            loading
+                              ? displayedText
+                              : isTextGenerated
                                 ? displayedText
                                 : text
-                            }
-    ref={textareaRef}
-    onChange={(e) => {
-      if (!loading) setText(e.target.value);
-    }}
-    className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-    disabled={loading}
-  ></textarea>
+                          }
+                          ref={textareaRef}
+                          onChange={(e) => {
+                            if (!loading) setText(e.target.value);
+                          }}
+                          className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+                          disabled={loading}
+                        ></textarea>
 
-  <p className="text-xl text-[#8c97a9] mt-1">
-    💡 Include the full message for better context understanding
-  </p>
-</div>
+                        <p className="text-xl text-[#8c97a9] mt-1">
+                          💡 Include the full message for better context understanding
+                        </p>
+                      </div>
 
 
                       {/* Motive */}
@@ -770,11 +723,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                       <button
                         className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white
-            ${
-              isTextGenerated
-                ? "w-[11rem] bg-green hover:bg-[#008234]"
-                : "w-[56rem] bg-green hover:bg-[#008234]"
-            }
+            ${isTextGenerated
+                            ? "w-[11rem] bg-green hover:bg-[#008234]"
+                            : "w-[56rem] bg-green hover:bg-[#008234]"
+                          }
             disabled:bg-gray-400`}
                         onClick={handleSubmit}
                         disabled={loading}
@@ -789,8 +741,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             ? "Regenerating..."
                             : "Generating..."
                           : isTextGenerated
-                          ? "Regenerate"
-                          : "Generate Reply"}
+                            ? "Regenerate"
+                            : "Generate Reply"}
                       </button>
 
                       <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full text-left">
