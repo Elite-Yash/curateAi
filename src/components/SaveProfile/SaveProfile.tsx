@@ -605,12 +605,12 @@ const SaveProfile = () => {
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="!text-3xl font-bold text-slate-900">
+                <div className="text-2xl font-bold text-slate-900">
                   Saved Profiles
-                </h1>
-                <p className="text-slate-600">
+                </div>
+                <div className="text-sm text-[#717c8c]">
                   Manage your LinkedIn contacts and prospects
-                </p>
+                </div>
               </div>
             </div>
 
@@ -621,7 +621,7 @@ const SaveProfile = () => {
               </span>
             </div>
           </div>
-
+          
           {/* Right Side: Search + Buttons */}
           <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
             {/* --- Button 1: Connect CRM --- */}
@@ -636,7 +636,7 @@ const SaveProfile = () => {
               >
                 <i className="fa-solid fa-globe"></i>
                 <span>Connect to CRM</span>
-              </button>
+              </button> 
             </Tooltip>
 
             {/* --- Button 2: Save to Drive --- */}

@@ -37,28 +37,28 @@ const Personas = () => {
   return (
     <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
 
-<div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
-  {/* Left Side */}
-  <div className="flex items-center gap-4">
-    {/* Icon */}
-    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center">
-      <LuUser className="w-6 h-6 text-white" />
-    </div>
+      <div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
+        {/* Left Side */}
+        <div className="flex items-center gap-4">
+          {/* Icon */}
+          <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center">
+            <LuUser className="w-6 h-6 text-white" />
+          </div>
 
-    {/* Texts */}
-    <div className="flex flex-col">
-      <div className="text-2xl font-bold text-slate-900">Personas</div>
-      <div className="text-sm text-[#717c8c]">
-        Define your communication styles for consistent AI-powered interactions
-      </div>
-      <div className="flex items-center gap-2 mt-1">
-        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-        <span className="text-sm text-slate-600">5 profiles saved</span>
-      </div>
-    </div>
-  </div>
+          {/* Texts */}
+          <div className="flex flex-col">
+            <div className="text-2xl font-bold text-slate-900">Personas</div>
+            <div className="text-sm text-[#717c8c]">
+              Define your communication styles for consistent AI-powered interactions
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="text-sm text-slate-600">5 profiles saved</span>
+            </div>
+          </div>
+        </div>
 
-  {/* Right Side: Button */}
+        {/* Right Side: Button */}
 
         <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
           {/* <Tooltip
@@ -75,14 +75,9 @@ const Personas = () => {
           </button>
           {/* </Tooltip> */}
         </div>
-</div>
+      </div>
 
-
-
-
-
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 g-box">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {personasData.map((persona, index) => (
           <div
             key={index}

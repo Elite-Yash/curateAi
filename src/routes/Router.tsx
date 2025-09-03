@@ -12,6 +12,7 @@ import UserProfile from "../components/UserProfile/UserProfile";
 import PricingPage from "../components/PricingPage/PricingPage";
 import Personas from "../components/Personas/Personas";
 import Contentstudio from "../components/Contentstudio/Contentstudio";
+import Messageassistant from "../components/MessageAssistant/Messageassistant";
 
 
 /**
@@ -110,6 +111,14 @@ const Router = () => {
         element={
           <Section>
             <Contentstudio/>
+          </Section>
+        }
+      />
+             <Route
+        path="/message-assistant"
+        element={
+          <Section>
+            <Messageassistant/>
           </Section>
         }
       />

@@ -9,31 +9,30 @@ const Contentstudio = () => {
 
   return (
     <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
-      <div className="flex flex-wrap items-center justify-between z-10 mb-4 p-4">
-        {/* Left Side: Title */}
-        <div className="mb-0">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="!text-3xl font-bold text-slate-900">
-                Content Studio
-              </h1>
-              <p className="text-slate-600">
-                Manage your LinkedIn contacts and prospects
-              </p>
-            </div>
-          </div>
+        {/*Headng */}
+           <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
+                <div className="mb-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center">
+                            <FileText className="w-6 h-6 text-white" />
+                        </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green rounded-full"></div>
-            <span className="text-sm text-slate-600">
-              AI Content Generator Ready
-            </span>
-          </div>
-        </div>
-      </div>
+                        <div>
+                            <div className="text-2xl font-bold text-slate-900">Content Studio</div>
+                            <div className="text-sm text-[#717c8c]">
+                                Manage your LinkedIn contacts and prospects
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green rounded-full"></div>
+                        <span className="text-sm text-slate-600">
+                            AI Content Generator Ready
+                        </span>
+                    </div>
+                </div>
+            </div>
 
       {/* Tabs */}
       <div className="space-y-6">

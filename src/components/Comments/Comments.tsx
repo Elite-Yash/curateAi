@@ -4,6 +4,8 @@ import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
 import { IoLogoLinkedin } from "react-icons/io5";
+import { FaMessage } from "react-icons/fa6";
+
 
 interface Comment {
   id: string;
@@ -122,15 +124,40 @@ const Comments = () => {
   return (
     <>
       <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
-        <div className="g-box-title g-box bg-white p-4 mb-4 z-10">
+        {/* <div className="g-box-title g-box bg-white p-4 mb-4 z-10">
           <h4 className="font-medium text-lg text-gray-800">
             Comments Section{" "}
           </h4>
-        </div>
+        </div> */}
+
+          <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
+                <div className="mb-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-green to-green rounded-2xl flex items-center justify-center">
+                            <FaMessage className="w-6 h-6 text-white" />
+                        </div>
+
+                        <div>
+                            <div className="text-2xl font-bold text-slate-900">Comments Section</div>
+                            <div className="text-sm text-[#717c8c]">
+                               Smart AI suggestions for your LinkedIn replies
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green rounded-full"></div>
+                        <span className="text-sm text-slate-600">
+                            {commentsData.length} new smart comments available
+                        </span>
+                    </div>
+                </div>
+            </div>
+
 
         <div className="flex justify-between gap-5 w-full">
           <div className="rounded-2xl w-full">
-            <div className="bg-[#f5f8fc] g-box">
+            <div className="bg-[#f5f8fc]">
               {load ? (
                 <div className="flex justify-center items-center py-10">
                   <Loader />

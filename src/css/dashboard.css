@@ -363,11 +363,11 @@ body,
 }
 
 .price-box.g-box {
-  border: 2px solid #e6e6e6;
+  border: 1px solid #2563eb;
 }
 
 .price-box.g-box.active {
-  border: 2px solid #ff5e37;
+  border: 1px solid #2563eb;
 }
 
 .price-box i.fa-solid::before {

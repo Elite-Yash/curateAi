@@ -5,6 +5,7 @@ import { GoPerson } from "react-icons/go";
 import { FaRegChartBar } from "react-icons/fa";
 import { openWindowTab } from "../common/helpers/commonHelpers";
 import Header from "./UserProfile/Header";
+import { MessageSquare } from "lucide-react";
 
 const SideBar = () => {
   const location = useLocation();
@@ -42,22 +43,21 @@ const SideBar = () => {
         </button>
       </div>
 
-      <div className="left-menu pt-4">
+      <div className="left-menu pt-4 p-4 w-max">
         <ul className="flex flex-col">
           {/* Dashboard */}
           <li className="px-1 py-1">
             <Link
               to="/"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === "/" || location.pathname === "/home"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/" || location.pathname === "/home"
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
             >
               <span className="mt-1">
                 <i className="fa-solid fa-house text-sm"></i>
               </span>
-              <div className="flex flex-col hover:text-[#2563eb]">
+              <div className="flex flex-col">
                 <div className="font-medium text-sm ">Dashboard</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -70,16 +70,15 @@ const SideBar = () => {
           <li className="px-1 py-1">
             <Link
               to="/content-studio"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === "/content-studio"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/content-studio"
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
             >
               <span className="mt-1">
                 <i className="fa-solid fa-file text-sm"></i>
               </span>
-              <div className="flex flex-col hover:text-[#2563eb]">
+              <div className="flex flex-col">
                 <div className="font-medium text-sm ">Content studio</div>
                 <div className="text-sm text-[#6b7280] ">
                   Generate posts & comments
@@ -87,22 +86,42 @@ const SideBar = () => {
               </div>
             </Link>
           </li>
-          
+
+          {/* message assistant */}
+          <li className="px-1 py-1">
+            <Link
+              to="/message-assistant"
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-assistant"
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
+            >
+              <span className="mt-1">
+                <i className="fa-solid fa-comment-dots text-sm"></i>
+              </span>
+              <div className="flex flex-col">
+                <div className="font-medium text-sm ">Message Assistant</div>
+                <div className="text-sm text-[#6b7280] ">
+                  Smart messages replies
+                </div>
+              </div>
+            </Link>
+          </li>
+
 
           {/* Comments */}
           <li className="px-1 py-1">
             <Link
               to="/comments"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === "/comments"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/comments"
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
             >
               <span className="mt-1">
                 <i className="fa-solid fa-message text-sm"></i>
               </span>
-              <div className="flex text-sm flex-col hover:text-[#2563eb]">
+              <div className="flex text-sm flex-col">
                 <div className="font-medium text-sm ">Comments</div>
                 <div className="text-sm text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -115,16 +134,15 @@ const SideBar = () => {
           <li className="px-1 py-1">
             <Link
               to="/save-profile"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === "/save-profile"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/save-profile"
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
             >
               <span className="mt-1">
                 <i className="fa-solid fa-user-plus text-sm"></i>
               </span>
-              <div className="flex flex-col hover:text-[#2563eb]">
+              <div className="flex flex-col">
                 <div className="font-medium text-sm ">Save Profile</div>
                 <div className="text-sm text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -137,16 +155,15 @@ const SideBar = () => {
           <li className="px-1 py-1">
             <Link
               to="/personas"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === "/personas"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/personas"
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
             >
               <span className="mt-1">
                 <i className="fa-solid fa-user text-sm"></i>
               </span>
-              <div className="flex flex-col hover:text-[#2563eb]">
+              <div className="flex flex-col">
                 <div className="font-medium text-sm ">Personas</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -159,17 +176,16 @@ const SideBar = () => {
           <li className="px-1 py-1">
             <Link
               to="/"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${
-                location.pathname === ""
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === ""
+                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                  : "text-[#334155] hover:text-[#2563eb]"
+                }`}
             >
               <span className="mt-1">
                 <i className="fa-solid fa-chart-column text-sm"></i>
               </span>
-              <div className="flex flex-col hover:text-[#2563eb]">
-                <div className="font-medium text-sm  ">Analytics</div>
+              <div className="flex flex-col">
+                <div className="font-medium text-sm">Analytics</div>
                 <div className="text-sm text-[#6b7280]">
                   AI-powered LinkedIn
                 </div>
@@ -186,20 +202,20 @@ const SideBar = () => {
                 goToLinkedIn();
               }}
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200
-                hover:bg-gray-100 text-slate-700`}
+                hover:text-[#2563eb] text-[#334155]`}
             >
               <span className="mt-1 text-blue-600">
                 <i className="fa-brands fa-linkedin text-sm"></i>
               </span>
-              <div className="flex flex-col hover:text-[#2563eb]">
-                <div className="font-medium text-sm  ">Go To LinkedIn</div>
+              <div className="flex flex-col">
+                <div className="font-medium text-sm ">Go To LinkedIn</div>
                 <div className="text-sm text-[#6b7280]">
                   Visit your LinkedIn Profile
                 </div>
               </div>
             </a>
           </li>
-      
+
         </ul>
       </div>
       <div className="mt-auto"></div>
@@ -216,10 +232,10 @@ const SideBar = () => {
           </li>
         </ul>
       </div>
-      <hr className="w-full"/>
-          <div className="px-1 py-1">
-            <Header />
-          </div>
+      <hr className="w-full" />
+      <div className="px-1 py-1">
+        <Header />
+      </div>
       {/* <div className="leftmenu-bottom px-4 py-1 border-t-1 border-b-0 border-l-0 border-r-0  border border-color-gr2 ">
         <ul>
           <li>

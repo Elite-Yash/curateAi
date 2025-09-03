@@ -116,9 +116,9 @@ const PostGenerator = () => {
 
         {/* Quick Tips */}
         <div className="p-4 bg-[#eff6ff] rounded-lg">
-          <h4 className="font-semibold text-[#1e3a8a] mb-2">
+          <div className="font-semibold text-base text-[#1e3a8a] mb-2">
             💡 Tips for better posts:
-          </h4>
+          </div>
           <ul className="text-sm text-[#1e40af] space-y-1">
             <li>• Be specific about your topic</li>
             <li>• Include personal experiences</li>
@@ -169,7 +169,7 @@ const PostGenerator = () => {
                   {(generatedPost.match(/#\w+/g) || []).length} hashtags
                 </span>
               </div>
-              <span className="px-2 py-1 border border-green-200 text-green-600 rounded-lg">
+              <span className="px-2 py-1 border rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition">
                 Ready to post
               </span>
             </div>
@@ -178,12 +178,12 @@ const PostGenerator = () => {
             <div className="flex gap-3">
               <button
                 onClick={copyToClipboard}
-                className="flex-1 flex items-center justify-center gap-2 border border-[#cbd5e1] rounded-lg py-2 hover:bg-[#f8fafc]"
+                className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
               >
                 <Copy className="w-4 h-4" />
                 Copy Post
               </button>
-              <button className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2">
+              <button className="flex-1 flex items-center justify-center gap-2 bg-[#2563eb] text-white rounded-lg py-2">
                 <Send className="w-4 h-4" />
                 Open LinkedIn
               </button>
@@ -194,10 +194,10 @@ const PostGenerator = () => {
             <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
               <FileText className="w-8 h-8 text-[#94a3b8]" />
             </div>
-            <p className="text-[#64748b] font-medium mb-2">
+            <p className="text-[#64748b] font-medium !text-xl mb-2">
               No post generated yet
             </p>
-            <div className="text-sm text-[#94a3b8]">
+            <div className="!text-base text-[#94a3b8]">
               Fill out the form and click "Generate Post" to get started
             </div>
           </div>

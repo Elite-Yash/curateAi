@@ -37,7 +37,7 @@ const Profilecard = ({
 }: ProfileCardType) => {
   return (
     <div
-      className={`w-full max-h-[565px] overflow-y-auto scrollbar-hide  ${
+      className={`w-full max-h-[552px] overflow-y-auto scrollbar-hide ${
         profiles.length > 0
           ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           : "flex h-full justify-center items-center"
@@ -136,7 +136,7 @@ const Profilecard = ({
                     className="flex items-center gap-1 text-[#2563eb] hover:text-[#003ab6] text-base"
                   >
                     <button className="text-[#2563eb] hover:text-[#003ab6] border border-[#2563eb] gap-2 ps-1 pe-1 rounded-sm flex">
-                      Go To Linkedin
+                      Go To Linkedin Profile
                       <IoLogoLinkedin className="text-xl text-[#2563eb] mt-0.5" />
                     </button>
                   </a>

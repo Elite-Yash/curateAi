@@ -285,51 +285,43 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <div className="flex flex-col gap-5 item-center">
                         <div className="flex flex-col gap-5 item-center">
                           {/* Original Message */}
-                          <div className="w-full textarea-group relative">
-                            <label className="block text-xl font-medium text-gray-700 ms-2">
-                              Original Message
-                            </label>
-                            <span>
-                              <span
-                                onClick={handleCopy}
-                                className={`c-btn flex gap-1 item-center absolute right-3.5 top-1.5 cursor-pointer text-[#585858] ${
-                                  loading ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
-                                style={{
-                                  pointerEvents: loading ? "none" : "auto",
-                                }}
-                              >
-                                {copied ? "Copied!" : "Copy"}
-                                <img
-                                  src={getImage("copyIcon")}
-                                  alt="img"
-                                  className="w-4"
-                                />
-                              </span>
-                              <textarea
-                                placeholder="Tell me what you want to write about?"
-                                value={
-                                  loading
-                                    ? displayedText
-                                    : isTextGenerated
-                                    ? displayedText
-                                    : text
-                                }
-                                ref={textareaRef}
-                                onChange={(e) => {
-                                  if (!loading) {
-                                    setText(e.target.value);
-                                  }
-                                }}
-                                className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black focus:ring h-24 resize-none"
-                                disabled={loading}
-                              ></textarea>
-                            </span>
-                            <p className="text-xl text-[#8c97a9]">
-                              💡 Include the full message for better context
-                              understanding
-                            </p>
-                          </div>
+                       <div className="w-full textarea-group relative">
+  <label className="block text-xl font-medium text-gray-700 ms-2">
+    Original Message
+  </label>
+
+  {/* Copy Button - sibling of textarea */}
+  <span
+    onClick={handleCopy}
+    className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${
+      loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+    }`}
+  >
+    {copied ? "Copied!" : "Copy"}
+    <img src={getImage("copyIcon")} alt="img" className="w-4" />
+  </span>
+
+  <textarea
+    placeholder="Tell me what you want to write about?"
+    value={
+                              loading
+                                ? displayedText
+                                : isTextGenerated
+                                ? displayedText
+                                : text
+                            }
+    ref={textareaRef}
+    onChange={(e) => {
+      if (!loading) setText(e.target.value);
+    }}
+    className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+    disabled={loading}
+  ></textarea>
+
+  <p className="text-xl text-[#8c97a9] mt-1">
+    💡 Include the full message for better context understanding
+  </p>
+</div>
 
                           {/* Select Motive */}
                           <div className="w-full input-group">
@@ -579,7 +571,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   <div className="p-9 flex flex-col gap-5 item-center">
                     <div className="flex flex-col item-center gap-5">
                       {/* Original Message */}
-                      <div className="w-full textarea-group relative">
+                      {/* <div className="w-full textarea-group relative">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Original Message
                         </label>
@@ -619,7 +611,46 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           💡 Include the full message for better context
                           understanding
                         </p>
-                      </div>
+                      </div> */}
+
+                      <div className="w-full textarea-group relative">
+  <label className="block text-xl font-medium text-gray-700 ms-2">
+    Original Message
+  </label>
+
+  {/* Copy Button - sibling of textarea */}
+  <span
+    onClick={handleCopy}
+    className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${
+      loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+    }`}
+  >
+    {copied ? "Copied!" : "Copy"}
+    <img src={getImage("copyIcon")} alt="img" className="w-4" />
+  </span>
+
+  <textarea
+    placeholder="Tell me what you want to write about?"
+    value={
+                              loading
+                                ? displayedText
+                                : isTextGenerated
+                                ? displayedText
+                                : text
+                            }
+    ref={textareaRef}
+    onChange={(e) => {
+      if (!loading) setText(e.target.value);
+    }}
+    className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+    disabled={loading}
+  ></textarea>
+
+  <p className="text-xl text-[#8c97a9] mt-1">
+    💡 Include the full message for better context understanding
+  </p>
+</div>
+
 
                       {/* Motive */}
                       <div className="w-full input-group">

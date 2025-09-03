@@ -30,14 +30,14 @@ const actions = [
     description: "Create engaging LinkedIn content",
     icon: FaRegFileAlt,
     color: "from-blue-500 to-blue-600",
-    link: "",
+    link: "content-studio",
   },
   {
     title: "Smart Reply",
     description: "AI-powered message responses",
     icon: FaRegCommentAlt,
     color: "from-pink-500 to-pink-600",
-    link: "",
+    link: "message-assistant",
   },
   {
     title: "Save Profile",
@@ -51,7 +51,7 @@ const actions = [
     description: "Change communication style",
     icon: FaUser,
     color: "from-orange-500 to-orange-600",
-    link: "",
+    link: "personas",
   },
 ];
 
@@ -373,7 +373,7 @@ const Home = () => {
                   className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
                 >
                   <span className="">
-                    <GiStarFormation className="text-xl ms-2" />
+                    <GiStarFormation className="text-xl me-2" />
                   </span>{" "}
                   Get More Insights →
                 </a>

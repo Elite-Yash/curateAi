@@ -125,9 +125,9 @@ const CommentGenerator = () => {
 
         {/* Tips */}
         <div className="p-4 bg-[#f0fdf4] rounded-lg">
-          <h4 className="font-semibold text-[#14532d] mb-2">
+          <div className="font-semibold text-base text-[#14532d] mb-2">
             💡 Tips for better posts:
-          </h4>
+          </div>
           <ul className="text-sm text-[#166534] space-y-1">
             <li>• Add personal insights or experiences</li>
             <li>• Ask thoughtful follow-up questions</li>
@@ -179,11 +179,11 @@ const CommentGenerator = () => {
                     {generatedComment}
                   </p>
                   <div className="flex items-center gap-4 mt-3 text-xs text-[#f8fafc]0">
-                    <button className="flex items-center gap-1 hover:text-blue-600">
+                    <button className="flex items-center gap-1 hover:text-[#2563eb]">
                       <ThumbsUp className="w-3 h-3" />
                       Like
                     </button>
-                    <button className="flex items-center gap-1 hover:text-blue-600">
+                    <button className="flex items-center gap-1 hover:text-[#2563eb]">
                       Reply
                     </button>
                   </div>
@@ -192,12 +192,12 @@ const CommentGenerator = () => {
             </div>
 
             {/* Stats */}
-            <div className="flex items-center justify-between text-xs text-[#f8fafc]0">
+            <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-4">
                 <span>{generatedComment.length} characters</span>
                 <span>{generatedComment.split(" ").length} words</span>
               </div>
-              <span className="px-2 py-1 border border-green-200 text-green-600 rounded-lg">
+              <span className="px-2 py-1 border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition rounded-lg">
                 Ready to comment
               </span>
             </div>
@@ -206,12 +206,12 @@ const CommentGenerator = () => {
             <div className="flex gap-3">
               <button
                 onClick={copyToClipboard}
-                className="flex-1 flex items-center justify-center gap-2 border border-[#cbd5e1] rounded-lg py-2 hover:bg-[#f8fafc]"
+                className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
               >
                 <Copy className="w-4 h-4" />
                 Copy Comment
               </button>
-              <button className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2">
+              <button className="flex-1 flex items-center justify-center rounded-lg gap-2 bg-[#2563eb] text-white py-2">
                 <LinkIcon className="w-4 h-4" />
                 Go to Post
               </button>
@@ -222,10 +222,10 @@ const CommentGenerator = () => {
             <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
               <MessageCircle className="w-8 h-8 text-[#94a3b8]" />
             </div>
-            <p className="text-[#64748b] font-medium mb-2">
+            <p className="text-[#64748b] font-medium !text-xl mb-2">
               No comment generated yet
             </p>
-            <p className="text-sm text-[#94a3b8]">
+            <p className="!text-base text-[#94a3b8]">
               Paste a LinkedIn post and choose a comment style to get started
             </p>
           </div>

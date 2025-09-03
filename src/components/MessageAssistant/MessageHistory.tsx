@@ -3,7 +3,7 @@ import { FiTrendingUp } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { useState } from "react";
 
-const ContentHistory = () => {
+const MessageHistory = () => {
   const [activeFilter, setActiveFilter] = useState("all");
 
   // placeholder empty list
@@ -63,7 +63,7 @@ const ContentHistory = () => {
         {/* Header with Tabs */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2 font-semibold text-base">
-            <History className="w-5 h-5 text-[#475569]" />
+            <History className="w-5 h-5 text-slate-600" />
             Generated Content
           </div>
           <div className="flex items-center bg-[#f1f5f9] rounded-lg text-sm text-[#737373] font-medium overflow-hidden !p-[5px]">
@@ -100,7 +100,7 @@ const ContentHistory = () => {
         {filteredContent.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-              <History className="w-8 h-8 text-[#94a3b8]" />
+              <History className="w-8 h-8 text-slate-400" />
             </div>
             <p className="text-[#64748b] font-medium !text-xl mb-2">
               No content history yet
@@ -117,4 +117,4 @@ const ContentHistory = () => {
   );
 };
 
-export default ContentHistory;
+export default MessageHistory;
