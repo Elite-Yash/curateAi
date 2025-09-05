@@ -1,4 +1,4 @@
-import { FileText, History, MessageSquare } from "lucide-react";
+import { FileText, History, MessageSquare, Users } from "lucide-react";
 import { FiTrendingUp } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { useState } from "react";
@@ -16,40 +16,40 @@ const MessageHistory = () => {
         {/* Box 1 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
-            <FileText className="text-[#2563eb]" />
+            <MessageSquare className="text-[#00B247] " />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
-            <div className="text-sm text-gray-600">Posts Generated</div>
+            <div className="text-sm text-gray-600">Message Replies</div>
           </div>
         </div>
 
         {/* Box 2 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#dcfce7]">
-            <MessageSquare className="text-green-600" />
+            <Users className="text-[#2563eb]" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
-            <div className="text-sm text-gray-600">Comments Generated</div>
+            <div className="text-sm text-gray-600">Connection Requests</div>
           </div>
         </div>
 
         {/* Box 3 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#fefce8]">
-            <FiTrendingUp className="text-yellow-400" />
+            <FiTrendingUp className="text-yellow-400 text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
-            <div className="text-sm text-gray-600">Actually Used</div>
+            <div className="text-sm text-gray-600">Actually Sent</div>
           </div>
         </div>
 
         {/* Box 4 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
-            <CiCalendar className="text-[#9333ea]" />
+            <CiCalendar className="text-[#9333ea] text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
@@ -100,13 +100,13 @@ const MessageHistory = () => {
         {filteredContent.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-              <History className="w-8 h-8 text-slate-400" />
+              <History className="w-8 h-8 text-[#94a3b8]" />
             </div>
             <p className="text-[#64748b] font-medium !text-xl mb-2">
               No content history yet
             </p>
             <p className="!text-base text-[#94a3b8] cursor-pointer">
-              Generate some posts or comments to see them here
+              Generate some posts or messages to see them here
             </p>
           </div>
         ) : (

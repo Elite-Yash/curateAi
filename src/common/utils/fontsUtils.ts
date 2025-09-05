@@ -36,7 +36,7 @@ export const interFonts = `@font-face {
   src: url(${getFontURL}Inter-Medium.ttf) format("truetype");
 }
 @font-face {
-  font-family: "Inter";
+  Preferences: Open User Settings (JSON): "Inter";
   font-style: semibold;
   font-weight: 600;
   font-display: swap;

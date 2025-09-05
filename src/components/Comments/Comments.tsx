@@ -5,6 +5,7 @@ import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
 import { IoLogoLinkedin } from "react-icons/io5";
 import { FaMessage } from "react-icons/fa6";
+import { FaCommentSlash } from "react-icons/fa";
 
 
 interface Comment {
@@ -239,9 +240,18 @@ const Comments = () => {
                   })}
                 </div>
               ) : (
-                <div className="text-center py-10 text-gray-500">
-                  No comments found
-                </div>
+                 <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-2">
+                            <FaCommentSlash className="w-8 h-8 text-[#94a3b8]" />
+                        </div>
+                        <p className="text-[#64748b] font-medium !text-xl mb-2">
+                              No comments found
+                        </p>
+                        <div className="!text-base text-[#94a3b8]">
+                             Be the first to share your thoughts
+                        </div>
+                    </div>
+
               )}
             </div>
           </div>
@@ -253,7 +263,7 @@ const Comments = () => {
             <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
               <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
                 <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12">
-                  <img src={getImage("fLogo")} alt="img" className="" />
+                  <img src={getImage("fLogo")} alt="img"/>
                 </span>
                 <h4 className="popup-title font-semibold text-xl leading-10">
                   Entire Comment

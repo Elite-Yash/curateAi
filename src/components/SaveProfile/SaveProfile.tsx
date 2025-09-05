@@ -75,7 +75,7 @@ const SaveProfile = () => {
     }
   }, []);
 
-  // Search + Starred filter combine
+  // Search + Starred + Recent filter combine
   const filteredProfiles = profilesData
     // search logic
     .filter(
@@ -86,7 +86,7 @@ const SaveProfile = () => {
     // starred filter
     .filter((profile) =>
       activeButton === "starred" ? starredIds.includes(profile.id) : true
-    );
+    )
 
   // Star feature
   const toggleStar = (id: number) => {
@@ -97,7 +97,7 @@ const SaveProfile = () => {
       updated = [...starredIds, id];
     }
     setStarredIds(updated);
-    localStorage.setItem("starredIds", JSON.stringify(updated)); // persist
+    localStorage.setItem("starredIds", JSON.stringify(updated));
   };
 
   const getCRMdData = () => {
@@ -216,7 +216,7 @@ const SaveProfile = () => {
             if (
               result?.status === 200 &&
               result?.data.message ===
-                "User does not have an active subscription."
+              "User does not have an active subscription."
             ) {
               setActiveplan(false);
             } else {
@@ -621,7 +621,7 @@ const SaveProfile = () => {
               </span>
             </div>
           </div>
-          
+
           {/* Right Side: Search + Buttons */}
           <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
             {/* --- Button 1: Connect CRM --- */}
@@ -636,7 +636,7 @@ const SaveProfile = () => {
               >
                 <i className="fa-solid fa-globe"></i>
                 <span>Connect to CRM</span>
-              </button> 
+              </button>
             </Tooltip>
 
             {/* --- Button 2: Save to Drive --- */}
@@ -774,11 +774,10 @@ const SaveProfile = () => {
             >
               <button
                 onClick={() => setActiveButton("all")}
-                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
-                  activeButton === "all"
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "all"
                     ? "bg-[#2563eb] text-white"
                     : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-                }`}
+                  }`}
               >
                 <i className="fa-solid fa-user-group text-sm"></i>
                 All (0)
@@ -793,11 +792,10 @@ const SaveProfile = () => {
             >
               <button
                 onClick={() => setActiveButton("starred")}
-                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
-                  activeButton === "starred"
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "starred"
                     ? "bg-[#2563eb] text-white"
                     : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-                }`}
+                  }`}
               >
                 <i className="fa-solid fa-star text-sm"></i>
                 Starred
@@ -812,11 +810,10 @@ const SaveProfile = () => {
             >
               <button
                 onClick={() => setActiveButton("recent")}
-                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${
-                  activeButton === "recent"
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "recent"
                     ? "bg-[#2563eb] text-white"
                     : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
-                }`}
+                  }`}
               >
                 <i className="fa-solid fa-clock text-sm"></i>
                 Recent

@@ -84,7 +84,7 @@ const Connectionrequest = () => {
                                 placeholder="e.g., Sarah Johnson"
                                 value={profileName}
                                 onChange={(e) => setProfileName(e.target.value)}
-                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
+                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
                             />
                         </div>
 
@@ -94,17 +94,17 @@ const Connectionrequest = () => {
                                 placeholder="e.g., Senior Marketing Director"
                                 value={profileTitle}
                                 onChange={(e) => setProfileTitle(e.target.value)}
-                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
-                            />
+                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
+                            />  
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-[#334155]">Company</label>
+                            <label className="text-sm font-medium text-[#334155]">Company</label>   
                             <input
                                 placeholder="e.g., Microsoft"
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
-                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
+                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
                             />
                         </div>
                     </div>
@@ -214,7 +214,7 @@ const Connectionrequest = () => {
 
                         {/* Action Buttons */}
                         <div className="flex gap-3">
-                            <button onClick={copyToClipboard} className="flex-1 flex items-center justify-center gap-2 text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition">
+                            <button onClick={copyToClipboard} className="flex-1 flex items-center justify-center gap-2 text-sm font-medium rounded-lg border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition">
                                 <Copy className="w-4 h-4" />
                                 Copy Request
                             </button>

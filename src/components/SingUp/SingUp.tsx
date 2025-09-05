@@ -26,10 +26,7 @@ const SignUp = () => {
   }>({ text: "", type: "" });
   const [load, setLoad] = useState(true);
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setLoad(false);
-    }, 500);
-    return () => clearTimeout(timeout);
+    setLoad(false);
   }, []);
   // Handle input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +99,6 @@ const SignUp = () => {
     return disposableDomains.includes(domain);
   };
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -113,82 +109,65 @@ const SignUp = () => {
       showMessage("All fields are required.", "error");
       return;
     }
-
     if (!isValidEmail(email)) {
       showMessage("Invalid email format.", "error");
       return;
     }
-
     if (isDisposableEmail(email)) {
       showMessage("Disposable email addresses are not allowed.", "error");
       return;
     }
-
     if (password.length < 6) {
       showMessage("Password must be at least 6 characters long.", "error");
       return;
     }
-
     if (password !== confirmPassword) {
       showMessage("Passwords do not match.", "error");
       return;
     }
 
+    setMessage({ text: "Creating your account...", type: "success" });
+
     try {
-      // Using apiService for the API call
+      // API Call
       await apiService.commonAPIRequest(
         apiService.EndPoint.userRegister,
         apiService.Method.post,
-        undefined, // No query parameters
-        formData, // Sending formData as payload
+        undefined,
+        formData,
         (response: any) => {
-          if (
-            response?.status === 201 &&
-            response.data.message === "User registered successfully"
-          ) {
-            setMessage({
-              text: "Account created successfully!",
-              type: "success",
-            });
-            setFormData({
-              name: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
-            });
+          const message = response?.data?.message || response?.message || "";
+
+          if (response?.status === 201 && message === "User registered successfully") {
+            setMessage({ text: "Account created successfully!", type: "success" });
+            setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+
             Swal.fire({
               title: "Verify Your Email to Get Started!",
-              html: `
-                                <p><strong>Please check your email</strong> and verify your account using the link we sent you.</p>
-                            `,
+              html: `<p><strong>Please check your email</strong> and verify your account using the link we sent you.</p>`,
               icon: "success",
               confirmButtonColor: "#2563eb",
               cancelButtonColor: "#6c757d",
               confirmButtonText: "Got it!",
-              customClass: {
-                title: "!text-2xl font-semibold",
-              },
-            }).then((result) => {
-              if (result.isConfirmed) {
-                navigate("/signin");
-              }
-            });
-          } else {
-            setMessage({
-              text: response?.message || "Sign-up failed. Try again.",
-              type: "error",
-            });
+              customClass: { title: "!text-2xl font-semibold" },
+            }).then(() => navigate("/signin"));
+          }
+          else if (message === "User already exists") {
+            showMessage("User already exists. Please log in.", "error");
+            setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+          }
+          else {
+            setMessage({ text: message || "Sign-up failed. Try again.", type: "error" });
           }
         }
       );
     } catch (error) {
-      setMessage({
-        text: "Something went wrong. Please try again.",
-        type: "error",
-      });
+      setMessage({ text: "Something went wrong. Please try again.", type: "error" });
       console.error("Sign-up error:", error);
     }
   };
+
+
 
   return (
     <div className="flex justify-center items-center min-h-screen background-three">
@@ -270,11 +249,10 @@ const SignUp = () => {
             {message.text && (
               <div
                 className={`text-center text-[17px] mt-3 border p-2 rounded-md 
-                            ${
-                              message.type === "error"
-                                ? "text-red border-red"
-                                : "text-green border-green"
-                            }`}
+                            ${message.type === "error"
+                    ? "text-red border-red"
+                    : "text-green border-green"
+                  }`}
               >
                 {message.text}
               </div>

@@ -39,7 +39,7 @@ const Messageassistant = () => {
                 <div
                     className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
                 >
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
                         <MessageSquare className="text-[#2563eb] text-lg" />
                     </div>
                     <div>
@@ -117,7 +117,7 @@ const Messageassistant = () => {
                             }`}
                     >
                         <Sparkles className="w-4 h-4" />
-                        Message Message
+                        Message History
                     </button>
                 </div>
 

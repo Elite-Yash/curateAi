@@ -31,11 +31,10 @@ const MessageReplyGenerator = () => {
         setIsGenerating(true);
         try {
             const systemPrompt = `You are a LinkedIn messaging expert. Generate a reply.
-
-Original Message: ${originalMessage}
-Additional Context: ${context || "None"}
-Reply Tone: ${replyTone}
-Reply Purpose: ${replyType}`;
+                                  Original Message: ${originalMessage}
+                                  Additional Context: ${context || "None"}
+                                  Reply Tone: ${replyTone}
+                                  Reply Purpose: ${replyType}`;
 
             const result = await InvokeLLM({ prompt: systemPrompt });
             setGeneratedReply(result);
@@ -54,32 +53,26 @@ Reply Purpose: ${replyType}`;
         {
             value: "follow_up",
             label: "Follow-up Response",
-            color: "bg-green text-white",
         },
         {
             value: "thank_you",
             label: "Thank You Message",
-            color: "bg-[#dcfce7] text-green",
         },
         {
             value: "introduction",
             label: "Introduction Reply",
-            color: "bg-[#f3e8ff] text-[#7f3fb5]",
         },
         {
             value: "meeting_request",
             label: "Meeting Request",
-            color: "bg-[#ffedd5] text-orange",
         },
         {
             value: "information_share",
             label: "Share Information",
-            color: "bg-pink-100 text-pink-800",
         },
         {
             value: "polite_decline",
             label: "Polite Decline",
-            color: "bg-red-100 text-red-800",
         },
     ];
 
@@ -110,7 +103,7 @@ Reply Purpose: ${replyType}`;
                             placeholder="Paste the LinkedIn message you received..."
                             value={originalMessage}
                             onChange={(e) => setOriginalMessage(e.target.value)}
-                            className="w-full min-h-24 resize-none border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
+                            className="w-full min-h-24 resize-none border border-[#cbd5e1] rounded-lg p-2 text-sm focus:ring-1 focus:ring-blue-500"
                         />
                     </div>
 
@@ -124,7 +117,7 @@ Reply Purpose: ${replyType}`;
                             placeholder="Any additional information about the sender..."
                             value={context}
                             onChange={(e) => setContext(e.target.value)}
-                            className="w-full min-h-24 resize-none border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
+                            className="w-full min-h-24 resize-none border border-[#cbd5e1] rounded-lg p-2 text-sm focus:ring-1 focus:ring-blue-500"
                         />
                     </div>
 
@@ -137,7 +130,7 @@ Reply Purpose: ${replyType}`;
                             <select
                                 value={replyType}
                                 onChange={(e) => setReplyType(e.target.value)}
-                                className="w-full border border-slate-300 rounded-lg p-2 text-sm"
+                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
                             >
                                 {replyTypes.map((type) => (
                                     <option key={type.value} value={type.value}>
@@ -151,9 +144,9 @@ Reply Purpose: ${replyType}`;
                                 <span
                                     key={type.value}
                                     onClick={() => setReplyType(type.value)}
-                                    className={`px-3 py-1 rounded-full text-xs cursor-pointer ${replyType === type.value
-                                            ? ""
-                                            : type.color
+                                    className={`px-3 py-1 rounded-xl text-xs font-medium transition cursor-pointer ${replyType === type.value
+                                        ? "bg-green text-white"
+                                        : "bg-[#f1f5f9] text-[#334155] hover:bg-[#e2e8f0]"
                                         }`}
                                 >
                                     {type.label}
@@ -170,7 +163,7 @@ Reply Purpose: ${replyType}`;
                         <select
                             value={replyTone}
                             onChange={(e) => setReplyTone(e.target.value)}
-                            className="w-full border border-slate-300 rounded-lg p-2 text-sm"
+                            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
                         >
                             {toneOptions.map((tone) => (
                                 <option key={tone.value} value={tone.value}>
@@ -181,46 +174,27 @@ Reply Purpose: ${replyType}`;
                     </div>
 
                     {/* Generate Button */}
-                    {/* <button
+                    <button
                         onClick={generateReply}
                         disabled={!originalMessage.trim() || isGenerating}
-                        className="w-full  bg-green hover:bg-[#008234] text-white px-4 py-2 rounded-lg flex items-center justify-center"
+                        className={`w-full flex items-center justify-center gap-2 
+                                  bg-green hover:bg-[#008234] 
+                                  disabled:bg-gray-300 disabled:cursor-not-allowed
+                                  text-white font-medium px-4 py-2 rounded-lg 
+                                    transition duration-200`}
                     >
                         {isGenerating ? (
                             <>
-                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                <RefreshCw className="w-4 h-4 animate-spin" />
                                 Generating Reply...
                             </>
                         ) : (
                             <>
-                                <Sparkles className="w-4 h-4 mr-2" />
+                                <Sparkles className="w-4 h-4" />
                                 Generate Reply
                             </>
                         )}
-                    </button> */}
-
-                    {/* Generate Button */}
-<button
-  onClick={generateReply}
-  disabled={!originalMessage.trim() || isGenerating}
-  className={`w-full flex items-center justify-center gap-2 
-    bg-green hover:bg-[#008234] 
-    disabled:bg-gray-300 disabled:cursor-not-allowed
-    text-white font-medium px-4 py-2 rounded-lg 
-    transition duration-200`}
->
-  {isGenerating ? (
-    <>
-      <RefreshCw className="w-4 h-4 animate-spin" />
-      Generating Reply...
-    </>
-  ) : (
-    <>
-      <Sparkles className="w-4 h-4" />
-      Generate Reply
-    </>
-  )}
-</button>
+                    </button>
 
 
                     {/* Tips */}
@@ -272,9 +246,9 @@ Reply Purpose: ${replyType}`;
                                 </div>
                             </div>
                             <div className="pl-11">
-                                <p className="text-sm text-slate-800 whitespace-pre-wrap">
+                                <div className="p-4 whitespace-pre-wrap text-sm text-[#1e293b]">
                                     {generatedReply}
-                                </p>
+                                </div>
                             </div>
                         </div>
 

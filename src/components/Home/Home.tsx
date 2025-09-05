@@ -23,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 // import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Target } from "lucide-react";
+import { LuLightbulb } from "react-icons/lu";
 
 const actions = [
   {
@@ -79,7 +80,7 @@ const Home = () => {
 
               {/* Status Badges */}
               <div className="flex gap-2 mt-3">
-                <span className="flex items-center px-3 py-1 text-xs font-bold text-green-700 bg-[#dcfce7] rounded-md cursor-pointer">
+                <span className="flex items-center px-3 py-1 text-xs font-bold text-[#599870] bg-[#dcfce7] rounded-md cursor-pointer">
                   <GoDotFill className="w-6 h-4 rounded-full text-green" />
                   LinkedIn Connected
                 </span>
@@ -91,8 +92,8 @@ const Home = () => {
           </div>
 
           {/* Right Icon */}
-          <div className="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-[#2563eb]">
-            <FaLightbulb size={32} />
+          <div className="flex items-center justify-center w-32 h-32 rounded-full bg-blue-100 text-[#2563eb]">
+            <LuLightbulb size={32} className="w-16 h-16" />
           </div>
         </div>
 
@@ -103,7 +104,7 @@ const Home = () => {
               <span className="text-blue-600 text-lg">⚡</span>
               <div className="text-xl font-bold ">Quick Actions</div>
             </div>
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-slate-500 cursor-pointer">
               Choose your next move
             </span>
           </div>

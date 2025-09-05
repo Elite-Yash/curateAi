@@ -4,6 +4,7 @@ import { IoPersonOutline, IoLogoLinkedin } from "react-icons/io5";
 import { CiMail } from "react-icons/ci";
 import { LuBuilding2 } from "react-icons/lu";
 import { MdOutlineExplore } from "react-icons/md";
+import { Clock, Star, Users } from "lucide-react";
 
 // Define Profile type
 type Profile = {
@@ -37,11 +38,10 @@ const Profilecard = ({
 }: ProfileCardType) => {
   return (
     <div
-      className={`w-full max-h-[552px] overflow-y-auto scrollbar-hide ${
-        profiles.length > 0
+      className={`w-full max-h-[552px] overflow-y-auto scrollbar-hide ${profiles.length > 0
           ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           : "flex h-full justify-center items-center"
-      }`}
+        }`}
     >
       {load ? (
         <div className="w-full flex justify-center items-center p-6">
@@ -66,9 +66,8 @@ const Profilecard = ({
                 className="cursor-pointer hover:text-[#003ab6]"
               >
                 <i
-                  className={`fa-star ${
-                    starredIds.includes(profile.id) ? "fa-solid" : "fa-regular"
-                  }`}
+                  className={`fa-star ${starredIds.includes(profile.id) ? "fa-solid" : "fa-regular"
+                    }`}
                 ></i>
               </span>
             </div>
@@ -148,41 +147,62 @@ const Profilecard = ({
                 <span className="font-medium text-[#b7b9bf]">Added</span>{" "}
                 {profile.created_at
                   ? new Date(profile.created_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "2-digit",
-                      year: "numeric",
-                    })
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
                   : "N/A"}
               </div>
             </div>
           </div>
         ))
       ) : (
-        <div className="flex flex-col items-center text-center py-20 ">
-          <div className="w-20 h-20 rounded-full bg-[#9ca3af] flex items-center justify-center">
-            <IoPersonOutline className="w-10 h-10 text-gray-400 " />
-          </div>
-          {TabButton === "all" ? (
-            <div className="text-lg font-medium text-slate-900 mb-1">
-              No profiles saved yet
+        <div className="flex flex-col items-center text-center py-20">
+          {/* All Tab */}
+          {TabButton === "all" && (
+            <div className="flex flex-col items-center text-center py-12">
+              <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
+                <Users className="w-8 h-8 text-[#94a3b8]" />
+              </div>
+              <div className="text-lg font-medium text-[#64748b] mb-2">
+                No profiles saved yet
+              </div>
+              <div className="text-sm text-[#92a0b5] max-w-md">
+                Start adding profiles to see them here
+              </div>
             </div>
-          ) : null}
+          )}
 
-          {TabButton === "starred" ? (
-            <div className="text-lg font-medium text-slate-900 mb-1 mt-4">
-              No starred profiles yet
+          {/* Starred Tab */}
+          {TabButton === "starred" && (
+            <div className="flex flex-col items-center text-center py-12">
+              <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
+                <Star className="w-8 h-8 text-[#94a3b8]" />
+              </div>
+              <div className="text-lg font-medium text-[#64748b] mb-2">
+                No starred profiles yet
+              </div>
+              <div className="text-sm text-[#92a0b5] max-w-md">
+                Mark profiles as starred to see them here
+              </div>
             </div>
-          ) : null}
-          {TabButton === "recent" ? (
-            <div className="text-lg font-medium text-slate-900 mb-1 mt-4">
-              No Recent profiles yet
-            </div>
-          ) : null}
+          )}
 
-          <div className="text-sm text-[#92a0b5] max-w-md">
-            Start building your network by saving LinkedIn profiles you want to
-            connect with.
-          </div>
+          {/* Recent Tab */}
+          {TabButton === "recent" && (
+            <div className="flex flex-col items-center text-center py-12">
+              <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
+                <Clock className="w-8 h-8 text-[#94a3b8]" />
+              </div>
+              <div className="text-lg font-medium text-[#64748b] mb-2">
+                No recent profiles yet
+              </div>
+              <div className="text-sm text-[#92a0b5] max-w-md">
+                Recently saved profiles will appear here
+              </div>
+            </div>
+          )}
+
         </div>
       )}
     </div>

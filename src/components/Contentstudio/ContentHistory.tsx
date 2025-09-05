@@ -27,7 +27,7 @@ const ContentHistory = () => {
         {/* Box 2 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#dcfce7]">
-            <MessageSquare className="text-green-600" />
+            <MessageSquare className="text-green-600 text-green" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
@@ -38,7 +38,7 @@ const ContentHistory = () => {
         {/* Box 3 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#fefce8]">
-            <FiTrendingUp className="text-yellow-400" />
+            <FiTrendingUp className="text-yellow-400 text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
@@ -49,7 +49,7 @@ const ContentHistory = () => {
         {/* Box 4 */}
         <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
-            <CiCalendar className="text-[#9333ea]" />
+            <CiCalendar className="text-[#9333ea] text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>

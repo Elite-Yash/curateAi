@@ -78,7 +78,7 @@ const CommentGenerator = () => {
           <select
             value={commentType}
             onChange={(e) => setCommentType(e.target.value)}
-            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
+            className="w-full border border-[#cbd5e1] rounded-xl p-2 text-sm"
           >
             {commentTypes.map((type) => (
               <option key={type.value} value={type.value}>
@@ -92,7 +92,7 @@ const CommentGenerator = () => {
               <button
                 key={type.value}
                 onClick={() => setCommentType(type.value)}
-                className={`px-3 py-1 !rounded-sm text-xs font-medium transition ${
+                className={`px-3 py-1 rounded-xl text-xs font-medium transition ${
                   commentType === type.value
                     ? "bg-[#2563eb] text-white"
                     : "bg-[#f1f5f9] text-[#334155] hover:bg-[#e2e8f0]"
@@ -175,9 +175,9 @@ const CommentGenerator = () => {
                     <span className="font-medium text-sm">You</span>
                     <span className="text-xs text-[#f8fafc]0">• now</span>
                   </div>
-                  <p className="text-sm text-[#1e293b] whitespace-pre-wrap">
+                  <div className="p-4 rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b]">
                     {generatedComment}
-                  </p>
+                  </div>
                   <div className="flex items-center gap-4 mt-3 text-xs text-[#f8fafc]0">
                     <button className="flex items-center gap-1 hover:text-[#2563eb]">
                       <ThumbsUp className="w-3 h-3" />
@@ -197,7 +197,7 @@ const CommentGenerator = () => {
                 <span>{generatedComment.length} characters</span>
                 <span>{generatedComment.split(" ").length} words</span>
               </div>
-              <span className="px-2 py-1 border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition rounded-lg">
+              <span className="px-2 py-1 border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition rounded-lg cursor-pointer">
                 Ready to comment
               </span>
             </div>

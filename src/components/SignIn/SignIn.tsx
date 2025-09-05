@@ -46,84 +46,70 @@ const SignIn = () => {
     }, 2000);
   };
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const { email, password } = formData;
 
-    // Validation checks
-    if (!email || !password) {
-      showMessage("All fields are required.", "error");
-      return;
-    }
+    // Simple validation
+    if (!email || !password) return showMessage("All fields are required.", "error");
+    if (!isValidEmail(email)) return showMessage("Invalid email format.", "error");
+    if (password.length < 6) return showMessage("Password must be at least 6 characters long.", "error");
 
-    if (!isValidEmail(email)) {
-      showMessage("Invalid email format.", "error");
-      return;
-    }
-
-    if (password.length < 6) {
-      showMessage("Password must be at least 6 characters long.", "error");
-      return;
-    }
-
-    // Prepare request payload
-    const data = {
-      email,
-      password,
-    };
+    const data = { email, password };
 
     try {
-      // Make the API request using apiService.commonAPIRequest
       apiService.commonAPIRequest(
         apiService.EndPoint.userLogin,
         apiService.Method.post,
         undefined,
         data,
         (response: any) => {
-          if (response.data.data.is_email_verified) {
-            if (
-              response &&
-              response.status === 201 &&
-              response.data.message === "Login successful"
-            ) {
-              const authToken = response.data.data.auth_token;
-              chrome.storage.local.set({ token: authToken }, () => {});
+          const status = response.status;
+          const message = response.data?.message;
 
-              setFormData({ email: "", password: "" });
-              showMessage("Login successful!", "success");
-              setTimeout(() => {
-                setLoad(true);
-                navigate("/");
-                window.location.reload();
-              }, 2000);
-            } else {
-              showMessage(
-                response.message || "Login failed. Try again.",
-                "error"
-              );
-            }
-          } else {
+          if (status === 201 && message === "Login successful") {
+            const authToken = response.data.data.auth_token;
+            chrome.storage.local.set({ token: authToken }, () => { });
+
+            setFormData({ email: "", password: "" });
+            showMessage("Login successful!", "success");
+
+            setTimeout(() => {
+              setLoad(true);
+              navigate("/");
+              window.location.reload();
+            }, 2000);
+          }
+
+          // Now handling specific errors from backend
+          else if (status === 403 && message === "Please verify your email") {
             Swal.fire({
               title: "Please Verify Your Email!",
               html: `
-                                <p><strong>Your email is not verified yet.</strong></p>
-                                <p>Please check your inbox for the verification link.</p>
-                            `,
+              <p><strong>Your email is not verified yet.</strong></p>
+              <p>Please check your inbox for the verification link.</p>
+            `,
               icon: "warning",
               confirmButtonColor: "#2563eb",
               cancelButtonColor: "#6c757d",
               confirmButtonText: "Got it!",
             });
+          } else if (status === 401 && message === "Invalid password") {
+            showMessage("Invalid password.", "error");
+          } else if (status === 404 && message === "User not found") {
+            showMessage("User not found.", "error");
+          } else {
+            showMessage(message || "Login failed. Try again.", "error");
           }
         }
       );
     } catch (error) {
-      showMessage("Something went wrong. Please try again.", "error");
       console.error("Login error:", error);
+      showMessage("Something went wrong. Please try again.", "error");
     }
   };
+
 
   return (
     <div className="flex justify-center items-center min-h-screen background-three">
@@ -159,7 +145,7 @@ const SignIn = () => {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb] "
               />
               <input
                 type="password"
@@ -201,11 +187,10 @@ const SignIn = () => {
             {message.text && (
               <div
                 className={`text-center text-[17px] mt-3 border p-2 rounded-md 
-                            ${
-                              message.type === "error"
-                                ? "text-red border-red"
-                                : "text-green border-green"
-                            }`}
+                            ${message.type === "error"
+                    ? "text-red border-red"
+                    : "text-green border-green"
+                  }`}
               >
                 {message.text}
               </div>

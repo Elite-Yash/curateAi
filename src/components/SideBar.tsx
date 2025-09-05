@@ -173,7 +173,7 @@ const SideBar = () => {
           </li>
 
           {/* Analytics */}
-          <li className="px-1 py-1">
+          {/* <li className="px-1 py-1">
             <Link
               to="/"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === ""
@@ -191,7 +191,7 @@ const SideBar = () => {
                 </div>
               </div>
             </Link>
-          </li>
+          </li> */}
 
           {/* LinkedIn  */}
           <li className="px-1 py-1">

@@ -169,7 +169,7 @@ const PostGenerator = () => {
                   {(generatedPost.match(/#\w+/g) || []).length} hashtags
                 </span>
               </div>
-              <span className="px-2 py-1 border rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition">
+              <span className="px-2 py-1 border rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition cursor-pointer">
                 Ready to post
               </span>
             </div>
