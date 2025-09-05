@@ -143,8 +143,8 @@ const Profilecard = ({
                   "N/A"
                 )}
               </div>
-              <div className="!mt-[12px] !pt-[8px] border-t-[1px] border-[#b7b9bf] text-[#b7b9bf]">
-                <span className="font-medium text-[#b7b9bf]">Added</span>{" "}
+              <div className="!mt-[12px] !pt-[8px] border-t-[1px] border-[#b7b9bf] text-[#717c8c]">
+                <span className="font-medium">Added</span>{" "}
                 {profile.created_at
                   ? new Date(profile.created_at).toLocaleDateString("en-US", {
                     month: "short",

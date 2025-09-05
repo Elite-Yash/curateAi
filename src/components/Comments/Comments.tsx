@@ -124,7 +124,7 @@ const Comments = () => {
 
   return (
     <>
-      <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
         {/* <div className="g-box-title g-box bg-white p-4 mb-4 z-10">
           <h4 className="font-medium text-lg text-gray-800">
             Comments Section{" "}

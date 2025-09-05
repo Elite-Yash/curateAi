@@ -59,7 +59,7 @@ const actions = [
 const Home = () => {
   return (
     <>
-      <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
         {/* EVA Command Center div */}
         <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
@@ -139,7 +139,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="flex gap-6 pb-12 ">
+        <div className="flex gap-6 ">
           {/* Left Side (Recent Activity + Performance) */}
           <div className="w-full lg:w-2/3 flex flex-col gap-6">
             {/* Recent Activity Section */}
