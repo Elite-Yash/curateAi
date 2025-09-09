@@ -28,8 +28,8 @@ const LinkedIn = () => {
   });
 
   const [selectedCommentBoxId, setSelectedCommentBoxId] = useState("");
-  const [originalmessage, setoriginalmessage] = useState<string | undefined>("");
-  const [originalCommentText, setOriginalCommentText] = useState<string | undefined>("");
+  const [originalmessage, setoriginalmessage] = useState<string | undefined>(undefined);
+  const [originalCommentText, setOriginalCommentText] = useState<string | undefined>(undefined);
   const [popupTriggeredFrom, setPopupTriggeredFrom] = useState("comment");
   const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
     title: "",
@@ -697,7 +697,7 @@ const LinkedIn = () => {
         const allCommentLists = document.querySelectorAll('.comments-comments-list.comments-comments-list--cr');
         allCommentLists.forEach(commentList => {
           commentList.addEventListener('click', (e) => {
-            const clickedComment = e.target.closest('article.comments-comment-entity');
+            const clickedComment = (e.target as HTMLElement)?.closest('article.comments-comment-entity');
             if (!clickedComment) return;
 
             const mainContent = clickedComment.querySelector('.comments-comment-item__main-content');
@@ -711,7 +711,6 @@ const LinkedIn = () => {
                 });
 
                 const finalText = text.trim();
-                console.log(finalText);
                 setOriginalCommentText(finalText);
               }
             }

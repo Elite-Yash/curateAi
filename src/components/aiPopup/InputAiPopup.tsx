@@ -11,8 +11,7 @@ import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/common
 import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
-import { apiService } from "../../common/config/apiService"; // Import API function
-import Evalogo from "../Evalogo/Evalogo";
+import { apiService } from "../../common/config/apiService";
 
 export interface LinkedInMessage {
   messageSpeaker: string;
@@ -31,9 +30,9 @@ interface ModalProps {
   post_url?: string;
   activePlan?: boolean;
   originalmessage?: string;
-  setoriginalmessage: React.Dispatch<React.SetStateAction<string>>;
+  setoriginalmessage: React.Dispatch<React.SetStateAction<string | undefined>>;
   originalCommentText?: string;
-  setOriginalCommentText?: string;
+  setOriginalCommentText: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
