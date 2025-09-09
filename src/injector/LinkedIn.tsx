@@ -28,7 +28,8 @@ const LinkedIn = () => {
   });
 
   const [selectedCommentBoxId, setSelectedCommentBoxId] = useState("");
-
+  const [originalmessage, setoriginalmessage] = useState<string | undefined>("");
+  const [originalCommentText, setOriginalCommentText] = useState<string | undefined>("");
   const [popupTriggeredFrom, setPopupTriggeredFrom] = useState("comment");
   const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
     title: "",
@@ -641,8 +642,9 @@ const LinkedIn = () => {
       });
     }
 
+
     commentBoxes.forEach((box) => {
-      // Check if the custom icon already exists
+      // Check if the custom icon already exists  
       if (box.querySelector(".curateai-open-popup-icon")) return;
 
       const commentBoxCr = box.closest(
@@ -658,6 +660,7 @@ const LinkedIn = () => {
       customIcon.style.backgroundImage = `url(${chrome.runtime.getURL(
         "/f-logo.png"
       )})`;
+      customIcon.id = "popuo-comment-btn"
       customIcon.style.backgroundSize = "contain"; // Ensures the image fits inside
       customIcon.style.backgroundRepeat = "no-repeat";
       customIcon.style.backgroundPosition = "center";
@@ -690,7 +693,33 @@ const LinkedIn = () => {
           getPostAndCommentInfo(box, false);
         }
 
+        // comment reply text grap
+        const allCommentLists = document.querySelectorAll('.comments-comments-list.comments-comments-list--cr');
+        allCommentLists.forEach(commentList => {
+          commentList.addEventListener('click', (e) => {
+            const clickedComment = e.target.closest('article.comments-comment-entity');
+            if (!clickedComment) return;
+
+            const mainContent = clickedComment.querySelector('.comments-comment-item__main-content');
+            if (mainContent) {
+              const textDiv = mainContent.querySelector('.update-components-text.relative');
+              if (textDiv) {
+                const spans = textDiv.querySelectorAll('span[dir="ltr"]');
+                let text = "";
+                spans.forEach(span => {
+                  text += span.textContent.trim() + " ";
+                });
+
+                const finalText = text.trim();
+                console.log(finalText);
+                setOriginalCommentText(finalText);
+              }
+            }
+          });
+        });
+
         setOpenAiPopup(true);
+        setPopupTriggeredFrom('comment')
       });
 
       appendIcon.appendChild(customIcon);
@@ -736,6 +765,23 @@ const LinkedIn = () => {
 
     customIcon.addEventListener("click", () => {
       setPopupTriggeredFrom("create-post");
+
+      const editorElement = document.querySelector(".editor-content.ql-container > .ql-editor");
+      if (editorElement) {
+        // Saare p tags lo
+        const pTags = editorElement.querySelectorAll("p");
+
+        // Unka text join kardo new lines ke sath
+        const paragraphText = Array.from(pTags)
+          .map(p => p.innerText || p.textContent)
+          .join("\n");  // line breaks maintain karne ke liye
+
+        setoriginalmessage(paragraphText.trim());
+      } else {
+        console.warn(".ql-editor not found");
+      }
+
+
       const errordev = document.getElementById("artdeco-modal-outlet") as HTMLElement | null;
 
       if (errordev) {
@@ -900,6 +946,10 @@ const LinkedIn = () => {
           lastMessages={lastMessages}
           post_url={post_url}
           activePlan={activePlan}
+          originalmessage={originalmessage}
+          setoriginalmessage={setoriginalmessage}
+          originalCommentText={originalCommentText}
+          setOriginalCommentText={setOriginalCommentText}
         />
       </div>
     );

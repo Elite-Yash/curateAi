@@ -35,7 +35,7 @@ const Personas = () => {
   }, []);
 
   return (
-    <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+    <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
 
       <div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
         {/* Left Side */}
@@ -53,7 +53,7 @@ const Personas = () => {
             </div>
             <div className="flex items-center gap-2 mt-1">
               <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-slate-600">5 profiles saved</span>
+              <span className="text-sm text-slate-600">0 profiles saved</span>
             </div>
           </div>
         </div>

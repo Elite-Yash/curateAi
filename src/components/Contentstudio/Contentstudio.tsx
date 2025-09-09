@@ -8,7 +8,7 @@ const Contentstudio = () => {
   const [activeTab, setActiveTab] = useState("posts");
 
   return (
-    <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+    <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
         {/*Headng */}
            <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
                 <div className="mb-6">

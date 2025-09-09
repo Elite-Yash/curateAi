@@ -18,7 +18,7 @@ import {
   FiTrendingUp,
   FiMessageSquare,
   FiArrowUpRight,
-  FiArrowDownRight,
+  FiArrowDownRight,  
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 // import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -59,13 +59,13 @@ const actions = [
 const Home = () => {
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
         {/* EVA Command Center div */}
         <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
           <div className="flex items-start gap-4">
             {/* Logo */}
-            <div className="flex items-center justify-center w-12 h-12  border-[#2563eb] border-[2px] rounded-full text-white">
+            <div className="flex items-center justify-center w-12 h-12 border-[#2563eb] border-[2px] rounded-full text-white">
               <img src="f-logo.png" />
             </div>
 
@@ -186,12 +186,12 @@ const Home = () => {
                         <FiEye className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +12%
+                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
                       </div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-slate-900 mb-1">
-                        234
+                        0
                       </div>
                       <div className="text-sm text-[#6b7280]">
                         Profile Views
@@ -206,12 +206,12 @@ const Home = () => {
                         <FiUsers className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +5%
+                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
                       </div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-slate-900 mb-1">
-                        18
+                        0
                       </div>
                       <div className="text-sm text-[#6b7280]">
                         Connection Requests
@@ -226,12 +226,12 @@ const Home = () => {
                         <FiTrendingUp className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +23%
+                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
                       </div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-slate-900 mb-1">
-                        89%
+                        0
                       </div>
                       <div className="text-sm text-[#6b7280]">
                         Post Engagement
@@ -246,12 +246,12 @@ const Home = () => {
                         <FiMessageSquare className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-red">
-                        <FiArrowDownRight className="w-3 h-3 text-red" /> -8%
+                        <FiArrowDownRight className="w-3 h-3 text-red" /> -0%
                       </div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-slate-900 mb-1">
-                        42
+                        0
                       </div>
                       <div className="text-sm text-[#6b7280]">
                         Messages Sent
@@ -263,7 +263,7 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Right Side (baad me aur content aa sakta h) */}
+          {/* Right Side */}
 
           <div className="w-full lg:w-1/3 space-y-6">
             <div className="bg-white shadow-md rounded-xl p-5">
@@ -416,7 +416,7 @@ const Home = () => {
                 </div>
               </CardContent>
             </Card> */}
-                   <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
+            <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
               <div className="pb-3">
                 <div className="flex items-center gap-2 text-lg">
                   <Target className="w-5 h-5 text-[#d97706]" />

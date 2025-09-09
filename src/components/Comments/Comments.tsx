@@ -124,13 +124,8 @@ const Comments = () => {
 
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
-        {/* <div className="g-box-title g-box bg-white p-4 mb-4 z-10">
-          <h4 className="font-medium text-lg text-gray-800">
-            Comments Section{" "}
-          </h4>
-        </div> */}
-
+                      
+      <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
           <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
                 <div className="mb-6">
                     <div className="flex items-center gap-3 mb-4">
@@ -195,7 +190,7 @@ const Comments = () => {
                         </div>
 
                         {/* Comment Text */}
-                        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+                        <p className="leading-relaxed font-medium text-lg text-graydark p-4">
                           {fullComment.length > 120
                             ? fullComment.slice(0, 120) + "..."
                             : fullComment}
@@ -205,7 +200,7 @@ const Comments = () => {
                               className="text-[#2563eb] hover:text-[#003ab6] text-sm font-medium hover:underline w-fit"
                             >
                               Read More
-                            </button>
+                            </button>         
                           )}
                         </p>
 
@@ -227,14 +222,24 @@ const Comments = () => {
                           </a>
                         </div>
 
-                        {/* Footer - Date + Delete */}
-                        <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
+                        <div className="!mt-[12px] !pt-[8px] border-t-[1px] border-[#b7b9bf] text-[#717c8c]">
+                {comment.created_at
+                  ? new Date(comment.created_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
+                  : "N/A"}
+              </div>
+
+                        {/* Footer - Date + Delete */}  
+                        {/* <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
                           <span>
                             {new Date(comment.created_at).toLocaleDateString(
                               "en-GB"
                             )}
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                     );
                   })}

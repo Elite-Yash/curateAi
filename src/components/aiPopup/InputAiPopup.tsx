@@ -30,6 +30,10 @@ interface ModalProps {
   lastMessages: LinkedInMessage[];
   post_url?: string;
   activePlan?: boolean;
+  originalmessage?: string;
+  setoriginalmessage: React.Dispatch<React.SetStateAction<string>>;
+  originalCommentText?: string;
+  setOriginalCommentText?: string;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -43,6 +47,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
   lastMessages,
   post_url,
   activePlan,
+  originalmessage,
+  setoriginalmessage,
+  originalCommentText,
+  setOriginalCommentText
 }) => {
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
@@ -282,10 +290,38 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     <div className="w-full input-group flex-col col-span-1">
                       <div className="flex flex-col gap-5 item-center">
                         <div className="flex flex-col gap-5 item-center">
-                          {/* Original Message */}
+                          {/* original Message only reply */}
+                          {popupTriggeredFrom === "comment" && (
+                            <div className="w-full textarea-group relative">
+                              <label className="block text-xl font-medium text-gray-700 ms-2">
+                                Original Comment
+                              </label>
+                              <textarea
+                                placeholder="No comment found?"
+                                value={originalCommentText}
+                                onChange={(e) => setOriginalCommentText(e.target.value)}
+                                className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+                              />
+                            </div>
+                          )}
+
+                          {popupTriggeredFrom === "create-post" && (
+                            <div className="w-full textarea-group relative">
+                              <label className="block text-xl font-medium text-gray-700 ms-2">
+                                Original Message
+                              </label>
+                              <textarea
+                                placeholder="No comment found?"
+                                value={originalmessage}
+                                onChange={(e) => setoriginalmessage(e.target.value)}
+                                className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+                              />
+                            </div>
+                          )}
+                          {/* Generate Message */}  
                           <div className="w-full textarea-group relative">
                             <label className="block text-xl font-medium text-gray-700 ms-2">
-                              Original Message
+                              Generate Message
                             </label>
 
                             {/* Copy Button - sibling of textarea */}
@@ -348,57 +384,58 @@ const InputAiPopup: React.FC<ModalProps> = ({
                               </select>
                             </span>
                           </div>
-
-                          {/* Select Language */}
-                          <div className="w-full input-group">
-                            <label className="block text-xl font-medium text-gray-700 ms-2">
-                              Select Language
-                            </label>
-                            <span className="relative">
-                              <img
-                                src={getImage("translate")}
-                                alt="img"
-                                className="w-4 absolute left-3.5 !top-[5px]"
-                              />
-                              <select
-                                value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
-                                className="popup-select data w-full p-2 border border-gray-300 rounded-md"
-                                disabled={loading}
-                              >
-                                {LANGUAGES.map((lang, index) => (
-                                  <option key={index} value={lang}>
-                                    {lang}
-                                  </option>
-                                ))}
-                              </select>
-                            </span>
-                          </div>
-
-                          {/* Select Tone */}
-                          <div className="w-full input-group">
-                            <label className="block text-xl font-medium text-gray-700 ms-2">
-                              Select Tone
-                            </label>
-                            <span className="relative">
-                              <select
-                                value={tone}
-                                onChange={(e) => setTone(e.target.value)}
-                                className="popup-select w-full p-2 border border-gray-300 rounded-md"
-                                disabled={loading}
-                              >
-                                {TONES.map((toneOption, index) => {
-                                  const textOnly = toneOption
-                                    .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                    .trim();
-                                  return (
-                                    <option key={index} value={textOnly}>
-                                      {toneOption}
+                          <div className="flex gap-5">
+                            {/* Select Language */}
+                            <div className="w-full input-group">
+                              <label className="block text-xl font-medium text-gray-700 ms-2">
+                                Select Language
+                              </label>
+                              <span className="relative">
+                                <img
+                                  src={getImage("translate")}
+                                  alt="img"
+                                  className="w-4 absolute left-3.5 !top-[5px]"
+                                />
+                                <select
+                                  value={language}
+                                  onChange={(e) => setLanguage(e.target.value)}
+                                  className="popup-select data w-full p-2 border border-gray-300 rounded-md"
+                                  disabled={loading}
+                                >
+                                  {LANGUAGES.map((lang, index) => (
+                                    <option key={index} value={lang}>
+                                      {lang}
                                     </option>
-                                  );
-                                })}
-                              </select>
-                            </span>
+                                  ))}
+                                </select>
+                              </span>
+                            </div>
+
+                            {/* Select Tone */}
+                            <div className="w-full input-group">
+                              <label className="block text-xl font-medium text-gray-700 ms-2">
+                                Select Tone
+                              </label>
+                              <span className="relative">
+                                <select
+                                  value={tone}
+                                  onChange={(e) => setTone(e.target.value)}
+                                  className="popup-select w-full p-2 border border-gray-300 rounded-md"
+                                  disabled={loading}
+                                >
+                                  {TONES.map((toneOption, index) => {
+                                    const textOnly = toneOption
+                                      .replace(/^[^\p{L}\p{N}\s]+/u, "")
+                                      .trim();
+                                    return (
+                                      <option key={index} value={textOnly}>
+                                        {toneOption}
+                                      </option>
+                                    );
+                                  })}
+                                </select>
+                              </span>
+                            </div>
                           </div>
                         </div>
 
@@ -566,10 +603,40 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 ) : (
                   <div className="p-9 flex flex-col gap-5 item-center">
                     <div className="flex flex-col item-center gap-5">
-                      {/* Original Message */}
+
+                      {/* original Message only reply */}
+                      {popupTriggeredFrom === "comment" && (
+                        <div className="w-full textarea-group relative">
+                          <label className="block text-xl font-medium text-gray-700 ms-2">
+                            Original Comment
+                          </label>
+                          <textarea
+                            placeholder="No comment found?"
+                            value={originalCommentText}
+                            onChange={(e) => setOriginalCommentText(e.target.value)}
+                            className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+                          />
+                        </div>
+                      )}
+
+                      {popupTriggeredFrom === "create-post" && (
+                        <div className="w-full textarea-group relative">
+                          <label className="block text-xl font-medium text-gray-700 ms-2">
+                            Original Message
+                          </label>
+                          <textarea
+                            placeholder="No comment found?"
+                            value={originalmessage}
+                            onChange={(e) => setoriginalmessage(e.target.value)}
+                            className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
+                          />
+                        </div>
+                      )}
+
+                      {/* Generate Message */}
                       <div className="w-full textarea-group relative">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
-                          Original Message
+                          Generate Message
                         </label>
 
                         {/* Copy Button - sibling of textarea */}
@@ -634,56 +701,58 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </span>
                       </div>
 
-                      {/* Language */}
-                      <div className="w-full input-group">
-                        <label className="block text-xl font-medium text-gray-700 ms-2">
-                          Select Language
-                        </label>
-                        <span className="relative">
-                          <img
-                            src={getImage("translate")}
-                            alt="img"
-                            className="w-4 absolute left-3.5 !top-[5px]"
-                          />
-                          <select
-                            value={language}
-                            onChange={(e) => setLanguage(e.target.value)}
-                            className="popup-select data w-full p-2 border border-gray-300 rounded-md"
-                            disabled={loading}
-                          >
-                            {LANGUAGES.map((lang, index) => (
-                              <option key={index} value={lang}>
-                                {lang}
-                              </option>
-                            ))}
-                          </select>
-                        </span>
-                      </div>
-
-                      {/* Tone */}
-                      <div className="w-full input-group">
-                        <label className="block text-xl font-medium text-gray-700 ms-2">
-                          Select Tone
-                        </label>
-                        <span className="relative">
-                          <select
-                            value={tone}
-                            onChange={(e) => setTone(e.target.value)}
-                            className="popup-select w-full p-2 border border-gray-300 rounded-md"
-                            disabled={loading}
-                          >
-                            {TONES.map((toneOption, index) => {
-                              const textOnly = toneOption
-                                .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                .trim();
-                              return (
-                                <option key={index} value={textOnly}>
-                                  {toneOption}
+                      <div className="flex gap-5">
+                        {/* Language */}
+                        <div className="w-full input-group">
+                          <label className="block text-xl font-medium text-gray-700 ms-2">
+                            Select Language
+                          </label>
+                          <span className="relative">
+                            <img
+                              src={getImage("translate")}
+                              alt="img"
+                              className="w-4 absolute left-3.5 !top-[5px]"
+                            />
+                            <select
+                              value={language}
+                              onChange={(e) => setLanguage(e.target.value)}
+                              className="popup-select data w-full p-2 border border-gray-300 rounded-md"
+                              disabled={loading}
+                            >
+                              {LANGUAGES.map((lang, index) => (
+                                <option key={index} value={lang}>
+                                  {lang}
                                 </option>
-                              );
-                            })}
-                          </select>
-                        </span>
+                              ))}
+                            </select>
+                          </span>
+                        </div>
+
+                        {/* Tone */}
+                        <div className="w-full input-group">
+                          <label className="block text-xl font-medium text-gray-700 ms-2">
+                            Select Tone
+                          </label>
+                          <span className="relative">
+                            <select
+                              value={tone}
+                              onChange={(e) => setTone(e.target.value)}
+                              className="popup-select w-full p-2 border border-gray-300 rounded-md"
+                              disabled={loading}
+                            >
+                              {TONES.map((toneOption, index) => {
+                                const textOnly = toneOption
+                                  .replace(/^[^\p{L}\p{N}\s]+/u, "")
+                                  .trim();
+                                return (
+                                  <option key={index} value={textOnly}>
+                                    {toneOption}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </span>
+                        </div>
                       </div>
                     </div>
 

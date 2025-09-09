@@ -17,33 +17,21 @@ const MessageReplyGenerator = () => {
     const [generatedReply, setGeneratedReply] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // Dummy function (replace with API later)
-    const InvokeLLM = async ({ prompt }) => {
-        return `Here’s a sample AI-generated reply based on your input:\n\n"${prompt.slice(
-            0,
-            120
-        )}..."`;
-    };
 
+
+    // Fake API generator
     const generateReply = async () => {
         if (!originalMessage.trim()) return;
-
         setIsGenerating(true);
-        try {
-            const systemPrompt = `You are a LinkedIn messaging expert. Generate a reply.
-                                  Original Message: ${originalMessage}
-                                  Additional Context: ${context || "None"}
-                                  Reply Tone: ${replyTone}
-                                  Reply Purpose: ${replyType}`;
+        setGeneratedReply("");
 
-            const result = await InvokeLLM({ prompt: systemPrompt });
-            setGeneratedReply(result);
-        } catch (error) {
-            console.error("Error generating reply:", error);
-        } finally {
+        setTimeout(() => {
+            const fakeReply = `✨ (${replyType}) \nThanks for reaching out! I appreciate your message. Looking forward to connecting further. 🚀`;
+            setGeneratedReply(fakeReply);
             setIsGenerating(false);
-        }
+        }, 2000);
     };
+
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(generatedReply);
@@ -174,14 +162,15 @@ const MessageReplyGenerator = () => {
                     </div>
 
                     {/* Generate Button */}
+                    {/* Generate Button */}
                     <button
                         onClick={generateReply}
                         disabled={!originalMessage.trim() || isGenerating}
                         className={`w-full flex items-center justify-center gap-2 
-                                  bg-green hover:bg-[#008234] 
-                                  disabled:bg-gray-300 disabled:cursor-not-allowed
-                                  text-white font-medium px-4 py-2 rounded-lg 
-                                    transition duration-200`}
+            bg-green hover:bg-[#008234] 
+            disabled:bg-gray-300 disabled:cursor-not-allowed
+            text-white font-medium px-4 py-2 rounded-lg 
+              transition duration-200`}
                     >
                         {isGenerating ? (
                             <>

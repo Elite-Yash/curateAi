@@ -1,24 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
 import { getImage } from "../common/utils/logoUtils";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { GoPerson } from "react-icons/go";
-import { FaRegChartBar } from "react-icons/fa";
-import { openWindowTab } from "../common/helpers/commonHelpers";
+// import { openWindowTab } from "../common/helpers/commonHelpers";
 import Header from "./UserProfile/Header";
-import { MessageSquare } from "lucide-react";
 
 const SideBar = () => {
   const location = useLocation();
-  const manifestData = chrome.runtime.getManifest();
+  // const manifestData = chrome.runtime.getManifest();
 
-  const goToLinkedIn = () => {
-    openWindowTab("https://linkedin.com/");
-  };
+  // const goToLinkedIn = () => {
+  //   openWindowTab("https://linkedin.com/");
+  // };
 
   return (
     <div className="flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform rounded-[11px] -translate-y-1/2">
       {/* 🔹 LOGO TOP ME */}
-      <div className="logo p-3 pt-3">
+      <div className="logo p-3 pt-3"> 
         <Link
           to="/"
           className="logo flex w-full gap-2 border-color-gr2 color-one  py-3"
@@ -43,7 +40,7 @@ const SideBar = () => {
         </button>
       </div>
 
-      <div className="left-menu pt-4 p-4 w-max">
+      <div className="left-menu pt-4 p-4 w-73">
         <ul className="flex flex-col">
           {/* Dashboard */}
           <li className="px-1 py-1">
@@ -57,7 +54,7 @@ const SideBar = () => {
               <span className="mt-1">
                 <i className="fa-solid fa-house text-sm"></i>
               </span>
-              <div className="flex flex-col">
+              <div className="flex flex-col ">
                 <div className="font-medium text-sm ">Dashboard</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -78,7 +75,7 @@ const SideBar = () => {
               <span className="mt-1">
                 <i className="fa-solid fa-file text-sm"></i>
               </span>
-              <div className="flex flex-col">
+              <div className="flex flex-col ms-[4px]">
                 <div className="font-medium text-sm ">Content studio</div>
                 <div className="text-sm text-[#6b7280] ">
                   Generate posts & comments
@@ -99,7 +96,7 @@ const SideBar = () => {
               <span className="mt-1">
                 <i className="fa-solid fa-comment-dots text-sm"></i>
               </span>
-              <div className="flex flex-col">
+              <div className="flex flex-col ms-[2px]">
                 <div className="font-medium text-sm ">Message Assistant</div>
                 <div className="text-sm text-[#6b7280] ">
                   Smart messages replies
@@ -121,7 +118,7 @@ const SideBar = () => {
               <span className="mt-1">
                 <i className="fa-solid fa-message text-sm"></i>
               </span>
-              <div className="flex text-sm flex-col">
+              <div className="flex text-sm flex-col ms-[2px]">
                 <div className="font-medium text-sm ">Comments</div>
                 <div className="text-sm text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -163,7 +160,7 @@ const SideBar = () => {
               <span className="mt-1">
                 <i className="fa-solid fa-user text-sm"></i>
               </span>
-              <div className="flex flex-col">
+              <div className="flex flex-col ms-[4px]">
                 <div className="font-medium text-sm ">Personas</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -194,7 +191,7 @@ const SideBar = () => {
           </li> */}
 
           {/* LinkedIn  */}
-          <li className="px-1 py-1">
+          {/* <li className="px-1 py-1">
             <a
               href="#"
               onClick={(e) => {
@@ -214,7 +211,7 @@ const SideBar = () => {
                 </div>
               </div>
             </a>
-          </li>
+          </li> */}
 
         </ul>
       </div>
@@ -256,3 +253,5 @@ const SideBar = () => {
 };
 
 export default SideBar;
+
+

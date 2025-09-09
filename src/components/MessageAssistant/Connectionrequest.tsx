@@ -18,38 +18,20 @@ const Connectionrequest = () => {
 
     const generateConnectionRequest = async () => {
         if (!profileName.trim()) return;
-
         setIsGenerating(true);
-        try {
-            const systemPrompt = `You are a LinkedIn networking expert. Generate a personalized connection request message.
-                                Target Profile:
-                                - Name: ${profileName}
-                                - Title: ${profileTitle || "Not specified"}
-                                - Company: ${company || "Not specified"}
-                                - Connection Reason: ${connectionReason}
-                                - Additional Notes: ${personalNote || "None"}
+        setGeneratedRequest("");
 
-                                Guidelines:
-                                - Keep it under 300 characters (LinkedIn limit)
-                                - Be personal and specific
-                                - Mention something relevant about their background
-                                - Clearly state why you want to connect
-                                - Be professional but warm
-                                - Avoid generic templates
+        setTimeout(() => {
+            const fakeRequest = `👋 Hi ${profileName}, I came across your profile and was impressed by your work at ${company || "your company"}. I'd love to connect and learn more about your journey! 🚀`;
 
-                                Generate only the connection request message, no quotes or explanations.`;
+            const truncatedResult =
+                fakeRequest.length > 300 ? fakeRequest.substring(0, 297) + "..." : fakeRequest;
 
-            const result = "Hey " + profileName + ", I'd love to connect with you!";
-
-            const truncatedResult = result.length > 300 ? result.substring(0, 297) + "..." : result;
             setGeneratedRequest(truncatedResult);
-
-        } catch (error) {
-            console.error("Error generating connection request:", error);
-        } finally {
             setIsGenerating(false);
-        }
+        }, 2000);
     };
+
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(generatedRequest);
@@ -95,11 +77,11 @@ const Connectionrequest = () => {
                                 value={profileTitle}
                                 onChange={(e) => setProfileTitle(e.target.value)}
                                 className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
-                            />  
+                            />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-[#334155]">Company</label>   
+                            <label className="text-sm font-medium text-[#334155]">Company</label>
                             <input
                                 placeholder="e.g., Microsoft"
                                 value={company}
@@ -154,7 +136,6 @@ const Connectionrequest = () => {
                             </>
                         )}
                     </button>
-
                     {/* Quick Tips */}
                     <div className="p-4 bg-[#eff6ff] rounded-lg">
                         <div className="font-semibold text-base text-[#1e3a8a] mb-2">

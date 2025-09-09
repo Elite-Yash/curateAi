@@ -610,7 +610,7 @@ const SaveProfile = () => {
 
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
         {/* --- Header Section (Title + Search + Buttons) --- */}
         <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
           {/* Left Side: Title */}
