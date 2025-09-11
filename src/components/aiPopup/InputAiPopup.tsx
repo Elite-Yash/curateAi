@@ -254,7 +254,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     <>
       <div
         className={`popup-overlay ${isOpen ? "open" : ""
-          } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}
+          } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 `}
       >
         <div
           className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[42rem]" : ""
@@ -310,14 +310,14 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 Original Message
                               </label>
                               <textarea
-                                placeholder="No comment found?"
+                                placeholder="No message found?"
                                 value={originalmessage}
                                 onChange={(e) => setoriginalmessage(e.target.value)}
                                 className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
                               />
                             </div>
                           )}
-                          {/* Generate Message */}  
+                          {/* Generate Message */}
                           <div className="w-full textarea-group relative">
                             <label className="block text-xl font-medium text-gray-700 ms-2">
                               Generate Message
@@ -624,7 +624,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             Original Message
                           </label>
                           <textarea
-                            placeholder="No comment found?"
+                            placeholder="No Message found?"
                             value={originalmessage}
                             onChange={(e) => setoriginalmessage(e.target.value)}
                             className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"

@@ -43,6 +43,11 @@ export class apiService {
         saveGooglegrive: "profiles/export-to-google-sheet",
         connectToCRM: "crm",
         savToCRM: "crm/add-to-crm",
+        createcampaign: "campaigns/create-campaign",
+        deletecampaign: "campaigns/:id",
+        updatecampaign: "campaigns/:campaignId",
+        getcampaignbyid:"campaigns/:campaignId",
+        getallcampaign: "campaigns"
     };
 
     static Method = {

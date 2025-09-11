@@ -109,18 +109,18 @@ const SaveProfile = () => {
   //   });
   // };
   const getCRMdData = () => {
-  chrome.storage.local.get(["crmData"], (response) => {
-    const crmData = response.crmData;
+    chrome.storage.local.get(["crmData"], (response) => {
+      const crmData = response.crmData;
 
-    if (crmData) {
-      const { crmConnection, crmName, token, url } = crmData; 
+      if (crmData) {
+        const { crmConnection, crmName, token, url } = crmData;
 
-      if (crmConnection) {
-        setCrmConnection({ crmConnection, crmName, token, url });
+        if (crmConnection) {
+          setCrmConnection({ crmConnection, crmName, token, url });
+        }
       }
-    }
-  });
-};
+    });
+  };
 
 
   useEffect(() => {
@@ -637,7 +637,7 @@ const SaveProfile = () => {
             </div>
           </div>
 
-          {/* Right Side: Search + Buttons */}
+          {/* Right Side:  Buttons */}
           <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
             {/* --- Button 1: Connect CRM --- */}
             <Tooltip
@@ -790,8 +790,8 @@ const SaveProfile = () => {
               <button
                 onClick={() => setActiveButton("all")}
                 className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "all"
-                    ? "bg-[#2563eb] text-white"
-                    : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                  ? "bg-[#2563eb] text-white"
+                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
                   }`}
               >
                 <i className="fa-solid fa-user-group text-sm"></i>
@@ -808,8 +808,8 @@ const SaveProfile = () => {
               <button
                 onClick={() => setActiveButton("starred")}
                 className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "starred"
-                    ? "bg-[#2563eb] text-white"
-                    : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                  ? "bg-[#2563eb] text-white"
+                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
                   }`}
               >
                 <i className="fa-solid fa-star text-sm"></i>
@@ -826,8 +826,8 @@ const SaveProfile = () => {
               <button
                 onClick={() => setActiveButton("recent")}
                 className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "recent"
-                    ? "bg-[#2563eb] text-white"
-                    : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                  ? "bg-[#2563eb] text-white"
+                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
                   }`}
               >
                 <i className="fa-solid fa-clock text-sm"></i>

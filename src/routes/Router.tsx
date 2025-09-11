@@ -13,6 +13,7 @@ import PricingPage from "../components/PricingPage/PricingPage";
 import Personas from "../components/Personas/Personas";
 import Contentstudio from "../components/Contentstudio/Contentstudio";
 import Messageassistant from "../components/MessageAssistant/Messageassistant";
+import MessageCampaignTable from "../components/MessageCampaign/MessageCampaignTable";
 
 
 /**
@@ -106,19 +107,19 @@ const Router = () => {
           </Section>
         }
       />
-       <Route
+      <Route
         path="/content-studio"
         element={
           <Section>
-            <Contentstudio/>
+            <Contentstudio />
           </Section>
         }
       />
-             <Route
+      <Route
         path="/message-assistant"
         element={
           <Section>
-            <Messageassistant/>
+            <Messageassistant />
           </Section>
         }
       />
@@ -138,7 +139,7 @@ const Router = () => {
           </Section>
         }
       />
-       <Route
+      <Route
         path="/personas"
         element={
           <Section>
@@ -146,6 +147,15 @@ const Router = () => {
           </Section>
         }
       />
+      <Route
+        path="/message-campaign"
+        element={
+          <Section>
+            <MessageCampaignTable />
+          </Section>
+        }
+      />
+
     </Routes>
   );
 };

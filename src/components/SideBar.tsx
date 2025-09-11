@@ -15,7 +15,7 @@ const SideBar = () => {
   return (
     <div className="flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform rounded-[11px] -translate-y-1/2">
       {/* 🔹 LOGO TOP ME */}
-      <div className="logo p-3 pt-3"> 
+      <div className="logo p-3 pt-3">
         <Link
           to="/"
           className="logo flex w-full gap-2 border-color-gr2 color-one  py-3"
@@ -47,8 +47,8 @@ const SideBar = () => {
             <Link
               to="/"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/" || location.pathname === "/home"
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
               <span className="mt-1">
@@ -68,8 +68,8 @@ const SideBar = () => {
             <Link
               to="/content-studio"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/content-studio"
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
               <span className="mt-1">
@@ -89,8 +89,8 @@ const SideBar = () => {
             <Link
               to="/message-assistant"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-assistant"
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
               <span className="mt-1">
@@ -111,12 +111,12 @@ const SideBar = () => {
             <Link
               to="/comments"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/comments"
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
               <span className="mt-1">
-                <i className="fa-solid fa-message text-sm"></i>
+                <i className="fas fa-comments text-sm"></i>
               </span>
               <div className="flex text-sm flex-col ms-[2px]">
                 <div className="font-medium text-sm ">Comments</div>
@@ -132,8 +132,8 @@ const SideBar = () => {
             <Link
               to="/save-profile"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/save-profile"
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
               <span className="mt-1">
@@ -153,8 +153,8 @@ const SideBar = () => {
             <Link
               to="/personas"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/personas"
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
               <span className="mt-1">
@@ -168,6 +168,49 @@ const SideBar = () => {
               </div>
             </Link>
           </li>
+
+          {/* Message Campaigns */}
+          <li className="px-1 py-1">
+            <Link
+              to="/message-campaign"
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-campaign"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
+                }`}
+            >
+              <span className="mt-1">
+                <i className="fas fa-envelope text-sm"></i>
+              </span>
+              <div className="flex flex-col ">
+                <div className="font-medium text-sm ">Message Campaign</div>
+                <div className="text-xs text-[#6b7280] ">
+                  Automate LinkedIn DMs
+                </div>
+              </div>
+            </Link>
+          </li>
+
+          {/* Connect Campaigns */}
+          <li className="px-1 py-1">
+            <Link
+              to="/connect-campaign"
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
+                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
+                }`}
+            >
+              <span className="mt-1">
+                <i className="fas fa-link text-sm"></i>
+              </span>
+              <div className="flex flex-col ">
+                <div className="font-medium text-sm ">Connect Campaign</div>
+                <div className="text-xs text-[#6b7280] ">
+                  Grow network with invites
+                </div>
+              </div>
+            </Link>
+          </li>
+
 
           {/* Analytics */}
           {/* <li className="px-1 py-1">

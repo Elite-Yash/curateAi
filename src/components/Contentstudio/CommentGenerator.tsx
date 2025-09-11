@@ -171,11 +171,11 @@ const CommentGenerator = () => {
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mt-1.5">
                     <span className="font-medium text-sm">You</span>
                     <span className="text-xs text-[#f8fafc]0">• now</span>
                   </div>
-                  <div className="p-4 rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b]">
+                  <div className="py-2 rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b]">
                     {generatedComment}
                   </div>
                   <div className="flex items-center gap-4 mt-3 text-xs text-[#f8fafc]0">

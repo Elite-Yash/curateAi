@@ -222,20 +222,20 @@ const MessageReplyGenerator = () => {
 
                 {generatedReply ? (
                     <div className="space-y-4">
-                        <div className="p-4 border border-slate-200 rounded-lg bg-slate-50">
+                        <div className="p-4 border border-[#cbd5e1] rounded-lg bg-slate-50">
                             <div className="flex items-start gap-3 mb-3">
-                                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                                    <User className="w-4 h-4 text-white" />
+                                <div className="w-8 h-8 bg-[#edfdf2] rounded-full flex items-center justify-center">
+                                    <User className="w-4 h-4 text-green" />
                                 </div>
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-2">
+                                    <div className="flex items-center gap-2 mt-1.5">
                                         <span className="font-medium text-sm">You</span>
                                         <span className="text-xs text-slate-500">• Draft</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="pl-11">
-                                <div className="p-4 whitespace-pre-wrap text-sm text-[#1e293b]">
+                            <div className="">
+                                <div className="whitespace-pre-wrap text-sm text-[#1e293b]">
                                     {generatedReply}
                                 </div>
                             </div>
