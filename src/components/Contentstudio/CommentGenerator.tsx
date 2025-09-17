@@ -1,51 +1,260 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MessageCircle,
   Copy,
   RefreshCw,
   Sparkles,
-  User,
   Link as LinkIcon,
-  ThumbsUp,
 } from "lucide-react";
+import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
+import { apiService } from "../../common/config/apiService";
+import {
+  TONES,
+  LANGUAGES,
+  COMMENT_MOTIVES,
+} from "../../constants/constants";
+import { getImage } from "../../common/utils/logoUtils";
+import { removeEmoji } from "../../common/utils/removeicon";
+import { selectActivePlanValue } from "../../redux/selector/activePlanSelector";
+import { useSelector } from "react-redux";
+import ActivePlanModal from "../activeplanModal/activeplanmodal";
 
-const CommentGenerator = () => {
-  const [postContext, setPostContext] = useState("");
-  const [commentType, setCommentType] = useState("supportive");
+
+interface ModalProps {
+  post_url?: string;
+  popupTriggeredFrom: "comment" ;
+}
+
+const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) => {
+  const [commentContext, setCommentContext] = useState("");
   const [generatedComment, setGeneratedComment] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [ispostContextActive, setIspostContextActive] = useState(false);
+  const [error, setError] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
+  const [copied, setCopied] = useState(false);
 
-  const commentTypes = [
-    { value: "supportive", label: "Supportive & Encouraging" },
-    { value: "insightful", label: "Add Insight/Perspective" },
-    { value: "question", label: "Ask Follow-up Question" },
-    { value: "sharing", label: "Share Experience" },
-    { value: "congratulatory", label: "Congratulate/Celebrate" },
-  ];
+  // ✅ Missing states added
+  const [motive, setMotive] = useState(COMMENT_MOTIVES[0]);
+  const [tone, setTone] = useState(TONES[0]);
+  const [language, setLanguage] = useState(LANGUAGES[0]);
+    const [showPlanAlert, setShowPlanAlert] = useState(false);
+  const activePlanValue = useSelector(selectActivePlanValue);
 
-  // Fake API generator
-  const generateComment = async () => {
-    if (!postContext.trim()) return;
+  const handleSubmit = () => {
+
+     if (!activePlanValue) {
+      setShowPlanAlert(true);
+      return;
+    }
+
+        if (!validateForm()) return;
+
     setIsGenerating(true);
-    setGeneratedComment("");
+    setError("");
 
-    setTimeout(() => {
-      const fakeComment = `✨ (${
-        commentTypes.find((c) => c.value === commentType)?.label
-      }) \nReally thoughtful post! I appreciate your perspective on this. What do you think about its impact in the next few years? 🚀`;
-      setGeneratedComment(fakeComment);
-      setIsGenerating(false);
-    }, 2000);
+    let platform = "linkedin";
+    const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
+
+    chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
+      if (!response || !response.success || !response.token) {
+        setError("Failed to retrieve auth token.");
+        setIsGenerating(false);
+        return;
+      }
+
+      let apiCalled = false;
+      const authToken = response.token;
+
+      const requestData = {
+        language,
+        tone: removeEmoji(tone.toString().trim()),
+        postText: commentContext,
+        authorName: "",
+        platform,
+        command: commentContext,
+        contentType: popupTriggeredFrom,
+        goal: removeEmoji((motive ?? '').toString().trim()),
+        articleInfo: {},
+        lastMessages: [],
+        currentUserName,
+        authToken,
+      };
+
+      chrome.runtime.sendMessage(
+        { type: "GENERATE_CONTENT", data: requestData },
+        (response) => {
+          console.log(". ~ generatePost ~ response:", response);
+          if (response?.success && !apiCalled) {
+            const generatedMessage = response.data?.data || "";
+
+            // animate typing
+            let index = -1;
+            const typingSpeed = 20;
+            const type = () => {
+              index++;
+              if (index < generatedMessage.length) {
+                setGeneratedComment((prev) => prev + generatedMessage[index]);
+                setTimeout(type, typingSpeed);
+              } else {
+                setIsGenerating(false);
+              }
+            };
+            type();
+            apiCalled = true;
+
+
+            // ✅ FIXED payload field name
+            const payload = {
+              comment: generatedMessage,
+              post_url: post_url ? post_url : window.location.href,
+            };
+
+            const requestUrl = apiService.EndPoint.createComments;
+
+            apiService
+              .commonAPIRequest(
+                requestUrl,
+                apiService.Method.post,
+                undefined,
+                payload,
+                (result: any) => {
+                  if (
+                    result?.status === 201 &&
+                    result?.data.message === "Comment created successfully"
+                  ) {
+                  } else {
+                    throw new Error(result?.message || "Failed to create post.");
+                  }
+                }
+              )
+              .catch((err: any) => {
+                console.error("API error:", err);
+              })
+              .finally(() => {
+                setIsGenerating(false);
+              });
+          } else {
+            setError("Failed to generate post. Please try again.");
+            setIsGenerating(false);
+          }
+        }
+      );
+    });
   };
 
   const copyToClipboard = () => {
     if (generatedComment) {
       navigator.clipboard.writeText(generatedComment);
-      alert(" Comment copied!");
+      setCopied(true);
     }
+     setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
+   useEffect(() => {
+      // Load saved selections from Chrome storage after removal
+      chrome.storage.local.get(
+        ["selectedLanguage", "selectedTone", "selectedMotive"],
+        (result) => {
+          if (result.selectedLanguage) {
+            setLanguage(result.selectedLanguage);
+          }
+          if (result.selectedTone) {
+            setTone(result.selectedTone);
+          }
+          if (result.selectedMotive) {
+            setMotive(result.selectedMotive);
+          }
+          // Check if all data is present
+          if (
+            result.selectedLanguage &&
+            result.selectedTone &&
+            result.selectedMotive
+          ) {
+          } else {
+            console.log("⚠️ Some data missing in storage, resetting...");
+            setLanguage("Language");
+            setTone("Tone");
+            setMotive("Motive");
+          }
+        }
+      );
+    }, []);
+ 
+    useEffect(() => {
+      // Save selections to Chrome storage whenever they change
+      chrome.storage.local.set({
+        selectedLanguage: language,
+        selectedTone: tone,
+        selectedMotive: motive,
+      });
+    }, [language, tone, motive]);
+  
+  
+    const validateForm = () => {
+      let newErrors: any = {};
+  
+      // check Original Message if popup is create-post
+      if (popupTriggeredFrom === "comment" && !commentContext?.trim()) {
+        newErrors.commentContext = "Original Message is required";
+      }
+  
+      // motive must not include "Motive"
+      if (!motive || motive.includes("Motive")) {
+        newErrors.motive = "Please select a valid motive";
+      }
+  
+      // language must not equal "Language"
+      if (!language || language === "Language") {
+        newErrors.language = "Please select a valid language";
+      }
+  
+      // tone must not include "Tone"
+      if (!tone || tone.includes("Tone")) {
+        newErrors.tone = "Please select a valid tone";
+      }
+  
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    };
+  
+    useEffect(() => {
+      if (popupTriggeredFrom === "comment" && commentContext?.trim()) {
+        setErrors((prev) => ({ ...prev, commentContext: "" }));
+      }
+    }, [commentContext, popupTriggeredFrom]);
+  
+    useEffect(() => {
+      if (motive && !motive.includes("Motive")) {
+        setErrors((prev) => ({ ...prev, motive: "" }));
+      }
+    }, [motive]);
+  
+    useEffect(() => {
+      if (language && language !== "Language") {
+        setErrors((prev) => ({ ...prev, language: "" }));
+      }
+    }, [language]);
+  
+    useEffect(() => {
+      if (tone && !tone.includes("Tone")) {
+        setErrors((prev) => ({ ...prev, tone: "" }));
+      }
+    }, [tone]);
+
   return (
+    <>
+       {(showPlanAlert && !activePlanValue) && (
+        <>
+          <ActivePlanModal
+            isOpen={showPlanAlert}
+            onClose={() => setShowPlanAlert(false)}
+          />
+        </>
+      )}
+      
     <div className="grid lg:grid-cols-2 gap-6">
       {/* Input Section */}
       <div className="shadow-lg bg-white rounded-xl p-6 space-y-6">
@@ -57,68 +266,119 @@ const CommentGenerator = () => {
         {/* Post Context */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-[#334155]">
-            Original Post Content
+            What do you want to comment about? <span className="text-red">*</span>
           </label>
-          <textarea
-            placeholder="Paste the LinkedIn post you want to comment on..."
-            value={postContext}
-            onChange={(e) => setPostContext(e.target.value)}
-            className="w-full min-h-32 resize-none border border-[#cbd5e1] rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
-          />
-          <div className="text-sm text-[#8c97a9] mt-0">
-            💡 Include the full message for better context understanding
+          <div
+            className={`rounded-lg overflow-hidden border ${ispostContextActive ? "active" : "border-[#cbd5e1]"
+              } custom_textarea relative`}
+          >
+            <textarea
+              placeholder="Write your LinkedIn post idea here..."
+              value={commentContext}
+              onChange={(e) => setCommentContext(e.target.value)}
+              onFocus={() => setIspostContextActive(true)}
+              onBlur={() => setIspostContextActive(false)}
+              className="w-full min-h-24 h-full p-2 outline-none text-sm resize-none focus:ring-0 border-0"
+            />
           </div>
+          <div className="text-sm text-[#8c97a9] mt-0">
+            💡 Write clearly for better generated results
+          </div>
+          {errors.commentContext && (
+            <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.commentContext}</p>
+          )}
         </div>
 
-        {/* Comment Type */}
+        {/* Motive */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#334155]">
-            Comment Style
+          <label className="text-sm font-medium text-slate-700">
+            Select Motive <span className="text-red">*</span>
           </label>
-          <select
-            value={commentType}
-            onChange={(e) => setCommentType(e.target.value)}
-            className="w-full border border-[#cbd5e1] rounded-xl p-2 text-sm"
+      <span className="relative">
+            <select
+            value={motive}
+            onChange={(e) => setMotive(e.target.value)}
+            className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+            disabled={isGenerating}
           >
-            {commentTypes.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
+            {COMMENT_MOTIVES.map((motive, index) => (
+              <option key={index} value={motive}>
+                {motive}
               </option>
             ))}
           </select>
+      </span>
+          {errors.motive && (
+            <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.motive}</p>
+          )}
+        </div>
 
-          <div className="flex flex-wrap gap-2">
-            {commentTypes.map((type) => (
-              <button
-                key={type.value}
-                onClick={() => setCommentType(type.value)}
-                className={`px-3 py-1 rounded-xl text-xs font-medium transition ${
-                  commentType === type.value
-                    ? "bg-[#2563eb] text-white"
-                    : "bg-[#f1f5f9] text-[#334155] hover:bg-[#e2e8f0]"
-                }`}
-              >
-                {type.label}
-              </button>
+        {/* Tone */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Select Tone <span className="text-red">*</span></label>
+        <span className="relative">
+            <select
+            value={tone}
+            onChange={(e) => setTone(e.target.value)}
+            className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+            disabled={isGenerating}
+          >
+            {TONES.map((toneOption, index) => (
+              <option key={index} value={toneOption}>
+                {toneOption}
+              </option>
             ))}
-          </div>
+          </select>
+           {errors.tone && (
+            <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.tone}</p>
+          )}
+        </span>
+        </div>
+
+        {/* Language */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-700">
+            Select Language <span className="text-red">*</span>
+          </label>
+           <span className="relative">
+            <img
+              src={getImage("translate")}
+              alt="img"
+              className="w-4 absolute left-[11px] top-[50%] -translate-y-[50%]"
+            />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full p-2 border text-sm rounded-md border-[#cbd5e1] pl-[30px]"
+              disabled={isGenerating}
+            >
+              {LANGUAGES.map((lang, index) => (
+                <option key={index} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+          </span>
+           {errors.language && (
+            <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.language}</p>
+          )}
         </div>
 
         {/* Generate Button */}
         <button
-          onClick={generateComment}
-          disabled={!postContext.trim() || isGenerating}
-          className="w-full flex items-center justify-center gap-2  bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
+          onClick={handleSubmit}
+          disabled={isGenerating}
+          className="w-full flex items-center justify-center gap-2 bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
         >
           {isGenerating ? (
             <>
               <RefreshCw className="w-4 h-4 animate-spin" />
-              Generating Comment...
+              Generating Post...
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              Generate Comment
+              Generate Post
             </>
           )}
         </button>
@@ -135,19 +395,20 @@ const CommentGenerator = () => {
             <li>• Keep comments concise but meaningful</li>
           </ul>
         </div>
+
       </div>
 
       {/* Output Section */}
       <div className="shadow-lg bg-white rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 first-line: font-semibold text-base">
-            <MessageCircle className="w-5 h-5 text-green-600 text-[#16a34a]" />
+          <div className="flex items-center gap-2 font-semibold text-base">
+            <MessageCircle className="w-5 h-5 text-blue-600" />
             Generated Comment
           </div>
           {generatedComment && (
             <div className="flex items-center gap-2">
               <button
-                onClick={generateComment}
+                onClick={handleSubmit}
                 className="p-2 rounded-lg hover:bg-[#f1f5f9]"
               >
                 <RefreshCw className="w-4 h-4" />
@@ -164,56 +425,29 @@ const CommentGenerator = () => {
 
         {generatedComment ? (
           <div className="space-y-4">
-            {/* Comment Preview */}
-            <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc]">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <span className="font-medium text-sm">You</span>
-                    <span className="text-xs text-[#f8fafc]0">• now</span>
-                  </div>
-                  <div className="py-2 rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b]">
-                    {generatedComment}
-                  </div>
-                  <div className="flex items-center gap-4 mt-3 text-xs text-[#f8fafc]0">
-                    <button className="flex items-center gap-1 hover:text-[#2563eb]">
-                      <ThumbsUp className="w-3 h-3" />
-                      Like
-                    </button>
-                    <button className="flex items-center gap-1 hover:text-[#2563eb]">
-                      Reply
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
+              {generatedComment}
             </div>
-
-            {/* Stats */}
-            <div className="flex items-center justify-between text-xs">
+            {/* <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-4">
                 <span>{generatedComment.length} characters</span>
                 <span>{generatedComment.split(" ").length} words</span>
               </div>
               <span className="px-2 py-1 border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition rounded-lg cursor-pointer">
-                Ready to comment
+                Ready to post
               </span>
-            </div>
-
-            {/* Action Buttons */}
+            </div> */}
             <div className="flex gap-3">
               <button
                 onClick={copyToClipboard}
                 className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
               >
                 <Copy className="w-4 h-4" />
-                Copy Comment
+                 {copied ? "Comment Copied!" : "Copy Comment"}
               </button>
               <button className="flex-1 flex items-center justify-center rounded-lg gap-2 bg-[#2563eb] text-white py-2">
                 <LinkIcon className="w-4 h-4" />
-                Go to Post
+                Go to LinkedIn
               </button>
             </div>
           </div>
@@ -223,15 +457,16 @@ const CommentGenerator = () => {
               <MessageCircle className="w-8 h-8 text-[#94a3b8]" />
             </div>
             <p className="text-[#64748b] font-medium !text-xl mb-2">
-              No comment generated yet
+              No Comment generated yet
             </p>
             <p className="!text-base text-[#94a3b8]">
-              Paste a LinkedIn post and choose a comment style to get started
+              Write your idea and select a style to get started
             </p>
           </div>
         )}
       </div>
     </div>
+    </>
   );
 };
 

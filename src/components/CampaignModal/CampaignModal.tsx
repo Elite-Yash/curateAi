@@ -4,7 +4,6 @@ import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
 import { getImage } from "../../common/utils/logoUtils";
 
-
 type FormData = {
     name: string;
     type: string;
@@ -22,7 +21,8 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [templateData, setTemplateData] = useState<any[]>([]);
-    const nonEditableStyle = editableCampaigns ? "bg-gray-100 cursor-not-allowed" : "";
+    const [initialFormData, setInitialFormData] = useState<Partial<FormData>>({});
+    const [hasChanges, setHasChanges] = useState(false);
 
     const {
         register,
@@ -30,7 +30,8 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         watch,
         setValue,
         formState: { errors },
-        reset
+        reset,
+        getValues
     } = useForm<FormData>();
 
     // Fetch template data
@@ -54,12 +55,40 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
     };
 
     /**
+     * Check if form has changes compared to initial data
+     */
+    const checkForChanges = () => {
+        if (!editableCampaigns) return true;
+        
+        const currentValues = getValues();
+        const changesDetected = Object.keys(initialFormData).some(key => {
+            const formKey = key as keyof FormData;
+            return currentValues[formKey] !== initialFormData[formKey];
+        });
+        
+        setHasChanges(changesDetected);
+        return changesDetected;
+    };
+
+    /**
      * Handle form submission: Calls `saveCampaign` or `updateCampaign` based on the mode (add/edit).
      */
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         // Check if type is CSV and fileUpload is not provided (only for new campaigns)
         if (data.import_type === "csv" && !editableCampaigns && (!data.fileUpload || data.fileUpload.length === 0)) {
             setErrorMessage("File upload is required when type is CSV.");
+            return;
+        }
+
+        // For updates, check if there are any changes
+        if (editableCampaigns && !checkForChanges()) {
+            Swal.fire({
+                title: "No Changes Detected",
+                text: "You haven't made any changes to update.",
+                icon: "info",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#2563eb"
+            });
             return;
         }
 
@@ -218,11 +247,26 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         if (isOpen) {
             reset();
             if (editableCampaigns) {
-                setValue("name", editableCampaigns.name || "");
-                setValue("message", editableCampaigns.message || "");
-                setValue("import_type", editableCampaigns.import_type || "");
-                setValue("max_connections", editableCampaigns.max_connections || 0);
-                setValue("url", editableCampaigns.url || "");
+                const initialValues = {
+                    name: editableCampaigns.name || "",
+                    message: editableCampaigns.message || "",
+                    import_type: editableCampaigns.import_type || "",
+                    max_connections: editableCampaigns.max_connections || 0,
+                    url: editableCampaigns.url || "",
+                    messageName: editableCampaigns.messageName || ""
+                };
+                
+                setValue("name", initialValues.name);
+                setValue("message", initialValues.message);
+                setValue("import_type", initialValues.import_type);
+                setValue("max_connections", initialValues.max_connections);
+                setValue("url", initialValues.url);
+                setValue("messageName", initialValues.messageName);
+                
+                // Store initial values for change detection
+                setInitialFormData(initialValues);
+            } else {
+                setInitialFormData({});
             }
         }
     }, [isOpen, reset, editableCampaigns, setValue]);
@@ -235,6 +279,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         closeModalPoupBox(false);
         if (resetEditableCampaign) resetEditableCampaign();
         reset();
+        setHasChanges(false);
     };
 
     const selectedType = watch("import_type");
@@ -280,17 +325,17 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             {/* Name Field */}
                                             <div>
                                                 <label htmlFor="name" className="block text-sm font-medium text-[#374151] ms-1">
-                                                    Name {!editableCampaigns && <span className="text-red">*</span>}
+                                                    Name <span className="text-red">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="name"
-                                                    disabled={!!editableCampaigns}
+                                                    // disabled={!!editableCampaigns}
                                                     {...register("name", { required: !editableCampaigns && "Name is required" })}
                                                     // className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 ${errors.name ? "border-red" : ""
                                                     //     } ${nonEditableStyle}`}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 $ ${nonEditableStyle}`}
-                                                    placeholder="Campaign Name"
+                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] !p-2 `}
+                                                    placeholder="Campaign Name" 
                                                 />
                                                 {errors.name && (
                                                     <div className="text-red text-sm">{errors.name.message}</div>
@@ -300,15 +345,15 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             {/* Type Field */}
                                             <div>
                                                 <label htmlFor="import_type" className="block text-sm font-medium text-[#374151] ms-1">
-                                                    Type {!editableCampaigns && <span className="text-red">*</span>}
+                                                    Type <span className="text-red">*</span>
                                                 </label>
                                                 <select
                                                     id="import_type"
                                                     {...register("import_type", {
                                                         required: !editableCampaigns && "Please select a Type"
                                                     })}
-                                                    disabled={!!editableCampaigns}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 $ ${nonEditableStyle}`}
+                                                    // disabled={!!editableCampaigns}
+                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm text-[#6b7280] focus:text-[#000] :ring-[#0080cc] focus:border-[#0080cc] p-2 `}
                                                 >
                                                     <option value="">Select Type</option>
                                                     <option value="csv">CSV</option>
@@ -341,7 +386,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             )}
 
                                             {/* File Upload */}
-                                            {selectedType === "csv" && !editableCampaigns && (
+                                            {selectedType === "csv" && (
                                                 <div>
                                                     <label htmlFor="fileUpload" className="block text-sm font-medium text-[#374151] ms-1">
                                                         Upload File <span className="text-red">*</span>
@@ -353,7 +398,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                             required: selectedType === "csv" && !editableCampaigns && "File upload is required when type is CSV."
                                                         })}
                                                         accept=".csv"
-                                                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-[#d1d5db] file:bg-gray-50 file:text-[#374151] hover:file:bg-gray-100"
+                                                        className="mt-1 block w-full text-sm text-[#6b7280] file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-[#d1d5db] file:bg-[#f9fafb] file:text-[#374151] hover:file:bg-[#f3f4f6]"
                                                     />
                                                     {errors.fileUpload && (
                                                         <div className="text-red text-sm">{errors.fileUpload.message}</div>
@@ -364,19 +409,19 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             {/* MAX CONNECTION Field */}
                                             <div>
                                                 <label htmlFor="max_connections" className="block text-sm font-medium text-[#374151] ms-1">
-                                                    Max Connection {!editableCampaigns && <span className="text-red">*</span>}
+                                                    Max Connection <span className="text-red">*</span>
                                                 </label>
                                                 <input
                                                     type="number"
                                                     id="max_connections"
-                                                    disabled={!!editableCampaigns}
+                                                    // disabled={!!editableCampaigns}
                                                     {...register("max_connections", {
                                                         required: !editableCampaigns && "Max connections is required",
                                                         valueAsNumber: true,
                                                         min: { value: 1, message: "Must be at least 1" },
                                                         max: { value: 100, message: "Must be 100 or less" },
                                                     })}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 $${nonEditableStyle}`}
+                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] !p-2`}
                                                     placeholder="Enter maximum connections"
                                                     min="1"
                                                     max="100"
@@ -399,7 +444,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                         setValue("messageName", selectedMessage ? selectedMessage.name : "");
                                                         setValue("message", selectedMessage ? selectedMessage.message : "");
                                                     }}
-                                                    className="mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 mb-2"
+                                                    className="mt-1 block w-full rounded-md border-[#d1d5db] text-sm text-[#6b7280] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 mb-2"
                                                 >
                                                     <option value="">Select a predefined message</option>
                                                     {templateData.map((data: any) => {
@@ -416,7 +461,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                 <textarea
                                                     id="message"
                                                     {...register("message", { required: "Message is required" })}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 $ resize-none`}
+                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 $ resize-none`}
                                                     style={{ height: "100px" }}
                                                     placeholder="Add Your Message"
                                                 ></textarea>
@@ -448,7 +493,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="w-full bg-green hover:bg-[#008234] text-white py-2 px-4 font-medium text-sm rounded-md disabled:opacity-50"
+                                                className="w-full bg-[#2563eb] hover:bg-[#2455c0ee] text-white py-2 px-4 font-medium text-sm rounded-md disabled:opacity-50"
                                             >
                                                 {isLoading ? (editableCampaigns ? "Updating..." : "Saving...") : (editableCampaigns ? "Update" : "Save")}
                                             </button>

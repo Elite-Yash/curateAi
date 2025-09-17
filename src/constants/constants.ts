@@ -38,6 +38,7 @@ export const LANGUAGES = [
 ];
 
 export const COMMENT_MOTIVES = [
+    "🎯 Motive", ,
     "⚠️ Address Concerns",
     "❌ Address Misconceptions",
     "❓ Ask Questions",

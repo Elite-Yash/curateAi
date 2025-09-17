@@ -323,3 +323,6 @@ span.close-box {
 /* .textarea-group span.c-btn img {
     position: static;
 } */
+
+
+.custom_textarea.active{border: 1px solid #009fff; outline: 1px solid #009fff;}

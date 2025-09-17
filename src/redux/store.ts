@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import themeSlice from "./themeSlice";
 import headerSlice from "./reducer/header";
 import userSlice from "./reducer/users"
+import activePlan from "./reducer/activePlan"
 
 /**
  * Configures the Redux store with the various slices of state.
@@ -11,7 +12,8 @@ export const store = configureStore({
   reducer: {
     tailwindTheme: themeSlice,
     header: headerSlice,
-    users: userSlice
+    users: userSlice,
+    activePlan,
   },
 });
 

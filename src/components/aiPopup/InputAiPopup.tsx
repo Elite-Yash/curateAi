@@ -12,6 +12,7 @@ import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
 import { apiService } from "../../common/config/apiService";
+import { removeEmoji } from "../../common/utils/removeicon";
 
 export interface LinkedInMessage {
   messageSpeaker: string;
@@ -58,17 +59,29 @@ const InputAiPopup: React.FC<ModalProps> = ({
       ? POSTING_MOTIVES[0]
       : COMMENT_MOTIVES[0]
   );
+
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isTextGenerated, setIsTextGenerated] = useState(false);
   const [isAuth, setIsAuth] = useState(true);
+  const [isTextGenerated, setIsTextGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   let apiCalled = false;
   // const [currentPage, setCurrentPage] = useState(0);
   const [newUser, setNewUser] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [isCommentActive, setIsCommentActive] = useState(false);
+  const [isMessageActive, setIsMessageActive] = useState(false);
+  const [isGenerateActive, setIsGenerateActive] = useState(false);
+  const [errors, setErrors] = useState({
+    originalComment: "",
+    originalMessage: "",
+    motive: "",
+    language: "",
+    tone: "",
+  });
 
   const handleCopy = () => {
     if (displayedText.trim()) {
@@ -86,7 +99,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -98,8 +116,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
         : "";
 
     const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
-    // console.log("currentUserName:", currentUserName);
-    // console.log("postData, articleInfo:", postData, articleInfo);
 
     // Fetch auth token before sending the request
     chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
@@ -114,15 +130,15 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
       const requestData = {
         language,
-        tone: tone.replace(/^[^\p{L}\p{N}\s]+/u, "").trim(),
-        postText: postData.postText || text,
+        tone: removeEmoji(tone.replace(/^[^\p{L}\p{N}\s]+/u, "").trim()),
+        postText: originalmessage,
         authorName: postData.postAutherName,
         platform,
-        command: text,
+        command: text.length > 0 ? text : originalmessage,
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,
-        goal: motives.replace(/^[^\p{L}\p{N}\s]+/u, "").trim(),
+        goal: removeEmoji((motives ?? '').replace(/^[^\p{L}\p{N}\s]+/u, "").trim()),
         articleInfo,
         lastMessages,
         currentUserName,
@@ -133,8 +149,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
         { type: "GENERATE_CONTENT", data: requestData },
         (response) => {
           if (response.success && !apiCalled) {
-            // setText(response.data.data);
-            // setIsTextGenerated(true);
             setLoading(true);
             setDisplayedText(""); // Reset displayed text for typing animation
 
@@ -175,7 +189,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     result?.status === 201 &&
                     result?.data.message === "Comment created successfully"
                   ) {
-                    // console.log("Comment created successfully");
                   } else {
                     throw new Error(
                       result.message || "Failed to create comment."
@@ -250,6 +263,70 @@ const InputAiPopup: React.FC<ModalProps> = ({
       selectedMotive: motives,
     });
   }, [language, tone, motives]);
+
+  const validateForm = () => {
+    let newErrors: any = {};
+
+    // check Original Comment if popup is comment
+    if (popupTriggeredFrom === "comment" && !originalCommentText?.trim()) {
+      newErrors.originalComment = "Original Comment is required";
+    }
+
+    // check Original Message if popup is create-post
+    if (popupTriggeredFrom === "create-post" && !originalmessage?.trim()) {
+      newErrors.originalMessage = "Original Message is required";
+    }
+
+    // motive must not include "Motive"
+    if (!motives || motives.includes("Motive")) {
+      newErrors.motive = "Please select a valid motive";
+    }
+
+    // language must not equal "Language"
+    if (!language || language === "Language") {
+      newErrors.language = "Please select a valid language";
+    }
+
+    // tone must not include "Tone"
+    if (!tone || tone.includes("Tone")) {
+      newErrors.tone = "Please select a valid tone";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  useEffect(() => {
+    if (popupTriggeredFrom === "comment" && originalCommentText?.trim()) {
+      setErrors((prev) => ({ ...prev, originalComment: "" }));
+    }
+  }, [originalCommentText, popupTriggeredFrom]);
+
+  useEffect(() => {
+    if (popupTriggeredFrom === "create-post" && originalmessage?.trim()) {
+      setErrors((prev) => ({ ...prev, originalMessage: "" }));
+    }
+  }, [originalmessage, popupTriggeredFrom]);
+
+  useEffect(() => {
+    if (motives && !motives.includes("Motive")) {
+      setErrors((prev) => ({ ...prev, motive: "" }));
+    }
+  }, [motives]);
+
+  useEffect(() => {
+    if (language && language !== "Language") {
+      setErrors((prev) => ({ ...prev, language: "" }));
+    }
+  }, [language]);
+
+  useEffect(() => {
+    if (tone && !tone.includes("Tone")) {
+      setErrors((prev) => ({ ...prev, tone: "" }));
+    }
+  }, [tone]);
+
+
   return (
     <>
       <div
@@ -257,7 +334,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
           } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 `}
       >
         <div
-          className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[42rem]" : ""
+          className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[45rem]" : ""
             }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">
@@ -288,33 +365,57 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   <div className="grid grid-cols-1 gap-5">
                     <div className="w-full input-group flex-col col-span-1">
                       <div className="flex flex-col gap-5 item-center">
-                        <div className="flex flex-col gap-5 item-center">
+                        <div className="flex flex-col gap-8 item-center">
                           {/* original Message only reply */}
                           {popupTriggeredFrom === "comment" && (
                             <div className="w-full textarea-group relative">
                               <label className="block text-xl font-medium text-gray-700 ms-2">
-                                Original Comment
+                                Original Comment<span className="text-red">*</span>
                               </label>
-                              <textarea
-                                placeholder="No comment found?"
-                                value={originalCommentText}
-                                onChange={(e) => setOriginalCommentText(e.target.value)}
-                                className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                              />
+                              <div
+                                className={`rounded-lg overflow-hidden border ${isCommentActive ? "active" : "border-[#6b7280]"
+                                  } custom_textarea h-[150px] relative`}
+                              >   <textarea
+                                  placeholder="No comment found?"
+                                  value={originalCommentText}
+                                  onChange={(e) => setOriginalCommentText(e.target.value)}
+                                  onFocus={() => setIsCommentActive(true)}
+                                  onBlur={() => setIsCommentActive(false)}
+                                  className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
+                                /></div>
+                              {/* <p className="text-xl text-[#8c97a9] mt-1">
+                                💡 Include the full message for better context understanding
+                              </p> */}
+                              {errors.originalComment && (
+                                <p className="text-red text-xl ms-1 absolute">{errors.originalComment}</p>
+                              )}
                             </div>
                           )}
 
                           {popupTriggeredFrom === "create-post" && (
                             <div className="w-full textarea-group relative">
                               <label className="block text-xl font-medium text-gray-700 ms-2">
-                                Original Message
+                                Original Message<span className="text-red">*</span>
                               </label>
-                              <textarea
-                                placeholder="No message found?"
-                                value={originalmessage}
-                                onChange={(e) => setoriginalmessage(e.target.value)}
-                                className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                              />
+                              <div
+                                className={`rounded-lg overflow-hidden border ${isMessageActive ? "active" : "border-[#6b7280]"
+                                  } custom_textarea h-[150px] relative`}
+                              >
+                                <textarea
+                                  placeholder="What do you want to talk about?"
+                                  value={originalmessage}
+                                  onChange={(e) => setoriginalmessage(e.target.value)}
+                                  onFocus={() => setIsMessageActive(true)}
+                                  onBlur={() => setIsMessageActive(false)}
+                                  className="popup-textarea w-full p-2 text-black resize-none focus:ring-0 border-0"
+                                />
+                              </div>
+                              {/* <p className="text-xl text-[#8c97a9] mt-1">
+                                💡 Include the full message for better context understanding
+                              </p> */}
+                              {errors.originalMessage && (
+                                <p className="text-red text-xl ms-1 absolute">{errors.originalMessage}</p>
+                              )}
                             </div>
                           )}
                           {/* Generate Message */}
@@ -322,43 +423,42 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             <label className="block text-xl font-medium text-gray-700 ms-2">
                               Generate Message
                             </label>
-
-                            {/* Copy Button - sibling of textarea */}
-                            <span
-                              onClick={handleCopy}
-                              className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
-                                }`}
+                            <div
+                              className={`rounded-lg overflow-hidden border ${isGenerateActive ? "active" : "border-[#6b7280]"
+                                } custom_textarea h-[150px]`}
                             >
-                              {copied ? "Copied!" : "Copy"}
-                              <img src={getImage("copyIcon")} alt="img" className="w-4" />
-                            </span>
+                              {/* Copy Button - sibling of textarea */}
+                              <span
+                                onClick={handleCopy}
+                                className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+                                  }`}
+                              >
+                                {/* {copied ? "Copied!" : "Copy"} */}
+                                <img src={getImage("copyIcon")} alt="img" className="w-4" />
+                              </span>
 
-                            <textarea
-                              placeholder="Tell me what you want to write about?"
-                              value={
-                                loading
-                                  ? displayedText
-                                  : isTextGenerated
-                                    ? displayedText
-                                    : text
-                              }
-                              ref={textareaRef}
-                              onChange={(e) => {
-                                if (!loading) setText(e.target.value);
-                              }}
-                              className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                              disabled={loading}
-                            ></textarea>
-
+                              <textarea
+                                placeholder="AI generated message will appear here..."
+                                value={loading ? displayedText : isTextGenerated ? displayedText : text}
+                                ref={textareaRef}
+                                onChange={(e) => {
+                                  if (!loading) setText(e.target.value);
+                                }}
+                                onFocus={() => setIsGenerateActive(true)}
+                                onBlur={() => setIsGenerateActive(false)}
+                                className="popup-textarea w-full mt-1 !pt-6 focus:ring-0 border-0 text-black  resize-none"
+                                disabled={loading}
+                              ></textarea>
+                            </div>
                             <p className="text-xl text-[#8c97a9] mt-1">
-                              💡 Include the full message for better context understanding
+                              💡 This is the AI generated response
                             </p>
                           </div>
 
                           {/* Select Motive */}
                           <div className="w-full input-group">
                             <label className="block text-xl font-medium text-gray-700 ms-2">
-                              Select Motive
+                              Select Motive<span className="text-red">*</span>
                             </label>
                             <span className="relative">
                               <select
@@ -371,9 +471,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                   ? POSTING_MOTIVES
                                   : COMMENT_MOTIVES
                                 ).map((motive, index) => {
-                                  const textOnly = motive
-                                    .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                    .trim();
+                                  const textOnly = motive?.replace(/^[^\p{L}\p{N}\s]+/u, "").trim();
                                   return (
                                     <option key={index} value={textOnly}>
                                       {motive}
@@ -382,19 +480,22 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 })}
                               </select>
                             </span>
+                            {errors.motive && (
+                              <p className="text-red text-xl ms-1 absolute">{errors.motive}</p>
+                            )}
                           </div>
                           <div className="flex gap-5">
                             {/* Select Language */}
                             <div className="w-full input-group">
                               <label className="block text-xl font-medium text-gray-700 ms-2">
-                                Select Language
+                                Select Language<span className="text-red">*</span>
                               </label>
                               <span className="relative">
-                                <img
+                                {/* <img
                                   src={getImage("translate")}
                                   alt="img"
                                   className="w-4 absolute left-3.5 !top-[5px]"
-                                />
+                                /> */}
                                 <select
                                   value={language}
                                   onChange={(e) => setLanguage(e.target.value)}
@@ -408,12 +509,15 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                   ))}
                                 </select>
                               </span>
+                              {errors.language && (
+                                <p className="text-red text-xl ms-1 absolute">{errors.language}</p>
+                              )}
                             </div>
 
                             {/* Select Tone */}
                             <div className="w-full input-group">
                               <label className="block text-xl font-medium text-gray-700 ms-2">
-                                Select Tone
+                                Select Tone<span className="text-red">*</span>
                               </label>
                               <span className="relative">
                                 <select
@@ -434,6 +538,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                   })}
                                 </select>
                               </span>
+                              {errors.tone && (
+                                <p className="text-red text-xl ms-1 absolute">{errors.tone}</p>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -472,7 +579,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             </button>
                           )}
                           <button
-                            className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 w-[56rem] h-[4rem] rounded-[8px] justify-center bg-green text-white rounded-md hover:bg-[#008234] disabled:bg-gray-40`}
+                            className={`flex gap-2 ml-auto leading-6 popup-button-submit px-4 py-2 w-[56rem] h-[4rem] justify-center bg-green text-white rounded-md hover:bg-[#008234] disabled:bg-gray4`}
                             onClick={handleSubmit}
                             disabled={loading}
                           >
@@ -512,7 +619,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           💬 Messaging Best Practices:
                         </h3>
                         <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
-                          <li>Respond within 24-48 hours</li>
+                          <li>Respond within 1-2 minute</li>
                           <li>Personalize with specific details</li>
                           <li>Always provide clear next steps</li>
                           <li>Keep messages concise and scannable</li>
@@ -537,7 +644,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </label>
                       <span className="text-black rounded-lg">
                         <textarea
-                          placeholder="Tell me what you want to write about?"
+                          placeholder="AI generated message will appear here..."
                           value={
                             loading
                               ? displayedText
@@ -572,7 +679,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             ? "w-[11rem] bg-green hover:bg-[#008234]"
                             : "w-[56rem] bg-green hover:bg-[#008234]"
                           }
-            disabled:bg-gray-400`}
+            disabled:bg-gray4`}
                         onClick={handleSubmit}
                         disabled={loading}
                       >
@@ -601,34 +708,57 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   </div>
                 ) : (
                   <div className="p-9 flex flex-col gap-5 item-center">
-                    <div className="flex flex-col item-center gap-5">
-
+                    <div className="flex flex-col item-center gap-8">
                       {/* original Message only reply */}
                       {popupTriggeredFrom === "comment" && (
                         <div className="w-full textarea-group relative">
                           <label className="block text-xl font-medium text-gray-700 ms-2">
-                            Original Comment
+                            Original Comment<span className="text-red-500">*</span>
                           </label>
-                          <textarea
-                            placeholder="No comment found?"
-                            value={originalCommentText}
-                            onChange={(e) => setOriginalCommentText(e.target.value)}
-                            className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                          />
+                          <div
+                            className={`rounded-lg overflow-hidden border ${isCommentActive ? "active" : "border-[#6b7280]"
+                              } custom_textarea h-[150px] relative`}
+                          >   <textarea
+                              placeholder="No comment found?"
+                              value={originalCommentText} 
+                              onChange={(e) => setOriginalCommentText(e.target.value)}
+                              onFocus={() => setIsCommentActive(true)}
+                              onBlur={() => setIsCommentActive(false)}
+                              className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
+                            /></div>
+                          {/* <p className="text-xl text-[#8c97a9] mt-1">
+                            💡 Include the full message for better context understanding
+                          </p> */}
+                          {errors.originalComment && (
+                            <p className="text-red text-xl ms-1 absolute">{errors.originalComment}</p>
+                          )}
                         </div>
                       )}
 
                       {popupTriggeredFrom === "create-post" && (
                         <div className="w-full textarea-group relative">
                           <label className="block text-xl font-medium text-gray-700 ms-2">
-                            Original Message
+                            Original Message<span className="text-red">*</span>
                           </label>
-                          <textarea
-                            placeholder="No Message found?"
-                            value={originalmessage}
-                            onChange={(e) => setoriginalmessage(e.target.value)}
-                            className="popup-textarea w-full p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                          />
+                          <div
+                            className={`rounded-lg overflow-hidden border ${isMessageActive ? "active" : "border-[#6b7280]"
+                              } custom_textarea h-[150px] relative`}
+                          >
+                            <textarea
+                              placeholder="What do you want to talk about?"
+                              value={originalmessage}
+                              onChange={(e) => setoriginalmessage(e.target.value)}
+                              onFocus={() => setIsMessageActive(true)}
+                              onBlur={() => setIsMessageActive(false)}
+                              className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
+                            />
+                          </div>
+                          {/* <p className="text-xl text-[#8c97a9] mt-1">
+                            💡 Include the full message for better context understanding
+                          </p> */}
+                          {errors.originalMessage && (
+                            <p className="text-red text-xl ms-1 absolute">{errors.originalMessage}</p>
+                          )}
                         </div>
                       )}
 
@@ -638,35 +768,39 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           Generate Message
                         </label>
 
-                        {/* Copy Button - sibling of textarea */}
-                        <span
-                          onClick={handleCopy}
-                          className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
-                            }`}
+                        <div
+                          className={`rounded-lg overflow-hidden border ${isGenerateActive ? "active" : "border-[#6b7280]"
+                            } custom_textarea h-[150px]`}
                         >
-                          {copied ? "Copied!" : "Copy"}
-                          <img src={getImage("copyIcon")} alt="img" className="w-4" />
-                        </span>
-
-                        <textarea
-                          placeholder="Tell me what you want to write about?"
-                          value={
-                            loading
-                              ? displayedText
-                              : isTextGenerated
+                          <span
+                            onClick={handleCopy}
+                            className={`c-btn flex gap-1 items-center absolute right-3.5 top-9 cursor-pointer text-[#585858] ${loading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+                              }`}
+                          >
+                            {/* {copied ? "Copied!" : "Copy"} */}
+                            <img src={getImage("copyIcon")} alt="img" className="w-4" />
+                          </span>
+                          <textarea
+                            placeholder="AI generated message will appear here..."
+                            value={
+                              loading
                                 ? displayedText
-                                : text
-                          }
-                          ref={textareaRef}
-                          onChange={(e) => {
-                            if (!loading) setText(e.target.value);
-                          }}
-                          className="popup-textarea !pt-8 w-full mt-1 p-2 border border-gray-300 rounded-md text-black h-24 resize-none"
-                          disabled={loading}
-                        ></textarea>
-
+                                : isTextGenerated
+                                  ? displayedText
+                                  : text
+                            }
+                            ref={textareaRef}
+                            onChange={(e) => {
+                              if (!loading) setText(e.target.value);
+                            }}
+                            onFocus={() => setIsGenerateActive(true)}
+                            onBlur={() => setIsGenerateActive(false)}
+                            className="popup-textarea w-full mt-1 !pt-6 focus:ring-0 border-0 text-black resize-none"
+                            disabled={loading}
+                          ></textarea>
+                        </div>
                         <p className="text-xl text-[#8c97a9] mt-1">
-                          💡 Include the full message for better context understanding
+                          💡 This is the AI generated response
                         </p>
                       </div>
 
@@ -674,7 +808,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       {/* Motive */}
                       <div className="w-full input-group">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
-                          Select Motive
+                          Select Motive<span className="text-red">*</span>
                         </label>
                         <span className="relative">
                           <select
@@ -687,9 +821,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                               ? POSTING_MOTIVES
                               : COMMENT_MOTIVES
                             ).map((motive, index) => {
-                              const textOnly = motive
-                                .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                .trim();
+                              const textOnly = motive?.replace(/^[^\p{L}\p{N}\s]+/u, "").trim();
                               return (
                                 <option key={index} value={textOnly}>
                                   {motive}
@@ -698,13 +830,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             })}
                           </select>
                         </span>
+                        {errors.motive && (
+                          <p className="text-red text-xl ms-1 absolute">{errors.motive}</p>
+                        )}
                       </div>
 
                       <div className="flex gap-5">
                         {/* Language */}
                         <div className="w-full input-group">
                           <label className="block text-xl font-medium text-gray-700 ms-2">
-                            Select Language
+                            Select Language<span className="text-red">*</span>
                           </label>
                           <span className="relative">
                             <img
@@ -725,12 +860,15 @@ const InputAiPopup: React.FC<ModalProps> = ({
                               ))}
                             </select>
                           </span>
+                          {errors.language && (
+                            <p className="text-red text-xl ms-1 absolute">{errors.language}</p>
+                          )}
                         </div>
 
                         {/* Tone */}
                         <div className="w-full input-group">
                           <label className="block text-xl font-medium text-gray-700 ms-2">
-                            Select Tone
+                            Select Tone<span className="text-red">*</span>
                           </label>
                           <span className="relative">
                             <select
@@ -751,6 +889,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                               })}
                             </select>
                           </span>
+                          {errors.tone && (
+                            <p className="text-red text-xl ms-1 absolute">{errors.tone}</p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -795,7 +936,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             ? "w-[11rem] bg-green hover:bg-[#008234]"
                             : "w-[56rem] bg-green hover:bg-[#008234]"
                           }
-            disabled:bg-gray-400`}
+            disabled:bg-gray4`}
                         onClick={handleSubmit}
                         disabled={loading}
                       >
@@ -834,7 +975,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         💬 Messaging Best Practices:
                       </h3>
                       <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
-                        <li>Respond within 24-48 hours</li>
+                        <li>Respond within 1-2 minute</li>
                         <li>Personalize with specific details</li>
                         <li>Always provide clear next steps</li>
                         <li>Keep messages concise and scannable</li>

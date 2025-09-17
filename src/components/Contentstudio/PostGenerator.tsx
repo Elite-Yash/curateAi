@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FileText,
   RefreshCw,
@@ -7,161 +7,472 @@ import {
   Sparkles,
   Wand2,
 } from "lucide-react";
+import {
+  TONES,
+  POSTING_MOTIVES,
+  LANGUAGES,
+} from "../../constants/constants";
+import { apiService } from "../../common/config/apiService";
+import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
+import { getImage } from "../../common/utils/logoUtils";
+import { removeEmoji } from "../../common/utils/removeicon";
+import ActivePlanModal from "../activeplanModal/activeplanmodal";
+import { useSelector } from "react-redux";
+import { selectActivePlanValue } from "../../redux/selector/activePlanSelector";
 
-const PostGenerator = () => {
+interface ModalProps {
+  post_url?: string;
+  popupTriggeredFrom?: "comment" | "create-post";
+}
+
+const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) => {
   const [prompt, setPrompt] = useState("");
-  const [postType, setPostType] = useState("Industry Insight");
-  const [selectedPersona, setSelectedPersona] = useState("Professional");
   const [generatedPost, setGeneratedPost] = useState("");
+  const [displayedText, setDisplayedText] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isContextActive, setIsContextActive] = useState(false);
 
-  // Dummy API call simulation
-  const generatePost = async () => {
-    if (!prompt.trim()) return;
+  const [motive, setMotive] = useState(POSTING_MOTIVES[0]);
+  const [tone, setTone] = useState(TONES[0]);
+  const [language, setLanguage] = useState(LANGUAGES[0]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [copied, setCopied] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
+  const [error, setError] = useState("");
+  const [showPlanAlert, setShowPlanAlert] = useState(false);
+  const activePlanValue = useSelector(selectActivePlanValue);
+
+  const articleInfo = {};
+  const lastMessages: string[] = [];
+  let apiCalled = false;
+
+
+  const handleSubmit = () => {
+    if (!activePlanValue) {
+      setShowPlanAlert(true);
+      return;
+    }
+
+    if (!validateForm()) return;
     setIsGenerating(true);
-    setGeneratedPost("");
+    setError("");
 
-    // Simulate API delay
-    setTimeout(() => {
-      const fakePost = `🚀 ${postType} in a ${selectedPersona} tone:\n\n${prompt}\n\n#AI #LinkedIn #Growth`;
-      setGeneratedPost(fakePost);
-      setIsGenerating(false);
-    }, 2000);
+    let platform = "linkedin";
+    const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
+
+    // Fetch auth token before sending the request
+    chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
+      if (!response || !response.success || !response.token) {
+        setError("Failed to retrieve auth token.");
+        setIsGenerating(false);
+        setIsAuth(true);
+        return;
+      }
+
+      const authToken = response.token;
+
+      const requestData = {
+        language,
+        tone: removeEmoji(tone.toString().trim()),
+        postText: prompt || "",
+        authorName: "",
+        platform,
+        command: prompt,
+        contentType: popupTriggeredFrom,
+        goal: removeEmoji(motive.toString().trim()),
+        articleInfo,
+        lastMessages,
+        currentUserName,
+        authToken,
+      };
+
+      chrome.runtime.sendMessage(
+        { type: "GENERATE_CONTENT", data: requestData },
+        (response) => {
+          if (response?.success && !apiCalled) {
+            setDisplayedText("");
+
+            const generatedMessage = response.data?.data || "";
+            setGeneratedPost(generatedMessage);
+
+            // animate typing
+            let index = -1;
+            const typingSpeed = 20;
+            const type = () => {
+              index++;
+              if (index < generatedMessage.length) {
+                setDisplayedText((prev) => prev + generatedMessage[index]);
+                setTimeout(type, typingSpeed);
+              } else {
+                setIsGenerating(false);
+              }
+            };
+            type();
+            apiCalled = true;
+
+            // ✅ Correct API endpoint for post
+            const payload = {
+              comment: generatedMessage,
+              post_url: post_url ? post_url : window.location.href,
+              comment_type: 'post',
+            };
+
+            const requestUrl = apiService.EndPoint.createComments
+
+            apiService
+              .commonAPIRequest(
+                requestUrl,
+                apiService.Method.post,
+                undefined,
+                payload,
+                (result: any) => {
+                  if (
+                    result?.status === 201 &&
+                    result?.data.message === "Comment created successfully"
+                  ) {
+                  } else {
+                    throw new Error(result?.message || "Failed to create post.");
+                  }
+                }
+              )
+              .catch((err: any) => {
+                console.error("API error:", err);
+              })
+              .finally(() => {
+                setIsGenerating(false);
+              });
+          } else {
+            setError("Failed to generate post. Please try again.");
+            setIsGenerating(false);
+          }
+        }
+      );
+    });
   };
 
+  // regenerate button will call generatePost
   const regeneratePost = () => {
-    generatePost();
+    handleSubmit();
   };
 
+  // --- Copy ---
   const copyToClipboard = () => {
     if (generatedPost) {
       navigator.clipboard.writeText(generatedPost);
-      alert(" Post copied to clipboard!");
+      setCopied(true);
     }
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
+  useEffect(() => {
+    chrome.storage.local.get(
+      ["selectedLanguage", "selectedTone", "selectedMotive"],
+      (result) => {
+        if (result.selectedLanguage) {
+          setLanguage(result.selectedLanguage);
+        }
+        if (result.selectedTone) {
+          setTone(result.selectedTone);
+        }
+        if (result.selectedMotive) {
+          setMotive(result.selectedMotive);
+        }
+        // Check if all data is present
+        if (
+          result.selectedLanguage &&
+          result.selectedTone &&
+          result.selectedMotive
+        ) {
+        } else {
+          console.log("Some data missing in storage, resetting...");
+          setLanguage("Language");
+          setTone("Tone");
+          setMotive("Motive");
+        }
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    // Save selections to Chrome storage whenever they change
+    chrome.storage.local.set({
+      selectedLanguage: language,
+      selectedTone: tone,
+      selectedMotive: motive,
+    });
+  }, [language, tone, motive]);
+
+
+  const validateForm = () => {
+    let newErrors: any = {};
+
+    // check Original Message if popup is create-post
+    if (popupTriggeredFrom === "create-post" && !prompt?.trim()) {
+      newErrors.prompt = "Original Message is required";
+    }
+
+    // motive must not include "Motive"
+    if (!motive || motive.includes("Motive")) {
+      newErrors.motive = "Please select a valid motive";
+    }
+
+    // language must not equal "Language"
+    if (!language || language === "Language") {
+      newErrors.language = "Please select a valid language";
+    }
+
+    // tone must not include "Tone"
+    if (!tone || tone.includes("Tone")) {
+      newErrors.tone = "Please select a valid tone";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  useEffect(() => {
+    if (popupTriggeredFrom === "create-post" && prompt?.trim()) {
+      setErrors((prev) => ({ ...prev, prompt: "" }));
+    }
+  }, [prompt, popupTriggeredFrom]);
+
+  useEffect(() => {
+    if (motive && !motive.includes("Motive")) {
+      setErrors((prev) => ({ ...prev, motive: "" }));
+    }
+  }, [motive]);
+
+  useEffect(() => {
+    if (language && language !== "Language") {
+      setErrors((prev) => ({ ...prev, language: "" }));
+    }
+  }, [language]);
+
+  useEffect(() => {
+    if (tone && !tone.includes("Tone")) {
+      setErrors((prev) => ({ ...prev, tone: "" }));
+    }
+  }, [tone]);
+
+
+
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
-      {/* Input Section */}
-      <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6">
-        <div className="flex items-center gap-2 font-semibold text-base">
-          <Wand2 className="w-5 h-5 text-blue-600" />
-          Generate LinkedIn Post
-        </div>
-
-        {/* Post Topic */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#334155]">
-            What do you want to post about?
-          </label>
-          <textarea
-            placeholder="e.g., Share insights about remote work trends, celebrate a team achievement, ask for career advice..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            className="w-full min-h-24 resize-none border border-[#cbd5e1] rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
+    <>
+      {(showPlanAlert && !activePlanValue) && (
+        <>
+          <ActivePlanModal
+            isOpen={showPlanAlert}
+            onClose={() => setShowPlanAlert(false)}
           />
-        </div>
+        </>
+      )}
 
-        {/* Post Type */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#334155]">
-            Post Type
-          </label>
-          <select
-            value={postType}
-            onChange={(e) => setPostType(e.target.value)}
-            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
-          >
-            <option>Industry Insight</option>
-            <option>Personal Story</option>
-            <option>Team Update</option>
-            <option>Career Advice</option>
-          </select>
-        </div>
-
-        {/* Persona Selection */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-[#334155]">
-            Writing Style
-          </label>
-          <select
-            value={selectedPersona}
-            onChange={(e) => setSelectedPersona(e.target.value)}
-            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
-          >
-            <option value="Professional">Professional</option>
-            <option value="Casual & Friendly">Casual & Friendly</option>
-            <option value="Expert/Authoritative">Expert/Authoritative</option>
-          </select>
-        </div>
-
-        {/* Generate Button */}
-        <button
-          onClick={generatePost}
-          disabled={!prompt.trim() || isGenerating}
-          className="w-full flex items-center justify-center gap-2  bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
-        >
-          {isGenerating ? (
-            <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-4 h-4" />
-              Generate Post
-            </>
-          )}
-        </button>
-
-        {/* Quick Tips */}
-        <div className="p-4 bg-[#eff6ff] rounded-lg">
-          <div className="font-semibold text-base text-[#1e3a8a] mb-2">
-            💡 Tips for better posts:
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Input Section */}
+        <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6">
+          <div className="flex items-center gap-2 font-semibold text-base">
+            <Wand2 className="w-5 h-5 text-blue-600" />
+            Generate LinkedIn Post
           </div>
-          <ul className="text-sm text-[#1e40af] space-y-1">
-            <li>• Be specific about your topic</li>
-            <li>• Include personal experiences</li>
-            <li>• Ask questions to encourage engagement</li>
-            <li>• Post when your audience is active</li>
-          </ul>
-        </div>
-      </div>
 
-      {/* Output Section */}
-      <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 first-line: font-semibold text-base">
-            <FileText className="w-5 h-5 text-[#16a34a]" />
-            Generated Post
-          </div>
-          {generatedPost && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={regeneratePost}
-                className="p-2 rounded-lg hover:bg-[#f1f5f9]"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-              <button
-                onClick={copyToClipboard}
-                className="p-2 rounded-lg hover:bg-[#f1f5f9]"
-              >
-                <Copy className="w-4 h-4" />
-              </button>
+          {/* promp Topic */}
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-[#334155]">
+              What do you want to post about? <span className="text-red">*</span>
+            </label>
+
+            <div
+              className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#cbd5e1]"
+                } custom_textarea relative`}
+            >
+              <textarea
+                placeholder="e.g., Share insights about remote work trends, celebrate a team achievement..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onFocus={() => setIsContextActive(true)}
+                onBlur={() => setIsContextActive(false)}
+                className="w-full min-h-24 h-full p-2 outline-none text-sm resize-none focus:ring-0 border-0"
+              />
             </div>
+              <div className="text-sm text-[#8c97a9] mt-0">
+            💡 Write clearly for better generated results
+          </div>
+            {errors.prompt && (
+              <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.prompt}</p>
+            )}
+          </div>
+
+          {/* Motive */}
+          {/* <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
+              Select Motive<span className="text-red">*</span>
+            </label>
+            <span className="relative">
+              <select
+                value={motive}
+                onChange={(e) => setMotive(e.target.value)}
+                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+                disabled={isGenerating}
+              >
+                {POSTING_MOTIVES.map((motive, index) => (
+                  <option key={index} value={motive}>
+                    {motive}
+                  </option>
+                ))}
+              </select>
+            </span>
+            {errors.motive && (
+              <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.motive}</p>
+            )}
+          </div> */}
+
+
+ {/* Motive */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-700">
+            Select Motive <span className="text-red">*</span>
+          </label>
+      <span className="relative">
+            <select
+            value={motive}
+            onChange={(e) => setMotive(e.target.value)}
+            className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+            disabled={isGenerating}
+          >
+            {POSTING_MOTIVES.map((motive, index) => (
+              <option key={index} value={motive}>
+                {motive}
+              </option>
+            ))}
+          </select>
+      </span>
+          {errors.motive && (
+            <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.motive}</p>
           )}
         </div>
 
-        {generatedPost ? (
-          <div className="space-y-4">
-            {/* Post Preview */}
-            <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b]">
-              {generatedPost}
-            </div>
+          {/* Tone */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Select Tone <span className="text-red">*</span></label>
+            <span className="relative">
+              <select
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+                disabled={isGenerating}
+              >
+                {TONES.map((toneOption, index) => (
+                  <option key={index} value={toneOption}>
+                    {toneOption}
+                  </option>
+                ))}
+              </select>
+            </span>
+            {errors.tone && (
+              <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.tone}</p>
+            )}
+          </div>
 
-            {/* Post Stats */}
-            <div className="flex items-center justify-between text-xs text-[##64748b]">
+          {/* Language */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
+              Select Language<span className="text-red">*</span>
+            </label>
+            <span className="relative">
+              <img
+                src={getImage("translate")}
+                alt="img"
+                className="w-4 absolute left-[11px] top-[50%] -translate-y-[50%]"
+              />
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1] pl-[30px]"
+                disabled={isGenerating}
+              >
+                {LANGUAGES.map((lang, index) => (
+                  <option key={index} value={lang}>
+                    {lang}
+                  </option>
+                ))}
+              </select>
+            </span>
+            {errors.language && (
+              <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.language}</p>
+            )}
+          </div>
+
+          {/* Generate Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={isGenerating}
+            className="w-full flex items-center justify-center gap-2 bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
+          >
+            {isGenerating ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Generate Post
+              </>
+            )}
+          </button>
+
+          {/* Quick Tips */}
+          <div className="p-4 bg-[#eff6ff] rounded-lg">
+            <div className="font-semibold text-base text-[#1e3a8a] mb-2">
+              🤝 Messaging Best Practices:
+            </div>
+            <ul className="text-sm text-[#1e40af] space-y-1">
+              <li>• Respond within 1-2 minute</li>
+              <li>• Personalize with specific details</li>
+              <li>• Always provide clear next steps</li>
+              <li>• Keep messages concise and scannable</li>
+            </ul>
+          </div>
+
+
+        </div>
+
+        {/* Output Section */}
+        <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 font-semibold text-base">
+              <FileText className="w-5 h-5 text-[#16a34a]" />
+              Generated Post
+            </div>
+            {generatedPost && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={regeneratePost}
+                  className="p-2 rounded-lg hover:bg-[#f1f5f9]"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={copyToClipboard}
+                  className="p-2 rounded-lg hover:bg-[#f1f5f9]"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {generatedPost ? (
+            <div className="space-y-4">
+              {/* Post Preview */}
+              <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto ">
+                {displayedText}
+              </div>
+
+              {/* Post Stats */}
+              {/* <div className="flex items-center justify-between text-xs text-[#64748b]">
               <div className="flex items-center gap-4">
                 <span>{generatedPost.length} characters</span>
                 <span>{generatedPost.split("\n").length} lines</span>
@@ -172,38 +483,46 @@ const PostGenerator = () => {
               <span className="px-2 py-1 border rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition cursor-pointer">
                 Ready to post
               </span>
-            </div>
+            </div> */}
 
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={copyToClipboard}
-                className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
-              >
-                <Copy className="w-4 h-4" />
-                Copy Post
-              </button>
-              <button className="flex-1 flex items-center justify-center gap-2 bg-[#2563eb] text-white rounded-lg py-2">
-                <Send className="w-4 h-4" />
-                Open LinkedIn
-              </button>
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={copyToClipboard}
+                  className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+                >
+                  <Copy className="w-4 h-4" />
+                  {copied ? "Post Copied!" : "Copy Post"}
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#2563eb] text-white rounded-lg py-2"
+                  onClick={() => {
+                    const text = encodeURIComponent(displayedText);
+                    const url = `https://www.linkedin.com/feed/?shareActive=true&text=${text}`;
+                    window.open(url, "_blank");
+                  }}
+                >
+                  <Send className="w-4 h-4" />
+                  Open LinkedIn
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-[#94a3b8]" />
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-[#94a3b8]" />
+              </div>
+              <p className="text-[#64748b] font-medium !text-xl mb-2">
+                No post generated yet
+              </p>
+              <div className="!text-base text-[#94a3b8]">
+                Fill out the form and click "Generate Post" to get started
+              </div>
             </div>
-            <p className="text-[#64748b] font-medium !text-xl mb-2">
-              No post generated yet
-            </p>
-            <div className="!text-base text-[#94a3b8]">
-              Fill out the form and click "Generate Post" to get started
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

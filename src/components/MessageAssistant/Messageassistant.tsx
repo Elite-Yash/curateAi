@@ -124,7 +124,7 @@ const Messageassistant = () => {
                 {/* Tab Content */}
                 {activeTab === "reply" && (
                     <div className="space-y-6">
-                        <MessageReplyGenerator />
+                        <MessageReplyGenerator popupTriggeredFrom={'comment-reply'} />
                     </div>
                 )}
 

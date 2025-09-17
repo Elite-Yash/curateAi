@@ -29,7 +29,7 @@ const SideBar = () => {
         </Link>
       </div>
 
-      <div className="menu-baar-d absolute -right-14">
+      {/* <div className="menu-baar-d absolute -right-14">
         <button
           data-collapse-toggle="navbar-default"
           type="button"
@@ -38,7 +38,7 @@ const SideBar = () => {
           aria-expanded="false"
         >
         </button>
-      </div>
+      </div> */}
 
       <div className="left-menu pt-4 p-4 w-73">
         <ul className="flex flex-col">
@@ -191,7 +191,7 @@ const SideBar = () => {
           </li>
 
           {/* Connect Campaigns */}
-          <li className="px-1 py-1">
+          {/* <li className="px-1 py-1">
             <Link
               to="/connect-campaign"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
@@ -209,7 +209,7 @@ const SideBar = () => {
                 </div>
               </div>
             </Link>
-          </li>
+          </li> */}
 
 
           {/* Analytics */}

@@ -15,6 +15,8 @@ const Connectionrequest = () => {
     const [personalNote, setPersonalNote] = useState("");
     const [generatedRequest, setGeneratedRequest] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isPersonalNoteActive, setIsPersonalNoteActive] = useState(false);
+
 
     const generateConnectionRequest = async () => {
         if (!profileName.trim()) return;
@@ -110,12 +112,19 @@ const Connectionrequest = () => {
                     {/* Personal Note */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-[#334155]">Personal Note (Optional)</label>
-                        <textarea
-                            placeholder="Any specific details about why you want to connect..."
-                            value={personalNote}
-                            onChange={(e) => setPersonalNote(e.target.value)}
-                            className="w-full min-h-20 resize-none border border-[#cbd5e1] rounded-lg p-2 text-sm"
-                        />
+                        <div
+                            className={`rounded-lg overflow-hidden border ${isPersonalNoteActive ? "active" : "border-[#cbd5e1]"
+                                } custom_textarea`}
+                        >
+                            <textarea
+                                placeholder="Any specific details about why you want to connect..."
+                                value={personalNote}
+                                onChange={(e) => setPersonalNote(e.target.value)}
+                                onFocus={() => setIsPersonalNoteActive(true)}
+                                onBlur={() => setIsPersonalNoteActive(false)}
+                                className="w-full min-h-24 h-full p-2 outline-none text-sm resize-none focus:ring-0 border-0"
+                            />
+                        </div>
                     </div>
 
                     {/* Generate Button */}

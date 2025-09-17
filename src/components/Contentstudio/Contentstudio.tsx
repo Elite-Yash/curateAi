@@ -84,13 +84,13 @@ const Contentstudio = () => {
         {/* Tab Content */}
         {activeTab === "posts" && (
           <div className="space-y-6">
-            <PostGenerator />
+            <PostGenerator popupTriggeredFrom={'create-post'} />
           </div>
         )}
 
         {activeTab === "comments" && (
           <div className="space-y-6">
-            <CommentGenerator />
+            <CommentGenerator popupTriggeredFrom={'comment'}/>
           </div>
         )}
 

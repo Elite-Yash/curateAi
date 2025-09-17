@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
 import { apiService } from "../../common/config/apiService";
+import { useDispatch } from "react-redux";
+import { setActivePlan } from "../../redux/reducer/activePlan";
 
 /**..
  * ..
@@ -38,7 +40,8 @@ const Header = () => {
   const [activePlanDetails, setActiveplanDetails] = useState<
     Record<string, any>
   >({});
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     chrome.storage.local.get(["token"], (result) => {
@@ -70,7 +73,7 @@ const Header = () => {
   }, []);
 
   const LogOut = () => {
-    chrome.runtime.sendMessage({ type: "LogOut" }, () => {});
+    chrome.runtime.sendMessage({ type: "LogOut" }, () => { });
     setDropdownOpen(false);
     navigate("/signin", { replace: true });
     setLogin(null);
@@ -91,16 +94,19 @@ const Header = () => {
             if (
               result?.status === 200 &&
               result?.data.message ===
-                "User does not have an active subscription."
+              "User does not have an active subscription."
             ) {
               setActiveplan(false);
+              dispatch(setActivePlan(false));
             } else {
               setActiveplan(true);
               setActiveplanDetails(result?.data.subscriptions[0]);
+              dispatch(setActivePlan(true));
             }
             setFreePlan(false);
           } else {
             setFreePlan(true);
+            dispatch(setActivePlan(true));
           }
           setUserDetails(result.data.userDetails);
           setIsLoading(false); // End loading
@@ -144,17 +150,16 @@ const Header = () => {
                         <>
                           <span>{userDetails?.name}</span>
                           <span
-                            className={`${
-                              freePlan || activePlan ? "text-green" : "text-red"
-                            } text-xs`}
+                            className={`${freePlan || activePlan ? "text-green" : "text-red"
+                              } text-xs`}
                           >
                             {freePlan
                               ? "Free Plan"
                               : activePlan
-                              ? activePlanDetails?.interval === "year"
-                                ? "Yearly Plan"
-                                : "Upgrade Plan"
-                              : "Subscribe"}
+                                ? activePlanDetails?.interval === "year"
+                                  ? "Yearly Plan"
+                                  : "Upgrade Plan"
+                                : "Subscribe"}
                           </span>
                         </>
                       )}

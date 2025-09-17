@@ -124,31 +124,31 @@ const Comments = () => {
 
   return (
     <>
-                      
+
       <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
-          <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
-                <div className="mb-6">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-green to-green rounded-2xl flex items-center justify-center">
-                            <FaMessage className="w-6 h-6 text-white" />
-                        </div>
+        <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-green to-green rounded-2xl flex items-center justify-center">
+                <FaMessage className="w-6 h-6 text-white" />
+              </div>
 
-                        <div>
-                            <div className="text-2xl font-bold text-slate-900">Comments Section</div>
-                            <div className="text-sm text-[#717c8c]">
-                               Smart AI suggestions for your LinkedIn replies
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green rounded-full"></div>
-                        <span className="text-sm text-slate-600">
-                            {commentsData.length} new smart comments available
-                        </span>
-                    </div>
+              <div>
+                <div className="text-2xl font-bold text-slate-900">Comments Section</div>
+                <div className="text-sm text-[#717c8c]">
+                  Smart AI suggestions for your LinkedIn replies
                 </div>
+              </div>
             </div>
+
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green rounded-full"></div>
+              <span className="text-sm text-slate-600">
+                {commentsData.length} new smart comments available
+              </span>
+            </div>
+          </div>
+        </div>
 
 
         <div className="flex justify-between gap-5 w-full">
@@ -200,12 +200,12 @@ const Comments = () => {
                               className="text-[#2563eb] hover:text-[#003ab6] text-sm font-medium hover:underline w-fit"
                             >
                               Read More
-                            </button>         
+                            </button>
                           )}
                         </p>
 
                         {/* Link */}
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
                           <a
                             href={comment.post_url}
                             target="_blank"
@@ -220,19 +220,38 @@ const Comments = () => {
                               : "N/A"}
                             <IoLogoLinkedin className="text-xl text-[#2563eb]" />
                           </a>
-                        </div>
+                        </div> */}
+                        <a
+                          href={comment.post_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-sm text-[#2563eb] hover:text-[#003ab6] truncate"
+                        >
+                          <i className="fa-solid fa-location-dot text-xs"></i>
+
+                          {comment.post_url
+                            ? comment.post_url.length > 40
+                              ? comment.post_url.substring(0, 40) + "..."
+                              : comment.post_url
+                            : "N/A"}
+
+                          {/* ✅ Icon conditionally render karo */}
+                          {comment.post_url?.includes("linkedin.com") ? (
+                            <IoLogoLinkedin className="text-xl text-[#2563eb]" />
+                          ) : null}
+                        </a>
 
                         <div className="!mt-[12px] !pt-[8px] border-t-[1px] border-[#b7b9bf] text-[#717c8c]">
-                {comment.created_at
-                  ? new Date(comment.created_at).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "2-digit",
-                    year: "numeric",
-                  })
-                  : "N/A"}
-              </div>
+                          {comment.created_at
+                            ? new Date(comment.created_at).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "2-digit",
+                              year: "numeric",
+                            })
+                            : "N/A"}
+                        </div>
 
-                        {/* Footer - Date + Delete */}  
+                        {/* Footer - Date + Delete */}
                         {/* <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
                           <span>
                             {new Date(comment.created_at).toLocaleDateString(
@@ -245,17 +264,17 @@ const Comments = () => {
                   })}
                 </div>
               ) : (
-                 <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-2">
-                            <FaCommentSlash className="w-8 h-8 text-[#94a3b8]" />
-                        </div>
-                        <p className="text-[#64748b] font-medium !text-xl mb-2">
-                              No comments found
-                        </p>
-                        <div className="!text-base text-[#94a3b8]">
-                             Be the first to share your thoughts
-                        </div>
-                    </div>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-2">
+                    <FaCommentSlash className="w-8 h-8 text-[#94a3b8]" />
+                  </div>
+                  <p className="text-[#64748b] font-medium !text-xl mb-2">
+                    No comments found
+                  </p>
+                  <div className="!text-base text-[#94a3b8]">
+                    Be the first to share your thoughts
+                  </div>
+                </div>
 
               )}
             </div>
@@ -268,7 +287,7 @@ const Comments = () => {
             <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
               <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
                 <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12">
-                  <img src={getImage("fLogo")} alt="img"/>
+                  <img src={getImage("fLogo")} alt="img" />
                 </span>
                 <h4 className="popup-title font-semibold text-xl leading-10">
                   Entire Comment
