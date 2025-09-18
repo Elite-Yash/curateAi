@@ -3,9 +3,14 @@ import { getImage } from "../common/utils/logoUtils";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 // import { openWindowTab } from "../common/helpers/commonHelpers";
 import Header from "./UserProfile/Header";
+import { useState } from "react";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { GiUpgrade } from "react-icons/gi";
 
 const SideBar = () => {
+
   const location = useLocation();
+  const [isCampaignOpen, setIsCampaignOpen] = useState(false);
   // const manifestData = chrome.runtime.getManifest();
 
   // const goToLinkedIn = () => {
@@ -51,11 +56,11 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center">
                 <i className="fa-solid fa-house text-sm"></i>
               </span>
               <div className="flex flex-col ">
-                <div className="font-medium text-sm ">Dashboard</div>
+                <div className="font-medium text-sm">Dashboard</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
                 </div>
@@ -72,10 +77,10 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center">
                 <i className="fa-solid fa-file text-sm"></i>
               </span>
-              <div className="flex flex-col ms-[4px]">
+              <div className="flex flex-col">
                 <div className="font-medium text-sm ">Content studio</div>
                 <div className="text-sm text-[#6b7280] ">
                   Generate posts & comments
@@ -93,10 +98,10 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center">
                 <i className="fa-solid fa-comment-dots text-sm"></i>
               </span>
-              <div className="flex flex-col ms-[2px]">
+              <div className="flex flex-col">
                 <div className="font-medium text-sm ">Message Assistant</div>
                 <div className="text-sm text-[#6b7280] ">
                   Smart messages replies
@@ -115,10 +120,10 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center">
                 <i className="fas fa-comments text-sm"></i>
               </span>
-              <div className="flex text-sm flex-col ms-[2px]">
+              <div className="flex text-sm flex-col">
                 <div className="font-medium text-sm ">Comments</div>
                 <div className="text-sm text-[#6b7280] ">
                   AI-powered LinkedIn
@@ -136,7 +141,7 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center">
                 <i className="fa-solid fa-user-plus text-sm"></i>
               </span>
               <div className="flex flex-col">
@@ -148,8 +153,86 @@ const SideBar = () => {
             </Link>
           </li>
 
-          {/* Personas */}
+          {/* 🔹 Manage Campaign (with Submenu) */}
           <li className="px-1 py-1">
+            <button
+              onClick={() => setIsCampaignOpen(!isCampaignOpen)}
+              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${isCampaignOpen
+                ? "text-[#2563eb] shadow-sm"
+                : "text-[#334155] hover:text-[#2563eb]"
+                }`}
+
+            >
+
+              <span className="mt-1 flex w-[20px] justify-center">
+                <i className="fas fa-tasks text-sm"></i>
+              </span>
+              <div className="flex flex-col ms">
+                <span className="font-medium text-left text-sm">Manage Campaign</span>
+                <div className="text-xs text-[#6b7280] w-max">
+                  Manage LinkedIn campaign
+                </div>
+              </div>
+
+              <MdKeyboardArrowDown
+                className={`transition-transform duration-300 ease-in-out ${isCampaignOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                size={22}
+              />
+            </button>
+
+            {/* Submenu */}
+            {isCampaignOpen && (
+              <ul className="pl-8 mt-1 space-y-1">
+                <li>
+                  <Link
+                    to="/message-campaign"
+                    className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-campaign"
+                      ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                      : "text-[#334155] hover:text-[#2563eb]"
+                      }`}
+                  >
+                    <span className="mt-1 flex w-[20px] justify-center">
+                      <i className="fas fa-envelope text-sm"></i>
+                    </span>
+                    <div className="flex flex-col">
+                      <div className="font-medium text-sm">
+                        Message Campaign
+                      </div>
+                      <div className="text-xs text-[#6b7280]">
+                        Automate LinkedIn DMs
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/connect-campaign"
+                    className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
+                      ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                      : "text-[#334155] hover:text-[#2563eb]"
+                      }`}
+                  >
+                    <span className="mt-1 flex w-[20px] justify-center">
+                      <i className="fas fa-user-plus text-sm"></i>
+                    </span>
+                    <div className="flex flex-col">
+                      <div className="font-medium text-sm">
+                        Connect Campaign
+                      </div>
+                      <div className="text-xs text-[#6b7280]">
+                        Automate LinkedIn connections
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+
+          {/* Personas */}
+          {/* <li className="px-1 py-1">
             <Link
               to="/personas"
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/personas"
@@ -157,7 +240,8 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center
+">
                 <i className="fa-solid fa-user text-sm"></i>
               </span>
               <div className="flex flex-col ms-[4px]">
@@ -167,7 +251,7 @@ const SideBar = () => {
                 </div>
               </div>
             </Link>
-          </li>
+          </li> */}
 
           {/* Message Campaigns */}
           {/* <li className="px-1 py-1">
@@ -178,7 +262,8 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center
+">
                 <i className="fas fa-envelope text-sm"></i>
               </span>
               <div className="flex flex-col ">
@@ -190,6 +275,8 @@ const SideBar = () => {
             </Link>
           </li> */}
 
+
+
           {/* Connect Campaigns */}
           {/* <li className="px-1 py-1">
             <Link
@@ -199,7 +286,8 @@ const SideBar = () => {
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center
+">
                 <i className="fas fa-link text-sm"></i>
               </span>
               <div className="flex flex-col ">
@@ -221,7 +309,8 @@ const SideBar = () => {
                   : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
-              <span className="mt-1">
+              <span className="mt-1 flex w-[20px] justify-center
+">
                 <i className="fa-solid fa-chart-column text-sm"></i>
               </span>
               <div className="flex flex-col">
@@ -258,20 +347,28 @@ const SideBar = () => {
 
         </ul>
       </div>
-      <div className="mt-auto"></div>
-      <div className="pt-2 px-4 py-1">
-        <ul>
-          <li>
-            <a
-              href="https://evarobo.ai/contact-us/"
-              target="_blank"
-              className="dark-color w-full text-center text-base flex items-center justify-center"
-            >
-              Need Help ?
-            </a>
-          </li>
-        </ul>
+      <div className="mt-auto p-4">
+        {/* Upgrade Button */}
+        <Link
+          to="/pricing"
+          className="flex ms-[25px] items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-[#2563eb] font-medium text-sm px-4 py-2 rounded-xl shadow-sm transition w-[160px]"
+        >
+          <GiUpgrade className="text-base" />
+          <span>Upgrade Plan</span>
+        </Link>
+
+        {/* Need Help Link */}
+        <div className="pt-3">
+          <a
+            href="https://evarobo.ai/contact-us/"
+            target="_blank"
+            className="block w-full text-center text-gray-600 hover:text-[#2563eb] text-sm font-medium transition"
+          >
+            Need Help ?
+          </a>
+        </div>
       </div>
+
       <hr className="w-full" />
       <div className="px-1 py-1">
         <Header />

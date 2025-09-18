@@ -5,8 +5,16 @@ importScripts("./apiUrlConfig.js");
 // background.js
 
 // Set a flag when the extension is installed
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
+  // Save install flag
   chrome.storage.local.set({ isInstalled: true });
+
+  // Only open dashboard on first install (not on update or Chrome restart)
+  if (details.reason === "install") {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("dashboard.html")
+    });
+  }
 });
 
 // Clear specific data when the extension is unloaded

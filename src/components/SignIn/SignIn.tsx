@@ -52,9 +52,21 @@ const SignIn = () => {
     const { email, password } = formData;
 
     // Simple validation
-    if (!email || !password) return showMessage("All fields are required.", "error");
-    if (!isValidEmail(email)) return showMessage("Invalid email format.", "error");
-    if (password.length < 6) return showMessage("Password must be at least 6 characters long.", "error");
+    if (!email && !password) {
+      return showMessage("Email and password fields are required.", "error");
+    }
+    if (!email) {
+      return showMessage("Email is required.", "error");
+    }
+    if (!password) {
+      return showMessage("Password is required.", "error");
+    }
+    if (!isValidEmail(email)) {
+      return showMessage("Invalid email format.", "error");
+    }
+    if (password.length < 6) {
+      return showMessage("Password must be at least 6 characters long.", "error");
+    }
 
     const data = { email, password };
 
@@ -113,7 +125,7 @@ const SignIn = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen background-three">
-      <div className="form-section bg-white p-10 rounded-2xl">
+      <div className="form-section bg-white p-10 rounded-2xl pb-[60px]">
         {load ? (
           <div className="flex justify-center m-28">
             <Loader />
@@ -138,7 +150,7 @@ const SignIn = () => {
               <span className="w-28 h-px background-one flex"></span>
             </div>
 
-            <form className="mt-6 gap-3 flex flex-col" onSubmit={handleSubmit}>
+            <form className="mt-6 gap-3 flex flex-col relative" onSubmit={handleSubmit}>
               <input
                 type="email"
                 name="email"
@@ -181,20 +193,20 @@ const SignIn = () => {
                   Sign up here
                 </a>
               </span>
+              {/* Error/Success Message Box */}
+              {message.text && (
+                <div
+                  className={`text-center text-[17px] mt-3 border p-2 rounded-md absolute -bottom-[45px] w-[100%]
+                            ${message.type === "error"
+                      ? "text-red border-red"
+                      : "text-green border-green"
+                    }`}
+                >
+                  {message.text}
+                </div>
+              )}
             </form>
 
-            {/* Error/Success Message Box */}
-            {message.text && (
-              <div
-                className={`text-center text-[17px] mt-3 border p-2 rounded-md 
-                            ${message.type === "error"
-                    ? "text-red border-red"
-                    : "text-green border-green"
-                  }`}
-              >
-                {message.text}
-              </div>
-            )}
           </>
         )}
       </div>

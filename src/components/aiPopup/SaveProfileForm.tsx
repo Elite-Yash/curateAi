@@ -12,6 +12,7 @@ interface SaveProfileFormProps {
   profileImg: string;
   activePlan: boolean;
   findemail?: string | any;
+  onSuccessSave?: () => void;   
 }
 
 const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
@@ -22,6 +23,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
   profileImg,
   activePlan,
   findemail,
+  onSuccessSave,
 }) => {
   const [name, setName] = useState("");
   const [positionState, setPosition] = useState("");
@@ -92,6 +94,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
             setSuccess(true);
             setTimeout(() => {
               setSuccess(false);
+              onSuccessSave?.();
               onClose();
             }, 2000);
           } else {

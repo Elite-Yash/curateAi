@@ -1,6 +1,6 @@
 import Loader from "../Loader/Loader";
 import { getImage } from "../../common/utils/logoUtils";
-import { IoPersonOutline, IoLogoLinkedin } from "react-icons/io5";
+import { IoLogoLinkedin } from "react-icons/io5";
 import { CiMail } from "react-icons/ci";
 import { LuBuilding2 } from "react-icons/lu";
 import { MdOutlineExplore } from "react-icons/md";
@@ -8,7 +8,7 @@ import { Clock, Star, Users } from "lucide-react";
 
 // Define Profile type
 type Profile = {
-  id: number;
+  id: string | undefined;
   profile?: string;
   name?: string;
   email?: string;
@@ -39,8 +39,8 @@ const Profilecard = ({
   return (
     <div
       className={`w-full max-h-[552px] overflow-y-auto scrollbar-hide ${profiles.length > 0
-          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-          : "flex h-full justify-center items-center"
+        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        : "flex h-full justify-center items-center"
         }`}
     >
       {load ? (
@@ -48,7 +48,7 @@ const Profilecard = ({
           <Loader />
         </div>
       ) : profiles.length > 0 ? (
-        profiles.map((profile, index) => (
+        profiles.map((profile: any, index: any) => (
           <div
             key={index}
             className="bg-white rounded-2xl shadow-md p-4 relative g-box"

@@ -102,27 +102,9 @@ const SignUp = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const { name, email, password, confirmPassword } = formData;
-
-    // Validation checks
-    if (!name || !email || !password || !confirmPassword) {
-      showMessage("All fields are required.", "error");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      showMessage("Invalid email format.", "error");
-      return;
-    }
-    if (isDisposableEmail(email)) {
-      showMessage("Disposable email addresses are not allowed.", "error");
-      return;
-    }
-    if (password.length < 6) {
-      showMessage("Password must be at least 6 characters long.", "error");
-      return;
-    }
-    if (password !== confirmPassword) {
-      showMessage("Passwords do not match.", "error");
+    const errorMessage = validateFormData(formData);
+    if (errorMessage) {
+      showMessage(errorMessage, "error");
       return;
     }
 
@@ -143,20 +125,17 @@ const SignUp = () => {
             setFormData({ name: "", email: "", password: "", confirmPassword: "" });
 
             Swal.fire({
-              title: "Verify Your Email to Get Started!",
-              html: `<p><strong>Please check your email</strong> and verify your account using the link we sent you.</p>`,
+              title: "Verify Your Email to Get Startde!",
+              html: `<p>We’ve sent a verification link to your registered email address. Please check your inbox and click the link to complete your account setup..</p>`,
               icon: "success",
               confirmButtonColor: "#2563eb",
               cancelButtonColor: "#6c757d",
               confirmButtonText: "Got it!",
               customClass: { title: "!text-2xl font-semibold" },
             }).then(() => navigate("/signin"));
-          }
-          else if (message === "User already exists") {
+          } else if (message === "User already exists") {
             showMessage("User already exists. Please log in.", "error");
-            setFormData({ name: "", email: "", password: "", confirmPassword: "" });
-          }
-          else {
+          } else {
             setMessage({ text: message || "Sign-up failed. Try again.", type: "error" });
           }
         }
@@ -168,10 +147,46 @@ const SignUp = () => {
   };
 
 
+  // Common validation function
+  const validateFormData = (data: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
+    const { name, email, password, confirmPassword } = data;
+    const errors: string[] = [];
+
+    // Check for empty fields
+    if (!name) errors.push("Name");
+    if (!email) errors.push("Email");
+    if (!password) errors.push("Password");
+    if (!confirmPassword) errors.push("Confirm Password");
+
+    if (errors.length > 0) {
+      if (errors.length === 4) {
+        return "All fields are required.";
+      } else {
+        return `${errors.join(", ")} ${errors.length > 1 ? "are" : "is"} required.`;
+      }
+    }
+
+    // Email validations
+    if (!isValidEmail(email)) return "Invalid email format.";
+    if (isDisposableEmail(email)) return "Disposable email addresses are not allowed.";
+
+    // Password validations
+    if (password.length < 6) return "Password must be at least 6 characters long.";
+    if (password !== confirmPassword) return "Passwords do not match.";
+
+    return ""; // no errors
+  };
+
+
 
   return (
     <div className="flex justify-center items-center min-h-screen background-three">
-      <div className="form-section bg-white p-10 rounded-2xl">
+      <div className="form-section bg-white p-10 rounded-2xl pb-[60px]">
         {load ? (
           <div className="flex justify-center m-28">
             <Loader />
@@ -196,7 +211,7 @@ const SignUp = () => {
               <span className="w-28 h-px background-one flex"></span>
             </div>
 
-            <form className="mt-6 gap-3 flex flex-col" onSubmit={handleSubmit}>
+            <form className="mt-6 gap-3 flex flex-col relative" onSubmit={handleSubmit}>
               <input
                 type="text"
                 name="name"
@@ -244,19 +259,19 @@ const SignUp = () => {
                   Sign in here
                 </a>
               </span>
-            </form>
-            {/* Error/Success Message Box */}
-            {message.text && (
-              <div
-                className={`text-center text-[17px] mt-3 border p-2 rounded-md 
+              {/* Error/Success Message Box */}
+              {message.text && (
+                <div
+                  className={`text-center text-[17px] mt-3 border p-2 rounded-md  absolute -bottom-[45px] w-[100%]
                             ${message.type === "error"
-                    ? "text-red border-red"
-                    : "text-green border-green"
-                  }`}
-              >
-                {message.text}
-              </div>
-            )}
+                      ? "text-red border-red"
+                      : "text-green border-green"
+                    }`}
+                >
+                  {message.text}
+                </div>
+              )}
+            </form>
           </>
         )}
       </div>

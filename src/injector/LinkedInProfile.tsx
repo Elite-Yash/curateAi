@@ -210,6 +210,11 @@ const LinkedInProfile = () => {
         existingButtons.forEach((btn) => btn.remove());
     };
 
+    const switchButtonToSaved = () => {
+        removeOldButtons();
+        appendSavedButton();
+    };
+
     useEffect(() => {
         init();
     }, []);
@@ -234,7 +239,7 @@ const LinkedInProfile = () => {
                     zIndex: 21213123,
                 }}
             >
-                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} activePlan={activePlan} findemail={email} />
+                <SaveProfileForm onClose={() => setOpenAiPopup(false)} profileName={profileName} position={position} company={company} profileImg={profileImg} activePlan={activePlan} findemail={email} onSuccessSave={switchButtonToSaved} />
             </div>
         );
     }

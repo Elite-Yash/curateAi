@@ -165,7 +165,7 @@ const Comments = () => {
                     return (
                       <div
                         key={index}
-                        className="bg-white rounded-2xl shadow-md p-4 relative g-box"
+                        className="bg-white rounded-2xl shadow-md p-4 relative g-box flex flex-col"
                       >
                         {/* Icon + Heading */}
                         <div className="flex items-center gap-3 justify-between">
@@ -225,7 +225,7 @@ const Comments = () => {
                           href={comment.post_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-sm text-[#2563eb] hover:text-[#003ab6] truncate"
+                          className="flex items-center gap-1 text-sm text-[#2563eb] hover:text-[#003ab6] truncate mt-auto"
                         >
                           <i className="fa-solid fa-location-dot text-xs"></i>
 

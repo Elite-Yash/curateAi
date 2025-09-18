@@ -84,7 +84,7 @@ const SaveProfile = () => {
         profile.organization?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     // starred filter
-    .filter((profile) =>
+    .filter((profile: any) =>
       activeButton === "starred" ? starredIds.includes(profile.id) : true
     )
 
@@ -254,8 +254,8 @@ const SaveProfile = () => {
     if (!profilesData.length) {
       Swal.fire({
         icon: "warning",
-        title: "No Data Available",
-        text: "There is no data to export.",
+        title: "Export to CSV Failed",
+        text: "No profiles available to export. Please add some profiles before exporting to CSV.",
         confirmButtonColor: "#2563eb",
       });
       return;
@@ -321,8 +321,8 @@ const SaveProfile = () => {
     if (!profilesData.length) {
       Swal.fire({
         icon: "warning",
-        title: "No Data Available",
-        text: "There is no data to export.",
+        title: "Save to Drive Failed",
+        text: "No profiles found to save. Please add some profiles before saving to drive.",
         confirmButtonColor: "#2563eb",
       });
       return;
@@ -856,7 +856,7 @@ const SaveProfile = () => {
         {activeButton === "starred" && (
           <>
             <Profilecard
-              profiles={filteredProfiles.filter((p) =>
+              profiles={filteredProfiles.filter((p: any) =>
                 starredIds.includes(p.id)
               )}
               load={load}
@@ -873,14 +873,14 @@ const SaveProfile = () => {
           <>
             <Profilecard
               profiles={[...filteredProfiles]
-                .filter((p) => {
-                  const createdAt = new Date(p.created_at);
-                  const now = new Date();
+                .filter((p: any) => {
+                  const createdAt: any = new Date(p.created_at);
+                  const now: any = new Date();
                   const diffInHours = (now - createdAt) / (1000 * 60 * 60);
                   return diffInHours <= 24; // only 24hr
                 })
                 .sort(
-                  (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  (a: any, b: any) => new Date(b.created_at)?.getDate() - new Date(a.created_at)?.getDate()
                 )}
               load={load}
               deleteProfile={deleteProfile}
