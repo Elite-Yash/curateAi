@@ -30,10 +30,8 @@ interface ModalProps {
   lastMessages: LinkedInMessage[];
   post_url?: string;
   activePlan?: boolean;
-  originalmessage?: string;
-  setoriginalmessage: React.Dispatch<React.SetStateAction<string | undefined>>;
-  originalCommentText?: string;
-  setOriginalCommentText: React.Dispatch<React.SetStateAction<string | undefined>>;
+  collectedText?: string;
+  setCollectedText: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -47,10 +45,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
   lastMessages,
   post_url,
   activePlan,
-  originalmessage,
-  setoriginalmessage,
-  originalCommentText,
-  setOriginalCommentText
+  collectedText,
+  setCollectedText
 }) => {
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
@@ -65,19 +61,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const [error, setError] = useState("");
   const [isAuth, setIsAuth] = useState(true);
   const [isTextGenerated, setIsTextGenerated] = useState(false);
-  const [copied, setCopied] = useState(false);
   let apiCalled = false;
-  // const [currentPage, setCurrentPage] = useState(0);
   const [newUser, setNewUser] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [isCommentActive, setIsCommentActive] = useState(false);
-  const [isMessageActive, setIsMessageActive] = useState(false);
+  const [isActive, setisActive] = useState(false);
   const [isGenerateActive, setIsGenerateActive] = useState(false);
+
   const [errors, setErrors] = useState({
-    originalComment: "",
-    originalMessage: "",
+    collectedText: "",
     motive: "",
     language: "",
     tone: "",
@@ -86,8 +79,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const handleCopy = () => {
     if (displayedText.trim()) {
       navigator.clipboard.writeText(displayedText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500); // Reset after 1.5s
     }
   };
 
@@ -131,10 +122,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
       const requestData = {
         language,
         tone: removeEmoji(tone.replace(/^[^\p{L}\p{N}\s]+/u, "").trim()),
-        postText: originalmessage,
+        postText: collectedText,
         authorName: postData.postAutherName,
         platform,
-        command: text.length > 0 ? text : originalmessage,
+        command: text.length > 0 ? text : collectedText,
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,
@@ -200,7 +191,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 console.error("API error:", err);
               })
               .finally(() => {
-                // setLoading(false);
+                setLoading(false);
               });
           } else {
             setError("Failed to submit the comment. Please try again.");
@@ -219,10 +210,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
       popupTriggeredFrom === "article-comment-reply" ||
       popupTriggeredFrom === "message-reply"
     ) {
-      // insertGeneratedComment(text);
       insertGeneratedComment(displayedText);
     } else if (popupTriggeredFrom === "create-post") {
-      // insertGeneratedPost(text);
       insertGeneratedPost(displayedText);
     }
   };
@@ -266,15 +255,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
   const validateForm = () => {
     let newErrors: any = {};
-
-    // check Original Comment if popup is comment
-    if (popupTriggeredFrom === "comment" && !originalCommentText?.trim()) {
-      newErrors.originalComment = "Original Comment is required";
-    }
-
     // check Original Message if popup is create-post
-    if (popupTriggeredFrom === "create-post" && !originalmessage?.trim()) {
-      newErrors.originalMessage = "Original Message is required";
+    if (!collectedText?.trim()) {
+      newErrors.collectedText = (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" ? "Original Comment is required" : "Original Message is required");
     }
 
     // motive must not include "Motive"
@@ -297,16 +280,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
   };
 
   useEffect(() => {
-    if (popupTriggeredFrom === "comment" && originalCommentText?.trim()) {
-      setErrors((prev) => ({ ...prev, originalComment: "" }));
+    if (collectedText?.trim()) {
+      setErrors((prev) => ({ ...prev, collectedText: "" }));
     }
-  }, [originalCommentText, popupTriggeredFrom]);
-
-  useEffect(() => {
-    if (popupTriggeredFrom === "create-post" && originalmessage?.trim()) {
-      setErrors((prev) => ({ ...prev, originalMessage: "" }));
-    }
-  }, [originalmessage, popupTriggeredFrom]);
+  }, [collectedText, popupTriggeredFrom]);
 
   useEffect(() => {
     if (motives && !motives.includes("Motive")) {
@@ -367,57 +344,29 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <div className="flex flex-col gap-5 item-center">
                         <div className="flex flex-col gap-8 item-center">
                           {/* original Message only reply */}
-                          {popupTriggeredFrom === "comment" && (
+                          {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") && (
                             <div className="w-full textarea-group relative">
                               <label className="block text-xl font-medium text-gray-700 ms-2">
-                                Original Comment<span className="text-red">*</span>
+                                {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" ? "Original Comment" : "Original Message")}
+                                <span className="text-red">*</span>
                               </label>
                               <div
-                                className={`rounded-lg overflow-hidden border ${isCommentActive ? "active" : "border-[#6b7280]"
+                                className={`rounded-lg overflow-hidden border ${isActive ? "active" : "border-[#6b7280]"
                                   } custom_textarea h-[150px] relative`}
                               >   <textarea
                                   placeholder="No comment found?"
-                                  value={originalCommentText}
-                                  onChange={(e) => setOriginalCommentText(e.target.value)}
-                                  onFocus={() => setIsCommentActive(true)}
-                                  onBlur={() => setIsCommentActive(false)}
+                                  value={collectedText}
+                                  onChange={(e) => setCollectedText(e.target.value)}
+                                  onFocus={() => setisActive(true)}
+                                  onBlur={() => setisActive(false)}
                                   className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
                                 /></div>
-                              {/* <p className="text-xl text-[#8c97a9] mt-1">
-                                💡 Include the full message for better context understanding
-                              </p> */}
-                              {errors.originalComment && (
-                                <p className="text-red text-xl ms-1 absolute">{errors.originalComment}</p>
+                              {errors.collectedText && (
+                                <p className="text-red text-xl ms-1 absolute">{errors.collectedText}</p>
                               )}
                             </div>
                           )}
 
-                          {popupTriggeredFrom === "create-post" && (
-                            <div className="w-full textarea-group relative">
-                              <label className="block text-xl font-medium text-gray-700 ms-2">
-                                Original Message<span className="text-red">*</span>
-                              </label>
-                              <div
-                                className={`rounded-lg overflow-hidden border ${isMessageActive ? "active" : "border-[#6b7280]"
-                                  } custom_textarea h-[150px] relative`}
-                              >
-                                <textarea
-                                  placeholder="What do you want to talk about?"
-                                  value={originalmessage}
-                                  onChange={(e) => setoriginalmessage(e.target.value)}
-                                  onFocus={() => setIsMessageActive(true)}
-                                  onBlur={() => setIsMessageActive(false)}
-                                  className="popup-textarea w-full p-2 text-black resize-none focus:ring-0 border-0"
-                                />
-                              </div>
-                              {/* <p className="text-xl text-[#8c97a9] mt-1">
-                                💡 Include the full message for better context understanding
-                              </p> */}
-                              {errors.originalMessage && (
-                                <p className="text-red text-xl ms-1 absolute">{errors.originalMessage}</p>
-                              )}
-                            </div>
-                          )}
                           {/* Generate Message */}
                           <div className="w-full textarea-group relative">
                             <label className="block text-xl font-medium text-gray-700 ms-2">
@@ -446,7 +395,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                                 }}
                                 onFocus={() => setIsGenerateActive(true)}
                                 onBlur={() => setIsGenerateActive(false)}
-                                className="popup-textarea w-full mt-1 !pt-6 focus:ring-0 border-0 text-black  resize-none"
+                                className="popup-textarea w-full mt-1 !pt-6 focus:ring-0 border-0 text-black resize-none"
                                 disabled={loading}
                               ></textarea>
                             </div>
@@ -709,55 +658,26 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 ) : (
                   <div className="p-9 flex flex-col gap-5 item-center">
                     <div className="flex flex-col item-center gap-8">
-                      {/* original Message only reply */}
-                      {popupTriggeredFrom === "comment" && (
+                      {/* original 'comment-reply"  "Original Comment" "Original Message" "message-reply" textaria"*/}
+                      {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") && (
                         <div className="w-full textarea-group relative">
                           <label className="block text-xl font-medium text-gray-700 ms-2">
-                            Original Comment<span className="text-red-500">*</span>
+                            {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" ? "Original Comment" : "Original Message")}
+                            <span className="text-red">*</span>
                           </label>
                           <div
-                            className={`rounded-lg overflow-hidden border ${isCommentActive ? "active" : "border-[#6b7280]"
+                            className={`rounded-lg overflow-hidden border ${isActive ? "active" : "border-[#6b7280]"
                               } custom_textarea h-[150px] relative`}
                           >   <textarea
                               placeholder="No comment found?"
-                              value={originalCommentText} 
-                              onChange={(e) => setOriginalCommentText(e.target.value)}
-                              onFocus={() => setIsCommentActive(true)}
-                              onBlur={() => setIsCommentActive(false)}
+                              value={collectedText}
+                              onChange={(e) => setCollectedText(e.target.value)}
+                              onFocus={() => setisActive(true)}
+                              onBlur={() => setisActive(false)}
                               className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
                             /></div>
-                          {/* <p className="text-xl text-[#8c97a9] mt-1">
-                            💡 Include the full message for better context understanding
-                          </p> */}
-                          {errors.originalComment && (
-                            <p className="text-red text-xl ms-1 absolute">{errors.originalComment}</p>
-                          )}
-                        </div>
-                      )}
-
-                      {popupTriggeredFrom === "create-post" && (
-                        <div className="w-full textarea-group relative">
-                          <label className="block text-xl font-medium text-gray-700 ms-2">
-                            Original Message<span className="text-red">*</span>
-                          </label>
-                          <div
-                            className={`rounded-lg overflow-hidden border ${isMessageActive ? "active" : "border-[#6b7280]"
-                              } custom_textarea h-[150px] relative`}
-                          >
-                            <textarea
-                              placeholder="What do you want to talk about?"
-                              value={originalmessage}
-                              onChange={(e) => setoriginalmessage(e.target.value)}
-                              onFocus={() => setIsMessageActive(true)}
-                              onBlur={() => setIsMessageActive(false)}
-                              className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
-                            />
-                          </div>
-                          {/* <p className="text-xl text-[#8c97a9] mt-1">
-                            💡 Include the full message for better context understanding
-                          </p> */}
-                          {errors.originalMessage && (
-                            <p className="text-red text-xl ms-1 absolute">{errors.originalMessage}</p>
+                          {errors.collectedText && (
+                            <p className="text-red text-xl ms-1 absolute">{errors.collectedText}</p>
                           )}
                         </div>
                       )}
@@ -795,7 +715,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             }}
                             onFocus={() => setIsGenerateActive(true)}
                             onBlur={() => setIsGenerateActive(false)}
-                            className="popup-textarea w-full mt-1 !pt-6 focus:ring-0 border-0 text-black resize-none"
+                            className="popup-textarea w-full mt-1 !pt-6 focus:ring-0 border-0 text-black resize-none aaa"
                             disabled={loading}
                           ></textarea>
                         </div>

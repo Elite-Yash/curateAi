@@ -28,8 +28,7 @@ const LinkedIn = () => {
   });
 
   const [selectedCommentBoxId, setSelectedCommentBoxId] = useState("");
-  const [originalmessage, setoriginalmessage] = useState<string | undefined>(undefined);
-  const [originalCommentText, setOriginalCommentText] = useState<string | undefined>(undefined);
+  const [collectedText, setCollectedText] = useState<string | undefined>(undefined);
   const [popupTriggeredFrom, setPopupTriggeredFrom] = useState("comment");
   const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
     title: "",
@@ -616,6 +615,23 @@ const LinkedIn = () => {
           commentText: "",
           commentAuthorName: "",
         });
+
+
+        // grap message text
+        const messageDataText = icon.closest("form.msg-form--is-fully-expanded")
+        const messageData = messageDataText?.closest("form.msg-form--is-fully-expanded")
+        const messgaegrap = messageData?.querySelector(".msg-form__contenteditable")
+
+        let messageText = "";
+        if (messgaegrap) {
+          const pTags = messgaegrap.querySelectorAll("p");
+          messageText = Array.from(pTags)
+            .map((p) => p.innerText.trim() || p.textContent?.trim() || "")
+            .filter((txt) => txt.length > 0)
+            .join("\n");
+        }
+
+        setCollectedText(messageText);
         setSelectedMessageBoxContainer(messageBoxTextEditorContainer);
         setPopupTriggeredFrom("message-reply");
         setOpenAiPopup(true);
@@ -623,9 +639,10 @@ const LinkedIn = () => {
 
       messageBoxFooter.appendChild(button);
     } else {
-      // console.log("Footer not found");
+      console.log("Footer not found");
     }
   };
+
 
   const addCustomCommentIconLinkedIn = () => {
     const commentBoxes = document.querySelectorAll(
@@ -636,15 +653,15 @@ const LinkedIn = () => {
       ".msg-form__msg-content-container"
     );
 
+    //  handle LinkedIn message boxes also
     if (messageBoxes) {
       messageBoxes.forEach((box) => {
         addCurateIconOnMessageBox(box);
       });
     }
 
-
     commentBoxes.forEach((box) => {
-      // Check if the custom icon already exists  
+      // avoid duplicates
       if (box.querySelector(".curateai-open-popup-icon")) return;
 
       const commentBoxCr = box.closest(
@@ -652,78 +669,118 @@ const LinkedIn = () => {
       ) as HTMLElement;
       const commentBoxCrId = commentBoxCr?.id || "No ID found";
 
-      let appendIcon = box.querySelector(
+      const appendIcon = box.querySelector(
         ".comments-comment-box__detour-container"
       ) as HTMLElement;
-      // Create and append the custom icon
+      if (!appendIcon) return;
+
+      // create custom icon
       const customIcon = document.createElement("div");
       customIcon.style.backgroundImage = `url(${chrome.runtime.getURL(
         "/f-logo.png"
       )})`;
-      customIcon.id = "popuo-comment-btn"
-      customIcon.style.backgroundSize = "contain"; // Ensures the image fits inside
-      customIcon.style.backgroundRepeat = "no-repeat";
-      customIcon.style.backgroundPosition = "center";
+      customIcon.id = "popup-comment-btn"; // fixed typo
       customIcon.className = "curateai-open-popup-icon";
-      customIcon.style.cursor = "pointer";
-      customIcon.style.width = "21px";
-      customIcon.style.height = "21px";
-      customIcon.style.margin = "9px 7px 10px 8px";
-      customIcon.style.border = "2px solid #2563eb";
-      customIcon.style.borderRadius = "50%";
-      customIcon.style.padding = "10px";
+      Object.assign(customIcon.style, {
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        cursor: "pointer",
+        width: "21px",
+        height: "21px",
+        margin: "9px 7px 10px 8px",
+        border: "2px solid #2563eb",
+        borderRadius: "50%",
+        padding: "10px",
+      });
 
+      appendIcon.appendChild(customIcon);
+
+      //  dynamically check Reply button
+      const container = appendIcon.closest(
+        ".display-flex.justify-space-between"
+      );
+      if (container) {
+        const checkReplyBtn = () => {
+          const replyBtn = container.querySelector(
+            "button.comments-comment-box__submit-button--cr span.artdeco-button__text"
+          );
+          if (replyBtn && replyBtn.textContent.trim() === "Reply") {
+            customIcon.classList.add("reply-btn");
+            return true;
+          }
+          return false;
+        };
+
+        if (!checkReplyBtn()) {
+          const observer = new MutationObserver(() => {
+            if (checkReplyBtn()) observer.disconnect();
+          });
+          observer.observe(container, { childList: true, subtree: true });
+          setTimeout(() => observer.disconnect(), 5000); // safety cleanup
+        }
+      }
+
+      //  click handler
       customIcon.addEventListener("click", () => {
         setSelectedCommentBoxId(commentBoxCrId);
-        if (box) {
-          const anchorElement = box
-            .closest("div.feed-shared-update-v2__control-menu-container")
-            ?.querySelector(
-              ".fie-impression-container div.relative div.display-flex.align-items-flex-start div.update-components-actor__container a"
-            );
-          const postUrl =
-            anchorElement instanceof HTMLAnchorElement
-              ? anchorElement.href
-              : "No URL found";
-          setPost_url(postUrl);
-        }
+
+        // get post URL
+        const anchorElement = box
+          .closest("div.feed-shared-update-v2__control-menu-container")
+          ?.querySelector(
+            ".fie-impression-container div.relative div.display-flex.align-items-flex-start div.update-components-actor__container a"
+          );
+        const postUrl =
+          anchorElement instanceof HTMLAnchorElement
+            ? anchorElement.href
+            : "No URL found";
+        setPost_url(postUrl);
+
+        // check if article page
         if (isLinkedInArticlePage(window.location.href)) {
           getArticlePageInfo(box);
         } else {
           getPostAndCommentInfo(box, false);
         }
 
-        // comment reply text grap
-        const allCommentLists = document.querySelectorAll('.comments-comments-list.comments-comments-list--cr');
-        allCommentLists.forEach(commentList => {
-          commentList.addEventListener('click', (e) => {
-            const clickedComment = (e.target as HTMLElement)?.closest('article.comments-comment-entity');
-            if (!clickedComment) return;
+        //  COMMENT-REPLY CASE
+        if (customIcon.classList.contains("reply-btn")) {
+          setPopupTriggeredFrom("comment-reply");
 
-            const mainContent = clickedComment.querySelector('.comments-comment-item__main-content');
-            if (mainContent) {
-              const textDiv = mainContent.querySelector('.update-components-text.relative');
-              if (textDiv) {
-                const spans = textDiv.querySelectorAll('span[dir="ltr"]');
-                let text = "";
-                spans.forEach(span => {
-                  text += span.textContent.trim() + " ";
-                });
+          const replyEntity = customIcon.closest("article.comments-comment-entity");
 
-                const finalText = text.trim();
-                setOriginalCommentText(finalText);
-              }
-            }
-          });
-        });
+          // get author
+
+          const authorEl = replyEntity?.querySelector(".comments-comment-meta__actor a.comments-comment-meta__description-container span.comments-comment-meta__description-title") as HTMLAnchorElement | null;
+          const authorName = authorEl?.innerText?.trim() || "Unknown User";
+          console.log(". ~ addCustomCommentIconLinkedIn ~ authorName:", authorName)
+
+          // get reply text
+          const replyTextEl = replyEntity?.querySelector(
+            ".comments-comment-entity__content span[dir='ltr']"
+          );
+          const replyText = getFormattedPost(replyTextEl);
+
+          setCollectedText(`${authorName}: ${replyText}`);
+
+        } else {
+          //  NORMAL COMMENT CASE
+          setPopupTriggeredFrom("comment");
+
+          const mainPostDiv = customIcon.closest(".feed-shared-update-v2");
+          const mainPostInnerText = mainPostDiv?.querySelector(
+            ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
+          );
+
+          setCollectedText(getFormattedPost(mainPostInnerText));
+        }
 
         setOpenAiPopup(true);
-        setPopupTriggeredFrom('comment')
       });
-
-      appendIcon.appendChild(customIcon);
     });
   };
+
 
   const addCustomIconToElement = (element: HTMLElement) => {
     // Check if the custom icon already exists
@@ -775,7 +832,7 @@ const LinkedIn = () => {
           .map(p => p.innerText || p.textContent)
           .join("\n");  // line breaks maintain karne ke liye
 
-        setoriginalmessage(paragraphText.trim());
+        setCollectedText(paragraphText.trim());
       } else {
         console.warn(".ql-editor not found");
       }
@@ -917,6 +974,31 @@ const LinkedIn = () => {
     checkActivePlan();
   }, []);
 
+  const getFormattedPost = (el: any) => {
+    let html = el.innerHTML;
+
+    // convert <br> to new lines
+    html = html.replace(/<br\s*\/?>/gi, "\n");
+
+    // replace white-space-pre spans with space
+    html = html.replace(/<span class="white-space-pre">.*?<\/span>/gi, " ");
+
+    // replace hashtags <a> with their visible text (#FounderLife etc.)
+    html = html.replace(/<a[^>]*>(.*?)<\/a>/gi, "$1");
+
+    // strip remaining tags
+    html = html.replace(/<[^>]+>/g, "");
+
+    // clean up multiple newlines
+    html = html.replace(/\n\s*\n\s*\n/g, "\n\n");
+
+    // extra step → convert "hashtag#DSA" → "#DSA"
+    html = html.replace(/\bhashtag#/gi, "#");
+
+    return html.trim();
+  };
+
+
   if (openAiPopup) {
     return (
       <div
@@ -936,7 +1018,7 @@ const LinkedIn = () => {
       >
         <InputAiPopup
           isOpen={openAiPopup}
-          onClose={() => setOpenAiPopup(false)}
+          onClose={() => { setOpenAiPopup(false); setCollectedText(''); }}
           postData={postData}
           insertGeneratedComment={insertGeneratedCommentLinkedin}
           insertGeneratedPost={insertGeneratedPostLinkedIn}
@@ -945,10 +1027,8 @@ const LinkedIn = () => {
           lastMessages={lastMessages}
           post_url={post_url}
           activePlan={activePlan}
-          originalmessage={originalmessage}
-          setoriginalmessage={setoriginalmessage}
-          originalCommentText={originalCommentText}
-          setOriginalCommentText={setOriginalCommentText}
+          collectedText={collectedText}
+          setCollectedText={setCollectedText}
         />
       </div>
     );

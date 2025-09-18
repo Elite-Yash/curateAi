@@ -26,7 +26,7 @@ interface ModalProps {
   insertGeneratedPost?: (post: string) => void;
   post_url?: string;
   activePlan?: boolean;
-  popupTriggeredFrom: "comment-reply";
+  popupTriggeredFrom: "message-reply";
 }
 
 const MessageReplyGenerator: React.FC<ModalProps> = ({
@@ -229,7 +229,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         let newErrors: any = {};
     
         // check Original Message if popup is create-post
-        if (popupTriggeredFrom === "comment-reply" && !messageReply?.trim()) {
+        if (popupTriggeredFrom === "message-reply" && !messageReply?.trim()) {
           newErrors.messageReply = "Original Message is required";
         }
     
@@ -253,7 +253,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
       };
     
       useEffect(() => {
-        if (popupTriggeredFrom === "comment-reply" && messageReply?.trim()) {
+        if (popupTriggeredFrom === "message-reply" && messageReply?.trim()) {
           setErrors((prev) => ({ ...prev, messageReply: "" }));
         }
       }, [messageReply, popupTriggeredFrom]);

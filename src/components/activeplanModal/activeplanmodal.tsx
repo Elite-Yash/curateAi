@@ -12,7 +12,7 @@ const ActivePlanModal: React.FC<ModalWrapperProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] backdrop-blur-base">
       <div className="relative bg-[#ffffff] rounded-2xl shadow-2xl p-6 animate-fadeIn w-[25%]">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-3 mb-4">
@@ -39,7 +39,7 @@ const ActivePlanModal: React.FC<ModalWrapperProps> = ({ isOpen, onClose }) => {
         {/* Alert Content */}
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="flex  mt-2">
-            <div className="text-3xl font-bold text-[#dc2626]">⚠️ !!Alert!!</div>
+            <div className="text-3xl font-bold text-[#dc2626]">!!Alert!!</div>
           </div>
           <p className="text-[#4b5563] leading-relaxed">
             Hey User, you don’t have an{" "}
