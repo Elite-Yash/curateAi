@@ -143,12 +143,44 @@ const LinkedInProfile = () => {
 
             } catch (error) {
                 console.error("Error fetching plans:", error);
-            } finally {
-                appendCustomButton();
             }
         };
 
-        checkActivePlan();
+        const checkProfileAlreadyExist = async () => {
+            try {
+                const currentUrl = window.location.href;
+                const url = apiService.EndPoint.getProfiles;
+
+                return new Promise<boolean>((resolve) => {
+                    apiService.commonAPIRequest(
+                        url,
+                        apiService.Method.get,
+                        undefined,
+                        {},
+                        (result: any) => {
+                            const profilesData = result?.data?.data?.profiles || [];
+                            const profileExists = profilesData.some(
+                                (profile: any) => profile.url === currentUrl
+                            );
+                            resolve(profileExists);
+                        }
+                    );
+                });
+            } catch (error) {
+                console.error("Error fetching Profile:", error);
+                return false;
+            }
+        };
+
+
+        const init = async () => {
+            await checkActivePlan();
+            const exists = await checkProfileAlreadyExist();
+            if (exists) return;
+            appendCustomButton();
+        };
+
+        init();
     }, []);
 
 
