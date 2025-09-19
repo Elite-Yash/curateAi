@@ -49,7 +49,7 @@ const Layout = () => {
         case "Twitter":
             return <Twitter />;
         case "LinkedIn-Profile":
-            return <LinkedInProfile />;
+            return <LinkedInProfile key={window.location.href} />;
         default:
             return null;
     }

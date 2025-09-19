@@ -3,6 +3,7 @@ import SaveProfileForm from "../components/aiPopup/SaveProfileForm";
 import { getImage } from "../common/utils/logoUtils";
 import { createCustomButton } from "../common/utils/createCustomButton";
 import { apiService } from "../common/config/apiService";
+import useLinkedInUrlChange from "../hooks/useLinkedInUrlChange";
 
 const LinkedInProfile = () => {
     const [openAiPopup, setOpenAiPopup] = useState(false);
@@ -100,89 +101,122 @@ const LinkedInProfile = () => {
         };
     }, [scrapeProfileData]);
 
-    useEffect(() => {
-        // Function to append the custom button
-        const appendCustomButton = () => {
-            const spans = document.querySelector("div.ph5 div.mt2.relative")?.querySelectorAll("span");
+    // Function to append the custom button
+    const appendCustomButton = () => {
+        removeOldButtons();
+        const spans = document.querySelector("div.ph5 div.mt2.relative")?.querySelectorAll("span");
 
-            if (spans && spans.length > 0) {
-                const customSpan = createCustomButton('Save', getImage("saveProfileIcon"), 'Save Profile');
-                spans[0].closest("div")?.appendChild(customSpan);
+        if (spans && spans.length > 0) {
+            const customSpan = createCustomButton('Save', getImage("saveProfileIcon"), 'Save Profile');
+            customSpan.classList.add("custom-save-btn");
+            spans[0].closest("div")?.appendChild(customSpan);
 
-                // Add event listener to the button
-                customSpan.addEventListener("click", handleClick);
+            // Add event listener to the button
+            customSpan.addEventListener("click", handleClick);
 
-                // Cleanup function to remove event listener
-                return () => {
-                    customSpan.removeEventListener("click", handleClick);
-                };
-            }
+            // Cleanup function to remove event listener
+            return () => {
+                customSpan.removeEventListener("click", handleClick);
+            };
         }
-        const checkActivePlan = async () => {
-            try {
+    }
+    const checkActivePlan = async () => {
+        try {
 
-                const url = apiService.EndPoint.checkActivePlan;
+            const url = apiService.EndPoint.checkActivePlan;
 
-                await apiService.commonAPIRequest(
-                    url,
-                    apiService.Method.get,
-                    undefined, // No query params for this request
-                    {}, // No body required for GET request
-                    (result: any) => {
-                        if (result.data.userDetails.isTrialExpired) {
-                            if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") {
-                                setActiveplan(false);
-                            } else {
-                                setActiveplan(true);
-                            }
+            await apiService.commonAPIRequest(
+                url,
+                apiService.Method.get,
+                undefined, // No query params for this request
+                {}, // No body required for GET request
+                (result: any) => {
+                    if (result.data.userDetails.isTrialExpired) {
+                        if (result?.status === 200 && result?.data.message === "User does not have an active subscription.") {
+                            setActiveplan(false);
                         } else {
                             setActiveplan(true);
                         }
+                    } else {
+                        setActiveplan(true);
+                    }
+                }
+            );
+
+        } catch (error) {
+            console.error("Error fetching plans:", error);
+        }
+    };
+
+    const appendSavedButton = () => {
+        removeOldButtons();
+        const spans = document.querySelector("div.ph5 div.mt2.relative")?.querySelectorAll("span");
+
+        if (spans && spans.length > 0) {
+            const savedSpan = createCustomButton('Already Saved', getImage("saveProfileIcon"), 'Already Save Profile');
+            savedSpan.classList.add("custom-save-btn");
+
+            // make it look disabled
+            savedSpan.style.pointerEvents = "none";
+            savedSpan.style.opacity = "0.6";
+            savedSpan.style.cursor = "not-allowed";
+
+            // Tooltip (native browser title works)
+            savedSpan.setAttribute("title", "Already Save Profile");
+
+            spans[0].closest("div")?.appendChild(savedSpan);
+        }
+    };
+
+    const checkProfileAlreadyExist = async () => {
+        try {
+            const currentUrl = window.location.href;
+            const url = apiService.EndPoint.getProfiles;
+
+            return new Promise<boolean>((resolve) => {
+                apiService.commonAPIRequest(
+                    url,
+                    apiService.Method.get,
+                    undefined,
+                    {},
+                    (result: any) => {
+                        const profilesData = result?.data?.data?.profiles || [];
+                        const profileExists = profilesData.some(
+                            (profile: any) => profile.url === currentUrl
+                        );
+                        resolve(profileExists);
                     }
                 );
-
-            } catch (error) {
-                console.error("Error fetching plans:", error);
-            }
-        };
-
-        const checkProfileAlreadyExist = async () => {
-            try {
-                const currentUrl = window.location.href;
-                const url = apiService.EndPoint.getProfiles;
-
-                return new Promise<boolean>((resolve) => {
-                    apiService.commonAPIRequest(
-                        url,
-                        apiService.Method.get,
-                        undefined,
-                        {},
-                        (result: any) => {
-                            const profilesData = result?.data?.data?.profiles || [];
-                            const profileExists = profilesData.some(
-                                (profile: any) => profile.url === currentUrl
-                            );
-                            resolve(profileExists);
-                        }
-                    );
-                });
-            } catch (error) {
-                console.error("Error fetching Profile:", error);
-                return false;
-            }
-        };
+            });
+        } catch (error) {
+            console.error("Error fetching Profile:", error);
+            return false;
+        }
+    };
 
 
-        const init = async () => {
-            await checkActivePlan();
-            const exists = await checkProfileAlreadyExist();
-            if (exists) return;
+    const init = async () => {
+        await checkActivePlan();
+        const exists = await checkProfileAlreadyExist();
+        if (exists) {
+            appendSavedButton();
+        } else {
             appendCustomButton();
-        };
+        }
+    };
 
+    const removeOldButtons = () => {
+        const existingButtons = document.querySelectorAll(".custom-save-btn");
+        existingButtons.forEach((btn) => btn.remove());
+    };
+
+    useEffect(() => {
         init();
     }, []);
 
+    useLinkedInUrlChange(() => {
+        init();
+    });
 
     if (openAiPopup) {
         return (
