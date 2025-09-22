@@ -429,7 +429,7 @@ const LinkedIn = () => {
         // Locate the contenteditable div inside the comment box (where the comment should be inserted)
         const editor = commentBox.querySelector(
           `.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`
-        ); // This class is used by LinkedIn's editor
+        ) as HTMLElement;  // This class is used by LinkedIn's editor
 
         if (editor) {
           let alreadyContentInComment: any = "";
@@ -453,7 +453,9 @@ const LinkedIn = () => {
           editor.dispatchEvent(event);
 
           // Close the popup after the comment is inserted (optional, as per your requirement)
+          const postURl = findPostURL(editor);
           setOpenAiPopup(false);
+          attachCommentReplyListeners(editor, postURl);
         } else {
           console.error("Editor not found within the comment box");
         }
@@ -464,6 +466,40 @@ const LinkedIn = () => {
     setOpenAiPopup(false);
   };
 
+  const findPostURL = (editor: HTMLElement) => {
+    const mainPostDiv = editor?.closest('.ember-view')?.parentElement;
+    const postId = mainPostDiv?.getAttribute("data-id")?.split(":").pop();
+    const urn = postId?.startsWith("urn:li:activity:") ? postId : `urn:li:activity:${postId}`;
+    return `${location.origin}/feed/update/${urn}/`;
+  };
+
+
+  const attachCommentReplyListeners = (editor: HTMLElement, postLink: string) => {
+    const buttons = editor
+      ?.closest(".display-flex.flex-column")
+      ?.querySelectorAll<HTMLButtonElement>(
+        ".comments-comment-box__submit-button--cr"
+      );
+
+    if (!buttons) return; // nothing found, exit
+
+    buttons.forEach((btn) => {
+      const buttonText = btn.textContent?.trim().toLowerCase();
+
+      if (buttonText === "comment") {
+        btn.addEventListener("click", () => {
+          console.log("comment button clicked");
+        });
+      }
+
+      if (buttonText === "reply") {
+        btn.addEventListener("click", () => {
+          console.log("reply button clicked");
+        });
+      }
+    });
+  };
+
   const insertGeneratedPostLinkedIn = (comment: string) => {
     const postBox = document.querySelector(
       `.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`
@@ -472,6 +508,8 @@ const LinkedIn = () => {
     if (postBox) {
       postBox?.focus();
       postBox.textContent = comment;
+      const customeBtn = document?.querySelector('.curateai-open-popup-icon')
+      const postBtn = customeBtn?.parentElement?.querySelector('.share-box_actions button:not(:disabled)');
 
       setOpenAiPopup(false);
     } else {

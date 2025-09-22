@@ -99,7 +99,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
     if (!validateForm()) return;
 
     setLoading(true);
-    console.log(1);
     setError("");
 
     const currentUrl = window.location.href;
@@ -116,7 +115,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
       if (!response || !response.success || !response.token) {
         setError("Failed to retrieve auth token.");
         setLoading(false);
-        console.log(2);
         setIsAuth(true);
         return;
       }
@@ -146,7 +144,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
         { type: "GENERATE_CONTENT", data: requestData },
         (response) => {
           if (response.success && !apiCalled) {
-            console.log(3);
             setDisplayedText(""); // reset for typing
 
             const generatedMessage = response.data.data;
@@ -162,7 +159,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     index++;
                     setTimeout(type, typingSpeed);
                   } else {
-                    console.log(4); // Typing complete
                     resolve();
                   }
                 };
@@ -202,14 +198,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   console.error("API error:", err);
                 })
                 .finally(() => {
-                  setLoading(false); // ✅ now runs after typing ends
-                  console.log(5);
+                  setLoading(false);
                 });
             });
 
             apiCalled = true;
           } else {
-            console.log(6);
             setError("Failed to submit the comment. Please try again.");
             setLoading(false);
           }
@@ -232,10 +226,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
       insertGeneratedPost(displayedText);
     }
   };
-
-  useEffect(() => {
-    console.log({ loading, isTextGenerated })
-  }, [loading, isTextGenerated])
 
   useEffect(() => {
     // Load saved selections from Chrome storage after removal
