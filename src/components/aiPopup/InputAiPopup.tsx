@@ -319,7 +319,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     <>
       <div
         className={`popup-overlay ${isOpen ? "open" : ""
-          } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 `}
+          } fixed inset-0 flex items-center justify-center`}
       >
         <div
           className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[45rem]" : ""
