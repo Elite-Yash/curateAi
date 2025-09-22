@@ -32,6 +32,7 @@ interface ModalProps {
   activePlan?: boolean;
   collectedText?: string;
   setCollectedText: React.Dispatch<React.SetStateAction<string | undefined>>;
+  relyedOfPostContent?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -46,7 +47,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
   post_url,
   activePlan,
   collectedText,
-  setCollectedText
+  setCollectedText,
+  relyedOfPostContent,
 }) => {
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
@@ -122,7 +124,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
       const requestData = {
         language,
         tone: removeEmoji(tone.replace(/^[^\p{L}\p{N}\s]+/u, "").trim()),
-        postText: collectedText,
+        postText: popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
         authorName: postData.postAutherName,
         platform,
         command: text.length > 0 ? text : collectedText,

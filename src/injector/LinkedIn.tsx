@@ -42,6 +42,7 @@ const LinkedIn = () => {
     useState<HTMLElement | null>(null);
   const [post_url, setPost_url] = useState<string | "">("");
   const [activePlan, setActiveplan] = useState(false);
+  const [relyedOfPostContent, setRelyedOfPostContent] = useState<string | undefined>(undefined);
 
   const getPostText = (commentBoxEditor: HTMLElement): string => {
     let parentElement = commentBoxEditor.parentElement;
@@ -754,16 +755,29 @@ const LinkedIn = () => {
 
           const authorEl = replyEntity?.querySelector(".comments-comment-meta__actor a.comments-comment-meta__description-container span.comments-comment-meta__description-title") as HTMLAnchorElement | null;
           const authorName = authorEl?.innerText?.trim() || "Unknown User";
-          console.log(". ~ addCustomCommentIconLinkedIn ~ authorName:", authorName)
 
           // get reply text
           const replyTextEl = replyEntity?.querySelector(
             ".comments-comment-entity__content span[dir='ltr']"
           );
+          const mainPostDiv = customIcon.closest(".feed-shared-update-v2");
+          const mainPostInnerText = mainPostDiv?.querySelector(
+            ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
+          );
+          const mainPostAuther = mainPostDiv?.querySelector(
+            ".fie-impression-container > div:nth-of-type(1) .update-components-actor__container span[dir='ltr'] span.visually-hidden"
+          )?.textContent;
+          setPostData({
+            postText: "",
+            postAutherName: String(mainPostAuther),
+            commentText: "",
+            commentAuthorName: String(authorName),
+          });
           const replyText = getFormattedPost(replyTextEl);
+          const relyedOfPostContent = getFormattedPost(mainPostInnerText);
 
-          setCollectedText(`${authorName}: ${replyText}`);
-
+          setCollectedText(replyText);
+          setRelyedOfPostContent(relyedOfPostContent)
         } else {
           //  NORMAL COMMENT CASE
           setPopupTriggeredFrom("comment");
@@ -1029,6 +1043,7 @@ const LinkedIn = () => {
           activePlan={activePlan}
           collectedText={collectedText}
           setCollectedText={setCollectedText}
+          relyedOfPostContent={(relyedOfPostContent) as any}
         />
       </div>
     );
