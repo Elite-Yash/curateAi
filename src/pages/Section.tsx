@@ -42,7 +42,7 @@
  */
 
 import { useEffect, useState } from "react";
-import Header from "../components/UserProfile/Header";
+// import Header from "../components/UserProfile/Header";
 import SideBar from "../components/SideBar";
 import { useLocation } from "react-router-dom";
 

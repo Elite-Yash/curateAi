@@ -1,12 +1,11 @@
 import {
-  FaLightbulb,
   FaRegFileAlt,
   FaRegCommentAlt,
   FaUsers,
   FaUser,
   FaArrowRight,
 } from "react-icons/fa";
-import { FaRegClock } from "react-icons/fa6";
+import { FaMessage, FaRegClock } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 import { GiStarFormation } from "react-icons/gi";
 import { HiOutlineLightBulb } from "react-icons/hi2";
@@ -48,11 +47,11 @@ const actions = [
     link: "save-profile",
   },
   {
-    title: "Switch Persona",
-    description: "Change communication style",
-    icon: FaUser,
+    title: "Message Campaign",
+    description: "Automation Linkedin DMs",
+    icon: FaMessage,
     color: "from-orange-500 to-orange-600",
-    link: "personas",
+    link: "message-campaign",
   },
 ];
 
