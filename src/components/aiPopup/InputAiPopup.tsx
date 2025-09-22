@@ -13,7 +13,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
 import { apiService } from "../../common/config/apiService";
 import { removeEmoji } from "../../common/utils/removeicon";
-import { Copy, FileText, RefreshCw, Send } from "lucide-react";
+import { Copy, FileText, RefreshCw } from "lucide-react";
 
 export interface LinkedInMessage {
   messageSpeaker: string;
@@ -64,7 +64,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const [isAuth, setIsAuth] = useState(true);
   const [isTextGenerated, setIsTextGenerated] = useState(false);
   let apiCalled = false;
-  const [newUser, setNewUser] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [context, setContext] = useState("");
@@ -151,11 +150,11 @@ const InputAiPopup: React.FC<ModalProps> = ({
             // Typing function as a promise
             const typeMessage = (message: string) => {
               return new Promise<void>((resolve) => {
-                let index = -1;
+                let index = 0;
                 const typingSpeed = 20;
                 const type = () => {
                   if (index < message.length) {
-                    setDisplayedText((prev) => prev + message[index]);
+                    setDisplayedText((prev: string) => (prev ?? "") + message[index]);
                     index++;
                     setTimeout(type, typingSpeed);
                   } else {
@@ -247,9 +246,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
           result.selectedTone &&
           result.selectedMotive
         ) {
-          setNewUser(false);
         } else {
-          setNewUser(true);
         }
       }
     );
@@ -526,7 +523,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     </button>
                   </div>
 
-                 {/* Best Practices */}
+                  {/* Best Practices */}
                   <div
                     style={{
                       backgroundColor:
@@ -554,18 +551,18 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       Generated Post
                     </div>
                     {isTextGenerated && (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-4">
                         <button
                           onClick={handleSubmit}
-                          className="p-2 rounded-lg hover:bg-[#f1f5f9]"
+                          className="rounded-lg hover:bg-[#f1f5f9]"
                         >
-                          <RefreshCw className="w-8 h-8" />
+                          <RefreshCw className="w-6 h-6" />
                         </button>
                         <button
                           onClick={handleCopy}
-                          className="p-2 rounded-lg hover:bg-[#f1f5f9]"
+                          className="rounded-lg hover:bg-[#f1f5f9]"
                         >
-                          <Copy className="w-8 h-8" />
+                          <Copy className="w-6 h-6" />
                         </button>
                       </div>
                     )}
@@ -603,7 +600,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-6 h-[670px] flex flex-col justify-center">
+                    <div className="text-center py-6 h-[760px] flex flex-col justify-center rounded-lg border border-[#6b7280]">
                       <div className="w-20 h-20 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto">
                         <FileText className="w-12 h-12 text-[#94a3b8]" />
                       </div>

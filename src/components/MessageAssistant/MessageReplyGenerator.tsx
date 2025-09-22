@@ -476,17 +476,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* <div className="flex items-center justify-between text-xs text-slate-500">
-              <div className="flex items-center gap-4">
-                <span>{generatedReply.length} characters</span>
-                <span>{generatedReply.split(" ").length} words</span>
-              </div>
-              <span className="px-3 py-1 rounded-full border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition">
-                Ready to send
-              </span>
-            </div> */}
-
               <div className="flex gap-3">
                 <button
                   onClick={copyToClipboard}
