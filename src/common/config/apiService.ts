@@ -46,8 +46,9 @@ export class apiService {
         createcampaign: "campaigns/create-campaign",
         deletecampaign: "campaigns/:id",
         updatecampaign: "campaigns/:campaignId",
-        getcampaignbyid:"campaigns/:campaignId",
-        getallcampaign: "campaigns"
+        getcampaignbyid: "campaigns/:campaignId",
+        getallcampaign: "campaigns",
+        updateCommentUrl: "comments/:id/post-url",
     };
 
     static Method = {
@@ -87,7 +88,7 @@ export class apiService {
             const formObject: any = {};
 
             if (!(payload instanceof FormData)) {
-                if (type === "POST" || type === "PUT") {
+                if (type === "POST" || type === "PUT" || type === "PATCH") {
                     requestHeader["Content-Type"] = "application/json";
                     requestBody = JSON.stringify(payload);
                 } else {

@@ -81,10 +81,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       currentUserName,
       authToken,
     } = request.data;
-    console.log("request.data: ", request.data);
 
     // Perform the API call
-
     const url = `${BASE_URL}${GENERATE_CONTENT_URL}`;
 
     fetch(url, {

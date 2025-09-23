@@ -24,8 +24,8 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   postData: PostData;
-  insertGeneratedComment: (comment: string) => void;
-  insertGeneratedPost: (post: string) => void;
+  insertGeneratedComment: (comment: string, saveGeneratedMessageData: string) => void;
+  insertGeneratedPost: (post: string, saveGeneratedMessageData: string) => void;
   popupTriggeredFrom: string;
   articleInfo?: ArticleInfo | null;
   lastMessages: LinkedInMessage[];
@@ -34,6 +34,8 @@ interface ModalProps {
   collectedText?: string;
   setCollectedText: React.Dispatch<React.SetStateAction<string | undefined>>;
   relyedOfPostContent?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  saveGeneratedMessageData?: string | undefined;
+  setSaveGeneratedMessageData?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -50,6 +52,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
   collectedText,
   setCollectedText,
   relyedOfPostContent,
+  saveGeneratedMessageData,
+  setSaveGeneratedMessageData,
 }) => {
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
@@ -171,7 +175,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
               const payload = {
                 comment: generatedMessage,
-                post_url: post_url || window.location.href,
+                post_url: null,
+                comment_type: popupTriggeredFrom,
               };
 
               const requestUrl = apiService.EndPoint.createComments;
@@ -188,6 +193,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       result?.data.message === "Comment created successfully"
                     ) {
                       // success
+                      setSaveGeneratedMessageData?.(result?.data);
                     } else {
                       throw new Error(result.message || "Failed to create comment.");
                     }
@@ -220,9 +226,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
       popupTriggeredFrom === "article-comment-reply" ||
       popupTriggeredFrom === "message-reply"
     ) {
-      insertGeneratedComment(displayedText);
+      insertGeneratedComment(displayedText, saveGeneratedMessageData || "");
     } else if (popupTriggeredFrom === "create-post") {
-      insertGeneratedPost(displayedText);
+      insertGeneratedPost(displayedText, saveGeneratedMessageData || "");
     }
   };
 
