@@ -206,7 +206,7 @@ const SideBar = () => {
                   </Link>
                 </li>
 
-                <li>
+                {/* <li>
                   <Link
                     to="/connect-campaign"
                     className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
@@ -226,102 +226,12 @@ const SideBar = () => {
                       </div>
                     </div>
                   </Link>
-                </li>
+                </li> */}
               </ul>
             )}
           </li>
 
-          {/* Personas */}
-          {/* <li className="px-1 py-1">
-            <Link
-              to="/personas"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/personas"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                : "text-[#334155] hover:text-[#2563eb]"
-                }`}
-            >
-              <span className="mt-1 flex w-[20px] justify-center
-">
-                <i className="fa-solid fa-user text-sm"></i>
-              </span>
-              <div className="flex flex-col ms-[4px]">
-                <div className="font-medium text-sm ">Personas</div>
-                <div className="text-xs text-[#6b7280] ">
-                  AI-powered LinkedIn
-                </div>
-              </div>
-            </Link>
-          </li> */}
-
-          {/* Message Campaigns */}
-          {/* <li className="px-1 py-1">
-            <Link
-              to="/message-campaign"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-campaign"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                : "text-[#334155] hover:text-[#2563eb]"
-                }`}
-            >
-              <span className="mt-1 flex w-[20px] justify-center
-">
-                <i className="fas fa-envelope text-sm"></i>
-              </span>
-              <div className="flex flex-col ">
-                <div className="font-medium text-sm ">Message Campaign</div>
-                <div className="text-xs text-[#6b7280] ">
-                  Automate LinkedIn DMs
-                </div>
-              </div>
-            </Link>
-          </li> */}
-
-
-
-          {/* Connect Campaigns */}
-          {/* <li className="px-1 py-1">
-            <Link
-              to="/connect-campaign"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                : "text-[#334155] hover:text-[#2563eb]"
-                }`}
-            >
-              <span className="mt-1 flex w-[20px] justify-center
-">
-                <i className="fas fa-link text-sm"></i>
-              </span>
-              <div className="flex flex-col ">
-                <div className="font-medium text-sm ">Connect Campaign</div>
-                <div className="text-xs text-[#6b7280] ">
-                  Grow network with invites
-                </div>
-              </div>
-            </Link>
-          </li> */}
-
-
-          {/* Analytics */}
-          {/* <li className="px-1 py-1">
-            <Link
-              to="/"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === ""
-                  ? "bg-blue-50 text-[#2563eb] shadow-sm"
-                  : "text-[#334155] hover:text-[#2563eb]"
-                }`}
-            >
-              <span className="mt-1 flex w-[20px] justify-center
-">
-                <i className="fa-solid fa-chart-column text-sm"></i>
-              </span>
-              <div className="flex flex-col">
-                <div className="font-medium text-sm">Analytics</div>
-                <div className="text-sm text-[#6b7280]">
-                  AI-powered LinkedIn
-                </div>
-              </div>
-            </Link>
-          </li> */}
-
+       
           {/* LinkedIn  */}
           {/* <li className="px-1 py-1">
             <a

@@ -242,7 +242,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
                 !! Alert !!
               </span>
               <span className="text-justify">
-                Hey User, you don’t have an active plan on Evarobo yet.
+                Hey User, you don’t have an active plan on Evarobo yet. Go To the Evarobo Chrome Extension and 
                 Subscribe now and start enjoying all the amazing features!
               </span>
             </div>

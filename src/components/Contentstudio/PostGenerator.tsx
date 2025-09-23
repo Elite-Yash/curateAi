@@ -304,32 +304,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
             )}
           </div>
 
-          {/* Motive */}
-          {/* <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Select Motive<span className="text-red">*</span>
-            </label>
-            <span className="relative">
-              <select
-                value={motive}
-                onChange={(e) => setMotive(e.target.value)}
-                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
-                disabled={isGenerating}
-              >
-                {POSTING_MOTIVES.map((motive, index) => (
-                  <option key={index} value={motive}>
-                    {motive}
-                  </option>
-                ))}
-              </select>
-            </span>
-            {errors.motive && (
-              <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.motive}</p>
-            )}
-          </div> */}
-
-
- {/* Motive */}
+{/* Motive */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700">
             Select Motive <span className="text-red">*</span>

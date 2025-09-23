@@ -45,7 +45,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
   insertGeneratedComment,
   insertGeneratedPost,
   popupTriggeredFrom,
-  articleInfo,
   lastMessages,
   post_url,
   activePlan,
@@ -67,7 +66,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const [error, setError] = useState("");
   const [isAuth, setIsAuth] = useState(true);
   const [isTextGenerated, setIsTextGenerated] = useState(false);
-  let apiCalled = false;
   const [displayedText, setDisplayedText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [context, setContext] = useState("");
@@ -88,6 +86,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
     }
   };
 
+  const articleInfo = {};
+  let apiCalled = false;
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
@@ -103,6 +103,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
     setLoading(true);
     setError("");
+    setIsTextGenerated(false);
 
     const currentUrl = window.location.href;
     const platform = currentUrl.includes("linkedin.com")
@@ -126,7 +127,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
       const requestData = {
         language,
-        tone: removeEmoji(tone.replace(/^[^\p{L}\p{N}\s]+/u, "").trim()),
+        tone: removeEmoji(tone || ""),
         postText:
           popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
         authorName: postData.postAutherName,
@@ -135,82 +136,74 @@ const InputAiPopup: React.FC<ModalProps> = ({
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,
-        goal: removeEmoji((motives ?? "").replace(/^[^\p{L}\p{N}\s]+/u, "").trim()),
+        goal: removeEmoji(motives || ""),
         articleInfo,
         lastMessages,
         currentUserName,
         authToken,
       };
-
       // Generate content
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
         (response) => {
           if (response.success && !apiCalled) {
-            setDisplayedText(""); // reset for typing
+            setDisplayedText("");
+            setIsTextGenerated(true);
+            // Safe fallback
+            const generatedMessage: string = response?.data?.data && typeof response.data.data === "string" ? response.data.data : "";
 
-            const generatedMessage = response.data.data;
+            let index = -1;
+            const typingSpeed = 20;
+            const type = () => {
+              index++;
+              if (index < generatedMessage.length) {
+                setDisplayedText((prev: string) => prev + generatedMessage[index]);
+                setTimeout(type, typingSpeed);
+              } else {
+                setLoading(false);
+              }
+            };
+            type();
+            apiCalled = true;
 
-            // Typing function as a promise
-            const typeMessage = (message: string) => {
-              return new Promise<void>((resolve) => {
-                let index = 0;
-                const typingSpeed = 20;
-                const type = () => {
-                  if (index < message.length) {
-                    setDisplayedText((prev: string) => (prev ?? "") + message[index]);
-                    index++;
-                    setTimeout(type, typingSpeed);
-                  } else {
-                    resolve();
-                  }
-                };
-                type();
-              });
+
+            const payload = {
+              comment: generatedMessage,
+              post_url: null,
+              comment_type: popupTriggeredFrom,
             };
 
-            // First finish typing, then fire API
-            typeMessage(generatedMessage).then(() => {
-              setIsTextGenerated(true);
+            const requestUrl = apiService.EndPoint.createComments;
 
-              const payload = {
-                comment: generatedMessage,
-                post_url: null,
-                comment_type: popupTriggeredFrom,
-              };
-
-              const requestUrl = apiService.EndPoint.createComments;
-
-              apiService
-                .commonAPIRequest(
-                  requestUrl,
-                  apiService.Method.post,
-                  undefined, // No query params for this request
-                  payload,
-                  (result: any) => {
-                    if (
-                      result?.status === 201 &&
-                      result?.data.message === "Comment created successfully"
-                    ) {
-                      // success
-                      setSaveGeneratedMessageData?.(result?.data);
-                    } else {
-                      throw new Error(result.message || "Failed to create comment.");
-                    }
+            apiService
+              .commonAPIRequest(
+                requestUrl,
+                apiService.Method.post,
+                undefined, // No query params for this request
+                payload,
+                (result: any) => {
+                  if (
+                    result?.status === 201 &&
+                    result?.data.message === "Comment created successfully"
+                  ) {
+                    // success
+                    setSaveGeneratedMessageData?.(result?.data);
+                  } else {
+                    throw new Error(result.message || "Failed to create comment.");
                   }
-                )
-                .catch((err: any) => {
-                  console.error("API error:", err);
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
-            });
+                }
+              )
+              .catch((err: any) => {
+                console.error("API error:", err);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
 
-            apiCalled = true;
           } else {
             setError("Failed to submit the comment. Please try again.");
             setLoading(false);
+            setIsTextGenerated(false);
           }
         }
       );
@@ -581,6 +574,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         {displayedText}
                       </div>
 
+
                       <div className="flex gap-5">
                         {/* Insert Button - only visible after text is generated */}
                         <button
@@ -629,7 +623,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 </span>
                 <span className="text-justify">
                   Hey User, you don’t have an active plan on Evarobo
-                  yet.Subscribe now and start enjoying all the amazing features!
+                  yet. Go To the Evarobo Chrome Extension and Subscribe now and start enjoying all the amazing features!
                 </span>
               </div>
             </>
