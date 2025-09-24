@@ -458,8 +458,8 @@ const LinkedIn = () => {
           editor.dispatchEvent(event);
 
           // Close the popup after the comment is inserted (optional, as per your requirement)
-          const postURl = await findPostURL(editor);
           setOpenAiPopup(false);
+          const postURl = await findPostURL(editor);
           if (postURl) {
             attachCommentReplyListeners(editor, saveGeneratedMessageData, String(postURl));
           }
@@ -512,35 +512,45 @@ const LinkedIn = () => {
     });
   };
 
-  const attachCommentReplyListeners = (editor: HTMLElement, commentData: string, postLink: string) => {
-    const customeBtn = editor?.closest('.display-flex.flex-wrap')?.querySelector('.curateai-open-popup-icon');
-    const observer = new MutationObserver(() => {
+  const attachCommentReplyListeners = (editor: HTMLElement, commentData: { comment: string; comment_type: string }, postLink: string,) => {
+
+    let customeBtn: HTMLElement | null;
+    if (commentData?.comment_type === "comment-reply") {
+      customeBtn = editor?.closest('.display-flex.flex-column')?.querySelector('.curateai-open-popup-icon.reply-btn') as HTMLElement | null;
+    } else {
+      customeBtn = editor?.closest('.display-flex.flex-wrap')?.querySelector('.curateai-open-popup-icon') as HTMLElement | null;
+    }
+
+    if (!customeBtn) return;
+
+    const interval = setInterval(() => {
       const buttons = customeBtn
         ?.closest(".display-flex.flex-column")
         ?.querySelectorAll<HTMLButtonElement>(".comments-comment-box__submit-button--cr");
 
-      if (!buttons || buttons.length === 0) return;
+      if (!buttons || buttons.length === 0) {
+        console.log("⏳ Waiting for comment/reply buttons...");
+        return;
+      }
 
       buttons.forEach((btn) => {
         const buttonText = btn.textContent?.trim().toLowerCase();
 
-        if (buttonText === "comment") {
-          btn.addEventListener("click", () => {
-            saveGeneratedCommentData(commentData, postLink);
-          });
-        }
-
-        if (buttonText === "reply") {
-          btn.addEventListener("click", () => {
-            console.log("reply button clicked");
-          });
+        if (buttonText === "comment" || buttonText === "reply") {
+          // Use { once: true } to avoid duplicate API calls
+          btn.addEventListener(
+            "click",
+            () => {
+              // Pass the full object now
+              saveGeneratedCommentData(commentData, postLink);
+            },
+            { once: true }
+          );
         }
       });
 
-      observer.disconnect();
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
+      clearInterval(interval);
+    }, 300);
   };
 
 
@@ -549,6 +559,7 @@ const LinkedIn = () => {
       comment: commentData?.comment,
       post_url: post_url,
       comment_type: commentData?.comment_type,
+      is_comment_posted: true,
     };
 
     const requestUrl = apiService.EndPoint.createComments;
@@ -576,18 +587,106 @@ const LinkedIn = () => {
   };
 
   // Insert the generated message into LinkedIn's post editor
-  const insertGeneratedPostLinkedIn = (comment: string, saveGeneratedMessageData: any) => {
+  const insertGeneratedPostLinkedIn = async (comment: string, saveGeneratedMessageData: any,) => {
+
     const postBox = document.querySelector(
       `.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`
     ) as HTMLElement; // This class is used by LinkedIn's editor
 
-    if (postBox) {
-      postBox?.focus();
-      postBox.textContent = comment;
-      setOpenAiPopup(false);
-    } else {
-      console.error("Post box not found");
-    }
+    if (!postBox) return;
+
+
+    postBox.focus();
+    postBox.textContent = comment;
+    setOpenAiPopup(false);
+
+    // Wait for Post button
+    const postBtn = await findPostBtn();
+
+    // Attach click handler
+    postBtn.addEventListener("click", async () => {
+      try {
+        const postUrl = await findUploadedPost();
+        if (postUrl) {
+          saveGeneratedCommentData(saveGeneratedMessageData, postUrl);
+        }
+      } catch (err) {
+        console.error("❌ Error while saving comment:", err);
+      }
+    },
+      { once: true }
+    );
+  };
+
+  const findPostBtn = async (): Promise<HTMLButtonElement> => {
+    return new Promise((resolve) => {
+      const customeBtn = document.querySelector('.curateai-open-popup-icon');
+      if (!customeBtn) {
+        console.error("❌ custom button not found");
+        return;
+      }
+
+      const tryFind = () => {
+        const postBtn = customeBtn
+          ?.closest('.share-creation-state__footer')
+          ?.querySelector<HTMLButtonElement>('.share-box_actions button');
+
+        if (postBtn) {
+          resolve(postBtn);
+          return true;
+        }
+        return false;
+      };
+
+      // Check immediately
+      if (tryFind()) return;
+
+      // Keep checking every 300ms until found
+      const interval = setInterval(() => {
+        if (tryFind()) {
+          clearInterval(interval);
+        }
+      }, 300);
+    });
+  };
+
+  const findUploadedPost = (): Promise<string> => {
+    return new Promise((resolve) => {
+      const tryFind = () => {
+        const postData = document.querySelector('.scaffold-finite-scroll__content div div.relative');
+        if (postData) {
+          const authorEl = document.querySelector(
+            ".scaffold-finite-scroll__content div div.relative .update-components-actor__title span[dir='ltr'] span"
+          ) as HTMLElement | null;
+
+          const postAuthorName = authorEl?.textContent?.trim();
+
+          if (postAuthorName === currentUserName) {
+            const postId = postData.getAttribute('data-id')?.split(":").pop();
+            if (postId) {
+              const urn = postId.startsWith("urn:li:activity:")
+                ? postId
+                : `urn:li:activity:${postId}`;
+
+              const url = `${location.origin}/feed/update/${urn}/`;
+              resolve(url);
+              return true;
+            }
+          }
+        }
+        return false;
+      };
+
+      // First check immediately
+      if (tryFind()) return;
+
+      // Keep checking until found
+      const interval = setInterval(() => {
+        if (tryFind()) {
+          clearInterval(interval);
+        }
+      }, 300);
+    });
   };
 
   const getOtherUserNameOnIndividualMessageBox = (
