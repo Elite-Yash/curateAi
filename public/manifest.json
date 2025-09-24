@@ -1,7 +1,7 @@
 {
   "name": "Evarobo – Smart LinkedIn AI Assistant",
   "description": "Evarobo is an AI LinkedIn assistant that automates outreach, writes smart messages, and helps teams generate leads faster.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "icons": {
     "16": "./f-logo.png",
