@@ -290,7 +290,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
           } fixed inset-0 flex items-center justify-center`}
       >
         <div
-          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.8]  ${!activePlan ? "!w-[45rem]" : ""
+          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75]  ${!activePlan ? "!w-[45rem]" : ""
             }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">

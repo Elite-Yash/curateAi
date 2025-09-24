@@ -58,7 +58,7 @@ const actions = [
 const Home = () => {
   return (
     <>
-      <div className="c-padding-r py-12  h-screen relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
         {/* EVA Command Center div */}
         <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
@@ -109,10 +109,10 @@ const Home = () => {
           </div>
 
           {/* Action Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {actions.map((action, index) => (
               <Link key={index} to={action.link}>
-                <div className="p-6 border border-[#e2e8f0] rounded-xl hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col items-center gap-4 group">
+                <div className="p-6 border border-[#e2e8f0] rounded-xl hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col items-center gap-4 group h-full">
                   {/* Icon */}
                   <div
                     className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}
