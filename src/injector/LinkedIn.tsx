@@ -10,6 +10,7 @@ import {
   removeEmojis,
   trimAllWhiteSpaces,
   isLinkedInArticlePage,
+  getCurrentLinkedInUsernameFromLocalStorage,
 } from "../helpers/commonHelper";
 import { apiService } from "../common/config/apiService";
 
@@ -43,7 +44,11 @@ const LinkedIn = () => {
   const [post_url, setPost_url] = useState<string | "">("");
   const [activePlan, setActiveplan] = useState(false);
   const [relyedOfPostContent, setRelyedOfPostContent] = useState<string | undefined>(undefined);
-  const [saveGeneratedMessageData, setSaveGeneratedMessageData] = useState<string | undefined>(undefined);
+  const [saveGeneratedMessageData, setSaveGeneratedMessageData] = useState<any>({
+    comment: '',
+    comment_type: '',
+  });
+  const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
 
   const getPostText = (commentBoxEditor: HTMLElement): string => {
     let parentElement = commentBoxEditor.parentElement;
@@ -415,7 +420,6 @@ const LinkedIn = () => {
   };
 
   const insertGeneratedCommentLinkedin = async (comment: string, saveGeneratedMessageData: any) => {
-    const comment_id = String(saveGeneratedMessageData?.data?.id);
     if (selectedMessageBoxContainer) {
       const messageEditor = selectedMessageBoxContainer?.querySelector(
         `.${LINKEDIN_CLASS_NAMES.MESSAGE_EDITOR}`
@@ -455,10 +459,9 @@ const LinkedIn = () => {
 
           // Close the popup after the comment is inserted (optional, as per your requirement)
           const postURl = await findPostURL(editor);
-          console.log("  ~ insertGeneratedCommentLinkedin ~ postURl:", postURl)
           setOpenAiPopup(false);
           if (postURl) {
-            attachCommentReplyListeners(editor, comment_id, String(postURl));
+            attachCommentReplyListeners(editor, saveGeneratedMessageData, String(postURl));
           }
         } else {
           console.error("Editor not found within the comment box");
@@ -509,7 +512,7 @@ const LinkedIn = () => {
     });
   };
 
-  const attachCommentReplyListeners = (editor: HTMLElement, commentId: string, postLink: string) => {
+  const attachCommentReplyListeners = (editor: HTMLElement, commentData: string, postLink: string) => {
     const customeBtn = editor?.closest('.display-flex.flex-wrap')?.querySelector('.curateai-open-popup-icon');
     const observer = new MutationObserver(() => {
       const buttons = customeBtn
@@ -523,7 +526,7 @@ const LinkedIn = () => {
 
         if (buttonText === "comment") {
           btn.addEventListener("click", () => {
-            updateGeneratedCommentURL(commentId, postLink);
+            saveGeneratedCommentData(commentData, postLink);
           });
         }
 
@@ -541,28 +544,38 @@ const LinkedIn = () => {
   };
 
 
-  const updateGeneratedCommentURL = async (commentId: string, post_url: string) => {
-    // Replace ':id' placeholder with actual comment ID
-    const requestUrl = apiService.EndPoint.updateCommentUrl.replace(":id", commentId);
+  const saveGeneratedCommentData = async (commentData: any, post_url: string) => {
+    const payload = {
+      comment: commentData?.comment,
+      post_url: post_url,
+      comment_type: commentData?.comment_type,
+    };
 
-    const payload = { post_url };
+    const requestUrl = apiService.EndPoint.createComments;
 
     apiService
       .commonAPIRequest(
         requestUrl,
-        apiService.Method.patch,
-        undefined,
+        apiService.Method.post,
+        undefined, // No query params for this request
         payload,
         (result: any) => {
-          //success callback
+          if (
+            result?.status === 201 &&
+            result?.data.message === "Comment created successfully"
+          ) {
+            //success
+          } else {
+            throw new Error(result.message || "Failed to create comment.");
+          }
         }
       )
       .catch((err: any) => {
         console.error("API error:", err);
-      });
+      })
   };
 
-
+  // Insert the generated message into LinkedIn's post editor
   const insertGeneratedPostLinkedIn = (comment: string, saveGeneratedMessageData: any) => {
     const postBox = document.querySelector(
       `.${LINKEDIN_CLASS_NAMES.POST_EDITOR}`
@@ -571,9 +584,6 @@ const LinkedIn = () => {
     if (postBox) {
       postBox?.focus();
       postBox.textContent = comment;
-      const customeBtn = document?.querySelector('.curateai-open-popup-icon')
-      const postBtn = customeBtn?.parentElement?.querySelector('.share-box_actions button:not(:disabled)');
-
       setOpenAiPopup(false);
     } else {
       console.error("Post box not found");
@@ -845,29 +855,27 @@ const LinkedIn = () => {
         } else {
           getPostAndCommentInfo(box, false);
         }
+        const replyEntity = customIcon.closest("article.comments-comment-entity");
+
+        // get author
+        const authorEl = replyEntity?.querySelector(".comments-comment-meta__actor a.comments-comment-meta__description-container span.comments-comment-meta__description-title") as HTMLAnchorElement | null;
+        const authorName = authorEl?.innerText?.trim() || "Unknown User";
+        const mainPostDiv = customIcon.closest(".feed-shared-update-v2");
+        const mainPostInnerText = mainPostDiv?.querySelector(
+          ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
+        );
+        const mainPostAuther = mainPostDiv?.querySelector(
+          ".fie-impression-container > div:nth-of-type(1) .update-components-actor__container span[dir='ltr'] span.visually-hidden"
+        )?.textContent;
 
         //  COMMENT-REPLY CASE
         if (customIcon.classList.contains("reply-btn")) {
           setPopupTriggeredFrom("comment-reply");
 
-          const replyEntity = customIcon.closest("article.comments-comment-entity");
-
-          // get author
-
-          const authorEl = replyEntity?.querySelector(".comments-comment-meta__actor a.comments-comment-meta__description-container span.comments-comment-meta__description-title") as HTMLAnchorElement | null;
-          const authorName = authorEl?.innerText?.trim() || "Unknown User";
-
           // get reply text
           const replyTextEl = replyEntity?.querySelector(
             ".comments-comment-entity__content span[dir='ltr']"
           );
-          const mainPostDiv = customIcon.closest(".feed-shared-update-v2");
-          const mainPostInnerText = mainPostDiv?.querySelector(
-            ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
-          );
-          const mainPostAuther = mainPostDiv?.querySelector(
-            ".fie-impression-container > div:nth-of-type(1) .update-components-actor__container span[dir='ltr'] span.visually-hidden"
-          )?.textContent;
           setPostData({
             postText: "",
             postAutherName: String(mainPostAuther),
@@ -887,7 +895,12 @@ const LinkedIn = () => {
           const mainPostInnerText = mainPostDiv?.querySelector(
             ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
           );
-
+          setPostData({
+            postText: "",
+            postAutherName: String(mainPostAuther),
+            commentText: "",
+            commentAuthorName: String(currentUserName),
+          });
           setCollectedText(getFormattedPost(mainPostInnerText));
         }
 

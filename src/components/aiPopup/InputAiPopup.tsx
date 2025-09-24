@@ -35,7 +35,7 @@ interface ModalProps {
   setCollectedText: React.Dispatch<React.SetStateAction<string | undefined>>;
   relyedOfPostContent?: React.Dispatch<React.SetStateAction<string | undefined>>;
   saveGeneratedMessageData?: string | undefined;
-  setSaveGeneratedMessageData?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setSaveGeneratedMessageData?: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -142,6 +142,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
         currentUserName,
         authToken,
       };
+
       // Generate content
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
@@ -151,6 +152,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setIsTextGenerated(true);
             // Safe fallback
             const generatedMessage: string = response?.data?.data && typeof response.data.data === "string" ? response.data.data : "";
+            
+            // update saveGeneratedMessageData manually
+            setSaveGeneratedMessageData?.({
+              comment: generatedMessage,
+              comment_type: popupTriggeredFrom,
+            });
 
             let index = -1;
             const typingSpeed = 20;
@@ -165,41 +172,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
             };
             type();
             apiCalled = true;
-
-
-            const payload = {
-              comment: generatedMessage,
-              post_url: null,
-              comment_type: popupTriggeredFrom,
-            };
-
-            const requestUrl = apiService.EndPoint.createComments;
-
-            apiService
-              .commonAPIRequest(
-                requestUrl,
-                apiService.Method.post,
-                undefined, // No query params for this request
-                payload,
-                (result: any) => {
-                  if (
-                    result?.status === 201 &&
-                    result?.data.message === "Comment created successfully"
-                  ) {
-                    // success
-                    setSaveGeneratedMessageData?.(result?.data);
-                  } else {
-                    throw new Error(result.message || "Failed to create comment.");
-                  }
-                }
-              )
-              .catch((err: any) => {
-                console.error("API error:", err);
-              })
-              .finally(() => {
-                setLoading(false);
-              });
-
           } else {
             setError("Failed to submit the comment. Please try again.");
             setLoading(false);
