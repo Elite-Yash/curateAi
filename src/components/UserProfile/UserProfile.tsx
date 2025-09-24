@@ -161,7 +161,7 @@ const UserProfile = () => {
 
   return (
     <>
-      <div className="c-padding-r pt-12 h-screen relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r pt-12 relative pl-[390px] pr-[110px]">
         {load ? (
           <div className="flex justify-between gap-5 w-full">
             <div className="rounded-2xl w-full">

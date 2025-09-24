@@ -124,7 +124,6 @@ const Comments = () => {
 
   return (
     <>
-
       <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
         <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
           <div className="mb-6">
@@ -140,7 +139,6 @@ const Comments = () => {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green rounded-full"></div>
               <span className="text-sm text-slate-600">
@@ -149,7 +147,6 @@ const Comments = () => {
             </div>
           </div>
         </div>
-
 
         <div className="flex justify-between gap-5 w-full">
           <div className="rounded-2xl w-full">
