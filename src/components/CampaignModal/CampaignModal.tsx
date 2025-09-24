@@ -356,7 +356,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm text-[#6b7280] focus:text-[#000] :ring-[#0080cc] focus:border-[#0080cc] p-2 `}
                                                 >
                                                     <option value="">Select Type</option>
-                                                    {/* <option value="csv">CSV</option> */}
+                                                    <option value="csv">CSV</option>
                                                     <option value="url">URL</option>
                                                 </select>
                                                 {errors.import_type && (

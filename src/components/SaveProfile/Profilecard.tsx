@@ -76,7 +76,7 @@ const Profilecard = ({
             <div className="flex items-center gap-4">
               {profile.profile?.startsWith("data:image") ? (
                 <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-20 h-20 flex items-center justify-center overflow-hidden">
-                  <img src={getImage("fLogo")} alt="img" className="w-16" />
+                  <img src={getImage("userprofile")} alt="img" className="w-20" />
                 </span>
               ) : (
                 <span className="w-20 h-20 rounded-full p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">

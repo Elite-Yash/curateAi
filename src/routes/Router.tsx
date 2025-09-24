@@ -9,8 +9,8 @@ import ForgotPassword from "../components/ForgotPassword/ForgotPassword";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import { useEffect, useState } from "react";
 import UserProfile from "../components/UserProfile/UserProfile";
-import PricingPage from "../components/PricingPage/PricingPage";
-import Personas from "../components/Personas/Personas";
+// import PricingPage from "../components/PricingPage/PricingPopup";
+// import Personas from "../components/Personas/Personas";
 import Contentstudio from "../components/Contentstudio/Contentstudio";
 import Messageassistant from "../components/MessageAssistant/Messageassistant";
 import MessageCampaignTable from "../components/MessageCampaign/MessageCampaignTable";
@@ -131,22 +131,22 @@ const Router = () => {
           </Section>
         }
       />
-      <Route
+      {/* <Route
         path="/pricing"
         element={
           <Section>
             <PricingPage />
           </Section>
         }
-      />
-      <Route
+      /> */}
+      {/* <Route
         path="/personas"
         element={
           <Section>
             <Personas />
           </Section>
         }
-      />
+      /> */}
       <Route
         path="/message-campaign"
         element={

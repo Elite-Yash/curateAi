@@ -45,12 +45,17 @@ import { useEffect, useState } from "react";
 // import Header from "../components/UserProfile/Header";
 import SideBar from "../components/SideBar";
 import { useLocation } from "react-router-dom";
+import PricingPopup from "../components/PricingPage/PricingPopup";
+
 
 const Section = ({ children }: any) => {
-
+  
   const [login, setLogin] = useState<string | null>(null);
   const location = useLocation();
   const [hideSidebarHeader, setHideSidebarHeader] = useState(false);
+  
+  const [opneplanPopup, setOpenplanpopup] = useState(false);
+
 
   useEffect(() => {
     const checkToken = () => {
@@ -87,11 +92,15 @@ const Section = ({ children }: any) => {
 
   return (
     <div id="wrapper" className="bge7e9f6">
-      {!hideSidebarHeader && login ? <SideBar /> : null}
+      {!hideSidebarHeader && login ? <SideBar setOpenplanpopup={setOpenplanpopup} /> : null}
       <div className="right-baar-div transition">
         {/* {!hideSidebarHeader && login ? <Header /> : null} */}
         {children}
       </div>
+
+         {/* Popup ko yahan render karo, body ke andar, SideBar ke bahar */}
+      <PricingPopup isOpen={opneplanPopup} onClose={() => setOpenplanpopup(false)} />
+
     </div >
   );
 };

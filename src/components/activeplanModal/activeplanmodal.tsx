@@ -49,15 +49,15 @@ const ActivePlanModal: React.FC<ModalWrapperProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* button */}
-        <div className="mt-6 flex justify-center gap-4">
+        {/* <div className="mt-6 flex justify-center gap-4">
           <Link
             to="/pricing"
             className="px-6 font-normal py-2 rounded-lg border border-[#2563eb] text-[#2563eb] text-base hover:!border-[#2563eb] hover:!bg-[#2563eb] hover:!text-white transform"
           >
             Subscribe Now
           </Link>
-
-        </div>
+        </div> */}
+        
       </div>
     </div>
   );

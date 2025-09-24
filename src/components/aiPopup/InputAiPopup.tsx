@@ -290,7 +290,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
           } fixed inset-0 flex items-center justify-center`}
       >
         <div
-          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[45rem]" : ""
+          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.8]  ${!activePlan ? "!w-[45rem]" : ""
             }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">
@@ -317,13 +317,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
           {!isAuth && <SignIn />}
           {isAuth && activePlan ? (
             <React.Fragment>
-              <div className="flex gap-4 w-full items-start">
+              <div className="flex gap-[22px] w-full items-start p-9">
 
-                <div className="p-9 flex flex-col gap-5 w-1/2">
+                <div className=" flex flex-col gap-5 w-1/2">
                   <div className="flex flex-col item-center gap-8">
                     {/* original 'comment-reply"  "Original Comment" "Original Message" "message-reply" textaria"*/}
                     {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") && (
-                      <div className="w-full textarea-group relative">
+                      <div className="w-full textarea-group relative space-y-2">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" ? "Original Comment" : "Original Message")}
                           <span className="text-red">*</span>
@@ -364,15 +364,15 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     </div>
 
                     {/* Motive */}
-                    <div className="w-full input-group">
+                    <div className="w-full input-group ">
                       <label className="block text-xl font-medium text-gray-700 ms-2">
-                        Select Motive<span className="text-red">*</span>
+                        Select Motive<span className="text-red">*</span>  
                       </label>
                       <span className="relative">
                         <select
                           value={motives}
                           onChange={(e) => setMotive(e.target.value)}
-                          className="popup-select w-full p-2 border border-gray-300 rounded-md"
+                          className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex"
                           disabled={loading}
                         >
                           {(popupTriggeredFrom === "create-post"
@@ -393,9 +393,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       )}
                     </div>
 
-                    <div className="flex gap-5">
+                    <div className="flex gap-5 ">
                       {/* Language */}
-                      <div className="w-full input-group">
+                      <div className="w-full input-group ">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
                           Select Language<span className="text-red">*</span>
                         </label>
@@ -403,12 +403,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           <img
                             src={getImage("translate")}
                             alt="img"
-                            className="w-4 absolute left-3.5 !top-[5px]"
+                            className="w-4 absolute left-3.5 !top-[14px]"
                           />
                           <select
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
-                            className="popup-select data w-full p-2 border border-gray-300 rounded-md"
+                            className="popup-select data w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex"
                             disabled={loading}
                           >
                             {LANGUAGES.map((lang, index) => (
@@ -432,7 +432,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           <select
                             value={tone}
                             onChange={(e) => setTone(e.target.value)}
-                            className="popup-select w-full p-2 border border-gray-300 rounded-md"
+                            className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex"
                             disabled={loading}
                           >
                             {TONES.map((toneOption, index) => {
@@ -515,9 +515,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 </div>
 
                 {/* Output Section */}
-                <div className="border-none bg-white/80 backdrop-blur-sm rounded-xl pt-9 pe-9 w-1/2">
+                <div className=" flex flex-col w-1/2">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 font-semibold text-2xl">
+                    <div className="flex items-center gap-2 font-semibold text-2xl mb-[3px]">
                       <FileText className="w-5 h-5 text-[#16a34a]" />
                       Generated Post
                     </div>
@@ -572,7 +572,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-6 h-[760px] flex flex-col justify-center rounded-lg border border-[#6b7280]">
+                    <div className="text-center py-6 h-[767px] flex flex-col justify-center rounded-lg border border-[#6b7280]">
                       <div className="w-20 h-20 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto">
                         <FileText className="w-12 h-12 text-[#94a3b8]" />
                       </div>

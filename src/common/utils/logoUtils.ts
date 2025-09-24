@@ -9,6 +9,7 @@ import logoBlack from "../../../public/logo.png";
 import fLogo from "../../../public/f-logo.png";
 import loader from "../../images/loader.svg";
 import evalogo from "../../images/evalogo.png";
+import userprofile from "../../../public/user-profile.png";
 
 
 const imagePath: any = {
@@ -22,6 +23,7 @@ const imagePath: any = {
   logoBlack,
   loader,
   evalogo,
+  userprofile,
 };
 
 // Get Logo image
