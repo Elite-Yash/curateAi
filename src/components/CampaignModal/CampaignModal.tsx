@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
 import { getImage } from "../../common/utils/logoUtils";
+import { API_URL } from "../../common/config/constMessage";
 
 type FormData = {
     name: string;
@@ -59,13 +60,13 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
      */
     const checkForChanges = () => {
         if (!editableCampaigns) return true;
-        
+
         const currentValues = getValues();
         const changesDetected = Object.keys(initialFormData).some(key => {
             const formKey = key as keyof FormData;
             return currentValues[formKey] !== initialFormData[formKey];
         });
-        
+
         setHasChanges(changesDetected);
         return changesDetected;
     };
@@ -92,6 +93,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
             return;
         }
 
+        console.log(". ~ onSubmit ~ editableCampaigns:", editableCampaigns)
         if (editableCampaigns) {
             await updateCampaign(data);
         } else {
@@ -114,12 +116,12 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         formData.append("max_connections", data.max_connections.toString());
         formData.append("message", data.message);
 
-        if (data.url) {
+        if (data.url && data.import_type === 'url') {
             formData.append("url", data.url);
         }
 
-        if (data.fileUpload && data.fileUpload.length > 0) {
-            formData.append("file", data.fileUpload[0]);
+        if (data.fileUpload && data.fileUpload.length > 0 && data.import_type === 'csv') {
+            formData.append("csvFile", data.fileUpload[0]);
         }
 
         try {
@@ -131,7 +133,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 (response: any) => {
                     setIsLoading(false);
 
-                    if (response?.data.message === 'Campaign created successfully' && response?.data.statusCode === 200) {
+                    if (response?.message === 'Campaign created successfully' && response?.statusCode === 200) {
                         setSuccessMessage("Campaign created successfully!");
                         Swal.fire({
                             title: "Success!",
@@ -143,10 +145,10 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             onCampaignCreated();
                         });
                     } else {
-                        setErrorMessage(response?.data?.message || "Failed to create campaign. Please try again.");
+                        setErrorMessage(response?.message || "Failed to create campaign. Please try again.");
                         Swal.fire({
                             title: "Error!",
-                            text: response?.data?.message || "Failed to create campaign",
+                            text: response?.message || "Failed to create campaign",
                             icon: "error",
                             confirmButtonColor: "#2563eb",
                         });
@@ -186,7 +188,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         }
 
         if (data.fileUpload && data.fileUpload.length > 0) {
-            formData.append("file", data.fileUpload[0]);
+            formData.append("csvFile", data.fileUpload[0]);
         }
 
         const endpoint = apiService.EndPoint.updatecampaign.replace(':campaignId', editableCampaigns.id);
@@ -200,7 +202,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 (response: any) => {
                     setIsLoading(false);
 
-                    if (response?.data.message === 'Campaign updated successfully' && response?.data?.statusCode === 200) {
+                    if (response?.message === 'Campaign updated successfully' && response?.statusCode === 200) {
                         setSuccessMessage("Campaign updated successfully!");
                         Swal.fire({
                             title: "Success!",
@@ -212,10 +214,10 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             onCampaignCreated();
                         });
                     } else {
-                        setErrorMessage(response?.data?.message || "Failed to update campaign. Please try again.");
+                        setErrorMessage(response?.message || "Failed to update campaign. Please try again.");
                         Swal.fire({
                             title: "Error!",
-                            text: response?.data?.message || "Failed to update campaign",
+                            text: response?.message || "Failed to update campaign",
                             icon: "error",
                             confirmButtonColor: "#2563eb",
                         });
@@ -255,14 +257,14 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                     url: editableCampaigns.url || "",
                     messageName: editableCampaigns.messageName || ""
                 };
-                
+
                 setValue("name", initialValues.name);
                 setValue("message", initialValues.message);
                 setValue("import_type", initialValues.import_type);
                 setValue("max_connections", initialValues.max_connections);
                 setValue("url", initialValues.url);
                 setValue("messageName", initialValues.messageName);
-                
+
                 // Store initial values for change detection
                 setInitialFormData(initialValues);
             } else {
@@ -335,7 +337,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     // className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 ${errors.name ? "border-red" : ""
                                                     //     } ${nonEditableStyle}`}
                                                     className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] !p-2 `}
-                                                    placeholder="Campaign Name" 
+                                                    placeholder="Campaign Name"
                                                 />
                                                 {errors.name && (
                                                     <div className="text-red text-sm">{errors.name.message}</div>
