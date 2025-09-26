@@ -5,10 +5,10 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Header from "./UserProfile/Header";
 import { useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { GiUpgrade } from "react-icons/gi";
 
+// const SideBar = ({setOpenplanpopup} : any) => {
+const SideBar = () => {
 
-const SideBar = ({setOpenplanpopup} : any) => {
 
   const location = useLocation();
   const [isCampaignOpen, setIsCampaignOpen] = useState(false);

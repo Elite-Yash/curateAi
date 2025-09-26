@@ -20,8 +20,6 @@ import {
   FiArrowDownRight,  
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
-// import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Target } from "lucide-react";
 import { LuLightbulb } from "react-icons/lu";
 
 const actions = [
