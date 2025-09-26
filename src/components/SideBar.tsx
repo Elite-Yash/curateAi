@@ -13,9 +13,9 @@ const SideBar = ({setOpenplanpopup} : any) => {
   const location = useLocation();
   const [isCampaignOpen, setIsCampaignOpen] = useState(false);
   return (
-    <div className="flex flex-col left-baar-menu w-60 max-[1150px]:-translate-x-64 h-[96vh] fixed left-[18px] top-1/2 z-20 transition-transform rounded-[11px] -translate-y-1/2">
+    <div className="flex flex-col left-baar-menu  max-[1150px]:-translate-x-64 h-[100vh] fixed left-[0] top-1/2 z-20 transition-transform rounded-[11px] -translate-y-1/2 bg-[#fafafa]">
       {/* 🔹 LOGO TOP ME */}
-      <div className="logo p-3 pt-3">
+      <div className="logo p-[24px] pt-3">
         <Link
           to="/"
           className="logo flex w-full gap-2 border-color-gr2 color-one  py-3"
@@ -30,13 +30,13 @@ const SideBar = ({setOpenplanpopup} : any) => {
 
      
       <div className="left-menu pt-4 p-4 w-73">
-        <ul className="flex flex-col">
+        <ul className="flex flex-col gap-1">
           {/* Dashboard */}
-          <li className="px-1 py-1">
+          <li className="">
             <Link
               to="/"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/" || location.pathname === "/home"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#eff6ff] transition-all duration-200 ${location.pathname === "/" || location.pathname === "/home"
+                ? " text-[#2563eb] shadow-sm !bg-blue-50"
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
@@ -53,11 +53,11 @@ const SideBar = ({setOpenplanpopup} : any) => {
           </li>
 
           {/* Content studio */}
-          <li className="px-1 py-1">
+          <li className="">
             <Link
               to="/content-studio"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/content-studio"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/content-studio"
+                ? "text-[#2563eb] shadow-sm !bg-blue-50"
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
@@ -66,7 +66,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
               </span>
               <div className="flex flex-col">
                 <div className="font-medium text-sm ">Content studio</div>
-                <div className="text-sm text-[#6b7280] ">
+                <div className="text-xs text-[#6b7280] ">
                   Generate posts & comments
                 </div>
               </div>
@@ -74,11 +74,11 @@ const SideBar = ({setOpenplanpopup} : any) => {
           </li>
 
           {/* message assistant */}
-          <li className="px-1 py-1">
+          <li className="">
             <Link
               to="/message-assistant"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-assistant"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/message-assistant"
+                ? "text-[#2563eb] shadow-sm !bg-blue-50"
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
@@ -87,7 +87,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
               </span>
               <div className="flex flex-col">
                 <div className="font-medium text-sm ">Message Assistant</div>
-                <div className="text-sm text-[#6b7280] ">
+                <div className="text-xs text-[#6b7280] ">
                   Smart messages replies
                 </div>
               </div>
@@ -96,11 +96,11 @@ const SideBar = ({setOpenplanpopup} : any) => {
 
 
           {/* Comments */}
-          <li className="px-1 py-1">
+          <li className="">
             <Link
               to="/comments"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/comments"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/comments"
+                ? "text-[#2563eb] shadow-sm !bg-blue-50"
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
@@ -109,7 +109,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
               </span>
               <div className="flex text-sm flex-col">
                 <div className="font-medium text-sm ">Comments</div>
-                <div className="text-sm text-[#6b7280] ">
+                <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
                 </div>
               </div>
@@ -117,11 +117,11 @@ const SideBar = ({setOpenplanpopup} : any) => {
           </li>
 
           {/* Save Profile */}
-          <li className="px-1 py-1">
+          <li className="">
             <Link
               to="/save-profile"
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/save-profile"
-                ? "bg-blue-50 text-[#2563eb] shadow-sm"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/save-profile"
+                ? "text-[#2563eb] shadow-sm !bg-blue-50"
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
@@ -130,7 +130,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
               </span>
               <div className="flex flex-col">
                 <div className="font-medium text-sm ">Save Profile</div>
-                <div className="text-sm text-[#6b7280] ">
+                <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
                 </div>
               </div>
@@ -138,11 +138,11 @@ const SideBar = ({setOpenplanpopup} : any) => {
           </li>
 
           {/* 🔹 Manage Campaign (with Submenu) */}
-          <li className="px-1 py-1">
+          <li className="">
             <button
               onClick={() => setIsCampaignOpen(!isCampaignOpen)}
-              className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${isCampaignOpen
-                ? "text-[#2563eb] shadow-sm"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${isCampaignOpen
+                ? "text-[#2563eb] shadow-sm !bg-blue-50"
                 : "text-[#334155] hover:text-[#2563eb]"
                 }`}
             >
@@ -170,7 +170,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
                   <Link
                     to="/message-campaign"
                     className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-campaign"
-                      ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                      ? "text-[#2563eb] shadow-sm !bg-blue-50"
                       : "text-[#334155] hover:text-[#2563eb]"
                       }`}
                   >
@@ -192,7 +192,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
                   <Link
                     to="/connect-campaign"
                     className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
-                      ? "bg-blue-50 text-[#2563eb] shadow-sm"
+                      ? "text-[#2563eb] shadow-sm !bg-blue-50"
                       : "text-[#334155] hover:text-[#2563eb]"
                       }`}
                   >
@@ -215,13 +215,13 @@ const SideBar = ({setOpenplanpopup} : any) => {
 
        
           {/* LinkedIn  */}
-          {/* <li className="px-1 py-1">
+          {/* <li className="">
             <a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                goToLinkedIn();
-              }}
+                goToLinkedIn[();
+16px]   }[12px] hover:!bg-blue-50
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200
                 hover:text-[#2563eb] text-[#334155]`}
             >
@@ -239,10 +239,8 @@ const SideBar = ({setOpenplanpopup} : any) => {
 
         </ul>
       </div>
-      <div className="mt-auto p-4">
-        {/* Upgrade Button */}
+      {/* <div className="mt-auto p-4">
         <button
-          // to="/pricing"
           onClick={() => setOpenplanpopup(true)}
           className="flex ms-[25px] items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-[#2563eb] font-medium text-sm px-4 py-2 rounded-xl shadow-sm transition w-[160px]"
         >
@@ -250,7 +248,7 @@ const SideBar = ({setOpenplanpopup} : any) => {
           <span>Upgrade Plan</span>
         </button>
 
-        {/* Need Help Link */}
+      
         <div className="pt-3">
           <a
             href="https://evarobo.ai/contact-us/"
@@ -260,10 +258,10 @@ const SideBar = ({setOpenplanpopup} : any) => {
             Need Help ?
           </a>
         </div>
-      </div>
+      </div> */}
 
-      <hr className="w-full" />
-      <div className="px-1 py-1">
+      {/* <hr className="w-full" /> */}
+      <div className="px-1 py-1 mt-auto">
         <Header />
       </div>
       {/* <div className="leftmenu-bottom px-4 py-1 border-t-1 border-b-0 border-l-0 border-r-0  border border-color-gr2 ">

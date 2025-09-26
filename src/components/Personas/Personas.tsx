@@ -34,7 +34,7 @@ const Personas = () => {
   }, []);
 
   return (
-    <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+    <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
 
       <div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
         {/* Left Side */}

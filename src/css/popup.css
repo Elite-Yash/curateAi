@@ -33,7 +33,7 @@
 } */
 :root {
   --background-one: #2563eb;
-  --background-two: #ff5c35;
+  --background-two: #2563eb;
   --background-three: #f6f9fc;
   --background-white: #fff;
   --background-white-light: #4f596614;
@@ -42,11 +42,11 @@
   --white-color: #fff;
   --dark-color: #2a3344;
   --dec-color: #545c66;
-  --fill-one: #ff5c35;
+  --fill-one: #2563eb;
   --fill-dark: #000;
-  --border-color-one: #ff5c35;
+  --border-color-one: #2563eb;
   --border-color-gr: #4f59661f;
-  --stroke-one: #ff5c35;
+  --stroke-one: #2563eb;
 }
 
 .background-one {

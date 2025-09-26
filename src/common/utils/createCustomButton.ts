@@ -1,7 +1,7 @@
 function createCustomButton(label: any, imgSrc: any, altText: any) {
 
     const customeSpan = document.createElement("span");
-    customeSpan.setAttribute("style", "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: #ff5c35; border-radius: 50px; padding: 1px;margin-bottom: 10px;");
+    customeSpan.setAttribute("style", "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 7px; background: #2563eb; border-radius: 50px; padding: 1px;margin-bottom: 10px;");
     customeSpan.setAttribute("id", "curateai-extension-root");
 
     // Create contents span

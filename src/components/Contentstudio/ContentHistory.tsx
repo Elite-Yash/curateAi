@@ -184,10 +184,10 @@ const ContentHistory: React.FC = () => {
           className="grid gap-4 py-2 px-4 font-semibold bg-gray-100 rounded-t-lg"
           style={{ gridTemplateColumns: "140px 1fr 300px 120px" }}
         >
-          <div>Message Type</div>
-          <div>Message</div>
-          <div>Post URL</div>
-          <div>Date</div>
+          <div className="text-[14px]">Message Type</div>
+          <div className="text-[14px]">Message</div>
+          <div className="text-[14px]">Post URL</div>
+          <div className="text-[14px]">Date</div>
         </div>
 
         {/* Rows */}

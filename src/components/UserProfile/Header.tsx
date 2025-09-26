@@ -120,7 +120,7 @@ const Header = () => {
 
   return (
     <div className="header-baar flex flex-col c-padding-r w-full mt-auto">
-      <div className="flex flex-col justify-centerrelative mt-5 px-8 py-3">
+      <div className="flex flex-col justify-centerrelative mt-5 px-[25px] py-[15px]">
         <div className="flex justify-between items-center gap-5">
           <div className="header-r-menu flex items-center gap-8   ">
             <ul className="flex gap-5 items-center">
@@ -133,12 +133,15 @@ const Header = () => {
                     toggleDropdown();
                   }}
                 >
-                  <span className="icon w-8 h-8 rounded-full overflow-hidden border-2 border-solid border-[#2563eb] outline-1 outline-green-950 outline">
-                    <img
+                  <span className="icon w-8 text-[14px] h-8 rounded-full overflow-hidden border-2 border-solid border-[#2563eb] bg-[#2563eb] outline-1 outline-green-950 outline flex justify-center items-center text-white">
+                    {userDetails?.name ? userDetails.name.charAt(0).toUpperCase() : "U"}
+           
+
+                    {/* <img
                       src={getImage("user")}
                       alt="img"
                       className="w-full h-full rounded-full"
-                    />
+                    /> */}
                   </span>
                   <span className="text-sm dec-color font-normal">
                     <span className="flex flex-col">
@@ -148,8 +151,9 @@ const Header = () => {
                         </span>
                       ) : (
                         <>
-                          <span>{userDetails?.name}</span>
-                          <span
+                          <span className="text-[#0f172a] font-medium text-sm">{userDetails?.name}</span>
+                                   <span className="text-ts text-[#64478b]">Linkedin Connected</span>
+                          {/* <span
                             className={`${freePlan || activePlan ? "text-green" : "text-red"
                               } text-xs`}
                           >
@@ -160,7 +164,7 @@ const Header = () => {
                                   ? "Yearly Plan"
                                   : "Upgrade Plan"
                                 : "Subscribe"}
-                          </span>
+                          </span> */}
                         </>
                       )}
                     </span>

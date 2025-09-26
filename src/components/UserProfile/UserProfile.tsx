@@ -377,7 +377,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
                                 onClick={getCustomePortalLink}
                               >
                                 Manage Subscription
@@ -388,7 +388,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
                                 onClick={() => setOpenplanpopup(true)}
                               >
                                 Upgrade / Downgrade
@@ -399,7 +399,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
                                 onClick={cancelActivePlan}
                               >
                                 Cancel Subscription

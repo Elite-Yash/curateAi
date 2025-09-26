@@ -58,7 +58,7 @@ const actions = [
 const Home = () => {
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
         {/* EVA Command Center div */}
         <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
@@ -73,7 +73,7 @@ const Home = () => {
               <div className="text-2xl font-bold text-slate-900">
                 EVA Command Center
               </div>
-              <div className="text-base text-slate-600 text-[#717c8c] ">
+              <div className="text-base text-slate-600 text-[#475569] ">
                 Good morning! Ready to boost your LinkedIn presence?
               </div>
 
@@ -96,14 +96,14 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="shadow-lg bg-white rounded-2xl p-6 mb-6">
+        <div className="shadow-lg bg-white rounded-2xl p-6 mb-6 g-box">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <span className="text-blue-600 text-lg">⚡</span>
               <div className="text-xl font-bold ">Quick Actions</div>
             </div>
-            <span className="text-sm text-slate-500 cursor-pointer">
+            <span className="text-sm text-[#64748b] cursor-pointer">
               Choose your next move
             </span>
           </div>
@@ -125,13 +125,13 @@ const Home = () => {
                     <div className="font-medium text-slate-800">
                       {action.title}
                     </div>
-                    <div className="text-sm text-[#6b7280]">
+                    <div className="text-sm text-[#64748b]">
                       {action.description}
                     </div>
                   </div>
 
                   {/* Arrow */}
-                  <FaArrowRight className="w-4 h-4 text-[#6b7280] group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                  <FaArrowRight className="w-4 h-4 text-[#64748b] group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
                 </div>
               </Link>
             ))}
@@ -151,7 +151,7 @@ const Home = () => {
                     Recent Activity
                   </div>
                 </div>
-                <button className="text-sm text-blue-600 hover:underline">
+                <button className="text-sm text-[#64748b] hover:underline">
                   View All
                 </button>
               </div>
@@ -192,7 +192,7 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Profile Views
                       </div>
                     </div>
@@ -212,7 +212,7 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Connection Requests
                       </div>
                     </div>
@@ -232,7 +232,7 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Post Engagement
                       </div>
                     </div>
@@ -252,7 +252,7 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Messages Sent
                       </div>
                     </div>
@@ -265,7 +265,7 @@ const Home = () => {
           {/* Right Side */}
 
           <div className="w-full lg:w-1/3 space-y-6">
-            <div className="bg-white shadow-md rounded-xl p-5">
+            <div className="bg-white shadow-md rounded-xl p-5 g-box">
               {/* Heading */}
               <div className="flex items-center gap-2 mb-4">
                 {/* Logo */}
@@ -294,7 +294,7 @@ const Home = () => {
                       high
                     </span>
                   </div>
-                  <div className="text-sm text-[#6b7280] mb-3">
+                  <div className="text-sm text-[#64748b] mb-3">
                     Your audience is most active in 2 hours
                   </div>
                   <a
@@ -324,7 +324,7 @@ const Home = () => {
                         medium
                       </span>
                     </div>
-                    <div className="text-sm text-[#6b7280] mb-3">
+                    <div className="text-sm text-[#64748b] mb-3">
                       Add industry hashtags to increase reach by 40%
                     </div>
                     <a
@@ -354,7 +354,7 @@ const Home = () => {
                       low
                     </span>
                   </div>
-                  <div className="text-sm text-[#6b7280] mb-3">
+                  <div className="text-sm text-[#64748b] mb-3">
                     5 mutual connections found in target companies
                   </div>
                   <a
@@ -370,12 +370,13 @@ const Home = () => {
               <div className="border-t border-[#e3e9f1] pt-3 mt-8">
                 <a
                   href="#"
-                  className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+                  className="flex items-center text-sm font-medium text-[#475569] hover:text-[#0f172a] py-[10px] px-[16px] hover:bg-[#f5f5f5]"
                 >
                   <span className="">
                     <GiStarFormation className="text-xl me-2" />
                   </span>{" "}
-                  Get More Insights →
+                  Get More Insights <FaArrowRight className="ml-auto" />
+
                 </a>
               </div>
             </div>
@@ -415,7 +416,7 @@ const Home = () => {
                 </div>
               </CardContent>
             </Card> */}
-            <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
+            {/* <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
               <div className="pb-3">
                 <div className="flex items-center gap-2 text-lg">
                   <Target className="w-5 h-5 text-[#d97706]" />
@@ -427,7 +428,7 @@ const Home = () => {
                   <div className="font-semibold text-gray-800 text-base">
                     Post at optimal times
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#64748b] mt-1">
                     Tuesday-Thursday, 8-10 AM shows highest engagement
                   </div>
                 </div>
@@ -435,7 +436,7 @@ const Home = () => {
                   <div className="font-semibold text-gray-800 text-base">
                     Use relevant hashtags
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#64748b] mt-1">
                     3-5 industry hashtags boost visibility by 40%
                   </div>
                 </div>
@@ -443,12 +444,12 @@ const Home = () => {
                   <div className="font-semibold text-gray-800 text-base">
                     Engage authentically
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#64748b] mt-1">
                     Meaningful comments get 5x more responses
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
 
           </div>
