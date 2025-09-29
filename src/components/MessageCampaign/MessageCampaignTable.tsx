@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import CampaignModal from "../CampaignModal/CampaignModal";
 import { IoSearchOutline } from "react-icons/io5";
-import { Tooltip } from "flowbite-react";
 import { MdCampaign } from "react-icons/md";
 import Swal from "sweetalert2";
 import { apiService } from "../../common/config/apiService";
@@ -47,7 +46,7 @@ const MessageCampaignTable = () => {
           //     title: "Error!",
           //     text: response?.data?.message || "Failed to fetch campaigns",
           //     icon: "error",
-          //     confirmButtonColor: "#2563eb",
+          //     confirmButtonColor: "#ff5c35",
           //   });
           // }
         }
@@ -58,7 +57,7 @@ const MessageCampaignTable = () => {
         title: "Error!",
         text: "An unexpected error occurred while fetching campaigns.",
         icon: "error",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
       });
     }
   };
@@ -69,7 +68,7 @@ const MessageCampaignTable = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Yes, delete it!",
     });
@@ -91,7 +90,7 @@ const MessageCampaignTable = () => {
                 title: "Deleted!",
                 text: "Campaign has been deleted.",
                 icon: "success",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
               }).then(() => {
                 fetchCampaigns();
               });;
@@ -100,7 +99,7 @@ const MessageCampaignTable = () => {
                 title: "Error!",
                 text: response?.data?.message || "Failed to delete campaign.",
                 icon: "error",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
               });
             }
           }
@@ -111,7 +110,7 @@ const MessageCampaignTable = () => {
           title: "Error!",
           text: "An unexpected error occurred while deleting campaign.",
           icon: "error",
-          confirmButtonColor: "#2563eb",
+          confirmButtonColor: "#ff5c35",
         });
       }
     }
@@ -211,12 +210,12 @@ const MessageCampaignTable = () => {
 
 
   return (
-    <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
-      <div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
+    <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
+      <div className="flex items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg">
         {/* Left Side: Title */}
         <div className="mb-0">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r bg-[#2563eb] rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r bg-[#ff5c35] rounded-2xl flex items-center justify-center">
               <i className="fas fa-envelope text-xl text-white"></i>
             </div>
             <div>
@@ -240,7 +239,7 @@ const MessageCampaignTable = () => {
         {/* Right Side: Search + Buttons */}
         <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
           {/* Search Box */}
-          <div className="flex items-center bg-white shadow-sm rounded-xl px-3 py-2 w-100 transition border border-[#2563eb] h-[38px]">
+          <div className="flex items-center bg-white shadow-sm rounded-xl px-3 py-2 w-100 transition border border-[#ff5c35] h-[38px]">
             <IoSearchOutline className="w-5 h-5 text-gray-500" />
             <input
               type="text"
@@ -259,7 +258,7 @@ const MessageCampaignTable = () => {
           > */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+            className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
           >
             <MdCampaign className='text-xl' />
             <span>Add Campaign</span>
@@ -268,161 +267,157 @@ const MessageCampaignTable = () => {
         </div>
       </div>
 
-      <div className="flex justify-between gap-5 w-full g-box">
-        <div className="rounded-2xl w-full">
-          <div className="p-5 g-box g-box-table">
-            <div className="d-table h-connect-table !w-full max-h-[700px] overflow-auto">
-              <table className="w-full overflow-auto g-table">
-                <thead className="sticky top-0">
-                  <tr>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Name
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        URL
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Type
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Status
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Created At
-                      </span>
-                    </th>
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Max Connections
-                      </span>
-                    </th>
-                    {/* <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Start - End
-                      </span>
-                    </th> */}
-                    <th className="font-light text-base px-4 color00517C py-3 text-left">
-                      <span className="text-base uppercase font-semibold whitespace-nowrap">
-                        Actions
-                      </span>
-                    </th>
-                  </tr>
-                </thead>
+   <div className="flex justify-between gap-6 w-full g-box">
+  <div className="rounded-2xl w-full">
+    <div className="p-5 g-box g-box-table">
+      <div className="d-table h-connect-table !w-full max-h-[700px] overflow-auto">
+        <table className="w-full overflow-auto border rounded-lg border-[#e0eaf3]">
+          <thead className="sticky top-0 !bg-[#fff5f380]">
+            <tr
+              className=""
+            >
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                Name
+              </th>
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                URL
+              </th>
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                Type
+              </th>
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                Status
+              </th>
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                Created At
+              </th>
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                Max Connections
+              </th>
+              <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                Actions
+              </th>
+            </tr>
+          </thead>
 
-                <tbody>
-                  {filteredCampaigns.length > 0 ? (
-                    filteredCampaigns.map((campaign, index) => (
-                      <tr key={index} className="hover:bg-[#f9fafb]">
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                          {campaign.name || "N/A"}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
-                          {campaign.url ? (
-                            <a href={campaign.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                              {campaign.url.length > 30 ? campaign.url.substring(0, 30) + '...' : campaign.url}
-                            </a>
-                          ) : "N/A"}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
-                          {campaign.type || "N/A"}
-                        </td>
-                        <td className="px-4 py-3">
-                          {campaign.status === "active" ? (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-[#ECFDF5] text-[#047857] ring-1 ring-inset ring-[#059669]">
-                              <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
-                              Active
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-[#F9FAFB] text-[#374151] ring-1 ring-inset ring-[#4B5563]">
-                              <span className="w-2 h-2 rounded-full bg-[#6B7280]"></span>
-                              Inactive
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
-                          {campaign.created_at
-                            ? new Date(campaign.created_at).toLocaleDateString('en-GB')
-                            : "N/A"
-                          }
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
-                          {campaign.max_connections || "N/A"}
-                        </td>
-                        {/* start campaign end  */}
-                        {/* <td className="gap-2.5 justify-center flex font-light text-base max-[1350px]:text-sm px-4 border border-t-0 border-s-0 border-e-0 bordere7e9f6 color5a5783 pt-2 pb-2 text-center">
-                              <span className="cursor-pointer me-2" title="Start" id={`start-${campaign.id}`}>
-                                <i className="fas fa-play text-green" onClick={() => startCampaign(campaign.url, campaign.max_connections, campaign.id, campaign.message, campaign.type)}></i>
-                              </span>
-                              <span className="me-2 hidden" title="Connecting" id={`process-${campaign.id}`}>
-                                <i className="fa-solid fa-circle text-orange-500"></i>
-                              </span>
-                              <span className="cursor-pointer hidden" id={`end-${campaign.id}`} title="End" onClick={() => handleEndCampaign(campaign.id)}>
-                                <i className="fas fa-stop text-red"></i>
-                              </span>
-                            </td> */}
-                        <td className="px-4 py-3 text-sm text-gray-700">
-                          <div className="flex items-center gap-2">
-                            {/* Edit Button */}
-                            <button
-                              onClick={() => handleEditCampaign(campaign)}
-                              className="flex items-center justify-center w-8 h-8 rounded-full text-blue-600 bg-blue-100 hover:bg-blue-600 hover:text-white transition"
-                              title="Edit Campaign"
-                            >
-                              <i className="fa-solid fa-edit"></i>
-                            </button>
+          <tbody>
+            {filteredCampaigns.length > 0 ? (
+              filteredCampaigns.map((campaign, index) => (
+                <tr
+                  key={index}
+                  className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
+                >
+                  {/* Name */}
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                    {campaign.name || "N/A"}
+                  </td>
 
-                            {/* Delete Button */}
-                            <button
-                              onClick={() => deleteCampaign(campaign.id)}
-                              className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
-                              title="Delete Campaign"
-                            >
-                              <i className="fa-solid fa-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={7}>
-                        <div className="flex flex-col items-center text-center py-12 h-[650px] max-h-[648px] justify-center">
-                          <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
-                            <MdCampaign className="w-8 h-8 text-[#94a3b8]" />
-                          </div>
+                  {/* URL */}
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {campaign.url ? (
+                      <a
+                        href={campaign.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#ff5c35] hover:underline"
+                      >
+                        {campaign.url.length > 30
+                          ? campaign.url.substring(0, 30) + "..."
+                          : campaign.url}
+                      </a>
+                    ) : (
+                      "N/A"
+                    )}
+                  </td>
 
-                          {/* Title */}
-                          <div className="text-lg font-medium text-[#64748b] mb-2">
-                            {searchTerm
-                              ? "No campaigns found matching your search"
-                              : "No campaigns available"}
-                          </div>
+                  {/* Type */}
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {campaign.type || "N/A"}
+                  </td>
 
-                          {/* Subtitle */}
-                          <div className="text-sm text-[#92a0b5] max-w-md">
-                            {searchTerm
-                              ? "Try adjusting your search keywords or filters to find the right campaign."
-                              : "Create a new campaign to get started and manage your activities here."}
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+                  {/* Status */}
+                  <td className="px-4 py-3">
+                    {campaign.status === "active" ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-[#fff5f380] text-[#ff5c35] ring-1 ring-inset ring-[#ff5c35]">
+                        <span className="w-2 h-2 rounded-full bg-[#ff5c35]"></span>
+                        Active
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-[#f9fafb] text-[#374151] ring-1 ring-inset ring-[#4B5563]">
+                        <span className="w-2 h-2 rounded-full bg-[#6B7280]"></span>
+                        Inactive
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Created At */}
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {campaign.created_at
+                      ? new Date(campaign.created_at).toLocaleDateString("en-GB")
+                      : "N/A"}
+                  </td>
+
+                  {/* Max Connections */}
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {campaign.max_connections || "N/A"}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    <div className="flex items-center gap-2">
+                      {/* Edit */}
+                      <button
+                        onClick={() => handleEditCampaign(campaign)}
+                        className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fff5f380] hover:bg-[#ff5c35] hover:text-white transition"
+                        title="Edit Campaign"
+                      >
+                        <i className="fa-solid fa-edit"></i>
+                      </button>
+
+                      {/* Delete */}
+                      <button
+                        onClick={() => deleteCampaign(campaign.id)}
+                        className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
+                        title="Delete Campaign"
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7}>
+                  <div className="flex flex-col items-center text-center py-12 h-[650px] max-h-[648px] justify-center">
+                    <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
+                      <MdCampaign className="w-8 h-8 text-[#ff5c35]" />
+                    </div>
+
+                    {/* Title */}
+                    <div className="text-lg font-medium text-[#64748b] mb-2">
+                      {searchTerm
+                        ? "No campaigns found matching your search"
+                        : "No campaigns available"}
+                    </div>
+
+                    {/* Subtitle */}
+                    <div className="text-sm text-[#92a0b5] max-w-md">
+                      {searchTerm
+                        ? "Try adjusting your search keywords or filters to find the right campaign."
+                        : "Create a new campaign to get started and manage your activities here."}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
+    </div>
+  </div>
+</div>
+
 
       {/* Campaign Modal */}
       {isModalOpen && (

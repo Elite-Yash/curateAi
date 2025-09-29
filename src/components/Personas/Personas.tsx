@@ -34,7 +34,7 @@ const Personas = () => {
   }, []);
 
   return (
-    <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+    <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
 
       <div className="flex items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
         {/* Left Side */}
@@ -67,7 +67,7 @@ const Personas = () => {
           > */}
           <button
             // onClick={connectToCRM}
-            className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+            className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
           >
             <i className="fa-solid fa-globe"></i>
             <span>+ Add new Personas</span>

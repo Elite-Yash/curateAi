@@ -103,7 +103,7 @@ const SignIn = () => {
               <p>Please check your inbox for the verification link.</p>
             `,
               icon: "warning",
-              confirmButtonColor: "#2563eb",
+              confirmButtonColor: "#ff5c35",
               cancelButtonColor: "#6c757d",
               confirmButtonText: "Got it!",
             });
@@ -157,7 +157,7 @@ const SignIn = () => {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb] "
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35] "
               />
               <input
                 type="password"
@@ -165,7 +165,7 @@ const SignIn = () => {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35]"
               />
 
               <div className="text-end">
@@ -179,7 +179,7 @@ const SignIn = () => {
 
               <button
                 type="submit"
-                className="w-full h-14 text-white bg-[#2563eb] hover:bg-[#003ab6] font-medium rounded-lg text-base px-5 py-2.5"
+                className="w-full h-14 text-white bg-[#ff5c35] font-medium rounded-lg text-base px-5 py-2.5"
               >
                 Sign In
               </button>

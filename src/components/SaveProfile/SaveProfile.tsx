@@ -161,7 +161,7 @@ const SaveProfile = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Yes, delete it!",
     });
@@ -188,7 +188,7 @@ const SaveProfile = () => {
                 title: "Deleted!",
                 text: "Profile has been deleted.",
                 icon: "success",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
               });
             } else {
               Swal.fire({
@@ -206,7 +206,7 @@ const SaveProfile = () => {
           title: "Error!",
           text: "An unexpected error occurred.",
           icon: "error",
-          confirmButtonColor: "#2563eb",
+          confirmButtonColor: "#ff5c35",
         });
       }
     }
@@ -256,7 +256,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Export to CSV Failed",
         text: "No profiles available to export. Please add some profiles before exporting to CSV.",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
       });
       return;
     }
@@ -266,7 +266,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Subscription Required",
         text: "You need an active subscription to export data. Please subscribe.",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
         showCancelButton: true,
         cancelButtonText: "Maybe Later",
         confirmButtonText: "Subscribe Now",
@@ -323,7 +323,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Save to Drive Failed",
         text: "No profiles found to save. Please add some profiles before saving to drive.",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
       });
       return;
     }
@@ -333,7 +333,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Subscription Required",
         text: "You need an active subscription to export data. Please subscribe.",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
         showCancelButton: true,
         cancelButtonText: "Maybe Later",
         confirmButtonText: "Subscribe Now",
@@ -368,7 +368,7 @@ const SaveProfile = () => {
       inputPlaceholder: "Paste your Google Sheet URL here...",
       showCancelButton: true,
       confirmButtonText: "Save",
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       customClass: {
         title: "!text-3xl font-semibold",
         actions: "flex justify-end w-full gap-2 px-7",
@@ -439,7 +439,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Subscription Required",
         text: "You need an active subscription to connect CRM. Please subscribe.",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
         showCancelButton: true,
         cancelButtonText: "Maybe Later",
         confirmButtonText: "Subscribe Now",
@@ -459,7 +459,7 @@ const SaveProfile = () => {
         icon: "warning",
         title: "Connection Status: CRM Active",
         text: `You have successfully linked your account with ${crmConnection.crmName}.`,
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
         confirmButtonText: "OK",
         customClass: {
           title: "!text-[1.7rem] font-bold",
@@ -497,7 +497,7 @@ const SaveProfile = () => {
       `,
       showCancelButton: true,
       confirmButtonText: "Connect",
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       customClass: {
         title: "!text-3xl font-semibold",
         actions: "flex justify-end w-full gap-2 px-7",
@@ -610,7 +610,7 @@ const SaveProfile = () => {
 
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
         {/* --- Header Section (Title + Search + Buttons) --- */}
         <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm">
           {/* Left Side: Title */}
@@ -647,7 +647,7 @@ const SaveProfile = () => {
             >
               <button
                 onClick={connectToCRM}
-                className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+                className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
               >
                 <i className="fa-solid fa-globe"></i>
                 <span>Connect to CRM</span>
@@ -662,7 +662,7 @@ const SaveProfile = () => {
             >
               <button
                 onClick={saveToDrive}
-                className="flex items-center gap-2 border border-[#2563eb] text-[#2563eb] px-4 py-2 text-sm font-medium rounded-lg hover:bg-[#2563eb] hover:text-white transition"
+                className="flex items-center gap-2 border border-[#ff5c35] text-[#ff5c35] px-4 py-2 text-sm font-medium rounded-lg hover:bg-[#ff5c35] hover:text-white transition"
               >
                 <i className="fa-brands fa-google-drive"></i>
                 <span>Save to Drive</span>
@@ -677,7 +677,7 @@ const SaveProfile = () => {
             >
               <button
                 onClick={exportToCSV}
-                className="flex items-center gap-2 border border-[#2563eb] text-[#2563eb] px-4 py-2 text-sm font-medium rounded-lg hover:bg-[#2563eb] hover:text-white transition"
+                className="flex items-center gap-2 border border-[#ff5c35] text-[#ff5c35] px-4 py-2 text-sm font-medium rounded-lg hover:bg-[#ff5c35] hover:text-white transition"
               >
                 <i className="fa-solid fa-file-arrow-down"></i>
                 <span>Export CSV</span>
@@ -687,14 +687,14 @@ const SaveProfile = () => {
         </div>
 
         {/* All Box */}
-        <div className="grid grid-cols-6 gap-4 bg-white p-4 rounded-xl border border-[#e3e9f1] shadow-sm mb-4 g-box ">
+        <div className="grid grid-cols-6 gap-6 mb-6">
           {/* Box 1 */}
           <div
             onClick={() => setActiveButton("all")}
-            className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
+            className="p-4 bg-white rounded-xl shadow-sm flex items-center gap-3 cursor-pointer g-box"
           >
-            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
-              <FiUsers className="text-[#2563eb] text-lg" />
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#ff5c350f]">
+              <FiUsers className="text-[#ff5c35] text-xl" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900">
@@ -705,9 +705,9 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 2 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#edfdf2]">
-              <FiUserCheck className="text-green text-lg" />
+          <div className="p-4 bg-white rounded-xl shadow-sm flex items-center gap-3 cursor-pointer g-box">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+              <FiUserCheck className="text-[#ff5c35] text-xl" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900">0</div>
@@ -718,10 +718,10 @@ const SaveProfile = () => {
           {/* Box 3 */}
           <div
             onClick={() => setActiveButton("starred")}
-            className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
+            className="p-4 bg-white rounded-xl shadow-sm flex items-center gap-3 cursor-pointer g-box"
           >
-            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#fefce8]">
-              <FiStar className="text-yellow-400 text-lg" />
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#ff5c350f]">
+              <FiStar className="text-[#ff5c35] text-xl" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900">
@@ -732,9 +732,9 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 4 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
-              <FiBriefcase className="text-[#9333ea] text-lg" />
+          <div className="p-4 bg-white rounded-xl shadow-sm flex items-center gap-3 cursor-pointer g-box">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+              <FiBriefcase className="text-[#ff5c35] text-xl" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900">0</div>
@@ -743,9 +743,9 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 5 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#f7ecde]">
-              <FiTrendingUp className="text-[#ea580c] text-lg" />
+          <div className="p-4 bg-white rounded-xl shadow-sm flex items-center gap-3 cursor-pointer g-box">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+              <FiTrendingUp className="text-[#ff5c35] text-xl" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900">0</div>
@@ -754,9 +754,9 @@ const SaveProfile = () => {
           </div>
 
           {/* Box 6 */}
-          <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
-              <FiGlobe className="text-[#2563eb] text-lg" />
+          <div className="p-4 bg-white rounded-xl shadow-sm flex items-center gap-3 cursor-pointer g-box">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#ff5c350f]">
+              <FiGlobe className="text-[#ff5c35] text-xl" />
             </div>
             <div>
               <div className="text-xl font-bold text-slate-900">0</div>
@@ -766,9 +766,9 @@ const SaveProfile = () => {
         </div>
 
         {/* search and 3 buttons */}
-        <div className="flex w-full bg-white justify-between items-center overflow-hidden mb-4 p-4 g-box gap-2">
+        <div className="flex w-full bg-white justify-between items-center overflow-hidden mb-6 p-4 g-box gap-2">
           {/* --- Search Box Left --- */}
-          <div className="flex items-center bg-white shadow-sm rounded-xl px-3 py-2 w-100 transition border border-[#2563eb] h-[38px]">
+          <div className="flex items-center bg-white shadow-sm rounded-xl px-3 py-2 w-100 transition border border-[#ff5c35] h-[38px]">
             <IoSearchOutline className="w-5 h-5 text-gray-500" />
             <input
               type="text"
@@ -789,9 +789,9 @@ const SaveProfile = () => {
             >
               <button
                 onClick={() => setActiveButton("all")}
-                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "all"
-                  ? "bg-[#2563eb] text-white"
-                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#ff5c35] transition ${activeButton === "all"
+                  ? "bg-[#ff5c35] text-white"
+                  : "text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white"
                   }`}
               >
                 <i className="fa-solid fa-user-group text-sm"></i>
@@ -807,9 +807,9 @@ const SaveProfile = () => {
             >
               <button
                 onClick={() => setActiveButton("starred")}
-                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "starred"
-                  ? "bg-[#2563eb] text-white"
-                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#ff5c35] transition ${activeButton === "starred"
+                  ? "bg-[#ff5c35] text-white"
+                  : "text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white"
                   }`}
               >
                 <i className="fa-solid fa-star text-sm"></i>
@@ -825,9 +825,9 @@ const SaveProfile = () => {
             >
               <button
                 onClick={() => setActiveButton("recent")}
-                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#2563eb] transition ${activeButton === "recent"
-                  ? "bg-[#2563eb] text-white"
-                  : "text-[#2563eb] hover:bg-[#2563eb] hover:text-white"
+                className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg border border-[#ff5c35] transition ${activeButton === "recent"
+                  ? "bg-[#ff5c35] text-white"
+                  : "text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white"
                   }`}
               >
                 <i className="fa-solid fa-clock text-sm"></i>

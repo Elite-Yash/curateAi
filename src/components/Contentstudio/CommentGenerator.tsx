@@ -259,7 +259,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
       {/* Input Section */}
       <div className="shadow-lg bg-white rounded-xl p-6 space-y-6">
         <div className="flex items-center gap-2 font-semibold text-base">
-          <MessageCircle className="w-5 h-5 text-blue-600" />
+          <MessageCircle className="w-5 h-5 text-[#ff5c35]" />
           Generate LinkedIn Comment
         </div>
 
@@ -269,7 +269,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
             What do you want to comment about? <span className="text-red">*</span>
           </label>
           <div
-            className={`rounded-lg overflow-hidden border ${ispostContextActive ? "active" : "border-[#cbd5e1]"
+            className={`rounded-lg overflow-hidden border ${ispostContextActive ? "active" : "border-[#e2e8f0]"
               } custom_textarea relative`}
           >
             <textarea
@@ -298,7 +298,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
             <select
             value={motive}
             onChange={(e) => setMotive(e.target.value)}
-            className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+            className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
             disabled={isGenerating}
           >
             {COMMENT_MOTIVES.map((motive, index) => (
@@ -320,7 +320,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
             <select
             value={tone}
             onChange={(e) => setTone(e.target.value)}
-            className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+            className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
             disabled={isGenerating}
           >
             {TONES.map((toneOption, index) => (
@@ -349,7 +349,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full p-2 border text-sm rounded-md border-[#cbd5e1] pl-[30px]"
+              className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] pl-[30px] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
               disabled={isGenerating}
             >
               {LANGUAGES.map((lang, index) => (
@@ -368,7 +368,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
         <button
           onClick={handleSubmit}
           disabled={isGenerating}
-          className="w-full flex items-center justify-center gap-2 bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
+          className="w-full flex items-center justify-center gap-2 bg-[#ff5c35] text-white font-medium py-2 px-4 rounded-lg transition"
         >
           {isGenerating ? (
             <>
@@ -384,11 +384,11 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
         </button>
 
         {/* Tips */}
-        <div className="p-4 bg-[#f0fdf4] rounded-lg">
-          <div className="font-semibold text-base text-[#14532d] mb-2">
+        <div className="p-4 bg-[#ff5c350f] rounded-lg">
+          <div className="font-semibold text-base mb-2">
             💡 Tips for better posts:
           </div>
-          <ul className="text-sm text-[#166534] space-y-1">
+          <ul className="text-sm space-y-1">  
             <li>• Add personal insights or experiences</li>
             <li>• Ask thoughtful follow-up questions</li>
             <li>• Tag relevant people when appropriate</li>
@@ -402,7 +402,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
       <div className="shadow-lg bg-white rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2 font-semibold text-base">
-            <MessageCircle className="w-5 h-5 text-blue-600" />
+            <MessageCircle className="w-5 h-5 text-[#ff5c35]" />
             Generated Comment
           </div>
           {generatedComment && (
@@ -433,19 +433,19 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
                 <span>{generatedComment.length} characters</span>
                 <span>{generatedComment.split(" ").length} words</span>
               </div>
-              <span className="px-2 py-1 border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition rounded-lg cursor-pointer">
+              <span className="px-2 py-1 border border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition rounded-lg cursor-pointer">
                 Ready to post
               </span>
             </div> */}
             <div className="flex gap-3">
               <button
                 onClick={copyToClipboard}
-                className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+                className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
               >
                 <Copy className="w-4 h-4" />
                  {copied ? "Comment Copied!" : "Copy Comment"}
               </button>
-              <button className="flex-1 flex items-center justify-center rounded-lg gap-2 bg-[#2563eb] text-white py-2">
+              <button className="flex-1 flex items-center justify-center rounded-lg gap-2 bg-[#ff5c35] text-white py-2">
                 <LinkIcon className="w-4 h-4" />
                 Go to LinkedIn
               </button>
@@ -453,10 +453,10 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-              <MessageCircle className="w-8 h-8 text-[#94a3b8]" />
+            <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="w-8 h-8 text-[#ff5c35]" />
             </div>
-            <p className="text-[#64748b] font-medium !text-xl mb-2">
+            <p className="font-medium text-[#64748b] !text-xl mb-2">
               No Comment generated yet
             </p>
             <p className="!text-base text-[#94a3b8]">

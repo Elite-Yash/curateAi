@@ -28,7 +28,7 @@
 } */
 
 :root {
-  --background-one: #2563eb;
+  --background-one: #ff5c35;
   --background-two: #ff5c35;
   --background-three: #f6f9fc;
   --background-white: #fff;
@@ -160,7 +160,7 @@ h4.popup-title {
 /* .popup-button-submit {background: #6841ea !important;color: #fff;} */
 
 .popup-button-insert {
-  background-color: #2563eb;
+  background-color: #ff5c35;
   color: #fff;
 }
 
@@ -325,4 +325,7 @@ span.close-box {
 } */
 
 
-.custom_textarea.active{border: 1px solid #009fff; outline: 1px solid #009fff;}
+.custom_textarea.active{border: 1px solid #ff5c35; outline: 1px solid #ff5c35;}
+
+/*--font family roboto--*/
+.robotofont, body {   font-family: "Roboto", sans-serif !important;}

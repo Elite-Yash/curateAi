@@ -13,11 +13,11 @@ const ActivePlanModal: React.FC<ModalWrapperProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] backdrop-blur-base">
-      <div className="relative bg-[#ffffff] rounded-2xl shadow-2xl p-6 animate-fadeIn w-[25%]">
+      <div className="relative bg-[#ffffff] rounded-2xl shadow-2xl p-6 animate-fadeIn w-[31%]">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-3 mb-4">
           <div className="flex items-center gap-3">
-            <span className="p-1 border-[2px] border-[#2563eb] rounded-full">
+            <span className="p-1 border-[2px] border-[#ff5c35] rounded-full">
               <img src={getImage("fLogo")} alt="logo" className="w-8 h-8" />
             </span>
             <h4 className="font-semibold text-lg text-[#1f2937]">

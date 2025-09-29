@@ -128,7 +128,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
       <div className="inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="popup-container bg-white shadow-lg w-96 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-3xl w-400">
           <div className="relative save-pr header-top p-9 py-6 flex justify item-center">
-            <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb]">
+            <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
               <img src={getImage("fLogo")} alt="img" className="" />
             </span>
             <h4 className="popup-title font-semibold text-xl leading-10">
@@ -163,7 +163,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
                       className="w-full h-full"
                     />
                   </span>
-                  <span className="text-[#2563eb] !text-2xl font-light">
+                  <span className="text-[#ff5c35] !text-2xl font-light">
                     Loading...
                   </span>
                 </div>
@@ -230,7 +230,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="w-[36rem] h-[4rem] flex justify-center items-center gap-2 rounded-[8px] bg-[#2563eb] text-white font-medium hover:bg-[#003ab6] disabled:bg-gray-400"
+                  className="w-[36rem] h-[4rem] flex justify-center items-center gap-2 rounded-[8px] bg-[#ff5c35] text-white font-medium hover:bg-[#003ab6] disabled:bg-gray-400"
                 >
                   {loading ? "Saving..." : "Save"}
                 </button>

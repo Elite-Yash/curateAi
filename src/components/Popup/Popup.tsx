@@ -39,7 +39,7 @@ const Popup: React.FC = () => {
         <div className={`flex-item justify-center item-center p-6 background-three ${login ? "w-[345px]" : "w-[300px]"}`}>
             {/* Header with logo and title */}
             <div className="flex items-center gap-2 mb-3">
-                <img src={getImage('fLogo')} className="re-logo-b-o transition w-12 border-[2.5px] border-solid rounded-full border-[#2563eb]" alt="img" />
+                <img src={getImage('fLogo')} className="re-logo-b-o transition w-12 border-[2.5px] border-solid rounded-full border-[#ff5c35]" alt="img" />
                 <span className="color-one uppercase larger font-semibold dark-color text-xl">Evarobo</span>
             </div>
 

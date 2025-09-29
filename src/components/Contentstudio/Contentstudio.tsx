@@ -8,12 +8,12 @@ const Contentstudio = () => {
   const [activeTab, setActiveTab] = useState("posts");
 
   return (
-    <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+    <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
         {/*Headng */}
-           <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
+           <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg shadow-sm g-box">
                 <div className="mb-6">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-r bg-blue-700 rounded-2xl flex items-center justify-center">
                             <FileText className="w-6 h-6 text-white" />
                         </div>
 
@@ -38,16 +38,15 @@ const Contentstudio = () => {
       <div className="space-y-6">
         {/* Tab Buttons */}
         <div
-          className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm overflow-hidden p-[5px] shadow-4 !rounded-[10px]"
-          style={{ border: "0.5px solid #d1d5db" }}
+          className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm overflow-hidden p-[5px] g-box !rounded-[10px] gap-[5px]"
         >
           <button
             onClick={() => setActiveTab("posts")}
-            className={`flex items-center justify-center gap-2 !py-1 text-sm transition 
+            className={`flex items-center justify-center gap-2 !py-2 text-sm transition 
               ${
                 activeTab === "posts"
-                  ? "bg-[#eff6ff] text-[#1d4ed8] rounded-sm shadow-3 !font-semibold"
-                  : "text-[#737373] hover:bg-[#f8fafc] font-medium"
+                  ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                  : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
           >
             <FileText className="w-4 h-4" />
@@ -56,11 +55,11 @@ const Contentstudio = () => {
 
           <button
             onClick={() => setActiveTab("comments")}
-            className={`flex items-center justify-center gap-2 !py-1 text-sm transition 
+            className={`flex items-center justify-center gap-2 !py-2 text-sm  transition 
               ${
                 activeTab === "comments"
-                  ? "bg-[#eff6ff] text-[#1d4ed8] rounded-sm shadow-3 !font-semibold"
-                  : "text-[#737373] hover:bg-[#f8fafc] font-medium"
+                  ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                  : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
           >
             <MessageCircle className="w-4 h-4" />
@@ -69,11 +68,11 @@ const Contentstudio = () => {
 
           <button
             onClick={() => setActiveTab("history")}
-            className={`flex items-center justify-center gap-2 !py-1 text-sm transition 
+            className={`flex items-center justify-center gap-2 !py-2 text-sm transition 
               ${
                 activeTab === "history"
-                  ? "bg-[#eff6ff] text-[#1d4ed8] rounded-sm shadow-3 !font-semibold"
-                  : "text-[#737373] hover:bg-[#f8fafc] font-medium"
+                  ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                  : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
           >
             <Sparkles className="w-4 h-4" />

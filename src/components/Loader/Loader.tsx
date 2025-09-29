@@ -7,7 +7,7 @@ const Loader = () => {
         <span className="loader relative w-24 h-24 object-cover p-2">
           <img src={getImage("fLogo")} alt="img" className="w-full h-full" />
         </span>
-        <span className="text-[#2563eb] text-xl font-light">Loading...</span>
+        <span className="text-[#ff5c35] text-xl font-light">Loading...</span>
       </div>
     </>
   );

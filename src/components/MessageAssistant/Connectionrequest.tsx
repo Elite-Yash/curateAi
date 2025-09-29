@@ -53,7 +53,7 @@ const Connectionrequest = () => {
             {/* Input Section */}
             <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm p-6 rounded-lg">
                 <div className="flex items-center gap-2 first-line: font-semibold text-base mb-6">
-                    <Users className="w-5 h-5 text-blue-600" />
+                    <Users className="w-5 h-5 text-[#ff5c35]" />
                     Generated Connection Request
                 </div>
 
@@ -68,7 +68,7 @@ const Connectionrequest = () => {
                                 placeholder="e.g., Sarah Johnson"
                                 value={profileName}
                                 onChange={(e) => setProfileName(e.target.value)}
-                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
+                                className="w-full border border-[#e2e8f0] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                             />
                         </div>
 
@@ -78,7 +78,7 @@ const Connectionrequest = () => {
                                 placeholder="e.g., Senior Marketing Director"
                                 value={profileTitle}
                                 onChange={(e) => setProfileTitle(e.target.value)}
-                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
+                                className="w-full border border-[#e2e8f0] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                             />
                         </div>
 
@@ -88,7 +88,7 @@ const Connectionrequest = () => {
                                 placeholder="e.g., Microsoft"
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
-                                className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0080cc] focus:border-[#0080cc]"
+                                className="w-full border border-[#e2e8f0] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                             />
                         </div>
                     </div>
@@ -99,7 +99,7 @@ const Connectionrequest = () => {
                         <select
                             value={connectionReason}
                             onChange={(e) => setConnectionReason(e.target.value)}
-                            className="w-full border border-[#cbd5e1] rounded-lg p-2 text-sm"
+                            className="w-full border border-[#e2e8f0] rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                         >
                             {connectionReasons.map((reason) => (
                                 <option key={reason.value} value={reason.value}>
@@ -113,7 +113,7 @@ const Connectionrequest = () => {
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-[#334155]">Personal Note (Optional)</label>
                         <div
-                            className={`rounded-lg overflow-hidden border ${isPersonalNoteActive ? "active" : "border-[#cbd5e1]"
+                            className={`rounded-lg overflow-hidden border ${isPersonalNoteActive ? "active" : "border-[#e2e8f0]"
                                 } custom_textarea`}
                         >
                             <textarea
@@ -131,12 +131,12 @@ const Connectionrequest = () => {
                     <button
                         onClick={generateConnectionRequest}
                         disabled={!profileName.trim() || isGenerating}
-                        className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 disabled:opacity-50"
+                        className="w-full flex items-center justify-center gap-2 bg-[#ff5c35] text-white rounded-lg py-2 +"
                     >
                         {isGenerating ? (
                             <>
                                 <RefreshCw className="w-4 h-4 animate-spin" />
-                                Generating Request...
+                                Generating Request...+
                             </>
                         ) : (
                             <>
@@ -146,11 +146,11 @@ const Connectionrequest = () => {
                         )}
                     </button>
                     {/* Quick Tips */}
-                    <div className="p-4 bg-[#eff6ff] rounded-lg">
-                        <div className="font-semibold text-base text-[#1e3a8a] mb-2">
+                    <div className="p-4 bg-[#ff5c350f] rounded-lg">
+                        <div className="font-semibold  text-base mb-2">
                             🤝 Connection Best Practices:
                         </div>
-                        <ul className="text-sm text-[#1e40af] space-y-1">
+                        <ul className="text-sm space-y-1">
                             <li>• Always personalize your message</li>
                             <li>• Mention mutual connections if any</li>
                             <li>• Be clear about why you want to connect</li>
@@ -165,7 +165,7 @@ const Connectionrequest = () => {
             <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm p-6 rounded-lg">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2 first-line: font-semibold text-base">
-                        <Send className="w-5 h-5 text-blue-600" />
+                        <Send className="w-5 h-5 text-[#ff5c35]" />
                         Generated Connection Request
                     </div>
                     {generatedRequest && (
@@ -183,7 +183,7 @@ const Connectionrequest = () => {
                 {generatedRequest ? (
                     <div className="space-y-4">
                         {/* Connection Request Preview */}
-                        <div className="p-4 border border-[#cbd5e1] rounded-lg bg-slate-50">
+                        <div className="p-4 border border-[#e2e8f0] rounded-lg bg-slate-50">
                             <div className="flex items-start gap-3 mb-3">
                                 <div className="w-8 h-8 bg-[#bfdbfe] rounded-full flex items-center justify-center">
                                     <Send className="w-4 h-4 text-blue-600" />
@@ -220,7 +220,7 @@ const Connectionrequest = () => {
 
                         {/* Action Buttons */}
                         <div className="flex gap-3">
-                            <button onClick={copyToClipboard} className="flex-1 flex items-center justify-center gap-2 text-sm font-medium rounded-lg border border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition">
+                            <button onClick={copyToClipboard} className="flex-1 flex items-center justify-center gap-2 text-sm font-medium rounded-lg border border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition">
                                 <Copy className="w-4 h-4" />
                                 Copy Request
                             </button>
@@ -232,8 +232,8 @@ const Connectionrequest = () => {
                     </div>
                 ) : (
                     <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Users className="w-8 h-8 text-[#94a3b8]" />
+                        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Users className="w-8 h-8 text-[#ff5c35]" />
                         </div>
                         <p className="text-[#64748b] font-medium !text-xl mb-2">
                             No connection request generated yet

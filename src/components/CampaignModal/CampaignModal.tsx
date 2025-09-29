@@ -88,7 +88,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 text: "You haven't made any changes to update.",
                 icon: "info",
                 confirmButtonText: "OK",
-                confirmButtonColor: "#2563eb"
+                confirmButtonColor: "#ff5c35"
             });
             return;
         }
@@ -139,7 +139,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             title: "Success!",
                             text: "Campaign created successfully!",
                             icon: "success",
-                            confirmButtonColor: "#2563eb",
+                            confirmButtonColor: "#ff5c35",
                         }).then(() => {
                             closeModalPoup();
                             onCampaignCreated();
@@ -150,7 +150,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             title: "Error!",
                             text: response?.message || "Failed to create campaign",
                             icon: "error",
-                            confirmButtonColor: "#2563eb",
+                            confirmButtonColor: "#ff5c35",
                         });
                     }
                 }
@@ -163,7 +163,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 title: "Error!",
                 text: "An unexpected error occurred while creating campaign.",
                 icon: "error",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
             });
         }
     };
@@ -208,7 +208,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             title: "Success!",
                             text: "Campaign updated successfully!",
                             icon: "success",
-                            confirmButtonColor: "#2563eb",
+                            confirmButtonColor: "#ff5c35",
                         }).then(() => {
                             closeModalPoup();
                             onCampaignCreated();
@@ -219,7 +219,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             title: "Error!",
                             text: response?.message || "Failed to update campaign",
                             icon: "error",
-                            confirmButtonColor: "#2563eb",
+                            confirmButtonColor: "#ff5c35",
                         });
                     }
                 }
@@ -232,7 +232,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 title: "Error!",
                 text: "An unexpected error occurred while updating campaign.",
                 icon: "error",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
             });
         }
     };
@@ -299,7 +299,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                     >
                         {/* Modal Header */}
                         <div className="relative header-top p-9 py-4 flex justify-between item-center">
-                            <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#2563eb]">
+                            <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
                                 <img src={getImage("fLogo")} alt="img" className="" />
                             </span>
                             <h4 className="popup-title font-semibold text-xl leading-10">
@@ -334,10 +334,10 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     id="name"
                                                     // disabled={!!editableCampaigns}
                                                     {...register("name", { required: !editableCampaigns && "Name is required" })}
-                                                    // className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 ${errors.name ? "border-red" : ""
+                                                    // className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 ${errors.name ? "border-red" : ""
                                                     //     } ${nonEditableStyle}`}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] !p-2 `}
-                                                    placeholder="Campaign Name"
+                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] !p-2 `}
+                                                    placeholder="Campaign Name" 
                                                 />
                                                 {errors.name && (
                                                     <div className="text-red text-sm">{errors.name.message}</div>
@@ -355,7 +355,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                         required: !editableCampaigns && "Please select a Type"
                                                     })}
                                                     // disabled={!!editableCampaigns}
-                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm text-[#6b7280] focus:text-[#000] :ring-[#0080cc] focus:border-[#0080cc] p-2 `}
+                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm text-[#6b7280] focus:text-[#000] :ring-[#ff5c35] focus:border-[#ff5c35] p-2 `}
                                                 >
                                                     <option value="">Select Type</option>
                                                     <option value="csv">CSV</option>
@@ -378,7 +378,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                         {...register("url", {
                                                             required: selectedType === "url" && "URL is required",
                                                         })}
-                                                        className="mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2"
+                                                        className="mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
                                                         placeholder="https://example.com"
                                                     />
                                                     {errors.url && (
@@ -423,7 +423,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                         min: { value: 1, message: "Must be at least 1" },
                                                         max: { value: 100, message: "Must be 100 or less" },
                                                     })}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] !p-2`}
+                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] !p-2`}
                                                     placeholder="Enter maximum connections"
                                                     min="1"
                                                     max="100"
@@ -446,7 +446,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                         setValue("messageName", selectedMessage ? selectedMessage.name : "");
                                                         setValue("message", selectedMessage ? selectedMessage.message : "");
                                                     }}
-                                                    className="mt-1 block w-full rounded-md border-[#d1d5db] text-sm text-[#6b7280] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 mb-2"
+                                                    className="mt-1 block w-full rounded-md border-[#d1d5db] text-sm text-[#6b7280] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 mb-2"
                                                 >
                                                     <option value="">Select a predefined message</option>
                                                     {templateData.map((data: any) => {
@@ -463,7 +463,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                 <textarea
                                                     id="message"
                                                     {...register("message", { required: "Message is required" })}
-                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm focus:ring-[#0080cc] focus:border-[#0080cc] p-2 $ resize-none`}
+                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 $ resize-none`}
                                                     style={{ height: "100px" }}
                                                     placeholder="Add Your Message"
                                                 ></textarea>
@@ -495,7 +495,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="w-full bg-[#2563eb] hover:bg-[#2455c0ee] text-white py-2 px-4 font-medium text-sm rounded-md disabled:opacity-50"
+                                                className="w-full bg-[#ff5c35] hover:bg-[#2455c0ee] text-white py-2 px-4 font-medium text-sm rounded-md disabled:opacity-50"
                                             >
                                                 {isLoading ? (editableCampaigns ? "Updating..." : "Saving...") : (editableCampaigns ? "Update" : "Save")}
                                             </button>

@@ -7,7 +7,7 @@
 }
 
 /* :root {
-    --background-one: #6841ea;
+    --background-one: #6841ea;body
     --background-two: #8667ed;
     --background-three: #f4faff;
     --background-white: #fff;
@@ -24,19 +24,19 @@
     --stroke-one: #6841ea;
 } */
 :root {
-  --background-one: #2563eb;
+  --background-one: #ff5c35;
   --background-two: #ff5c35;
   --background-three: #f6f9fc;
   --background-white: #fff;
   --background-white-light: #4f596614;
   --dark-background: #192733;
-  --color-one: #2563eb;
+  --color-one: #ff5c35;
   --white-color: #fff;
   --dark-color: #2a3344;
   --dec-color: #545c66;
   --fill-one: #ff5c35;
   --fill-dark: #000;
-  --border-color-one: #2563eb;
+  --border-color-one: #ff5c35;
   --border-color-gr: #4f59661f;
   --stroke-one: #ff5c35;
 }
@@ -185,7 +185,10 @@ body,
 
 .left-menu a.active,
 .left-menu a:hover {
-  background: #fff !important;
+  background: #ff5c350f !important;
+}
+.left-menu a.active .text-\[\#6b7280\], .left-menu a:hover .text-\[\#6b7280\] {
+    color: #ff5c35;
 }
 
 .left-menu a.active {
@@ -193,7 +196,7 @@ body,
 }
 
 /* .left-menu a:hover {
-    border-color: #2563eb !important;
+    border-color: #e2e8f0!important;
 } */
 
 .left-menu a.active span,
@@ -201,7 +204,7 @@ body,
 .left-menu a.active i,
 .left-menu a:hover i,
 .left-menu a:hover span {
-  color: #2563eb !important;
+  color: #ff5c35!important;
 }
 
 .g-box {
@@ -306,7 +309,7 @@ body,
 } */
 .drop-menu button:hover,
 .leftmenu-bottom a.bg-white:hover {
-  background: #2563eb !important;
+  background: #ff5c35!important;
   color: #fff !important;
 }
 
@@ -318,7 +321,7 @@ body,
 
 .backgroundgradient6841ea {
   /* background: linear-gradient(184deg, #6841ea 0%, #a387ff 100%); */
-  background: linear-gradient(184deg, #ff5c35 0%, #fe987f 100%);
+  background: linear-gradient(184deg, #e2e8f0 0%, #fe987f 100%);
 }
 
 /* ------- */
@@ -363,11 +366,11 @@ body,
 }
 
 .price-box.g-box {
-  border: 1px solid #2563eb;
+  border: 1px solid #ff5c35;
 }
 
 .price-box.g-box.active {
-  border: 1px solid #2563eb;
+  border: 1px solid #ff5c35;
 }
 
 .price-box i.fa-solid::before {
@@ -428,3 +431,6 @@ body,
   scrollbar-width: none; /* Firefox */
 }
 
+/*--font family roboto--*/
+.robotofont, body {   font-family: "Roboto", sans-serif !important;}
+ 

@@ -57,7 +57,7 @@ const Comments = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Yes, delete it!",
     });
@@ -89,7 +89,7 @@ const Comments = () => {
                 title: "Deleted!",
                 text: "Your comment has been deleted.",
                 icon: "success",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
               });
             } else {
               throw new Error(result?.message || "Failed to delete comment.");
@@ -102,7 +102,7 @@ const Comments = () => {
           title: "Error!",
           text: "Something went wrong while deleting the comment.",
           icon: "error",
-          confirmButtonColor: "#2563eb",
+          confirmButtonColor: "#ff5c35",
         });
       }
     }
@@ -124,8 +124,8 @@ const Comments = () => {
 
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
-        <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
+      <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
+        <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg g-box">
           <div className="mb-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-green to-green rounded-2xl flex items-center justify-center">
@@ -148,7 +148,7 @@ const Comments = () => {
           </div>
         </div>
 
-        <div className="flex justify-between gap-5 w-full">
+        <div className="flex justify-between gap-6 w-full">
           <div className="rounded-2xl w-full">
             <div className="bg-[#f5f8fc]">
               {load ? (
@@ -156,7 +156,7 @@ const Comments = () => {
                   <Loader />
                 </div>
               ) : commentsData.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[795px] overflow-auto scrollbar-hide">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {commentsData.map((comment, index) => {
                     const fullComment = comment?.comment || "N/A";
                     return (
@@ -167,7 +167,7 @@ const Comments = () => {
                         {/* Icon + Heading */}
                         <div className="flex items-center gap-3 justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E6F0FA] text-[#2563eb]">
+                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f] text-[#ff5c35]">
                               <i className="fa-regular fa-comment text-lg"></i>
                             </div>
                             <div className="g-box-title sticky top-0 bg-white">
@@ -179,7 +179,7 @@ const Comments = () => {
                           </div>
                           <button
                             onClick={() => deleteComment(comment?.id)}
-                            className=" w-10 h-10 flex items-center justify-center rounded-full text-base cursor-pointer text-[#2563eb] hover:text-[#003ab6] ms-0.5"
+                            className=" w-10 h-10 flex items-center justify-center rounded-full text-base cursor-pointer text-red ms-0.5"
                             title="Delete Comment"
                           >
                             <i className="fa-solid fa-trash"></i>
@@ -187,14 +187,14 @@ const Comments = () => {
                         </div>
 
                         {/* Comment Text */}
-                        <p className="leading-relaxed font-medium text-lg text-graydark p-4">
+                        <p className="leading-relaxed font-medium !text-base text-[#717c8c] p-4">
                           {fullComment.length > 120
                             ? fullComment.slice(0, 120) + "..."
                             : fullComment}
                           {fullComment.length > 120 && (
                             <button
                               onClick={() => openModal(comment)}
-                              className="text-[#2563eb] hover:text-[#003ab6] text-sm font-medium hover:underline w-fit"
+                              className="text-[#ff5c35] hover:text-[#003ab6] text-sm font-medium hover:underline w-fit"
                             >
                               Read More
                             </button>
@@ -207,7 +207,7 @@ const Comments = () => {
                             href={comment.post_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm text-[#2563eb] hover:text-[#003ab6] truncate"
+                            className="flex items-center gap-1 text-sm text-[#ff5c35] hover:text-[#003ab6] truncate"
                           >
                             <i className="fa-solid fa-location-dot text-xs"></i>
                             {comment.post_url
@@ -215,16 +215,16 @@ const Comments = () => {
                                 ? comment.post_url.substring(0, 40) + "..."
                                 : comment.post_url
                               : "N/A"}
-                            <IoLogoLinkedin className="text-xl text-[#2563eb]" />
+                            <IoLogoLinkedin className="text-xl text-[#ff5c35]" />
                           </a>
                         </div> */}
                         <a
                           href={comment.post_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-sm text-[#2563eb] hover:text-[#003ab6] truncate mt-auto"
+                          className="flex items-center gap-1 text-sm text-[#ff5c35] truncate mt-auto"
                         >
-                          <i className="fa-solid fa-location-dot text-xs"></i>
+                          <i className="fa-solid fa-location-dot text-sm text-[#eb2448]"></i>
 
                           {comment.post_url
                             ? comment.post_url.length > 40
@@ -234,7 +234,7 @@ const Comments = () => {
 
                           {/* ✅ Icon conditionally render karo */}
                           {comment.post_url?.includes("linkedin.com") ? (
-                            <IoLogoLinkedin className="text-xl text-[#2563eb]" />
+                            <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
                           ) : null}
                         </a>
 
@@ -283,7 +283,7 @@ const Comments = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
               <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
-                <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12">
+                <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
                   <img src={getImage("fLogo")} alt="img" />
                 </span>
                 <h4 className="popup-title font-semibold text-xl leading-10">

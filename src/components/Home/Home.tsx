@@ -20,8 +20,6 @@ import {
   FiArrowDownRight,  
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
-// import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Target } from "lucide-react";
 import { LuLightbulb } from "react-icons/lu";
 
 const actions = [
@@ -58,13 +56,13 @@ const actions = [
 const Home = () => {
   return (
     <>
-      <div className="c-padding-r py-12 relative pl-[390px] pr-[110px]">
+      <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
         {/* EVA Command Center div */}
         <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
           <div className="flex items-start gap-4">
             {/* Logo */}
-            <div className="flex items-center justify-center w-12 h-12 border-[#2563eb] border-[2px] rounded-full text-white">
+            <div className="flex items-center justify-center w-12 h-12 border-[#ff5c35] border-[2px] rounded-full text-white">
               <img src="f-logo.png" />
             </div>
 
@@ -73,7 +71,7 @@ const Home = () => {
               <div className="text-2xl font-bold text-slate-900">
                 EVA Command Center
               </div>
-              <div className="text-base text-slate-600 text-[#717c8c] ">
+              <div className="text-base text-slate-600 text-[#475569] ">
                 Good morning! Ready to boost your LinkedIn presence?
               </div>
 
@@ -83,7 +81,7 @@ const Home = () => {
                   <GoDotFill className="w-6 h-4 rounded-full text-green" />
                   LinkedIn Connected
                 </span>
-                <span className="flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-[#bfdbfe] rounded-md cursor-pointer">
+                <span className="flex items-center gap-2 px-3 py-1 text-xs font-bold text-[#ff5c35] bg-[#ff5c350f] rounded-md cursor-pointer">
                   ⚡ AI Ready
                 </span>
               </div>
@@ -91,19 +89,19 @@ const Home = () => {
           </div>
 
           {/* Right Icon */}
-          <div className="flex items-center justify-center w-32 h-32 rounded-full bg-blue-100 text-[#2563eb]">
+          <div className="flex items-center justify-center w-32 h-32 rounded-full bg-[#ff5c350f] text-[#ff5c35]">
             <LuLightbulb size={32} className="w-16 h-16" />
           </div>
         </div>
 
-        <div className="shadow-lg bg-white rounded-2xl p-6 mb-6">
+        <div className="shadow-lg bg-white rounded-2xl p-6 mb-6 g-box">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <span className="text-blue-600 text-lg">⚡</span>
               <div className="text-xl font-bold ">Quick Actions</div>
             </div>
-            <span className="text-sm text-slate-500 cursor-pointer">
+            <span className="text-sm text-[#64748b] cursor-pointer">
               Choose your next move
             </span>
           </div>
@@ -125,13 +123,13 @@ const Home = () => {
                     <div className="font-medium text-slate-800">
                       {action.title}
                     </div>
-                    <div className="text-sm text-[#6b7280]">
+                    <div className="text-sm text-[#64748b]">
                       {action.description}
                     </div>
                   </div>
 
                   {/* Arrow */}
-                  <FaArrowRight className="w-4 h-4 text-[#6b7280] group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                  <FaArrowRight className="w-4 h-4 text-[#64748b] group-hover:text-[#ff5c35] group-hover:translate-x-1 transition-all duration-200" />
                 </div>
               </Link>
             ))}
@@ -151,7 +149,7 @@ const Home = () => {
                     Recent Activity
                   </div>
                 </div>
-                <button className="text-sm text-blue-600 hover:underline">
+                <button className="text-sm text-[#ff5c35] hover:underline">
                   View All
                 </button>
               </div>
@@ -179,29 +177,29 @@ const Home = () => {
               <div className="p-6 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Profile Views */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-blue-600">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiEye className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
+                        <FiArrowUpRight className="w-3 h-3 text-[#ff5c35]"/> +0%
                       </div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Profile Views
                       </div>
                     </div>
                   </div>
 
                   {/* Connection Requests */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-green">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiUsers className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
@@ -212,16 +210,16 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Connection Requests
                       </div>
                     </div>
                   </div>
 
                   {/* Post Engagement */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-purple-600">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiTrendingUp className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
@@ -232,16 +230,16 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Post Engagement
                       </div>
                     </div>
                   </div>
 
                   {/* Messages Sent */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-orange-600">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiMessageSquare className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-red">
@@ -252,7 +250,7 @@ const Home = () => {
                       <div className="text-2xl font-bold text-slate-900 mb-1">
                         0
                       </div>
-                      <div className="text-sm text-[#6b7280]">
+                      <div className="text-sm text-[#64748b]">
                         Messages Sent
                       </div>
                     </div>
@@ -265,11 +263,11 @@ const Home = () => {
           {/* Right Side */}
 
           <div className="w-full lg:w-1/3 space-y-6">
-            <div className="bg-white shadow-md rounded-xl p-5">
+            <div className="bg-white shadow-md rounded-xl p-5 g-box">
               {/* Heading */}
               <div className="flex items-center gap-2 mb-4">
                 {/* Logo */}
-                <div className="flex items-center justify-center w-12 h-12  border-[#2563eb] border-[2px] rounded-full text-white">
+                <div className="flex items-center justify-center w-12 h-12  border-[#ff5c35] border-[2px] rounded-full text-white">
                   <img src="f-logo.png" />
                 </div>
                 <div className="text-2xl font-bold text-slate-900">
@@ -278,10 +276,10 @@ const Home = () => {
               </div>
 
               {/* div 1 */}
-              <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-4">
+              <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-4 ">
                 {/* Left Icon */}
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
-                  <FaRegClock className="text-[#2563eb] text-lg" />
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+                  <FaRegClock className="text-[#ff5c35] text-lg" />
                 </div>
 
                 {/* Right Content */}
@@ -294,12 +292,12 @@ const Home = () => {
                       high
                     </span>
                   </div>
-                  <div className="text-sm text-[#6b7280] mb-3">
+                  <div className="text-sm text-[#64748b] mb-3">
                     Your audience is most active in 2 hours
                   </div>
                   <a
                     href="#"
-                    className="text-blue-600 text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                    className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2 "
                   >
                     Schedule Post <span className="ml-1">→</span>
                   </a>
@@ -310,8 +308,8 @@ const Home = () => {
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition">
                 <div className="flex items-start gap-3">
                   {/* Icon */}
-                  <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
-                    <MdOutlineWifiTetheringErrorRounded className="text-[#2563eb] text-lg" />
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#ff5c350f]">
+                    <MdOutlineWifiTetheringErrorRounded className="text-[#ff5c35] text-lg" />
                   </div>
 
                   {/* Content */}
@@ -324,12 +322,12 @@ const Home = () => {
                         medium
                       </span>
                     </div>
-                    <div className="text-sm text-[#6b7280] mb-3">
+                    <div className="text-sm text-[#64748b] mb-3">
                       Add industry hashtags to increase reach by 40%
                     </div>
                     <a
                       href="#"
-                      className="text-blue-600 text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                      className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
                     >
                       See Hashtags <span className="ml-1">→</span>
                     </a>
@@ -340,8 +338,8 @@ const Home = () => {
               {/* div 3 */}
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-3">
                 {/* Icon Left */}
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe] flex-shrink-0">
-                  <HiOutlineLightBulb className="text-[#2563eb] text-lg" />
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f] flex-shrink-0">
+                  <HiOutlineLightBulb className="text-[#ff5c35] text-lg" />
                 </div>
 
                 {/* Right Content */}
@@ -354,12 +352,12 @@ const Home = () => {
                       low
                     </span>
                   </div>
-                  <div className="text-sm text-[#6b7280] mb-3">
+                  <div className="text-sm text-[#64748b] mb-3">
                     5 mutual connections found in target companies
                   </div>
                   <a
                     href="#"
-                    className="text-blue-600 text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                    className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
                   >
                     View Profiles <span className="ml-1">→</span>
                   </a>
@@ -370,12 +368,13 @@ const Home = () => {
               <div className="border-t border-[#e3e9f1] pt-3 mt-8">
                 <a
                   href="#"
-                  className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+                  className="flex items-center text-sm font-medium text-[#475569] hover:text-[#0f172a] py-[10px] px-[16px] hover:bg-[#f5f5f5]"
                 >
                   <span className="">
                     <GiStarFormation className="text-xl me-2" />
                   </span>{" "}
-                  Get More Insights →
+                  Get More Insights <FaArrowRight className="ml-auto" />
+
                 </a>
               </div>
             </div>
@@ -415,7 +414,7 @@ const Home = () => {
                 </div>
               </CardContent>
             </Card> */}
-            <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
+            {/* <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
               <div className="pb-3">
                 <div className="flex items-center gap-2 text-lg">
                   <Target className="w-5 h-5 text-[#d97706]" />
@@ -427,7 +426,7 @@ const Home = () => {
                   <div className="font-semibold text-gray-800 text-base">
                     Post at optimal times
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#64748b] mt-1">
                     Tuesday-Thursday, 8-10 AM shows highest engagement
                   </div>
                 </div>
@@ -435,7 +434,7 @@ const Home = () => {
                   <div className="font-semibold text-gray-800 text-base">
                     Use relevant hashtags
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#64748b] mt-1">
                     3-5 industry hashtags boost visibility by 40%
                   </div>
                 </div>
@@ -443,12 +442,12 @@ const Home = () => {
                   <div className="font-semibold text-gray-800 text-base">
                     Engage authentically
                   </div>
-                  <div className="text-sm text-[#6b7280] mt-1">
+                  <div className="text-sm text-[#64748b] mt-1">
                     Meaningful comments get 5x more responses
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
 
           </div>
