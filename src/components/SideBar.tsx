@@ -36,8 +36,8 @@ const SideBar = () => {
             <Link
               to="/"
               className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#eff6ff] transition-all duration-200 ${location.pathname === "/" || location.pathname === "/home"
-                ? " text-[#2563eb] shadow-sm !bg-blue-50"
-                : "text-[#334155] hover:text-[#2563eb]"
+                ? " text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
             >
               <span className="mt-1 flex w-[20px] justify-center">
@@ -56,9 +56,9 @@ const SideBar = () => {
           <li className="">
             <Link
               to="/content-studio"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/content-studio"
-                ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                : "text-[#334155] hover:text-[#2563eb]"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/content-studio"
+                ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
             >
               <span className="mt-1 flex w-[20px] justify-center">
@@ -77,9 +77,9 @@ const SideBar = () => {
           <li className="">
             <Link
               to="/message-assistant"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/message-assistant"
-                ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                : "text-[#334155] hover:text-[#2563eb]"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/message-assistant"
+                ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
             >
               <span className="mt-1 flex w-[20px] justify-center">
@@ -99,9 +99,9 @@ const SideBar = () => {
           <li className="">
             <Link
               to="/comments"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/comments"
-                ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                : "text-[#334155] hover:text-[#2563eb]"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/comments"
+                ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
             >
               <span className="mt-1 flex w-[20px] justify-center">
@@ -120,9 +120,9 @@ const SideBar = () => {
           <li className="">
             <Link
               to="/save-profile"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${location.pathname === "/save-profile"
-                ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                : "text-[#334155] hover:text-[#2563eb]"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/save-profile"
+                ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
             >
               <span className="mt-1 flex w-[20px] justify-center">
@@ -141,9 +141,9 @@ const SideBar = () => {
           <li className="">
             <button
               onClick={() => setIsCampaignOpen(!isCampaignOpen)}
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-blue-50 transition-all duration-200 ${isCampaignOpen
-                ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                : "text-[#334155] hover:text-[#2563eb]"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 w-[100%] ${isCampaignOpen
+                ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
             >
               <span className="mt-1 flex w-[20px] justify-center">
@@ -170,8 +170,8 @@ const SideBar = () => {
                   <Link
                     to="/message-campaign"
                     className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/message-campaign"
-                      ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                      : "text-[#334155] hover:text-[#2563eb]"
+                      ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                      : "text-[#334155] hover:text-[#ff5c35]"
                       }`}
                   >
                     <span className="mt-1 flex w-[20px] justify-center">
@@ -192,8 +192,8 @@ const SideBar = () => {
                   <Link
                     to="/connect-campaign"
                     className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/connect-campaign"
-                      ? "text-[#2563eb] shadow-sm !bg-blue-50"
-                      : "text-[#334155] hover:text-[#2563eb]"
+                      ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                      : "text-[#334155] hover:text-[#ff5c35]"
                       }`}
                   >
                     <span className="mt-1 flex w-[20px] justify-center">
@@ -221,9 +221,9 @@ const SideBar = () => {
               onClick={(e) => {
                 e.preventDefault();
                 goToLinkedIn[();
-16px]   }[12px] hover:!bg-blue-50
+16px]   }[12px] hover:!bg-[#ff5c350f]
               className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200
-                hover:text-[#2563eb] text-[#334155]`}
+                hover:text-[#ff5c35] text-[#334155]`}
             >
               <span className="mt-1 text-blue-600">
                 <i className="fa-brands fa-linkedin text-sm"></i>
@@ -242,7 +242,7 @@ const SideBar = () => {
       {/* <div className="mt-auto p-4">
         <button
           onClick={() => setOpenplanpopup(true)}
-          className="flex ms-[25px] items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-[#2563eb] font-medium text-sm px-4 py-2 rounded-xl shadow-sm transition w-[160px]"
+          className="flex ms-[25px] items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-[#ff5c35] font-medium text-sm px-4 py-2 rounded-xl shadow-sm transition w-[160px]"
         >
           <GiUpgrade className="text-base" />
           <span>Upgrade Plan</span>
@@ -253,7 +253,7 @@ const SideBar = () => {
           <a
             href="https://evarobo.ai/contact-us/"
             target="_blank"
-            className="block w-full text-center text-gray-600 hover:text-[#2563eb] text-sm font-medium transition"
+            className="block w-full text-center text-gray-600 hover:text-[#ff5c35] text-sm font-medium transition"
           >
             Need Help ?
           </a>

@@ -121,7 +121,7 @@ const ForgotPassword = () => {
                     placeholder="Enter your Email"
                     value={email}
                     onChange={handleChange}
-                    className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                    className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35]"
                   />
                 </span>
               </div>
@@ -129,7 +129,7 @@ const ForgotPassword = () => {
               <div className="text-end">
                 <button
                   type="submit"
-                  className="w-full h-14 text-white  bg-[#2563eb] hover:bg-[#003ab6] font-medium rounded-lg text-base px-5 py-2.5 me-2 mb-2 "
+                  className="w-full h-14 text-white  bg-[#ff5c35] font-medium rounded-lg text-base px-5 py-2.5 me-2 mb-2 "
                 >
                   Reset Password
                 </button>

@@ -80,7 +80,7 @@ const UserProfile = () => {
       text: "Do you really want to cancel your subscription?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Yes, cancel it!",
       cancelButtonText: "No, keep it",
@@ -109,7 +109,7 @@ const UserProfile = () => {
               icon: "success",
               title: "Cancelled!",
               text: "Your subscription has been cancelled successfully.",
-              confirmButtonColor: "#2563eb",
+              confirmButtonColor: "#ff5c35",
             });
             checkActivePlan(); // Refresh the active plan status
           } else {
@@ -117,7 +117,7 @@ const UserProfile = () => {
               icon: "error",
               title: "Failed!",
               text: result?.message || "Failed to cancel the subscription.",
-              confirmButtonColor: "#2563eb",
+              confirmButtonColor: "#ff5c35",
             });
           }
         }
@@ -128,7 +128,7 @@ const UserProfile = () => {
         icon: "error",
         title: "Error!",
         text: "Something went wrong while cancelling the subscription.",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
       });
     } finally {
       setLoad(false);
@@ -183,7 +183,7 @@ const UserProfile = () => {
                     </div>
                     <div className="mt-6">
                       <div className="flex items-center space-x-4 mt-4">
-                        <span className="relative w-16 h-16 border-[#2563eb] border-[2.5px] rounded-full overflow-hidden">
+                        <span className="relative w-16 h-16 p-[3px] border-[#ff5c35] border-[2.5px] rounded-full overflow-hidden">
                           <img
                             src={getImage("userprofile")}
                             alt="img"
@@ -344,7 +344,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
                                 // onClick={() => navigate("/pricing")}
                                 onClick={() => setOpenplanpopup(true)}
                               >
@@ -362,7 +362,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg  hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
                                 // onClick={() => navigate("/pricing")}
                                 onClick={() => setOpenplanpopup(true)}
                               >
@@ -377,7 +377,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
                                 onClick={getCustomePortalLink}
                               >
                                 Manage Subscription
@@ -388,7 +388,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
                                 onClick={() => setOpenplanpopup(true)}
                               >
                                 Upgrade / Downgrade
@@ -399,7 +399,7 @@ const UserProfile = () => {
                               className="custom-tooltip"
                             >
                               <button
-                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                                className="background-one border border-color-one text-white px-5 py-3 text-base rounded-lg hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform"
                                 onClick={cancelActivePlan}
                               >
                                 Cancel Subscription

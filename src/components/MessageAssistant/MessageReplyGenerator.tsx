@@ -291,7 +291,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         {/* Input Section */}
         <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6">
           <div className="flex items-center gap-2 font-semibold text-base mb-6">
-            <MessageSquare className="w-5 h-5 text-[#00B247]" />
+            <MessageSquare className="w-5 h-5 text-[#ff5c35]" />
             Generate Message Reply
           </div>
 
@@ -301,7 +301,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               Original Message <span className="text-red">*</span>
             </label>
             <div
-              className={`rounded-lg overflow-hidden border ${isOriginalActive ? "active" : "border-[#cbd5e1]"
+              className={`rounded-lg overflow-hidden border ${isOriginalActive ? "active" : "border-[#e2e8f0]"
                 } custom_textarea relative`}
             >
               <textarea
@@ -324,7 +324,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               Additional Context (Optional)
             </label>
             <div
-              className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#cbd5e1]"
+              className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#e2e8f0]"
                 } custom_textarea`}
             >
               <textarea
@@ -347,7 +347,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <select
                 value={motive}
                 onChange={(e) => setMotive(e.target.value)}
-                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+                className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={loading}
               >
                 {COMMENT_MOTIVES.map((motive, index) => (
@@ -371,7 +371,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <select
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
-                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+                className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={loading}
               >
                 {TONES.map((toneOption, index) => (
@@ -400,7 +400,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1] pl-[30px]"
+                className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] pl-[30px] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={loading}
               >
                 {LANGUAGES.map((lang, index) => (
@@ -419,7 +419,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
           <button
             onClick={handleSubmit}
             disabled={isGenerating}
-            className="w-full flex items-center justify-center gap-2 bg-green hover:bg-[#008234] text-white px-4 py-2 rounded-lg transition"
+            className="w-full flex items-center justify-center gap-2 bg-[#ff5c35] text-white px-4 py-2 rounded-lg transition"
           >
             {isGenerating ? (
               <>
@@ -434,6 +434,21 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
             )}
           </button>
 
+          
+          {/* Quick Tips */}
+          <div className="p-4 bg-[#ff5c350f] rounded-lg">
+            <div className="font-semibold text-base mb-2">
+              🤝 Messaging Best Practices:
+            </div>
+            <ul className="text-sm space-y-1">
+              <li>• Respond within 1-2 minute</li>
+              <li>• Personalize with specific details</li>
+              <li>• Always provide clear next steps</li>
+              <li>• Keep messages concise and scannable</li>
+            </ul>
+          </div>
+
+
 
         </div>
 
@@ -441,7 +456,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 first-line: font-semibold text-base">
-              <Send className="w-5 h-5 text-[#16a34a]" />
+              <Send className="w-5 h-5 text-[#ff5c35]" />
               Generated Reply
             </div>
             {generatedReply && (
@@ -458,7 +473,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
           {generatedReply ? (
             <div className="space-y-4">
-              <div className="p-4 border border-[#cbd5e1] rounded-lg bg-slate-50">
+              <div className="p-4 border border-[#e2e8f0] rounded-lg bg-slate-50">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="w-8 h-8 bg-[#edfdf2] rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-green" />
@@ -479,7 +494,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <div className="flex gap-3">
                 <button
                   onClick={copyToClipboard}
-                  className="flex-1 px-4 py-2  border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition flex items-center justify-center"
+                  className="flex-1 px-4 py-2  border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition flex items-center justify-center"
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   {copied ? "Reply Copied!" : "Copy Reply"}
@@ -492,8 +507,8 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="w-8 h-8 text-[#94a3b8]" />
+              <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-8 h-8 text-[#ff5c35]" />
               </div>
               <p className="text-[#64748b] font-medium !text-xl mb-2">
                 No reply generated yet

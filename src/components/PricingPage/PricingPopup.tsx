@@ -65,7 +65,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
         text: "Are you sure you want to subscribe to this plan?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
         cancelButtonColor: "#6c757d",
         confirmButtonText: "Yes, subscribe!",
         cancelButtonText: "No, cancel",
@@ -89,7 +89,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                 title: "Error",
                 text: "Subscription failed. Please try again later.",
                 icon: "error",
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: "#ff5c35",
               });
             }
           }
@@ -101,7 +101,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
         title: "Error",
         text: "Something went wrong. Please try again later.",
         icon: "error",
-        confirmButtonColor: "#2563eb",
+        confirmButtonColor: "#ff5c35",
       });
     }
   };
@@ -114,7 +114,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
         } your subscription?`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2563eb",
+      confirmButtonColor: "#ff5c35",
       cancelButtonColor: "#6c757d",
       confirmButtonText: `Yes, ${activePlanDetails?.price > data?.price ? "downgrade!" : "upgrade!"
         }`,
@@ -197,7 +197,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                     {/* Modal Header */}
                     <div className="relative flex justify-between item-center">
                       <div className="flex gap-3">
-                        <span className="relative p-logo border-[2.5px] border-solid h-12 w-12 rounded-full border-[#2563eb]">
+                        <span className="relative p-logo border-[2.5px] border-solid h-12 w-12 rounded-full border-[#ff5c35]">
                           <img src={getImage("fLogo")} alt="img" className="" />
                         </span>
                         <h4 className="popup-title font-semibold text-xl leading-10 mt-1">
@@ -213,7 +213,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                           >
                             <button
                               onClick={refresh}
-                              className="background-white border border-[#2563eb] text-[#2563eb] px-3 py-1 text-base rounded-lg hover:!bg-[#2563eb] hover:!text-white transform"
+                              className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-1 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform"
                             >
                               <span>
                                 <i className="fas fa-sync-alt"></i>
@@ -232,11 +232,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                             className="w-6 h-6 rounded-full"
                           />
                         </span>
-
                       </div>
-
-
-
                     </div>
 
                     {/* <div className="flex justify-between">
@@ -250,7 +246,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                         >
                           <button
                             onClick={refresh}
-                            className="background-white border border-[#2563eb] text-[#2563eb] px-3 py-1 text-base rounded-lg hover:!bg-[#2563eb] hover:!text-white transform"
+                            className="background-white border border-[#ff5c35] text-[#ff5c35] px-3 py-1 text-base rounded-lg hover:!bg-[#ff5c35] hover:!text-white transform"
                           >
                             <span>
                               <i className="fas fa-sync-alt"></i>
@@ -260,14 +256,14 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                         </Tooltip>
                       </div>
                     </div> */}
-                    <div className="gap-5 !flex justify-center items-center mt-1 p-5 header-top">
+                    <div className="gap-5 !flex justify-center items-center mt-1 p-5 header-top pb-10">
 
 
 
 
                       {/* Plan 1 */}
                       <div
-                        className={`price-box p-6  w-72 background-three g-box relative ${activePlanDetails.id === allPlans[1]?.price_id
+                        className={`before:content-[''] before:bg-[#ff5c35] before:w-[80%] before:h-[5px] rounded-[100px] before:absolute before:top-[-3px] before:left-[50%] before:-translate-x-[50%] price-box p-6 w-72 background-three g-box relative ${activePlanDetails.id === allPlans[1]?.price_id
                           ? "active"
                           : ""
                           }`}
@@ -317,7 +313,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                               }
                             }
                           }}
-                          className="cursor-pointer text-base p-3 background-one text-white text-center font-normal py-2 rounded-lg border border-transparent hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                          className="cursor-pointer text-base p-3 background-one text-white text-center font-normal py-2 rounded-lg border border-transparent hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform -mb-[43px]"
                         >
                           {!activePlan
                             ? "Subscribe"
@@ -332,7 +328,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
 
                       {/* Plan 2 */}
                       <div
-                        className={`price-box  p-6  w-72 background-three g-box ${activePlanDetails.id === allPlans[0]?.price_id
+                        className={`before:content-[''] before:bg-[#ff5c35] before:w-[80%] before:h-[5px] rounded-[100px] before:absolute before:top-[-3px] before:left-[50%] before:-translate-x-[50%] relative price-box  p-6  w-72 background-three g-box ${activePlanDetails.id === allPlans[0]?.price_id
                           ? "active"
                           : ""
                           }`}
@@ -382,7 +378,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                               }
                             }
                           }}
-                          className="text-base p-3 cursor-pointer background-one text-white text-center font-normal py-2 rounded-lg border border-transparent hover:!border-[#2563eb] hover:!bg-white hover:!text-[#2563eb] transform"
+                          className="text-base p-3 cursor-pointer background-one text-white text-center font-normal py-2 rounded-lg border border-transparent hover:!border-[#ff5c35] hover:!bg-white hover:!text-[#ff5c35] transform -mb-[43px]"
                         >
                           {!activePlan
                             ? "Subscribe"

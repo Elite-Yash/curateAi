@@ -9,7 +9,7 @@ const Messageassistant = () => {
 
     return (
         <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
-            <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-4 g-box p-4 rounded-lg shadow-sm g-box">
+            <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg  g-box">
                 <div className="mb-6">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 bg-gradient-to-r from-green to-green rounded-2xl flex items-center justify-center">
@@ -34,44 +34,36 @@ const Messageassistant = () => {
             </div>
 
             {/* All Box */}
-            <div className="grid grid-cols-3 gap-4 bg-white p-4 rounded-xl border border-[#e3e9f1] shadow-sm mb-4 g-box ">
+            <div className="grid grid-cols-3 gap-6 mb-6 ">
                 {/* Box 1 */}
-                <div
-                    className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
-                >
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
-                        <MessageSquare className="text-[#2563eb] text-lg" />
+                <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+                        <MessageSquare className="text-[#ff5c35]" />
                     </div>
                     <div>
-                        <div className="text-xl font-bold text-slate-900">
-                            0
-                        </div>
+                        <div className="text-xl font-bold text-[#0f172a]">0</div>
                         <div className="text-sm text-gray-600">Messages Generated</div>
                     </div>
                 </div>
 
                 {/* Box 2 */}
-                <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer">
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#edfdf2]">
-                        <Users className="text-green text-lg" />
+                <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+                        <Users className="text-[#ff5c35]" />
                     </div>
                     <div>
-                        <div className="text-xl font-bold text-slate-900">0</div>
+                        <div className="text-xl font-bold text-[#0f172a]">0</div>
                         <div className="text-sm text-gray-600">Connection Requests</div>
                     </div>
                 </div>
 
                 {/* Box 3 */}
-                <div
-                    className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] shadow-sm flex items-center gap-3 cursor-pointer"
-                >
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#fefce8]">
-                        <Target className="text-yellow-400 text-lg" />
+                <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+                        <Target className="text-[#ff5c35]" />
                     </div>
                     <div>
-                        <div className="text-xl font-bold text-slate-900">
-                            0
-                        </div>
+                        <div className="text-xl font-bold text-[#0f172a]">0</div>
                         <div className="text-sm text-gray-600">Response Rate</div>
                     </div>
                 </div>
@@ -81,15 +73,14 @@ const Messageassistant = () => {
             <div className="space-y-6">
                 {/* Tab Buttons */}
                 <div
-                    className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm overflow-hidden p-[5px] shadow-4 !rounded-[10px]"
-                    style={{ border: "0.5px solid #d1d5db" }}
+                    className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm overflow-hidden p-[5px] g-box !rounded-[10px] gap-[5px]"
                 >
                     <button
                         onClick={() => setActiveTab("reply")}
-                        className={`flex items-center justify-center gap-2 !py-1 text-sm font-medium  
+                        className={`flex items-center justify-center gap-2 !py-2 text-sm font-medium  
               ${activeTab === "reply"
-                                ? "bg-[#f0fdf4] text-[#238848] rounded-sm shadow-3 !font-semibold"
-                                : "text-[#737373] hover:bg-[#f8fafc] font-medium"
+                                ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
                             }`}
                     >
                         <FileText className="w-4 h-4" />
@@ -98,10 +89,10 @@ const Messageassistant = () => {
 
                     <button
                         onClick={() => setActiveTab("connection")}
-                        className={`flex items-center justify-center gap-2 !py-1 text-sm font-medium  
+                        className={`flex items-center justify-center gap-2 !py-2 text-sm font-medium  
               ${activeTab === "connection"
-                                ? "bg-[#f0fdf4] text-[#238848] rounded-sm shadow-3 !font-semibold"
-                                : "text-[#737373] hover:bg-[#f8fafc] font-medium"
+                                ? "bg-[#ff5c350f] text-[#ff5c35] !font-semibold"
+                                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
                             }`}
                     >
                         <MessageSquare className="w-4 h-4" />
@@ -110,10 +101,10 @@ const Messageassistant = () => {
 
                     <button
                         onClick={() => setActiveTab("Message")}
-                        className={`flex items-center justify-center gap-2 !py-1 text-sm font-medium  
+                        className={`flex items-center justify-center gap-2 !py-2 text-sm font-medium  
               ${activeTab === "Message"
-                                ? "bg-[#f0fdf4] text-[#238848] rounded-sm shadow-3 !font-semibold"
-                                : "text-[#737373] hover:bg-[#f8fafc] font-medium"
+                                ? "bg-[#ff5c350f] text-[#ff5c35] !font-semibold"
+                                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
                             }`}
                     >
                         <Sparkles className="w-4 h-4" />

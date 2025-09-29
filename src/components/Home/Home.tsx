@@ -62,7 +62,7 @@ const Home = () => {
           {/* Left Section */}
           <div className="flex items-start gap-4">
             {/* Logo */}
-            <div className="flex items-center justify-center w-12 h-12 border-[#2563eb] border-[2px] rounded-full text-white">
+            <div className="flex items-center justify-center w-12 h-12 border-[#ff5c35] border-[2px] rounded-full text-white">
               <img src="f-logo.png" />
             </div>
 
@@ -81,7 +81,7 @@ const Home = () => {
                   <GoDotFill className="w-6 h-4 rounded-full text-green" />
                   LinkedIn Connected
                 </span>
-                <span className="flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-[#bfdbfe] rounded-md cursor-pointer">
+                <span className="flex items-center gap-2 px-3 py-1 text-xs font-bold text-[#ff5c35] bg-[#ff5c350f] rounded-md cursor-pointer">
                   ⚡ AI Ready
                 </span>
               </div>
@@ -89,7 +89,7 @@ const Home = () => {
           </div>
 
           {/* Right Icon */}
-          <div className="flex items-center justify-center w-32 h-32 rounded-full bg-blue-100 text-[#2563eb]">
+          <div className="flex items-center justify-center w-32 h-32 rounded-full bg-[#ff5c350f] text-[#ff5c35]">
             <LuLightbulb size={32} className="w-16 h-16" />
           </div>
         </div>
@@ -129,7 +129,7 @@ const Home = () => {
                   </div>
 
                   {/* Arrow */}
-                  <FaArrowRight className="w-4 h-4 text-[#64748b] group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
+                  <FaArrowRight className="w-4 h-4 text-[#64748b] group-hover:text-[#ff5c35] group-hover:translate-x-1 transition-all duration-200" />
                 </div>
               </Link>
             ))}
@@ -149,7 +149,7 @@ const Home = () => {
                     Recent Activity
                   </div>
                 </div>
-                <button className="text-sm text-[#64748b] hover:underline">
+                <button className="text-sm text-[#ff5c35] hover:underline">
                   View All
                 </button>
               </div>
@@ -177,13 +177,13 @@ const Home = () => {
               <div className="p-6 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Profile Views */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-blue-600">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiEye className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
+                        <FiArrowUpRight className="w-3 h-3 text-[#ff5c35]"/> +0%
                       </div>
                     </div>
                     <div>
@@ -197,9 +197,9 @@ const Home = () => {
                   </div>
 
                   {/* Connection Requests */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-green">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiUsers className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
@@ -217,9 +217,9 @@ const Home = () => {
                   </div>
 
                   {/* Post Engagement */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-purple-600">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiTrendingUp className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
@@ -237,9 +237,9 @@ const Home = () => {
                   </div>
 
                   {/* Messages Sent */}
-                  <div className="p-4 bg-[#f0f8ff] rounded-xl hover:bg-[#d7dbdf] transition-colors duration-200">
+                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-orange-600">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiMessageSquare className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-red">
@@ -267,7 +267,7 @@ const Home = () => {
               {/* Heading */}
               <div className="flex items-center gap-2 mb-4">
                 {/* Logo */}
-                <div className="flex items-center justify-center w-12 h-12  border-[#2563eb] border-[2px] rounded-full text-white">
+                <div className="flex items-center justify-center w-12 h-12  border-[#ff5c35] border-[2px] rounded-full text-white">
                   <img src="f-logo.png" />
                 </div>
                 <div className="text-2xl font-bold text-slate-900">
@@ -276,10 +276,10 @@ const Home = () => {
               </div>
 
               {/* div 1 */}
-              <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-4">
+              <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-4 ">
                 {/* Left Icon */}
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
-                  <FaRegClock className="text-[#2563eb] text-lg" />
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+                  <FaRegClock className="text-[#ff5c35] text-lg" />
                 </div>
 
                 {/* Right Content */}
@@ -297,7 +297,7 @@ const Home = () => {
                   </div>
                   <a
                     href="#"
-                    className="text-blue-600 text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                    className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2 "
                   >
                     Schedule Post <span className="ml-1">→</span>
                   </a>
@@ -308,8 +308,8 @@ const Home = () => {
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition">
                 <div className="flex items-start gap-3">
                   {/* Icon */}
-                  <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#bfdbfe]">
-                    <MdOutlineWifiTetheringErrorRounded className="text-[#2563eb] text-lg" />
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full  bg-[#ff5c350f]">
+                    <MdOutlineWifiTetheringErrorRounded className="text-[#ff5c35] text-lg" />
                   </div>
 
                   {/* Content */}
@@ -327,7 +327,7 @@ const Home = () => {
                     </div>
                     <a
                       href="#"
-                      className="text-blue-600 text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                      className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
                     >
                       See Hashtags <span className="ml-1">→</span>
                     </a>
@@ -338,8 +338,8 @@ const Home = () => {
               {/* div 3 */}
               <div className="group bg-white border border-[#e3e9f1] rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition flex items-start gap-3">
                 {/* Icon Left */}
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe] flex-shrink-0">
-                  <HiOutlineLightBulb className="text-[#2563eb] text-lg" />
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f] flex-shrink-0">
+                  <HiOutlineLightBulb className="text-[#ff5c35] text-lg" />
                 </div>
 
                 {/* Right Content */}
@@ -357,7 +357,7 @@ const Home = () => {
                   </div>
                   <a
                     href="#"
-                    className="text-blue-600 text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                    className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
                   >
                     View Profiles <span className="ml-1">→</span>
                   </a>

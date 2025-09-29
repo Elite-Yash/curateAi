@@ -5,6 +5,7 @@ import { IoLogoLinkedin } from "react-icons/io";
 import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import { CiCalendar } from "react-icons/ci";
+import Loader from "../Loader/Loader";
 
 const ContentHistory: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<"all" | "post" | "comment">("all");
@@ -103,11 +104,11 @@ const ContentHistory: React.FC = () => {
   return (
     <>
       {/* Stat Boxes */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-4 gap-6 mb-6">
         {/* Box 1 */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
-            <FileText className="text-[#2563eb]" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <FileText className="text-[#ff5c35]" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">{postsGenerated}</div>
@@ -116,9 +117,9 @@ const ContentHistory: React.FC = () => {
         </div>
 
         {/* Box 2 */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#dcfce7]">
-            <MessageSquare className="text-green-600" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <MessageSquare className="text-[#ff5c35]" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">{commentsGenerated}</div>
@@ -127,9 +128,9 @@ const ContentHistory: React.FC = () => {
         </div>
 
         {/* Box 3 */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#fefce8]">
-            <FiTrendingUp className="text-yellow-400 text-xl" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <FiTrendingUp className="text-[#ff5c35] text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">{actuallyUsed}</div>
@@ -138,9 +139,9 @@ const ContentHistory: React.FC = () => {
         </div>
 
         {/* Box 4 */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
-            <CiCalendar className="text-[#9333ea] text-xl" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <CiCalendar className="text-[#ff5c35] text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">{perWeekAvg}</div>
@@ -150,38 +151,40 @@ const ContentHistory: React.FC = () => {
       </div>
 
       {/* Generated Content */}
-      <div className="bg-white rounded-xl border border-[#e3e9f1] shadow-sm p-6">
+      <div className="bg-white rounded-xl g-box">
         {/* Header with Tabs */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between p-5">
           <div className="flex items-center gap-2 font-semibold text-base">
-            <History className="w-5 h-5 text-[#475569]" />
+            <History className="w-5 h-5 text-[#ff5c35]" />
             Generated Content
           </div>
-          <div className="flex items-center bg-[#f1f5f9] rounded-lg text-sm text-[#737373] font-medium overflow-hidden !p-[5px]">
+          <div className="flex items-center bg-[#ff5c350f] rounded-lg text-sm text-[#737373] font-medium overflow-hidden !p-[5px]">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`px-4 py-1 ${activeFilter === "all" ? "bg-white shadow-sm rounded-lg" : ""}`}
+              className={`px-4 py-1 ${activeFilter === "all" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
             >
               All
             </button>
             <button
               onClick={() => setActiveFilter("post")}
-              className={`px-4 py-1 ${activeFilter === "post" ? "bg-white shadow-sm rounded-lg" : ""}`}
+              className={`px-4 py-1 ${activeFilter === "post" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
             >
               Posts
             </button>
             <button
               onClick={() => setActiveFilter("comment")}
-              className={`px-4 py-1 ${activeFilter === "comment" ? "bg-white shadow-sm rounded-lg" : ""}`}
+              className={`px-4 py-1 ${activeFilter === "comment" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
             >
               Comments
             </button>
           </div>
         </div>
 
+        <div className="p-2.5 pt-0">
+         <div className="border rounded-lg border-[#e0eaf3]">
         {/* Table Header */}
         <div
-          className="grid gap-4 py-2 px-4 font-semibold bg-gray-100 rounded-t-lg"
+          className="grid gap-4 py-2 font-semibold bg-[#fff5f380]  border-b border-[#e1eaf4] rounded-t-lg p-4"
           style={{ gridTemplateColumns: "140px 1fr 300px 120px" }}
         >
           <div className="text-[14px]">Message Type</div>
@@ -192,17 +195,26 @@ const ContentHistory: React.FC = () => {
 
         {/* Rows */}
         {loading ? (
-          <div className="text-center py-12">Loading...</div>
+          <div className="text-center py-12"><Loader/></div>
         ) : filteredContent.length === 0 ? (
+          // <div className="text-center py-12">
+          //   <p className="text-[#64748b] font-medium !text-xl mb-2">No content history yet</p>
+          // </div>
           <div className="text-center py-12">
-            <p className="text-[#64748b] font-medium !text-xl mb-2">No content history yet</p>
-          </div>
+                        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                          <History className="w-8 h-8 text-[#ff5c35]" />
+                        </div>
+                        <p className="text-[#64748b] font-medium !text-xl mb-2">
+                          No content history yet
+                        </p>
+                      </div>
+
         ) : (
-          <div className="divide-y">
+          <div className="!border-[#e0eaf3] border-b">
             {filteredContent.map((c: any) => (
               <div
                 key={c.id}
-                className="py-4 px-4"
+                className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
                 style={{ display: "grid", gridTemplateColumns: "140px 1fr 300px 120px", gap: "1rem", alignItems: "start" }}
               >
                 {/* Message Type */}
@@ -212,7 +224,7 @@ const ContentHistory: React.FC = () => {
                 <div className="text-sm text-gray-800">
                   <div dangerouslySetInnerHTML={{ __html: escapeHtml(truncate(c.comment, 90)).replace(/\n/g, "<br />") }} />
                   {c.comment && c.comment.length > 90 && (
-                    <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#2563eb] hover:underline">
+                    <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline">
                       Read More
                     </button>
                   )}
@@ -223,9 +235,9 @@ const ContentHistory: React.FC = () => {
                   <div className="flex items-center gap-2">
                     {c.post_url ? (
                       <a href={c.post_url} target="_blank" rel="noopener noreferrer">
-                        <button className="text-[#2563eb] hover:text-[#003ab6] border border-[#2563eb] gap-2 ps-1 pe-1 rounded-sm flex">
+                        <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
                           Go To LinkedIn
-                          <IoLogoLinkedin className="text-xl text-[#2563eb] mt-0.5" />
+                          <IoLogoLinkedin className="text-xl text-[#0a66c2]"/>
                         </button>
                       </a>
                     ) : (
@@ -240,6 +252,9 @@ const ContentHistory: React.FC = () => {
             ))}
           </div>
         )}
+          </div>
+        </div>
+
       </div>
 
       {/* Modal */}
@@ -247,7 +262,7 @@ const ContentHistory: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
             <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
-              <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12">
+              <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
                 {getImage("fLogo") ? <img src={getImage("fLogo")} alt="img" /> : null}
               </span>
               <h4 className="popup-title font-semibold text-xl leading-10">Entire Comment</h4>

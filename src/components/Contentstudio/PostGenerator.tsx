@@ -271,20 +271,20 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Input Section */}
-        <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6">
+        <div className="border-none g-box bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6">
           <div className="flex items-center gap-2 font-semibold text-base">
-            <Wand2 className="w-5 h-5 text-blue-600" />
+            <Wand2 className="w-5 h-5 text-[#ff5c35]" />
             Generate LinkedIn Post
           </div>
 
           {/* promp Topic */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-[#334155]">
-              What do you want to post about? <span className="text-red">*</span>
+              What do you want to post about? <span className="text-red">*</span>   
             </label>
 
             <div
-              className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#cbd5e1]"
+              className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#e2e8f0]"
                 } custom_textarea relative`}
             >
               <textarea
@@ -313,7 +313,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
             <select
             value={motive}
             onChange={(e) => setMotive(e.target.value)}
-            className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+            className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
             disabled={isGenerating}
           >
             {POSTING_MOTIVES.map((motive, index) => (
@@ -335,7 +335,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               <select
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
-                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1]"
+                className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={isGenerating}
               >
                 {TONES.map((toneOption, index) => (
@@ -364,7 +364,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="w-full p-2 border text-sm rounded-md border-[#cbd5e1] pl-[30px]"
+                className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] pl-[30px] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={isGenerating}
               >
                 {LANGUAGES.map((lang, index) => (
@@ -383,7 +383,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
           <button
             onClick={handleSubmit}
             disabled={isGenerating}
-            className="w-full flex items-center justify-center gap-2 bg-[#2563eb] text-white font-medium py-2 px-4 rounded-lg transition"
+            className="w-full flex items-center justify-center gap-2 bg-[#ff5c35] text-white font-medium py-2 px-4 rounded-lg transition"
           >
             {isGenerating ? (
               <>
@@ -399,11 +399,11 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
           </button>
 
           {/* Quick Tips */}
-          <div className="p-4 bg-[#eff6ff] rounded-lg">
-            <div className="font-semibold text-base text-[#1e3a8a] mb-2">
+          <div className="p-4 bg-[#ff5c350f] rounded-lg">
+            <div className="font-semibold text-base mb-2">
               🤝 Messaging Best Practices:
             </div>
-            <ul className="text-sm text-[#1e40af] space-y-1">
+            <ul className="text-sm space-y-1">
               <li>• Respond within 1-2 minute</li>
               <li>• Personalize with specific details</li>
               <li>• Always provide clear next steps</li>
@@ -415,10 +415,10 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
         </div>
 
         {/* Output Section */}
-        <div className="border-none shadow-lg bg-white/80 backdrop-blur-sm rounded-xl p-6">
+        <div className="border-none g-box  bg-white/80 backdrop-blur-sm rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 font-semibold text-base">
-              <FileText className="w-5 h-5 text-[#16a34a]" />
+              <FileText className="w-5 h-5 text-[#ff5c35]" />
               Generated Post
             </div>
             {generatedPost && (
@@ -455,7 +455,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
                   {(generatedPost.match(/#\w+/g) || []).length} hashtags
                 </span>
               </div>
-              <span className="px-2 py-1 border rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition cursor-pointer">
+              <span className="px-2 py-1 border rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition cursor-pointer">
                 Ready to post
               </span>
             </div> */}
@@ -464,13 +464,13 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               <div className="flex gap-3">
                 <button
                   onClick={copyToClipboard}
-                  className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+                  className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
                 >
                   <Copy className="w-4 h-4" />
                   {copied ? "Post Copied!" : "Copy Post"}
                 </button>
                 <button
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#2563eb] text-white rounded-lg py-2"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#ff5c35] text-white rounded-lg py-2"
                   onClick={() => {
                     const text = encodeURIComponent(displayedText);
                     const url = `https://www.linkedin.com/feed/?shareActive=true&text=${text}`;
@@ -484,10 +484,10 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-[#94a3b8]" />
+              <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-[#ff5c35]" />
               </div>
-              <p className="text-[#64748b] font-medium !text-xl mb-2">
+              <p className="font-medium text-[#64748b] !text-xl mb-2">
                 No post generated yet
               </p>
               <div className="!text-base text-[#94a3b8]">

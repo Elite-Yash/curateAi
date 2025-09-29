@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import { IoLogoLinkedin } from "react-icons/io5";
+import Loader from "../Loader/Loader";
 
 const MessageHistory = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -120,11 +121,11 @@ const MessageHistory = () => {
   return (
     <>
       {/* Stat Boxes */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-4 gap-6 mb-6">
         {/* Replies */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#bfdbfe]">
-            <MessageSquare className="text-[#00B247]" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <MessageSquare className="text-[#ff5c35]" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">
@@ -135,9 +136,9 @@ const MessageHistory = () => {
         </div>
 
         {/* Placeholder (Connection Requests if needed) */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#dcfce7]">
-            <Users className="text-[#2563eb]" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <Users className="text-[#ff5c35]" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">0</div>
@@ -146,9 +147,9 @@ const MessageHistory = () => {
         </div>
 
         {/* Actually Sent */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#fefce8]">
-            <FiTrendingUp className="text-yellow-400 text-xl" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <FiTrendingUp className="text-[#ff5c35] text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">
@@ -159,9 +160,9 @@ const MessageHistory = () => {
         </div>
 
         {/* Per Week Avg */}
-        <div className="p-4 bg-white rounded-xl border border-[#e3e9f1] shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#eee7f5]">
-            <CiCalendar className="text-[#9333ea] text-xl" />
+        <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
+            <CiCalendar className="text-[#ff5c35] text-xl" />
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">
@@ -173,19 +174,19 @@ const MessageHistory = () => {
       </div>
 
       {/* Generated Content */}
-      <div className="bg-white rounded-xl border border-[#e3e9f1] shadow-sm p-6">
+      <div className="bg-white rounded-xl g-box">
         {/* Header with Tabs */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between p-5">
           <div className="flex items-center gap-2 font-semibold text-base">
-            <History className="w-5 h-5 text-slate-600" /> Generated Content
+            <History className="w-5 h-5 text-[#ff5c35]" /> Generated Content
           </div>
 
-          <div className="flex items-center bg-[#f1f5f9] rounded-lg text-sm text-[#737373] font-medium overflow-hidden p-[5px]">
+          <div className="flex items-center bg-[#ff5c350f] rounded-lg text-sm text-[#737373] font-medium overflow-hidden p-[5px]">
             <button
               onClick={() => setActiveFilter("all")}
               className={`px-4 py-1 ${
                 activeFilter === "all"
-                  ? "bg-white shadow-sm rounded-lg"
+                  ? "bg-[#ff5c35] text-[#fff] rounded-lg"
                   : ""
               }`}
             >
@@ -195,7 +196,7 @@ const MessageHistory = () => {
               onClick={() => setActiveFilter("reply")}
               className={`px-4 py-1 ${
                 activeFilter === "reply"
-                  ? "bg-white shadow-sm rounded-lg"
+                  ? "bg-[#ff5c35] text-[#fff] rounded-lg"
                   : ""
               }`}
             >
@@ -204,9 +205,12 @@ const MessageHistory = () => {
           </div>
         </div>
 
+
+    <div className="p-2.5 pt-0">
+         <div className="border rounded-lg border-[#e0eaf3]">
         {/* Table Header */}
         <div
-          className="grid gap-4 py-2 px-4 font-semibold bg-gray-100 rounded-t-lg"
+          className="grid gap-4 py-2 font-semibold bg-[#fff5f380]  border-b border-[#e1eaf4] rounded-t-lg p-4"
           style={{
             gridTemplateColumns: "140px 1fr 300px 120px",
           }}
@@ -219,19 +223,23 @@ const MessageHistory = () => {
 
         {/* Rows */}
         {loading ? (
-          <div className="text-center py-12">Loading...</div>
+          <div className="text-center py-12"><Loader/>.</div>
         ) : filteredContent.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-[#64748b] font-medium !text-xl mb-2">
-              No reply history yet
-            </p>
-          </div>
+                    <div className="text-center py-12">
+                                  <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <History className="w-8 h-8 text-[#ff5c35]" />
+                                  </div>
+                                  <p className="text-[#64748b] font-medium !text-xl mb-2">
+                                    No content history yet
+                                  </p>
+                                </div>
+
         ) : (
-          <div className="divide-y">
+          <div className="!border-[#e0eaf3] border-b">
             {filteredContent.map((c: any) => (
               <div
                 key={c.id}
-                className="py-4 px-4"
+                className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
                 style={{
                   display: "grid",
                   gridTemplateColumns:
@@ -249,7 +257,7 @@ const MessageHistory = () => {
                  <div className="text-sm text-gray-800">
                   <div dangerouslySetInnerHTML={{ __html: escapeHtml(truncate(c.comment, 90)).replace(/\n/g, "<br />") }} />
                   {c.comment && c.comment.length > 90 && (
-                    <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#2563eb] hover:underline">
+                    <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline">
                       Read More
                     </button>
                   )}
@@ -264,9 +272,9 @@ const MessageHistory = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <button className="text-[#2563eb] hover:text-[#003ab6] border border-[#2563eb] gap-2 px-2 rounded-sm flex items-center">
+                        <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
                           Go To LinkedIn
-                          <IoLogoLinkedin className="text-xl text-[#2563eb] mt-0.5" />
+                          <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
                         </button>
                       </a>
                     ) : (
@@ -283,6 +291,9 @@ const MessageHistory = () => {
             ))}
           </div>
         )}
+          </div> 
+         </div>
+
       </div>
 
       {/* Modal */}
@@ -291,7 +302,7 @@ const MessageHistory = () => {
           <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
             {/* Header */}
             <div className="sticky top-0 bg-white header-top p-6 py-2 flex justify-between items-center border-b">
-              <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-12 h-12 flex items-center justify-center overflow-hidden">
+              <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12 h-12 flex items-center justify-center overflow-hidden">
                 {getImage("fLogo") ? (
                   <img
                     src={getImage("fLogo")}
@@ -299,7 +310,7 @@ const MessageHistory = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-[#2563eb] font-bold text-lg">
+                  <span className="text-[#ff5c35] font-bold text-lg">
                     R
                   </span>
                 )}

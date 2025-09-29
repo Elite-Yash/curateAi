@@ -67,7 +67,7 @@ const Personas = () => {
           > */}
           <button
             // onClick={connectToCRM}
-            className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#2563eb] text-[#2563eb] hover:bg-[#2563eb] hover:text-white transition"
+            className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
           >
             <i className="fa-solid fa-globe"></i>
             <span>+ Add new Personas</span>

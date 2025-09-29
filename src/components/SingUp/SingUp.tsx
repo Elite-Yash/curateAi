@@ -128,7 +128,7 @@ const SignUp = () => {
               title: "Verify Your Email to Get Startde!",
               html: `<p>We’ve sent a verification link to your registered email address. Please check your inbox and click the link to complete your account setup..</p>`,
               icon: "success",
-              confirmButtonColor: "#2563eb",
+              confirmButtonColor: "#ff5c35",
               cancelButtonColor: "#6c757d",
               confirmButtonText: "Got it!",
               customClass: { title: "!text-2xl font-semibold" },
@@ -218,7 +218,7 @@ const SignUp = () => {
                 placeholder="Name"
                 value={formData.name}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35]"
               />
               <input
                 type="email"
@@ -226,7 +226,7 @@ const SignUp = () => {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35]"
               />
               <input
                 type="password"
@@ -234,7 +234,7 @@ const SignUp = () => {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35]"
               />
               <input
                 type="password"
@@ -242,11 +242,11 @@ const SignUp = () => {
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#2563eb]"
+                className="h-14 background-three w-full p-3 bg-white text-black rounded-lg focus:ring-[#ff5c35]"
               />
               <button
                 type="submit"
-                className="w-full h-14 text-white bg-[#2563eb] hover:bg-[#003ab6] font-medium rounded-lg text-base px-5 py-2.5"
+                className="w-full h-14 text-white bg-[#ff5c35] font-medium rounded-lg text-base px-5 py-2.5"
               >
                 Sign up
               </button>

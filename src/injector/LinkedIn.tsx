@@ -804,7 +804,7 @@ const LinkedIn = () => {
       icon.alt = "curateai-open-popup-icon";
       button.setAttribute(
         "style",
-        "width: 40px; height: 40px; cursor: pointer; display: flex; justify-content: center; align-items: center; border: 2px solid #2563eb; border-radius: 50%; "
+        "width: 40px; height: 40px; cursor: pointer; display: flex; justify-content: center; align-items: center; border: 2px solid #ff5c35; border-radius: 50%; "
       );
       button.appendChild(icon);
       button.setAttribute("class", "curateai-open-popup-icon");
@@ -900,7 +900,7 @@ const LinkedIn = () => {
         width: "21px",
         height: "21px",
         margin: "9px 7px 10px 8px",
-        border: "2px solid #2563eb",
+        border: "2px solid #ff5c35",
         borderRadius: "50%",
         padding: "10px",
       });
@@ -1017,7 +1017,7 @@ const LinkedIn = () => {
     const customIcon = document.createElement("span");
     customIcon.className = "curateai-open-popup-icon";
     customIcon.style.cssText =
-      "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 0px; background: #2563eb; border-radius: 50px; padding: 2px;";
+      "display: inline-flex; align-items: center; margin-left: 3px; cursor: pointer; position: relative; top: 0px; background: #ff5c35; border-radius: 50px; padding: 2px;";
 
     const contentsSpan = document.createElement("span");
     contentsSpan.className = "contents";
@@ -1030,14 +1030,14 @@ const LinkedIn = () => {
     imgElement.src = chrome.runtime.getURL("/f-logo.png");
     imgElement.alt = "Post";
     imgSpan.style.cssText =
-      "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer; border: 2px solid #2563eb; border-radius: 50%;";
+      "width: 25px; display: inline-flex; height: 25px; overflow: hidden; margin-left: 3px; padding: 2px; cursor: pointer; border: 2px solid #ff5c35; border-radius: 50%;";
     imgSpan.appendChild(imgElement);
 
     // Create text span
     const textSpan = document.createElement("span");
     textSpan.innerText = "Post";
     textSpan.style.cssText =
-      "margin-left: 5px; font-size: 15px; color: #2563eb;";
+      "margin-left: 5px; font-size: 15px; color: #ff5c35;";
 
     // Append image and text spans to contents span
     contentsSpan.appendChild(imgSpan);

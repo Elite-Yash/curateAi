@@ -38,8 +38,8 @@ const Profilecard = ({
 }: ProfileCardType) => {
   return (
     <div
-      className={`w-full max-h-[552px] overflow-y-auto scrollbar-hide ${profiles.length > 0
-        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+      className={`w-full ${profiles.length > 0
+        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         : "flex h-full justify-center items-center"
         }`}
     >
@@ -51,19 +51,19 @@ const Profilecard = ({
         profiles.map((profile: any, index: any) => (
           <div
             key={index}
-            className="bg-white rounded-2xl shadow-md p-4 relative g-box"
+            className="bg-white rounded-2xl shadow-md p-4 relative g-box flex flex-col"
           >
             {/* --- Actions (Delete + Star) --- */}
-            <div className="absolute top-4 right-4 flex flex-col gap-2 text-base text-[#2563eb]">
+            <div className="absolute top-4 right-4 flex flex-col gap-2 text-base text-[#ff5c35]">
               <span
                 onClick={() => deleteProfile(profile.id)}
-                className="cursor-pointer hover:text-[#003ab6] ms-0.5"
+                className="cursor-pointer ms-0.5"
               >
-                <i className="fa-solid fa-trash"></i>
+                <i className="fa-solid fa-trash text-red"></i>
               </span>
               <span
                 onClick={() => toggleStar(profile.id)}
-                className="cursor-pointer hover:text-[#003ab6]"
+                className="cursor-pointer"
               >
                 <i
                   className={`fa-star ${starredIds.includes(profile.id) ? "fa-solid" : "fa-regular"
@@ -75,11 +75,11 @@ const Profilecard = ({
             {/* --- Image + Name + Position --- */}
             <div className="flex items-center gap-4">
               {profile.profile?.startsWith("data:image") ? (
-                <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#2563eb] w-20 h-20 flex items-center justify-center overflow-hidden">
+                <span className="relative s-logo border-[2.5px] border-solid p-[3px] rounded-full border-[#ff5c35] w-20 h-20 flex items-center justify-center overflow-hidden">
                   <img src={getImage("userprofile")} alt="img" className="w-20" />
                 </span>
               ) : (
-                <span className="w-20 h-20 rounded-full p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                <span className="w-20 h-20 rounded-full p-[3px] border-[2.5px] border-solid border-[#ff5c35]">
                   <img
                     className="w-full h-full rounded-full object-cover"
                     src={profile.profile}
@@ -132,11 +132,11 @@ const Profilecard = ({
                     href={profile.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-[#2563eb] hover:text-[#003ab6] text-base"
+                    className="flex items-center gap-1 text-[#ff5c35] hover:text-[#003ab6] text-base"
                   >
-                    <button className="text-[#2563eb] hover:text-[#003ab6] border border-[#2563eb] gap-2 ps-1 pe-1 rounded-sm flex">
+                    <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
                       Go To Linkedin Profile
-                      <IoLogoLinkedin className="text-xl text-[#2563eb] mt-0.5" />
+                      <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
                     </button>
                   </a>
                 ) : (
@@ -161,8 +161,8 @@ const Profilecard = ({
           {/* All Tab */}
           {TabButton === "all" && (
             <div className="flex flex-col items-center text-center py-12">
-              <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
-                <Users className="w-8 h-8 text-[#94a3b8]" />
+              <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
+                <Users className="w-8 h-8 text-[#ff5c35]" />
               </div>
               <div className="text-lg font-medium text-[#64748b] mb-2">
                 No profiles saved yet
@@ -176,8 +176,8 @@ const Profilecard = ({
           {/* Starred Tab */}
           {TabButton === "starred" && (
             <div className="flex flex-col items-center text-center py-12">
-              <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
-                <Star className="w-8 h-8 text-[#94a3b8]" />
+              <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
+                <Star className="w-8 h-8 text-[#ff5c35]" />
               </div>
               <div className="text-lg font-medium text-[#64748b] mb-2">
                 No starred profiles yet
@@ -191,8 +191,8 @@ const Profilecard = ({
           {/* Recent Tab */}
           {TabButton === "recent" && (
             <div className="flex flex-col items-center text-center py-12">
-              <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-2">
-                <Clock className="w-8 h-8 text-[#94a3b8]" />
+              <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
+                <Clock className="w-8 h-8 text-[#ff5c35]" />
               </div>
               <div className="text-lg font-medium text-[#64748b] mb-2">
                 No recent profiles yet

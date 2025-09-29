@@ -5,6 +5,7 @@ import { getImage } from "../../common/utils/logoUtils";
 import { apiService } from "../../common/config/apiService";
 import { useDispatch } from "react-redux";
 import { setActivePlan } from "../../redux/reducer/activePlan";
+import { MdKeyboardArrowUp } from "react-icons/md";
 
 /**..
  * ..
@@ -133,7 +134,7 @@ const Header = () => {
                     toggleDropdown();
                   }}
                 >
-                  <span className="icon w-8 text-[14px] h-8 rounded-full overflow-hidden border-2 border-solid border-[#2563eb] bg-[#2563eb] outline-1 outline-green-950 outline flex justify-center items-center text-white">
+                  <span className="icon w-8 text-[14px] h-8 rounded-full overflow-hidden border-2 border-solid border-[#ff5c35] bg-[#ff5c35] outline-1 outline-green-950 outline flex justify-center items-center text-white">
                     {userDetails?.name ? userDetails.name.charAt(0).toUpperCase() : "U"}
            
 
@@ -152,7 +153,7 @@ const Header = () => {
                       ) : (
                         <>
                           <span className="text-[#0f172a] font-medium text-sm">{userDetails?.name}</span>
-                                   <span className="text-ts text-[#64478b]">Linkedin Connected</span>
+                                   <span className="text-xs text-[#64478b]">Linkedin Connected</span>
                           {/* <span
                             className={`${freePlan || activePlan ? "text-green" : "text-red"
                               } text-xs`}
@@ -169,7 +170,12 @@ const Header = () => {
                       )}
                     </span>
                   </span>
-                  <i className="text-xs fa-solid fa-chevron-down dec-color rotate-180"></i>
+                  {/* <i className="text-xs fa-solid fa-chevron-down dec-color rotate-180"></i> */}
+                                {/* <MdKeyboardArrowUp
+                                  className={`transition-transform duration-300 ease-in-out ${dropdownOpen ? "rotate-180" : "rotate-0"
+                                    }`}
+                                  size={22}
+                                /> */}
                 </a>
                 {dropdownOpen && (
                   <div className="absolute bottom-[58px] right-0 left-8 mt-2 bg-white w-32 drop-menu z-50 shadow-lg rounded-xl">
@@ -180,15 +186,15 @@ const Header = () => {
                       }}
                       className="w-full text-left px-3 py-3 text-sm transition rounded-xl flex items-center gap-2"
                     >
-                      <i className="fa-solid text-[#2563eb] fa-gear transition"></i>
+                      <i className="fa-solid text-[#ff5c35] fa-gear transition"></i>
                       Setting
                     </button>
                     <button
                       className="w-full text-left px-3 py-3 text-sm transition rounded-xl flex items-center gap-2"
                       onClick={LogOut}
                     >
-                      <i className="fa-solid fa-power-off text-[#2563eb] transition"></i>
-                      Log Out
+                      <i className="fa-solid fa-power-off text-[#ff5c35] transition"></i>
+                      LogOut
                     </button>
                   </div>
                 )}

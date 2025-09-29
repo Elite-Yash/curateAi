@@ -14,6 +14,7 @@ import { getImage } from "../../common/utils/logoUtils";
 import { apiService } from "../../common/config/apiService";
 import { removeEmoji } from "../../common/utils/removeicon";
 import { Copy, FileText, RefreshCw } from "lucide-react";
+import ActivePlanModal from "../activeplanModal/activeplanmodal";
 
 export interface LinkedInMessage {
   messageSpeaker: string;
@@ -290,11 +291,11 @@ const InputAiPopup: React.FC<ModalProps> = ({
           } fixed inset-0 flex items-center justify-center`}
       >
         <div
-          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75]  ${!activePlan ? "!w-[45rem]" : ""
+          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[45rem] " : " max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75] "
             }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">
-            <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#2563eb]">
+            <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
               <img src={getImage("fLogo")} alt="img" className="" />
             </span>
             <h4 className="popup-title font-semibold text-xl leading-10">
@@ -340,7 +341,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
                           /></div>
                         {errors.collectedText && (
-                          <p className="text-red text-xl ms-1 absolute">{errors.collectedText}</p>
+                          <p className="text-red text-xl ms-1 mt-0 absolute">{errors.collectedText}</p>
                         )}
                       </div>
                     )}
@@ -372,7 +373,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         <select
                           value={motives}
                           onChange={(e) => setMotive(e.target.value)}
-                          className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex"
+                          className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                           disabled={loading}
                         >
                           {(popupTriggeredFrom === "create-post"
@@ -408,7 +409,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           <select
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
-                            className="popup-select data w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex"
+                            className="popup-select data w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                             disabled={loading}
                           >
                             {LANGUAGES.map((lang, index) => (
@@ -432,7 +433,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           <select
                             value={tone}
                             onChange={(e) => setTone(e.target.value)}
-                            className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex"
+                            className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                             disabled={loading}
                           >
                             {TONES.map((toneOption, index) => {
@@ -502,7 +503,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     }}
                     className="p-4 rounded-lg message-reply mt-4"
                   >
-                    <h3 className="font-semibold text-[#2563eb] flex items-center gap-2">
+                    <h3 className="font-semibold text-[#ff5c35] flex items-center gap-2">
                       💬 Messaging Best Practices:
                     </h3>
                     <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
@@ -550,7 +551,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <div className="flex gap-5">
                         {/* Insert Button - only visible after text is generated */}
                         <button
-                          className="popup-button-insert px-4 py-2 h-[4rem] w-[28rem] bg-[#2563eb] text-white rounded-md hover:bg-green-600"
+                          className="popup-button-insert px-4 py-2 h-[4rem] w-[28rem] bg-[#ff5c35] text-white rounded-md hover:bg-green-600"
                           onClick={insertContent}
                           disabled={loading}
                         >
