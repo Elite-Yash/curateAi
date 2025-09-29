@@ -270,7 +270,7 @@ const MessageCampaignTable = () => {
    <div className="flex justify-between gap-6 w-full g-box">
   <div className="rounded-2xl w-full">
     <div className="p-5 g-box g-box-table">
-      <div className="d-table h-connect-table !w-full max-h-[700px] overflow-auto">
+      <div className="d-table h-connect-table !w-full max-h-[495px] overflow-auto">
         <table className="w-full overflow-auto border rounded-lg border-[#e0eaf3]">
           <thead className="sticky top-0 !bg-[#fff5f380]">
             <tr
@@ -368,7 +368,7 @@ const MessageCampaignTable = () => {
                       {/* Edit */}
                       <button
                         onClick={() => handleEditCampaign(campaign)}
-                        className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fff5f380] hover:bg-[#ff5c35] hover:text-white transition"
+                        className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
                         title="Edit Campaign"
                       >
                         <i className="fa-solid fa-edit"></i>
