@@ -49,6 +49,10 @@ export class apiService {
         getcampaignbyid: "campaigns/:campaignId",
         getallcampaign: "campaigns",
         updateCommentUrl: "comments/:id/post-url",
+        createTemplate:'templates',
+        getAllTemplate:'templates',
+        updateTemplate:'templates/:id',
+        deleteTemplate:'templates/:id',
     };
 
     static Method = {

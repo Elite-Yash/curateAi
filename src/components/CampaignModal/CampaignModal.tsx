@@ -3,7 +3,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
 import { getImage } from "../../common/utils/logoUtils";
-import { API_URL } from "../../common/config/constMessage";
 
 type FormData = {
     name: string;
