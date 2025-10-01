@@ -49,6 +49,10 @@ export class apiService {
         getcampaignbyid: "campaigns/:campaignId",
         getallcampaign: "campaigns",
         updateCommentUrl: "comments/:id/post-url",
+        createTemplate:'templates',
+        getAllTemplate:'templates',
+        updateTemplate:'templates/:id',
+        deleteTemplate:'templates/:id',
     };
 
     static Method = {
@@ -75,7 +79,8 @@ export class apiService {
         payload: object,
         onCompletion: Function
     ) {
-        chrome.storage.local.get(["token"], (result) => {
+        console.log(". ~ axiosCall ~ type:", type)
+        chrome.storage.local.get(["token"], async (result) => {
 
             const token = result?.token || '';
             const url = `${API_URL}/${endpoint}${params ? `?${this.toQueryParams(params)}` : ''}`;
@@ -95,9 +100,28 @@ export class apiService {
                     requestBody = undefined;
                 }
             } else {
-                payload.forEach((value, key) => {
-                    formObject[key] = value;
-                });
+                try {
+                    const response = await fetch(url, {
+                        method: type,
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: payload,
+                    });
+
+                    // Check if the response is OK (status in the range 200-299)
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    onCompletion(data);
+                } catch (error) {
+                    console.log('error', error);
+                    onCompletion(error);
+                }
+
+                return true
             }
 
             chrome.runtime.sendMessage(
