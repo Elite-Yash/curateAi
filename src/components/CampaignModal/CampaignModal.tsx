@@ -120,7 +120,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         }
 
         if (data.fileUpload && data.fileUpload.length > 0) {
-            formData.append("file", data.fileUpload[0]);
+            formData.append("csvFile", data.fileUpload[0]);
         }
 
         try {
@@ -130,7 +130,6 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 undefined,
                 formData,
                 (response: any) => {
-                    console.log("  ~ saveCampaign ~ response:", response)
                     setIsLoading(false);
 
                     console.log("  ~ saveCampaign ~ response?.data:", response?.data)
