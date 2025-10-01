@@ -82,7 +82,6 @@ const MessageCampaignTable = () => {
           undefined,
           {},
           (response: any) => {
-            console.log("delete response", response)
             if (response?.data.message === 'Campaign deleted successfully' && response?.data?.statusCode === 200) {
               setCampaigns(prevCampaigns =>
                 prevCampaigns.filter(campaign => campaign.id !== id)

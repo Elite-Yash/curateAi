@@ -425,7 +425,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
 
         {generatedComment ? (
           <div className="space-y-4">
-            <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
+            <div className="p-4 border border-[#e2e8f0] rounded-lg whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
               {generatedComment.replace(/"/g, '')}
             </div>
             {/* <div className="flex items-center justify-between text-xs">
@@ -440,15 +440,15 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
             <div className="flex gap-3">
               <button
                 onClick={copyToClipboard}
-                className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
+                className="flex-1 flex items-center justify-center gap-2 py-2 border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
               >
                 <Copy className="w-4 h-4" />
                  {copied ? "Comment Copied!" : "Copy Comment"}
               </button>
-              <button className="flex-1 flex items-center justify-center rounded-lg gap-2 bg-[#ff5c35] text-white py-2">
+              {/* <button className="flex-1 flex items-center justify-center rounded-lg gap-2 bg-[#ff5c35] text-white py-2">
                 <LinkIcon className="w-4 h-4" />
                 Go to LinkedIn
-              </button>
+              </button> */}
             </div>
           </div>
         ) : (

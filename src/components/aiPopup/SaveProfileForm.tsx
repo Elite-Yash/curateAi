@@ -230,7 +230,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="w-[36rem] h-[4rem] flex justify-center items-center gap-2 rounded-[8px] bg-[#ff5c35] text-white font-medium hover:bg-[#003ab6] disabled:bg-gray-400"
+                  className="w-[36rem] h-[4rem] flex justify-center items-center gap-2 rounded-[8px] bg-[#ff5c35] text-white font-medium disabled:bg-gray-400"
                 >
                   {loading ? "Saving..." : "Save"}
                 </button>

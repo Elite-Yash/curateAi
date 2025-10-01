@@ -442,7 +442,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
           {generatedPost ? (
             <div className="space-y-4">
               {/* Post Preview */}
-              <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto ">
+              <div className="p-4 border border-[#e2e8f0] rounded-lg  whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto ">
                 {displayedText.replace(/"/g, '')}
               </div>
 
