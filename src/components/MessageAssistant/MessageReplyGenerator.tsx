@@ -447,9 +447,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <li>• Keep messages concise and scannable</li>
             </ul>
           </div>
-
-
-
         </div>
 
         {/* Output Section */}
@@ -474,18 +471,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
           {generatedReply ? (
             <div className="space-y-4">
               <div className="p-4 border border-[#e2e8f0] rounded-lg bg-slate-50">
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-8 h-8 bg-[#edfdf2] rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-green" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="font-medium text-sm">You</span>
-                      <span className="text-xs text-slate-500">• Draft</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="">
+                 <div className="">
                   <div className="whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
                     {generatedReply.replace(/"/g, '')}
                   </div>
@@ -499,10 +485,10 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                   <Copy className="w-4 h-4 mr-2" />
                   {copied ? "Reply Copied!" : "Copy Reply"}
                 </button>
-                <button className="flex-1 px-4 py-2 rounded-lg  bg-green hover:bg-[#008234] text-white flex items-center justify-center">
+                {/* <button className="flex-1 px-4 py-2 rounded-lg  bg-green hover:bg-[#008234] text-white flex items-center justify-center">
                   <Send className="w-4 h-4 mr-2" />
                   Open LinkedIn
-                </button>
+                </button> */}
               </div>
             </div>
           ) : (

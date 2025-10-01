@@ -480,16 +480,15 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   {/* Generate Reply Button - always visible */}
                   <div className="mb-2">
                     <button
-                      className={`flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[55rem] bg-green hover:bg-[#008234] ${isTextGenerated ? "opacity-50 cursor-not-allowed" : ""
+                      className={`flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[55rem] bg-green hover:bg-[#008234] ${loading ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                       onClick={handleSubmit}
-                      // disabled={loading}
-                      disabled={loading || isTextGenerated}
+                      disabled={loading}
                     >
                       <img
                         src={getImage("sendIcon")}
                         alt="img"
-                        className="w-4 !static text-black"
+                        className="w-4 !static text -black"
                       />
                       {loading ? "Generating..." : "Generate Reply"}
                     </button>
