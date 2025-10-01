@@ -281,23 +281,15 @@ const SaveProfile = () => {
       return;
     }
 
-    const headers = [
-      "Name",
-      "Email",
-      "Position",
-      "Organization",
-      "URL",
-      "Created At",
-    ];
+    const headers = ["Name", "profile_id", "Email", "Position", "Organization", "URL", "Created At",];
+
     const csvRows = profilesData.map((profile) => [
-      profile.name || "N/A",
-      profile.email || "N/A",
-      profile.position || "N/A",
-      profile.organization || "N/A",
-      profile.url || "N/A",
-      profile.created_at
-        ? new Date(profile.created_at).toLocaleDateString("en-GB")
-        : "N/A",
+      profile.name || "",
+      profile.id || "",
+      profile.email || "",
+      profile.position || "",
+      profile.organization || "",
+      profile.url || "",
     ]);
 
     // Convert to CSV string
@@ -312,7 +304,11 @@ const SaveProfile = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "profiles.csv";
+
+    // Optional: include date in file name
+    const today = new Date().toISOString().split("T")[0];
+    a.download = `profiles_${today}.csv`;
+
     a.click();
     window.URL.revokeObjectURL(url);
   };
