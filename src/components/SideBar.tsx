@@ -8,8 +8,6 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 
 // const SideBar = ({setOpenplanpopup} : any) => {
 const SideBar = () => {
-
-
   const location = useLocation();
   const [isCampaignOpen, setIsCampaignOpen] = useState(false);
   return (
@@ -28,7 +26,7 @@ const SideBar = () => {
         </Link>
       </div>
 
-     
+
       <div className="left-menu pt-4 p-4 w-73">
         <ul className="flex flex-col gap-1">
           {/* Dashboard */}
@@ -209,11 +207,33 @@ const SideBar = () => {
                     </div>
                   </Link>
                 </li> */}
+
+                <li>
+                  <Link
+                    to="/messgae-template"
+                    className={`flex items-start gap-3 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === "/messgae-template"
+                      ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                      : "text-[#334155] hover:text-[#ff5c35]"
+                      }`}
+                  >
+                    <span className="mt-1 flex w-[20px] justify-center">
+                      <i className="fas fa-file-alt text-base"></i>
+                    </span>
+                    <div className="flex flex-col">
+                      <div className="font-medium text-sm">
+                        Template
+                      </div>
+                      <div className="text-xs text-[#6b7280]">
+                        Personalized DMs
+                      </div>
+                    </div>
+                  </Link>
+                </li>
               </ul>
             )}
           </li>
 
-       
+
           {/* LinkedIn  */}
           {/* <li className="">
             <a

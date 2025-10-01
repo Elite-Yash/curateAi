@@ -49,6 +49,10 @@ export class apiService {
         getcampaignbyid: "campaigns/:campaignId",
         getallcampaign: "campaigns",
         updateCommentUrl: "comments/:id/post-url",
+        createTemplate:'templates',
+        getAllTemplate:'templates',
+        updateTemplate:'templates/:id',
+        deleteTemplate:'templates/:id',
     };
 
     static Method = {
@@ -75,7 +79,6 @@ export class apiService {
         payload: object,
         onCompletion: Function
     ) {
-        console.log(". ~ axiosCall ~ type:", type)
         chrome.storage.local.get(["token"], async (result) => {
 
             const token = result?.token || '';

@@ -239,9 +239,9 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
     }
 
     // language must not equal "Language"
-    if (!language || language === "Language") {
-      newErrors.language = "Please select a valid language";
-    }
+    // if (!language || language === "Language") {
+    //   newErrors.language = "Please select a valid language";
+    // }
 
     // tone must not include "Tone"
     if (!tone || tone.includes("Tone")) {
@@ -487,7 +487,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                 </div>
                 <div className="">
                   <div className="whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
-                    {generatedReply}
+                    {generatedReply.replace(/"/g, '')}
                   </div>
                 </div>
               </div>

@@ -207,9 +207,9 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
       }
   
       // language must not equal "Language"
-      if (!language || language === "Language") {
-        newErrors.language = "Please select a valid language";
-      }
+      // if (!language || language === "Language") {
+      //   newErrors.language = "Please select a valid language";
+      // }
   
       // tone must not include "Tone"
       if (!tone || tone.includes("Tone")) {
@@ -426,7 +426,7 @@ const CommentGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }
         {generatedComment ? (
           <div className="space-y-4">
             <div className="p-4 border border-[#e2e8f0] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
-              {generatedComment}
+              {generatedComment.replace(/"/g, '')}
             </div>
             {/* <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-4">

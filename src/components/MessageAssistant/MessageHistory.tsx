@@ -41,7 +41,7 @@ const MessageHistory = () => {
         1,
         Math.ceil(
           (lastDate.getTime() - firstDate.getTime()) /
-            (1000 * 60 * 60 * 24 * 7)
+          (1000 * 60 * 60 * 24 * 7)
         )
       );
       setPerWeekAvg(Math.round(replies / weeks));
@@ -184,21 +184,19 @@ const MessageHistory = () => {
           <div className="flex items-center bg-[#ff5c350f] rounded-lg text-sm text-[#737373] font-medium overflow-hidden p-[5px]">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`px-4 py-1 ${
-                activeFilter === "all"
+              className={`px-4 py-1 ${activeFilter === "all"
                   ? "bg-[#ff5c35] text-[#fff] rounded-lg"
                   : ""
-              }`}
+                }`}
             >
               All
             </button>
             <button
               onClick={() => setActiveFilter("reply")}
-              className={`px-4 py-1 ${
-                activeFilter === "reply"
+              className={`px-4 py-1 ${activeFilter === "reply"
                   ? "bg-[#ff5c35] text-[#fff] rounded-lg"
                   : ""
-              }`}
+                }`}
             >
               Replies
             </button>
@@ -206,93 +204,93 @@ const MessageHistory = () => {
         </div>
 
 
-    <div className="p-2.5 pt-0">
-         <div className="border rounded-lg border-[#e0eaf3]">
-        {/* Table Header */}
-        <div
-          className="grid gap-4 py-2 font-semibold bg-[#fff5f380]  border-b border-[#e1eaf4] rounded-t-lg p-4"
-          style={{
-            gridTemplateColumns: "140px 1fr 300px 120px",
-          }}
-        >
-          <div className="text-[14px]">Message Type</div>
-          <div className="text-[14px]">comment Reply</div>
-          <div className="text-[14px]">Post URL</div>
-          <div className="text-[14px]">Date</div>
-        </div>
+        <div className="p-2.5 pt-0">
+          <div className="border rounded-lg border-[#e0eaf3]">
+            {/* Table Header */}
+            <div
+              className="grid gap-4 py-2 font-semibold bg-[#fff5f380]  border-b border-[#e1eaf4] rounded-t-lg p-4"
+              style={{
+                gridTemplateColumns: "140px 1fr 300px 120px",
+              }}
+            >
+              <div className="text-[14px]">Message Type</div>
+              <div className="text-[14px]">comment Reply</div>
+              <div className="text-[14px]">Post URL</div>
+              <div className="text-[14px]">Date</div>
+            </div>
 
-        {/* Rows */}
-        {loading ? (
-          <div className="text-center py-12"><Loader/>.</div>
-        ) : filteredContent.length === 0 ? (
-                    <div className="text-center py-12">
-                                  <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <History className="w-8 h-8 text-[#ff5c35]" />
-                                  </div>
-                                  <p className="text-[#64748b] font-medium !text-xl mb-2">
-                                    No content history yet
-                                  </p>
-                                </div>
-
-        ) : (
-          <div className="!border-[#e0eaf3] border-b">
-            {filteredContent.map((c: any) => (
-              <div
-                key={c.id}
-                className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns:
-                    "140px 1fr 300px 120px",
-                  gap: "1rem",
-                  alignItems: "start",
-                }}
-              >
-                {/* Message Type */}
-                <div className="text-sm text-gray-700 capitalize">
-                  {String(c.comment_type ?? "N/A").replace(/-/g, " ")}
+            {/* Rows */}
+            {loading ? (
+              <div className="text-center py-12"><Loader />.</div>
+            ) : filteredContent.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <History className="w-8 h-8 text-[#ff5c35]" />
                 </div>
-
-                {/* Reply */}
-                 <div className="text-sm text-gray-800">
-                  <div dangerouslySetInnerHTML={{ __html: escapeHtml(truncate(c.comment, 90)).replace(/\n/g, "<br />") }} />
-                  {c.comment && c.comment.length > 90 && (
-                    <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline">
-                      Read More
-                    </button>
-                  )}
-                </div>
-
-                {/* Post URL */}
-                <div>
-                  <div className="flex items-center gap-2">
-                    {c.post_url ? (
-                      <a
-                        href={c.post_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
-                          Go To LinkedIn
-                          <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
-                        </button>
-                      </a>
-                    ) : (
-                      "N/A"
-                    )}
-                  </div>
-                </div>
-
-                {/* Date */}
-                <div className="text-sm text-gray-600">
-                  {formatDate(c.created_at)}
-                </div>
+                <p className="text-[#64748b] font-medium !text-xl mb-2">
+                  No content history yet
+                </p>
               </div>
-            ))}
+
+            ) : (
+              <div className="!border-[#e0eaf3] border-b">
+                {filteredContent.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((c: any) => (
+                  <div
+                    key={c.id}
+                    className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "140px 1fr 300px 120px",
+                      gap: "1rem",
+                      alignItems: "start",
+                    }}
+                  >
+                    {/* Message Type */}
+                    <div className="text-sm text-gray-700 capitalize">
+                      {String(c.comment_type ?? "N/A").replace(/-/g, " ")}
+                    </div>
+
+                    {/* Reply */}
+                    <div className="text-sm text-gray-800">
+                      <div dangerouslySetInnerHTML={{ __html: escapeHtml(truncate(c.comment, 90)).replace(/\n/g, "<br />") }} />
+                      {c.comment && c.comment.length > 90 && (
+                        <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline">
+                          Read More
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Post URL */}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        {c.post_url ? (
+                          <a
+                            href={c.post_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
+                              Go To LinkedIn
+                              <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                            </button>
+                          </a>
+                        ) : (
+                          "N/A"
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Date */}
+                    <div className="text-sm text-gray-600">
+                      {formatDate(c.created_at)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-          </div> 
-         </div>
+        </div>
 
       </div>
 

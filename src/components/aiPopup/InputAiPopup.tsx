@@ -246,9 +246,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
     }
 
     // language must not equal "Language"
-    if (!language || language === "Language") {
-      newErrors.language = "Please select a valid language";
-    }
+    // if (!language || language === "Language") {
+    //   newErrors.language = "Please select a valid language";
+    // }
 
     // tone must not include "Tone"
     if (!tone || tone.includes("Tone")) {
@@ -544,7 +544,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     <div className=" space-y-4">
                       {/* Post Preview */}
                       <div className="border border-[#6b7280] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-xl text-[#1e293b] !h-[700px] !overflow-auto p-6 ">
-                        {displayedText}
+                        {displayedText.replace(/"/g, '')}
                       </div>
 
 

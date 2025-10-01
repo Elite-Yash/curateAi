@@ -829,9 +829,18 @@ const LinkedIn = () => {
 
 
         // grap message text
-        const messageDataText = icon.closest("form.msg-form--is-fully-expanded")
-        const messageData = messageDataText?.closest("form.msg-form--is-fully-expanded")
+        const messageDataText = icon.closest("form")
+        const messageData = messageDataText?.closest(".msg-form--is-fully-expanded")
         const messgaegrap = messageData?.querySelector(".msg-form__contenteditable")
+
+        // grab message-reply text aria
+// const form = icon.closest("form");
+// let messageContainer =
+//   form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
+// if (!messageContainer) {
+//   const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
+//   messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
+// }
 
         let messageText = "";
         if (messgaegrap) {

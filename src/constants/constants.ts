@@ -28,12 +28,11 @@ export const TONES = [
 ];
 
 export const LANGUAGES = [
-    "Language",
     "English",
     "Spanish",
     "French",
     "German",
-    "Italian", // Add more languages as needed
+    "Italian",
     "Hindi"
 ];
 
