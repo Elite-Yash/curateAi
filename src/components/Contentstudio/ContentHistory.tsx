@@ -211,7 +211,7 @@ const ContentHistory: React.FC = () => {
 
         ) : (
           <div className="!border-[#e0eaf3] border-b">
-            {filteredContent.map((c: any) => (
+            {filteredContent.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((c: any) => (
               <div
                 key={c.id}
                 className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"

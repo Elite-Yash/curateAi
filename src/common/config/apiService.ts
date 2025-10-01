@@ -79,7 +79,6 @@ export class apiService {
         payload: object,
         onCompletion: Function
     ) {
-        console.log(". ~ axiosCall ~ type:", type)
         chrome.storage.local.get(["token"], async (result) => {
 
             const token = result?.token || '';

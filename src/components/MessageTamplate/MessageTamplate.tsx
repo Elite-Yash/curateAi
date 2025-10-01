@@ -58,13 +58,13 @@ const MessageTamplateTable = () => {
                     undefined,
                     {},
                     (response: any) => {
-                        if (response?.data.message === 'Campaign deleted successfully' && response?.data?.statusCode === 200) {
+                        if (response?.data.message === 'Template deleted successfully') {
                             setTemplates(prevTemplates =>
                                 prevTemplates.filter(templates => templates.id !== id)
                             );
                             Swal.fire({
                                 title: "Deleted!",
-                                text: "Campaign has been deleted.",
+                                text: "Template deleted successfully.",
                                 icon: "success",
                                 confirmButtonColor: "#ff5c35",
                             }).then(() => {
@@ -90,6 +90,11 @@ const MessageTamplateTable = () => {
                 });
             }
         }
+    };
+
+
+    const handleCampaignCreated = () => {
+        fetchTemplate();
     };
 
     const filteredTemplate = templates.filter(template =>
@@ -143,7 +148,10 @@ const MessageTamplateTable = () => {
                     </div>
 
                     <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => {
+                            setEditableTemplate(null);
+                            setIsModalOpen(true);
+                        }}
                         className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
                     >
                         <i className="fas fa-file-alt text-x"></i>
@@ -156,19 +164,19 @@ const MessageTamplateTable = () => {
             <div className="flex justify-between gap-6 w-full g-box">
                 <div className="rounded-2xl w-full">
                     <div className="p-5 g-box g-box-table">
-                        <div className="d-table h-connect-table !w-full max-h-[700px] overflow-auto">
+                        <div className="d-table h-connect-table !w-full max-h-[495px] overflow-auto">
                             <table className="w-full overflow-auto border rounded-lg border-[#e0eaf3]">
                                 <thead className="sticky top-0 !bg-[#fff5f380]">
                                     <tr
                                         className=""
                                     >
-                                        <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                                        <th className="font-semibold text-[14px] px-4 py-3 text-left w-[15%]">
                                             Name
                                         </th>
-                                        <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                                        <th className="font-semibold text-[14px] px-4 py-3 text-left w-[75%]">
                                             Messgae
                                         </th>
-                                        <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
+                                        <th className="font-semibold text-[14px] px-4 py-3 text-left w-[10%]">
                                             Actions
                                         </th>
                                     </tr>
@@ -186,9 +194,9 @@ const MessageTamplateTable = () => {
                                                     {template.name || "N/A"}
                                                 </td>
 
-                                                {/* Type */}
+                                                {/* message */}
                                                 <td className="px-4 py-3 text-sm text-gray-700">
-                                                    {template.type || "N/A"}
+                                                    {template.message || "N/A"}
                                                 </td>
 
                                                 {/* Actions */}
@@ -197,7 +205,7 @@ const MessageTamplateTable = () => {
                                                         {/* Edit */}
                                                         <button
                                                             onClick={() => handleEditTemplate(template)}
-                                                            className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fff5f380] hover:bg-[#ff5c35] hover:text-white transition"
+                                                            className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
                                                             title="Edit Template"
                                                         >
                                                             <i className="fa-solid fa-edit"></i>
@@ -218,7 +226,7 @@ const MessageTamplateTable = () => {
                                     ) : (
                                         <tr>
                                             <td colSpan={7}>
-                                                <div className="flex flex-col items-center text-center py-12 h-[650px] max-h-[648px] justify-center">
+                                                <div className="flex flex-col items-center text-center py-12 h-[445px] max-h-[500px] justify-center">
                                                     <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
                                                         <IoDocumentTextSharp className="w-8 h-8 text-[#ff5c35]" />
                                                     </div>
@@ -250,8 +258,8 @@ const MessageTamplateTable = () => {
                 <TemplateModal
                     isOpen={isModalOpen}
                     closeModalPoupBox={() => setIsModalOpen(false)}
-                    onTemplateCreated={() => { }}
-                    setEditableTemplate={setEditableTemplate}
+                    onTemplateCreated={handleCampaignCreated}
+                    editableTemplate={editableTemplate}
                 />
             )}
         </div>

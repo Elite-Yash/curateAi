@@ -7,7 +7,7 @@ import { getImage } from "../../common/utils/logoUtils";
 type FormData = {
     name: string;
     type: string;
-    url?: string;  
+    url?: string;
     fileUpload?: FileList;
     max_connections: number;
     message: string;
@@ -40,13 +40,13 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
         try {
             // Replace with your actual template API endpoint
             await apiService.commonAPIRequest(
-                "templates", // Adjust this endpoint as needed
+                apiService.EndPoint.getAllTemplate, // Adjust this endpoint as needed
                 apiService.Method.get,
                 undefined,
                 {},
                 (response: any) => {
-                    if (response?.status === 200) {
-                        setTemplateData(response.data || []);
+                    if (response?.status === 200 && response?.data?.data) {
+                        setTemplateData(response?.data?.data || []);
                     }
                 }
             );
@@ -60,13 +60,13 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
      */
     const checkForChanges = () => {
         if (!editableCampaigns) return true;
-        
+
         const currentValues = getValues();
         const changesDetected = Object.keys(initialFormData).some(key => {
             const formKey = key as keyof FormData;
             return currentValues[formKey] !== initialFormData[formKey];
         });
-        
+
         setHasChanges(changesDetected);
         return changesDetected;
     };
@@ -130,9 +130,12 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 undefined,
                 formData,
                 (response: any) => {
+                    console.log("  ~ saveCampaign ~ response:", response)
                     setIsLoading(false);
 
-                    if (response?.data.message === 'Campaign created successfully' && response?.data.statusCode === 200) {
+                    console.log("  ~ saveCampaign ~ response?.data:", response?.data)
+                    console.log("  ~ saveCampaign ~ response?.data.message:", response?.data.message)
+                    if (response?.message === "Campaign created successfully" && response?.statusCode === 200) {
                         setSuccessMessage("Campaign created successfully!");
                         Swal.fire({
                             title: "Success!",
@@ -144,7 +147,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                             onCampaignCreated();
                         });
                     } else {
-                        setErrorMessage(response?.data?.message || "Failed to create campaign. Please try again.");
+                        setErrorMessage(response?.message || "Failed to create campaign. Please try again.");
                         Swal.fire({
                             title: "Error!",
                             text: response?.data?.message || "Failed to create campaign",
@@ -199,9 +202,10 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                 undefined,
                 formData,
                 (response: any) => {
+                    console.log("update response", response)
                     setIsLoading(false);
 
-                    if (response?.data.message === 'Campaign updated successfully' && response?.data?.statusCode === 200) {
+                    if (response?.message === 'Campaign updated successfully' && response?.statusCode === 200) {
                         setSuccessMessage("Campaign updated successfully!");
                         Swal.fire({
                             title: "Success!",
@@ -256,14 +260,14 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                     url: editableCampaigns.url || "",
                     messageName: editableCampaigns.messageName || ""
                 };
-                
+
                 setValue("name", initialValues.name);
                 setValue("message", initialValues.message);
                 setValue("import_type", initialValues.import_type);
                 setValue("max_connections", initialValues.max_connections);
                 setValue("url", initialValues.url);
                 setValue("messageName", initialValues.messageName);
-                
+
                 // Store initial values for change detection
                 setInitialFormData(initialValues);
             } else {
@@ -334,7 +338,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     {...register("name", { required: !editableCampaigns && "Name is required" })}
                                                     className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 ${nonEditableStyle}`}
                                                     // className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] !p-2 `}
-                                                    placeholder="Campaign Name" 
+                                                    placeholder="Campaign Name"
                                                 />
                                                 {errors.name && (
                                                     <div className="text-red text-sm ms-1 absolute">{errors.name.message}</div>
@@ -352,9 +356,9 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                         required: !editableCampaigns && "Please select a Type"
                                                     })}
                                                     disabled={!!editableCampaigns}
-                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm text-[#6b7280] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 ${nonEditableStyle}`}  
+                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm text-[#6b7280] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 ${nonEditableStyle}`}
                                                 >
-                                                    <option value="">Select Type</option> 
+                                                    <option value="">Select Type</option>
                                                     <option value="csv">CSV</option>
                                                     <option value="url">URL</option>
                                                 </select>
@@ -397,7 +401,8 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                             required: selectedType === "csv" && !editableCampaigns && "File upload is required when type is CSV."
                                                         })}
                                                         accept=".csv"
-                                                        className="mt-1 block w-full text-sm text-[#6b7280] file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-[#d1d5db] file:bg-[#f9fafb] file:text-[#374151] hover:file:bg-[#f3f4f6]"
+                                                        disabled={!!editableCampaigns}
+                                                        className={`mt-1 block w-full text-sm text-[#6b7280] file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-[#d1d5db] file:bg-[#f9fafb] file:text-[#374151] hover:file:bg-[#f3f4f6] ${nonEditableStyle}`}
                                                     />
                                                     {errors.fileUpload && (
                                                         <div className="text-red text-sm ms-1 absolute">{errors.fileUpload.message}</div>
@@ -446,7 +451,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     className="mt-1 block w-full rounded-md border-[#d1d5db] text-sm text-[#6b7280] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 mb-2"
                                                 >
                                                     <option value="">Select a predefined message</option>
-                                                    {templateData.map((data: any) => {
+                                                    {templateData?.map((data: any) => {
                                                         const isLongMessage = data.message && data.message.length > 150;
                                                         return (
                                                             <option key={data.id} value={data.name} disabled={typeValue === "connect" && isLongMessage}>

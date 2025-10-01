@@ -6,16 +6,10 @@ import { getImage } from "../../common/utils/logoUtils";
 
 type FormData = {
     name: string;
-    type: string;
-    url?: string;
-    fileUpload?: FileList;
-    max_connections: number;
     message: string;
-    messageName: string;
-    import_type: string;
 };
 
-const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableTemplates, resetEditableTemplate, }: any) => {
+const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableTemplate, resetEditableTemplate, }: any) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -23,6 +17,33 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
     // const [templateData, setTemplateData] = useState<any[]>([]);
     const [initialFormData, setInitialFormData] = useState<Partial<FormData>>({});
     const [hasChanges, setHasChanges] = useState(false);
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const toggleDropdown = () => {
+        setDropdownOpen(!isDropdownOpen);
+    };
+
+    const insertTemplate = (template: string) => {
+        const textarea = document.getElementById('message') as HTMLTextAreaElement;
+        if (!textarea) return;
+
+        const cursorPosition = textarea.selectionStart;
+        const currentText = textarea.value;
+
+        // Insert the template at the cursor position
+        const newText =
+            currentText.substring(0, cursorPosition) +
+            template +
+            currentText.substring(cursorPosition);
+
+        // Set the updated message with the template inserted
+        setValue('message', newText);
+
+        // Move the cursor to the end of the inserted template
+        setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = cursorPosition + template.length;
+        }, 0);
+        toggleDropdown();
+    };
 
     const {
         register,
@@ -34,31 +55,11 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
         getValues
     } = useForm<FormData>();
 
-    // Fetch template data
-    // const getAllTemplateData = async () => {
-    //     try {
-    //         // Replace with your actual template API endpoint
-    //         await apiService.commonAPIRequest(
-    //             "templates", // Adjust this endpoint as needed
-    //             apiService.Method.get,
-    //             undefined,
-    //             {},
-    //             (response: any) => {
-    //                 if (response?.status === 200) {
-    //                     setTemplateData(response.data || []);
-    //                 }
-    //             }
-    //         );
-    //     } catch (error) {
-    //         console.error("Error fetching templates:", error);
-    //     }
-    // };
-
     /**
-     * Check if form has changes compared to initial data
-     */
+   * Check if form has changes compared to initial data
+   */
     const checkForChanges = () => {
-        if (!editableTemplates) return true;
+        if (!editableTemplate) return true;
 
         const currentValues = getValues();
         const changesDetected = Object.keys(initialFormData).some(key => {
@@ -71,17 +72,11 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
     };
 
     /**
-     * Handle form submission: Calls `saveTemplate` or `updateTemplate` based on the mode (add/edit).
+     * Handle form submission: Calls `saveTemplate` or `updateTemplate` based on the m  ode (add/edit).
      */
     const onSubmit: SubmitHandler<FormData> = async (data) => {
-        // Check if type is CSV and fileUpload is not provided (only for new templates)
-        if (data.import_type === "csv" && !editableTemplates && (!data.fileUpload || data.fileUpload.length === 0)) {
-            setErrorMessage("File upload is required when type is CSV.");
-            return;
-        }
-
         // For updates, check if there are any changes
-        if (editableTemplates && !checkForChanges()) {
+        if (editableTemplate && !checkForChanges()) {
             Swal.fire({
                 title: "No Changes Detected",
                 text: "You haven't made any changes to update.",
@@ -92,7 +87,7 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
             return;
         }
 
-        if (editableTemplates) {
+        if (editableTemplate) {
             await updateTemplate(data);
         } else {
             await saveTemplate(data);
@@ -100,41 +95,31 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
     };
 
     /**
-     * Save a new campaign.
+     * Save a new template.
      */
     const saveTemplate = async (data: any) => {
         setIsLoading(true);
         setErrorMessage(null);
         setSuccessMessage(null);
 
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("import_type", data.import_type);
-        formData.append("max_connections", data.max_connections.toString());
-        formData.append("message", data.message);
-
-        if (data.url && data.import_type === 'url') {
-            formData.append("url", data.url);
-        }
-
-        if (data.fileUpload && data.fileUpload.length > 0 && data.import_type === 'csv') {
-            formData.append("csvFile", data.fileUpload[0]);
-        }
+        const payload = {
+            name: data.name,
+            message: data.message
+        };
 
         try {
             await apiService.commonAPIRequest(
-                apiService.EndPoint.createcampaign,
+                apiService.EndPoint.createTemplate,
                 apiService.Method.post,
                 undefined,
-                formData,
+                payload,
                 (response: any) => {
                     setIsLoading(false);
-
-                    if (response?.message === 'Campaign created successfully' && response?.statusCode === 200) {
-                        setSuccessMessage("Campaign created successfully!");
+                    if (response?.data?.message === 'Template created successfully' && response?.data?.statusCode === 200) {
+                        setSuccessMessage("Template created successfully!");
                         Swal.fire({
                             title: "Success!",
-                            text: "Campaign created successfully!",
+                            text: "Template created successfully!",
                             icon: "success",
                             confirmButtonColor: "#ff5c35",
                         }).then(() => {
@@ -145,7 +130,7 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                         setErrorMessage(response?.message || "Failed to create campaign. Please try again.");
                         Swal.fire({
                             title: "Error!",
-                            text: response?.message || "Failed to create campaign",
+                            text: response?.message || "Failed to create template",
                             icon: "error",
                             confirmButtonColor: "#ff5c35",
                         });
@@ -154,11 +139,11 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
             );
         } catch (err) {
             setIsLoading(false);
-            console.error("Error creating campaign:", err);
+            console.error("Error creating template:", err);
             setErrorMessage("An unexpected error occurred. Please try again.");
             Swal.fire({
                 title: "Error!",
-                text: "An unexpected error occurred while creating campaign.",
+                text: "An unexpected error occurred while creating template.",
                 icon: "error",
                 confirmButtonColor: "#ff5c35",
             });
@@ -173,36 +158,27 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
         setErrorMessage(null);
         setSuccessMessage(null);
 
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("import_type", data.import_type);
-        formData.append("max_connections", data.max_connections.toString());
-        formData.append("message", data.message);
+        const payload = {
+            name: data.name,
+            message: data.message,
+        };
 
-        if (data.url) {
-            formData.append("url", data.url);
-        }
-
-        if (data.fileUpload && data.fileUpload.length > 0) {
-            formData.append("csvFile", data.fileUpload[0]);
-        }
-
-        const endpoint = apiService.EndPoint.updateTemplate.replace(':campaignId', editableTemplates.id);
-
+        const endpoint = apiService.EndPoint.updateTemplate.replace(':id', editableTemplate.id)
         try {
             await apiService.commonAPIRequest(
                 endpoint,
-                apiService.Method.put,
+                apiService.Method.patch,
                 undefined,
-                formData,
+                payload,
                 (response: any) => {
+                    console.log("  ~ updateTemplate ~ response:", response)
                     setIsLoading(false);
 
-                    if (response?.message === 'Campaign updated successfully' && response?.statusCode === 200) {
-                        setSuccessMessage("Campaign updated successfully!");
+                    if (response?.data?.message === 'Template updated successfully') {
+                        setSuccessMessage("Template updated successfully!");
                         Swal.fire({
                             title: "Success!",
-                            text: "Campaign updated successfully!",
+                            text: "Template updated successfully!",
                             icon: "success",
                             confirmButtonColor: "#ff5c35",
                         }).then(() => {
@@ -210,10 +186,10 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                             onTemplateCreated();
                         });
                     } else {
-                        setErrorMessage(response?.message || "Failed to update campaign. Please try again.");
+                        setErrorMessage(response?.message || "Failed to update template. Please try again.");
                         Swal.fire({
                             title: "Error!",
-                            text: response?.message || "Failed to update campaign",
+                            text: response?.message || "Failed to update template",
                             icon: "error",
                             confirmButtonColor: "#ff5c35",
                         });
@@ -222,16 +198,17 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
             );
         } catch (err) {
             setIsLoading(false);
-            console.error("Error updating campaign:", err);
+            console.error("Error updating template:", err);
             setErrorMessage("An unexpected error occurred. Please try again.");
             Swal.fire({
                 title: "Error!",
-                text: "An unexpected error occurred while updating campaign.",
+                text: "An unexpected error occurred while updating template.",
                 icon: "error",
                 confirmButtonColor: "#ff5c35",
             });
         }
     };
+
 
     /**
      * Watch for modal state and populate fields if editing.
@@ -244,30 +221,21 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
 
         if (isOpen) {
             reset();
-            if (editableTemplates) {
+            if (editableTemplate) {
                 const initialValues = {
-                    name: editableTemplates.name || "",
-                    message: editableTemplates.message || "",
-                    import_type: editableTemplates.import_type || "",
-                    max_connections: editableTemplates.max_connections || 0,
-                    url: editableTemplates.url || "",
-                    messageName: editableTemplates.messageName || ""
+                    name: editableTemplate.name || "",
+                    message: editableTemplate.message || "",
                 };
 
                 setValue("name", initialValues.name);
                 setValue("message", initialValues.message);
-                setValue("import_type", initialValues.import_type);
-                setValue("max_connections", initialValues.max_connections);
-                setValue("url", initialValues.url);
-                setValue("messageName", initialValues.messageName);
-
                 // Store initial values for change detection
                 setInitialFormData(initialValues);
             } else {
                 setInitialFormData({});
             }
         }
-    }, [isOpen, reset, editableTemplates, setValue]);
+    }, [isOpen, reset, editableTemplate, setValue]);
 
     /**
      * Close modal logic.
@@ -290,7 +258,7 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                         } fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20`}
                 >
                     <div
-                        className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden
+                        className={`popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden !w-[600px]
             }`}
                     >
                         {/* Modal Header */}
@@ -299,7 +267,7 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                                 <img src={getImage("fLogo")} alt="img" className="" />
                             </span>
                             <h4 className="popup-title font-semibold text-xl leading-10">
-                                {editableTemplates ? "Update Template" : "Create Template"}
+                                {editableTemplate ? "Update Template" : "Create Template"}
                             </h4>
                             <span
                                 onClick={closeModalPoup}
@@ -314,12 +282,12 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                         </div>
 
 
-                        <div className="p-6 flex flex-col gap-5 item-center">
+                        <div className="p-6 flex flex-col gap-5 item-center h-115">
                             <div className="grid grid-cols-1 gap-5">
                                 <div className="w-full input-group flex-col col-span-1">
                                     {/* Modal Body */}
                                     <form onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="space-y-4 overflow-y-auto max-h-[60vh] *:px-[1px]">
+                                        <div className="space-y-4 h-[365px] *:px-[1px]">
                                             {/* Name Field */}
                                             <div>
                                                 <label htmlFor="name" className="block text-sm font-medium text-[#374151] ms-1">
@@ -328,31 +296,84 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                                                 <input
                                                     type="text"
                                                     id="name"
-                                                    {...register("name", { required: !editableTemplates && "Name is required" })}
+                                                    {...register("name", { required: !editableTemplate && "Name is required" })}
                                                     className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] !p-2 `}
                                                     placeholder="Template Name"
                                                 />
                                                 {errors.name && (
-                                                    <div className="text-red text-sm">{errors.name.message}</div>
+                                                    <div className="text-red text-sm ms-1 absolute">{errors.name.message}</div>
                                                 )}
                                             </div>
 
                                             {/* Message Field */}
                                             <div className="relative">
-                                                <label htmlFor="message" className="block text-sm font-medium text-[#374151] ms-1">
-                                                    Message <span className="text-red">*</span>
-                                                </label>
+                                                <div className="flex justify-between">
+                                                    <label
+                                                        htmlFor="message"
+                                                        className="block text-sm font-medium text-gray-700 mt-2"
+                                                    >
+                                                        Message <span className="text-red">*</span>
+                                                    </label>
 
-                                                {/* Textarea for message */}
+                                                    {/* Template Button */}
+                                                    <div className="flex justify-end mb-2">
+                                                        <button
+                                                            type="button"
+                                                            onClick={toggleDropdown}
+                                                            className="bg-[#ff5c35] text-white text-sm font-medium py-1.5 px-3 rounded-lg border border-[#ff5c35] 
+                 hover:bg-white hover:text-[#ff5c35] transition-all duration-200 shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35]"
+                                                        >
+                                                            + Template
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* Textarea */}
                                                 <textarea
                                                     id="message"
                                                     {...register("message", { required: "Message is required" })}
-                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 $ resize-none`}
-                                                    style={{ height: "100px" }}
-                                                    placeholder="Add Your Message"
+                                                    value={watch("message")}
+                                                    onChange={(e) => setValue("message", e.target.value)}
+                                                    className="mt-1 block w-[100%] h-[240px] rounded-md shadow-sm border-[#d1d5db] focus:ring-[#ff5c35] focus:border-[#ff5c35] resize-none"
+                                                    placeholder={
+                                                        editableTemplate ? editableTemplate.message : "Add Your Message"
+                                                    }
                                                 ></textarea>
+
                                                 {errors.message && (
-                                                    <div className="text-red text-sm">{errors.message.message}</div>
+                                                    <p className="text-red !text-sm ms-1 absolute">{errors.message.message}</p>
+                                                )}
+
+                                                {/* Dropdown - ab textarea ke upar dikhega */}
+                                                {isDropdownOpen && (
+                                                    <div className="absolute right-0 bottom-[45%] mb-2 w-36 bg-white border border-[#ff5c35] rounded-lg shadow-lg z-20 max-h-[160px] overflow-y-auto animate-fade-in">
+                                                        <ul className=" text-sm text-gray-700">
+                                                            <li
+                                                                className="px-4 py-1 hover:bg-[#ff5c35] hover:text-white cursor-pointer"
+                                                                onClick={() => insertTemplate(" {{firstname}} ")}
+                                                            >
+                                                                First Name
+                                                            </li>
+                                                            <li
+                                                                className="px-4 py-1 hover:bg-[#ff5c35] hover:text-white cursor-pointer"
+                                                                onClick={() => insertTemplate(" {{lastname}} ")}
+                                                            >
+                                                                Last Name
+                                                            </li>
+                                                            <li
+                                                                className="px-4 py-1 hover:bg-[#ff5c35] hover:text-white cursor-pointer"
+                                                                onClick={() => insertTemplate(" {{position}} ")}
+                                                            >
+                                                                Position
+                                                            </li>
+                                                            <li
+                                                                className="px-4 py-1 hover:bg-[#ff5c35] hover:text-white cursor-pointer"
+                                                                onClick={() => insertTemplate(" {{company}} ")}
+                                                            >
+                                                                Company
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
@@ -362,9 +383,9 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                                             <button
                                                 type="submit"
                                                 disabled={isLoading}
-                                                className="w-full bg-[#ff5c35] hover:bg-[#2455c0ee] text-white py-2 px-4 font-medium text-sm rounded-md disabled:opacity-50"
+                                                className="w-full bg-[#ff5c35] text-white py-2 px-4 font-medium text-sm rounded-md disabled:opacity-50"
                                             >
-                                                {isLoading ? (editableTemplates ? "Updating..." : "Saving...") : (editableTemplates ? "Update" : "Save")}
+                                                {isLoading ? (editableTemplate ? "Updating..." : "Saving...") : (editableTemplate ? "Update" : "Save")}
                                             </button>
                                         </div>
                                     </form>
