@@ -391,7 +391,7 @@ const MessageCampaignTable = () => {
                   ) : (
                     <tr>
                       <td colSpan={7}>
-                        <div className="flex flex-col items-center text-center py-12 h-[650px] max-h-[648px] justify-center">
+                        <div className="flex flex-col items-center text-center py-12 h-[445px] max-h-[500px] justify-center">
                           <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
                             <MdCampaign className="w-8 h-8 text-[#ff5c35]" />
                           </div>
