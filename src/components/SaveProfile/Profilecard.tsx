@@ -75,11 +75,11 @@ const Profilecard = ({
             {/* --- Image + Name + Position --- */}
             <div className="flex items-center gap-4">
               {profile.profile?.startsWith("data:image") ? (
-                <span className="relative s-logo border-[2.5px] border-solid p-[3px] rounded-full border-[#ff5c35] w-20 h-20 flex items-center justify-center overflow-hidden">
-                  <img src={getImage("userprofile")} alt="img" className="w-20" />
+                <span className="relative s-logo border-[2.5px] border-solid p-[3px] rounded-full border-[#ff5c35] w-18 h-18 flex items-center justify-center overflow-hidden">
+                  <img src={getImage("userprofile")} alt="img" className="w-20 rounded-full" />
                 </span>
               ) : (
-                <span className="w-20 h-20 rounded-full p-[3px] border-[2.5px] border-solid border-[#ff5c35]">
+                <span className="w-18 h-18 rounded-full p-[3px] border-[2.5px] border-solid border-[#ff5c35]">
                   <img
                     className="w-full h-full rounded-full object-cover"
                     src={profile.profile}

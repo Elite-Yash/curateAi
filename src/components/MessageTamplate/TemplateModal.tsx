@@ -18,6 +18,8 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
     const [initialFormData, setInitialFormData] = useState<Partial<FormData>>({});
     const [hasChanges, setHasChanges] = useState(false);
     const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isContextActive, setIsContextActive] = useState(false);
+
     const toggleDropdown = () => {
         setDropdownOpen(!isDropdownOpen);
     };
@@ -329,16 +331,23 @@ const TemplateModal = ({ isOpen, closeModalPoupBox, onTemplateCreated, editableT
                                                 </div>
 
                                                 {/* Textarea */}
+                                                 <div
+                                                    className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#d1d5db]"
+                                                        } custom_textarea`}
+                                                >
                                                 <textarea
                                                     id="message"
                                                     {...register("message", { required: "Message is required" })}
                                                     value={watch("message")}
                                                     onChange={(e) => setValue("message", e.target.value)}
-                                                    className="mt-1 block w-[100%] h-[240px] rounded-md shadow-sm border-[#d1d5db] focus:ring-[#ff5c35] focus:border-[#ff5c35] resize-none"
+                                                    className="mt-1 block w-[100%] h-[240px] rounded-md border-[#d1d5db] focus:ring-[#ff5c35] focus:border-[#ff5c35] resize-none focus:ring-0 border-0"
                                                     placeholder={
-                                                        editableTemplate ? editableTemplate.message : "Add Your Message"
+                                                    editableTemplate ? editableTemplate.message : "Add Your Message"
                                                     }
+                                                    onFocus={() => setIsContextActive(true)}
+                                                    onBlur={() => setIsContextActive(false)}
                                                 ></textarea>
+                                                </div>
 
                                                 {errors.message && (
                                                     <p className="text-red !text-sm ms-1 absolute">{errors.message.message}</p>

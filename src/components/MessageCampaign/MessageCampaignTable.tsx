@@ -270,11 +270,13 @@ const MessageCampaignTable = () => {
       <div className="flex justify-between gap-6 w-full g-box">
         <div className="rounded-2xl w-full">
           <div className="p-5 g-box g-box-table">
-            <div className="d-table h-connect-table !w-full max-h-[495px] overflow-auto">
-              <table className="w-full overflow-auto border rounded-lg border-[#e0eaf3]">
-                <thead className="sticky top-0 !bg-[#fff5f380]">
+            <div className="d-table h-connect-table !w-full ">
+            <div className="overflow-hidden border rounded-lg border-[#e0eaf3]">
+               <div className="overflow-y-auto max-h-[495px] rounded-lg w-full h-full">
+               <table className="w-full">
+                <thead className="sticky top-0 !bg-[#fbf7f8]">
                   <tr
-                    className=""
+                    className="border-b border-[#e1eaf4]"
                   >
                     <th className="font-semibold text-[14px] px-4 py-3 text-left text-gray-700">
                       Name
@@ -302,7 +304,7 @@ const MessageCampaignTable = () => {
 
                 <tbody>
                   {filteredCampaigns.length > 0 ? (
-                    filteredCampaigns.map((campaign, index) => (
+                    filteredCampaigns.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((campaign, index) => (
                       <tr
                         key={index}
                         className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
@@ -413,6 +415,8 @@ const MessageCampaignTable = () => {
                   )}
                 </tbody>
               </table>
+             </div>
+            </div>
             </div>
           </div>
         </div>

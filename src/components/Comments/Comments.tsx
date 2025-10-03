@@ -194,7 +194,7 @@ const Comments = () => {
                           {fullComment.length > 120 && (
                             <button
                               onClick={() => openModal(comment)}
-                              className="text-[#ff5c35] hover:text-[#003ab6] text-sm font-medium hover:underline w-fit"
+                              className="text-[#ff5c35] text-sm font-medium hover:underline w-fit"
                             >
                               Read More
                             </button>
@@ -222,9 +222,9 @@ const Comments = () => {
                           href={comment.post_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-sm text-[#ff5c35] truncate mt-auto"
+                          className="flex items-center gap-1 text-sm truncate mt-auto"
                         >
-                          <i className="fa-solid fa-location-dot text-sm text-[#eb2448]"></i>
+                          <i className="fa-solid fa-location-dot text-[13px] text-[#eb2448]"></i>
 
                           {comment.post_url
                             ? comment.post_url.length > 40

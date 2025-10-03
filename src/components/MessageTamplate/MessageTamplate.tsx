@@ -164,92 +164,98 @@ const MessageTamplateTable = () => {
             <div className="flex justify-between gap-6 w-full g-box">
                 <div className="rounded-2xl w-full">
                     <div className="p-5 g-box g-box-table">
-                        <div className="d-table h-connect-table !w-full max-h-[495px] overflow-auto">
-                            <table className="w-full overflow-auto border rounded-lg border-[#e0eaf3]">
-                                <thead className="sticky top-0 !bg-[#fff5f380]">
-                                    <tr
-                                        className=""
-                                    >
-                                        <th className="font-semibold text-[14px] px-4 py-3 text-left w-[15%]">
-                                            Name
-                                        </th>
-                                        <th className="font-semibold text-[14px] px-4 py-3 text-left w-[75%]">
-                                            Messgae
-                                        </th>
-                                        <th className="font-semibold text-[14px] px-4 py-3 text-left w-[10%]">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {filteredTemplate.length > 0 ? (
-                                        filteredTemplate.map((template, index) => (
+                        <div className="d-table h-connect-table !w-full ">
+                            <div className="overflow-hidden border rounded-lg border-[#e0eaf3]">
+                                <div className="overflow-y-auto max-h-[495px] rounded-lg w-full h-full">
+                                    <table className="w-full overflow-auto border rounded-lg border-[#e0eaf3]">
+                                        <thead className="sticky top-0 !bg-[#fbf7f8]">
                                             <tr
-                                                key={index}
-                                                className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
+                                                className=""
                                             >
-                                                {/* Name */}
-                                                <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                                                    {template.name || "N/A"}
-                                                </td>
-
-                                                {/* message */}
-                                                <td className="px-4 py-3 text-sm text-gray-700">
-                                                    {template.message || "N/A"}
-                                                </td>
-
-                                                {/* Actions */}
-                                                <td className="px-4 py-3 text-sm text-gray-700">
-                                                    <div className="flex items-center gap-2">
-                                                        {/* Edit */}
-                                                        <button
-                                                            onClick={() => handleEditTemplate(template)}
-                                                            className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
-                                                            title="Edit Template"
-                                                        >
-                                                            <i className="fa-solid fa-edit"></i>
-                                                        </button>
-
-                                                        {/* Delete */}
-                                                        <button
-                                                            onClick={() => deleteTemplate(template.id)}
-                                                            className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
-                                                            title="Delete Template"
-                                                        >
-                                                            <i className="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                                <th className="font-semibold text-[14px] px-4 py-3 text-left w-[15%]">
+                                                    Name
+                                                </th>
+                                                <th className="font-semibold text-[14px] px-4 py-3 text-left w-[75%]">
+                                                    Messgae
+                                                </th>
+                                                <th className="font-semibold text-[14px] px-4 py-3 text-left w-[10%]">
+                                                    Actions
+                                                </th>
                                             </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan={7}>
-                                                <div className="flex flex-col items-center text-center py-12 h-[445px] max-h-[500px] justify-center">
-                                                    <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
-                                                        <IoDocumentTextSharp className="w-8 h-8 text-[#ff5c35]" />
-                                                    </div>
+                                        </thead>
 
-                                                    {/* Title */}
-                                                    <div className="text-lg font-medium text-[#64748b] mb-2">
-                                                        {searchTerm
-                                                            ? "No templates found matching your search"
-                                                            : "No templates available"}
-                                                    </div>
+                                        <tbody>
+                                            {filteredTemplate.length > 0 ? (
+                                                filteredTemplate.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((template, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
+                                                    >
+                                                        {/* Name */}
+                                                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                                            {template.name || "N/A"}
+                                                        </td>
 
-                                                    {/* Subtitle */}
-                                                    <div className="text-sm text-[#92a0b5] max-w-md">
-                                                        {searchTerm
-                                                            ? "Try adjusting your search keywords or filters to find the right templates."
-                                                            : "Create a new templates to get started and manage your activities here."}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                                        {/* message */}
+                                                        <td className="px-4 py-3 text-sm text-gray-700">
+                                                            {template.message || "N/A"}
+                                                        </td>
+
+                                                        {/* Actions */}
+                                                        <td className="px-4 py-3 text-sm text-gray-700">
+                                                            <div className="flex items-center gap-2">
+                                                                {/* Edit */}
+                                                                <button
+                                                                    onClick={() => handleEditTemplate(template)}
+                                                                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
+                                                                    title="Edit Template"
+                                                                >
+                                                                    <i className="fa-solid fa-edit"></i>
+                                                                </button>
+
+                                                                {/* Delete */}
+                                                                <button
+                                                                    onClick={() => deleteTemplate(template.id)}
+                                                                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
+                                                                    title="Delete Template"
+                                                                >
+                                                                    <i className="fa-solid fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={7}>
+                                                        <div className="flex flex-col items-center text-center py-12 h-[445px] max-h-[500px] justify-center">
+                                                            <div className="w-20 h-20 rounded-full bg-[#ff5c350f] flex items-center justify-center mb-2">
+                                                                <IoDocumentTextSharp className="w-8 h-8 text-[#ff5c35]" />
+                                                            </div>
+
+                                                            {/* Title */}
+                                                            <div className="text-lg font-medium text-[#64748b] mb-2">
+                                                                {searchTerm
+                                                                    ? "No templates found matching your search"
+                                                                    : "No templates available"}
+                                                            </div>
+
+                                                            {/* Subtitle */}
+                                                            <div className="text-sm text-[#92a0b5] max-w-md">
+                                                                {searchTerm
+                                                                    ? "Try adjusting your search keywords or filters to find the right templates."
+                                                                    : "Create a new templates to get started and manage your activities here."}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>

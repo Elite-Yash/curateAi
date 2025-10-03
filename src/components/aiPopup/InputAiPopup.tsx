@@ -153,7 +153,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setIsTextGenerated(true);
             // Safe fallback
             const generatedMessage: string = response?.data?.data && typeof response.data.data === "string" ? response.data.data : "";
-            
+
             // update saveGeneratedMessageData manually
             setSaveGeneratedMessageData?.({
               comment: generatedMessage,
@@ -367,7 +367,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     {/* Motive */}
                     <div className="w-full input-group ">
                       <label className="block text-xl font-medium text-gray-700 ms-2">
-                        Select Motive<span className="text-red">*</span>  
+                        Select Motive<span className="text-red">*</span>
                       </label>
                       <span className="relative">
                         <select
@@ -376,7 +376,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                           disabled={loading}
                         >
-                          {(popupTriggeredFrom === "create-post"
+                          {(popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply"
                             ? POSTING_MOTIVES
                             : COMMENT_MOTIVES
                           ).map((motive, index) => {

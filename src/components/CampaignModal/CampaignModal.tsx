@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
@@ -24,6 +24,21 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
     const [initialFormData, setInitialFormData] = useState<Partial<FormData>>({});
     const [hasChanges, setHasChanges] = useState(false);
     const nonEditableStyle = editableCampaigns ? "bg-gray5 cursor-not-allowed" : "";
+    const [isContextActive, setIsContextActive] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [fileName, setFileName] = useState("No file chosen");
+
+    const handleClick = () => {
+        if (!editableCampaigns) {
+            fileInputRef?.current?.click();
+        }
+    };
+
+    const handleFileChange = (e: any) => {
+        const file = e.target.files[0];
+        setFileName(file ? file.name : "No file chosen")
+        setValue("fileUpload", e.target.files, { shouldValidate: true });
+    };
 
     const {
         register,
@@ -75,6 +90,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
      * Handle form submission: Calls `saveCampaign` or `updateCampaign` based on the mode (add/edit).
      */
     const onSubmit: SubmitHandler<FormData> = async (data) => {
+        console.log("Form Submitted!", data);
         // Check if type is CSV and fileUpload is not provided (only for new campaigns)
         if (data.import_type === "csv" && !editableCampaigns && (!data.fileUpload || data.fileUpload.length === 0)) {
             setErrorMessage("File upload is required when type is CSV.");
@@ -320,13 +336,13 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
 
 
                         <div className="p-6 flex flex-col gap-5 item-center">
-                            <div className="grid grid-cols-1 gap-5">
+                            <div className="grid grid-cols-1 gap-5 p-[1px]">
                                 <div className="w-full input-group flex-col col-span-1">
                                     {/* Modal Body */}
                                     <form onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="space-y-5 *:px-[1px]">
+                                        <div className="space-y-5 *:px-[1px] max-h-[495px] overflow-auto">
                                             {/* Name Field */}
-                                            <div>
+                                            <div className="relative">
                                                 <label htmlFor="name" className="block text-sm font-medium text-[#374151] ms-1">
                                                     Name <span className="text-red">*</span>
                                                 </label>
@@ -335,7 +351,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     id="name"
                                                     disabled={!!editableCampaigns}
                                                     {...register("name", { required: !editableCampaigns && "Name is required" })}
-                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 ${nonEditableStyle}`}
+                                                    className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] !p-2 ${nonEditableStyle}`}
                                                     // className={`mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] !p-2 `}
                                                     placeholder="Campaign Name"
                                                 />
@@ -345,7 +361,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             </div>
 
                                             {/* Type Field */}
-                                            <div>
+                                            <div className="relative">
                                                 <label htmlFor="import_type" className="block text-sm font-medium text-[#374151] ms-1">
                                                     Type <span className="text-red">*</span>
                                                 </label>
@@ -368,41 +384,106 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
 
                                             {/* Conditional URL Input */}
                                             {selectedType === "url" && (
-                                                <div>
-                                                    <label htmlFor="url" className="block text-sm font-medium text-[#374151] ms-1">
+                                                <div className="relative">
+                                                    <label
+                                                        htmlFor="url"
+                                                        className="block text-sm font-medium text-[#374151] ms-1"
+                                                    >
                                                         URL <span className="text-red">*</span>
                                                     </label>
+
                                                     <input
                                                         type="url"
                                                         id="url"
+                                                        placeholder="https://www.linkedin.com/search/results/all/?keywords=react"
                                                         {...register("url", {
-                                                            required: selectedType === "url" && "URL is required",
+                                                            required: selectedType === "url" ? "URL is required" : false,
+                                                            // validate: (value: any) =>
+                                                            //     if (!value) return true;
+                                                            //     value.startsWith("https://www.linkedin.com/search/results/all/?keywords") ||
+                                                            //     "Invalid URL: It must be a valid LinkedIn search URL",
+                                                            validate: (value: any) => {
+                                                                if (!value) return true; // allow empty if somehow skipped
+                                                                return value.startsWith(
+                                                                    "https://www.linkedin.com/search/results/all/?keywords"
+                                                                ) || "Invalid URL: It must be a valid LinkedIn search URL";
+                                                            },
                                                         })}
                                                         className="mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
-                                                        placeholder="https://example.com"
                                                     />
+
+                                                    {/* ✅ Note text */}
+                                                    {/* <div className="text-sm text-gray-500 ms-1 mt-1">
+                                                        <span className="text-red">Note:</span> Only LinkedIn search URLs are allowed. The URL must start with{" "}
+                                                        <span className="font-mono text-[#ff5c35]">
+                                                            https://www.linkedin.com/search/results/all/?keywords
+                                                        </span>{" "}
+                                                        followed by your search query.  
+                                                    </div> */}
+
+                                                    {/* LinkedIn URL Note */}
+                                                    <div className="p-4 bg-[#ff5c350f] rounded-lg mt-[10px]">
+                                                        <div className="font-semibold text-sm ">
+                                                            🤝 LinkedIn URL Guidelines:
+                                                        </div>
+                                                        <ul className="text-xs space-y-1">
+                                                            <li className="flex gap-2"><span className="text-sm">•</span> <span>Open LinkedIn and perform a search (e.g., <b>"React Developer"</b> or <b>"Node Developer"</b>).</span></li>
+                                                            <li className="flex gap-2"><span className="text-sm">•</span> <span>Copy the URL from the <b>search results page.</b></span></li>
+                                                            <li className="flex gap-2"><span className="text-sm">•</span>  <span>
+                                                                Only URLs starting with <span className="font-mono text-[#ff5c35]"> https://www.linkedin.com/search/results/all/?keywords</span>  are valid.
+                                                            </span>
+                                                            </li>
+                                                            <li className="flex gap-2"><span className="text-sm">•</span> <span>Any other type of LinkedIn link (e.g., jobs, profiles, posts) will not be accepted.</span> </li>
+                                                        </ul>
+                                                    </div>
+
                                                     {errors.url && (
-                                                        <div className="text-red text-sm ms-1 absolute">{errors.url.message}</div>
+                                                        <div className="text-red text-sm ms-1 absolute">
+                                                            {errors.url.message}
+                                                        </div>
                                                     )}
                                                 </div>
+
                                             )}
 
                                             {/* File Upload */}
                                             {selectedType === "csv" && (
-                                                <div>
+                                                <div className="relative">
                                                     <label htmlFor="fileUpload" className="block text-sm font-medium text-[#374151] ms-1">
                                                         Upload File <span className="text-red">*</span>
                                                     </label>
-                                                    <input
-                                                        type="file"
-                                                        id="fileUpload"
-                                                        {...register("fileUpload", {
-                                                            required: selectedType === "csv" && !editableCampaigns && "File upload is required when type is CSV."
-                                                        })}
-                                                        accept=".csv"
-                                                        disabled={!!editableCampaigns}
-                                                        className={`mt-1 block w-full text-sm text-[#6b7280] file:mr-4 file:py-2 file:px-4 file:rounded file:border file:border-[#d1d5db] file:bg-[#f9fafb] file:text-[#374151] hover:file:bg-[#f3f4f6] ${nonEditableStyle}`}
-                                                    />
+
+                                                    <button type="button" className="relative UploadFile">
+                                                        <span className="flex items-center gap-2 mt-[2px]">
+                                                            <span
+                                                                className="UploadFile-btn z-9 flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition cursor-pointer"
+                                                                onClick={handleClick}
+                                                            >
+                                                                Choose File
+                                                            </span>
+                                                            <span className="UploadFile-text text-[#6b7280] text-[14px]">
+                                                                {fileName}
+                                                            </span>
+                                                        </span>
+
+                                                        <span className="input_UploadFile absolute top-1/2 left-0 -translate-y-1/2 opacity-0">
+                                                            <input
+                                                                type="file"
+                                                                id="fileUpload"
+                                                                {...register("fileUpload", {
+                                                                    required:
+                                                                        selectedType === "csv" &&
+                                                                        !editableCampaigns &&
+                                                                        "File upload is required when type is CSV.",
+                                                                })}
+                                                                accept=".csv"
+                                                                disabled={!!editableCampaigns}
+                                                                ref={fileInputRef}
+                                                                onChange={handleFileChange}
+                                                                className={`mt-1 block text-sm text-[#6b7280] file:mr-4 !p-0 !w-[109px] file:rounded file:border file:border-[#d1d5db] file:bg-[#f9fafb] file:text-[#374151] hover:file:bg-[#f3f4f6] ${nonEditableStyle}`}
+                                                            />
+                                                        </span>
+                                                    </button>
                                                     {errors.fileUpload && (
                                                         <div className="text-red text-sm ms-1 absolute">{errors.fileUpload.message}</div>
                                                     )}
@@ -410,7 +491,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                             )}
 
                                             {/* MAX CONNECTION Field */}
-                                            <div>
+                                            <div className="relative">
                                                 <label htmlFor="max_connections" className="block text-sm font-medium text-[#374151] ms-1">
                                                     Max Connection <span className="text-red">*</span>
                                                 </label>
@@ -461,13 +542,20 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                 </select>
 
                                                 {/* Textarea for message */}
-                                                <textarea
-                                                    id="message"
-                                                    {...register("message", { required: "Message is required" })}
-                                                    className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 $ resize-none`}
-                                                    style={{ height: "100px" }}
-                                                    placeholder="Add Your Message"
-                                                ></textarea>
+                                                <div
+                                                    className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#d1d5db]"
+                                                        } custom_textarea`}
+                                                >
+                                                    <textarea
+                                                        id="message"
+                                                        {...register("message", { required: "Message is required" })}
+                                                        className={`mt-1 block w-full rounded-md text-sm border-[#d1d5db focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 $ resize-none focus:ring-0 border-0`}
+                                                        style={{ height: "100px" }}
+                                                        placeholder="Add Your Message"
+                                                        onFocus={() => setIsContextActive(true)}
+                                                        onBlur={() => setIsContextActive(false)}
+                                                    ></textarea>
+                                                </div>
 
                                                 {/* Character Counter */}
                                                 {typeValue === "connect" && (

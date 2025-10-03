@@ -30,7 +30,7 @@ const UserProfile = () => {
   const [userTrialPlanDetails, setUserTrialPlanDetails] =
     useState<TrialPlanDetails>();
   const [activePlanDetails, setActiveplanDetails] = useState<PlanDetails>();
-    const [opneplanPopup, setOpenplanpopup] = useState(false);
+  const [opneplanPopup, setOpenplanpopup] = useState(false);
   const checkActivePlan = async () => {
     try {
       const requestUrl = apiService.EndPoint.checkActivePlan;
@@ -45,7 +45,7 @@ const UserProfile = () => {
             if (
               result?.status === 200 &&
               result?.data.message ===
-                "User does not have an active subscription."
+              "User does not have an active subscription."
             ) {
               setActiveplan(false);
             } else {
@@ -147,7 +147,7 @@ const UserProfile = () => {
         (result: any) => {
           if (
             result?.data.message ===
-              "Customer portal link fetched successfully" &&
+            "Customer portal link fetched successfully" &&
             result?.status === 200
           ) {
             openWindowTab(result?.data.data); // Open the customer portal in a new tab
@@ -213,7 +213,7 @@ const UserProfile = () => {
                       <h4 className="font-medium mb-3">Billing Details</h4>
                     </div>
                     <table className="w-full overflow-auto g-table">
-                      <thead> 
+                      <thead>
                         {/* {
                                                         userTrialPlan ?
                                                             <tr>
@@ -252,26 +252,26 @@ const UserProfile = () => {
                             <td className="px-4 py-3">
                               {userTrialPlanDetails?.current_period_start
                                 ? new Date(
-                                    userTrialPlanDetails.current_period_start *
-                                      1000
-                                  ).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                  })
+                                  userTrialPlanDetails.current_period_start *
+                                  1000
+                                ).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
                                 : "N/A"}
                             </td>
 
                             <td className="px-4 py-3">
                               {userTrialPlanDetails?.current_period_end
                                 ? new Date(
-                                    userTrialPlanDetails.current_period_end *
-                                      1000
-                                  ).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                  })
+                                  userTrialPlanDetails.current_period_end *
+                                  1000
+                                ).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
                                 : "N/A"}
                             </td>
                           </tr>
@@ -295,24 +295,24 @@ const UserProfile = () => {
                             <td className="px-4 py-3">
                               {activePlanDetails?.start_date
                                 ? new Date(
-                                    activePlanDetails.start_date
-                                  ).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                  })
+                                  activePlanDetails.start_date
+                                ).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
                                 : "N/A"}
                             </td>
 
                             <td className="px-4 py-3">
                               {activePlanDetails?.end_date
                                 ? new Date(
-                                    activePlanDetails.end_date
-                                  ).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                  })
+                                  activePlanDetails.end_date
+                                ).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
                                 : "N/A"}
                             </td>
                           </tr>

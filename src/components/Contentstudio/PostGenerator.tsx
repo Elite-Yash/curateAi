@@ -8,7 +8,7 @@ import {
   Wand2,
 } from "lucide-react";
 import {
-  TONES,
+  TONES,  
   POSTING_MOTIVES,
   LANGUAGES,
 } from "../../constants/constants";
