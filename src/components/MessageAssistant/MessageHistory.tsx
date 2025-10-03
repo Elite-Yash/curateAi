@@ -102,7 +102,6 @@ const MessageHistory = () => {
 
   useEffect(() => {
     fetchComments();
-    console.log("  ~ MessageHistory ~ fetchComments:", fetchComments)
   }, [fetchComments]);
 
   // Filter
@@ -233,7 +232,7 @@ const MessageHistory = () => {
               </div>
 
             ) : (
-              <div className="!border-[#e0eaf3] border-b">
+              <div className="!border-[#e0eaf3] border-b h-125 overflow-auto">
                 {filteredContent.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((c: any) => (
                   <div
                     key={c.id}

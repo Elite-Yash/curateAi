@@ -132,39 +132,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
             type();
             apiCalled = true;
-
-            const payload = {
-              comment: generatedMessage,
-              post_url: post_url ? post_url : window.location.href,
-            };
-
-            const requestUrl = apiService.EndPoint.createComments;
-
-            apiService
-              .commonAPIRequest(
-                requestUrl,
-                apiService.Method.post,
-                undefined,
-                payload,
-                (result: any) => {
-                  if (
-                    result?.status === 201 &&
-                    result?.data.message === "Comment created successfully"
-                  ) {
-                    console.log("Comment created successfully");
-                  } else {
-                    throw new Error(
-                      result?.message || "Failed to create comment."
-                    );
-                  }
-                }
-              )
-              .catch((err: any) => {
-                console.error("API error:", err);
-              })
-              .finally(() => {
-                setLoading(false);
-              });
           } else {
             setError("Failed to submit the comment. Please try again.");
             setLoading(false);
@@ -297,7 +264,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
           {/* Original Message */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium ">
               Original Message <span className="text-red">*</span>
             </label>
             <div
@@ -320,7 +287,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
           {/* Additional Context */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium ">
               Additional Context (Optional)
             </label>
             <div
@@ -340,7 +307,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
           {/* Motive */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium ">
               Select Motive <span className="text-red">*</span>
             </label>
             <span className="relative">
@@ -388,7 +355,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
           {/* Language */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium ">
               Select Language <span className="text-red">*</span>
             </label>
             <span className="relative">
@@ -434,7 +401,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
             )}
           </button>
 
-          
+
           {/* Quick Tips */}
           <div className="p-4 bg-[#ff5c350f] rounded-lg">
             <div className="font-semibold text-base mb-2">
@@ -471,7 +438,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
           {generatedReply ? (
             <div className="space-y-4">
               <div className="p-4 border border-[#e2e8f0] rounded-lg bg-slate-50">
-                 <div className="">
+                <div className="">
                   <div className="whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto">
                     {generatedReply.replace(/"/g, '')}
                   </div>
@@ -480,7 +447,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <div className="flex gap-3">
                 <button
                   onClick={copyToClipboard}
-                  className="flex-1 px-4 py-2  border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition flex items-center justify-center"
+                  className="flex-1 px-4 py-2 border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition flex items-center justify-center"
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   {copied ? "Reply Copied!" : "Copy Reply"}

@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import Profilecard from "./Profilecard";
 import { Users } from "lucide-react";
+import PricingPopup from "../PricingPage/PricingPopup";
 
 /**
  * @component
@@ -66,6 +67,8 @@ const SaveProfile = () => {
   // Search term state
   const [searchTerm, setSearchTerm] = useState("");
   const [starredIds, setStarredIds] = useState<number[]>([]);
+
+  const [opneplanPopup, setOpenplanpopup] = useState(false);
 
   // Load starred ids from localStorage on refresh
   useEffect(() => {
@@ -275,7 +278,7 @@ const SaveProfile = () => {
         },
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/pricing");
+          setOpenplanpopup(true)
         }
       });
       return;
@@ -342,7 +345,7 @@ const SaveProfile = () => {
         },
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/pricing");
+         setOpenplanpopup(true)
         }
       });
       return;
@@ -448,7 +451,7 @@ const SaveProfile = () => {
         },
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/pricing");
+         setOpenplanpopup(true)
         }
       });
       return;
@@ -620,7 +623,7 @@ const SaveProfile = () => {
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-slate-900">
+                <div className="text-2xl font-bold">
                   Saved Profiles
                 </div>
                 <div className="text-sm text-[#717c8c]">
@@ -631,7 +634,7 @@ const SaveProfile = () => {
 
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-sm text-slate-600">
+              <span className="text-sm">
                 {filteredProfiles.length} profiles saved
               </span>
             </div>
@@ -697,7 +700,7 @@ const SaveProfile = () => {
               <FiUsers className="text-[#ff5c35] text-xl" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900">
+              <div className="text-xl font-bold ">
                 {profilesData.length}
               </div>
               <div className="text-sm text-gray-600">Total Profiles</div>
@@ -710,7 +713,7 @@ const SaveProfile = () => {
               <FiUserCheck className="text-[#ff5c35] text-xl" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-xl font-bold ">0</div>
               <div className="text-sm text-gray-600">1st Connections</div>
             </div>
           </div>
@@ -724,7 +727,7 @@ const SaveProfile = () => {
               <FiStar className="text-[#ff5c35] text-xl" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900">
+              <div className="text-xl font-bold ">
                 {starredIds.length}
               </div>
               <div className="text-sm text-gray-600">Starred</div>
@@ -737,7 +740,7 @@ const SaveProfile = () => {
               <FiBriefcase className="text-[#ff5c35] text-xl" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-xl font-bold ">0</div>
               <div className="text-sm text-gray-600">Companies</div>
             </div>
           </div>
@@ -748,7 +751,7 @@ const SaveProfile = () => {
               <FiTrendingUp className="text-[#ff5c35] text-xl" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-xl font-bold ">0</div>
               <div className="text-sm text-gray-600">High Engagement</div>
             </div>
           </div>
@@ -759,7 +762,7 @@ const SaveProfile = () => {
               <FiGlobe className="text-[#ff5c35] text-xl" />
             </div>
             <div>
-              <div className="text-xl font-bold text-slate-900">0</div>
+              <div className="text-xl font-bold">0</div>
               <div className="text-sm text-gray-600">Out of Network</div>
             </div>
           </div>
@@ -891,6 +894,9 @@ const SaveProfile = () => {
           </>
         )}
       </div>
+
+      <PricingPopup isOpen={opneplanPopup} onClose={() => setOpenplanpopup(false)} />
+
     </>
   );
 };

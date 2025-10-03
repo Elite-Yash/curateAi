@@ -58,7 +58,7 @@ const Home = () => {
     <>
       <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
         {/* EVA Command Center div */}
-        <div className="flex items-center justify-between p-8 mb-6 bg-white rounded-2xl shadow-md g-box">
+        <div className="flex items-center justify-between p-5 mb-6 bg-white rounded-2xl shadow-md g-box">
           {/* Left Section */}
           <div className="flex items-start gap-4">
             {/* Logo */}
