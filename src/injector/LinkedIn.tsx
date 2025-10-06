@@ -834,13 +834,13 @@ const LinkedIn = () => {
         const messgaegrap = messageData?.querySelector(".msg-form__contenteditable")
 
         // grab message-reply text aria
-// const form = icon.closest("form");
-// let messageContainer =
-//   form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
-// if (!messageContainer) {
-//   const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
-//   messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
-// }
+        // const form = icon.closest("form");
+        // let messageContainer =
+        //   form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
+        // if (!messageContainer) {
+        //   const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
+        //   messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
+        // }
 
         let messageText = "";
         if (messgaegrap) {
@@ -1277,3 +1277,433 @@ const LinkedIn = () => {
 };
 
 export default LinkedIn;
+
+export const LinkedInHelper = {
+
+  // waitRandom
+  waitRandom: (min: number, max: number): Promise<void> => {
+    return new Promise((resolve) => {
+      const delay = Math.floor(Math.random() * (max - min + 1)) + min;
+      setTimeout(resolve, delay);
+    });
+  },
+  // Helper method to wait for full page load
+  waitForPageLoad: async (): Promise<void> => {
+    return new Promise((resolve) => {
+      if (document.readyState === "complete") {
+        resolve();
+      } else {
+        window.addEventListener("load", () => resolve(), { once: true });
+      }
+    });
+  },
+
+  waitForElement: async (selector: string, timeout = 10000, iframeDocument?: Document, predicate?: (el: Element) => boolean): Promise<Element | null> => {
+    return new Promise((resolve) => {
+      const interval = 500;
+      let elapsed = 0;
+
+      const timer = setInterval(() => {
+        let el: Element | null;
+
+        if (iframeDocument) {
+          el = iframeDocument.querySelector(selector);
+        } else {
+          el = document.querySelector(selector);
+        }
+        console.log({ el })
+        if (el && (!predicate || predicate(el))) {
+          clearInterval(timer);
+          resolve(el);
+        }
+
+        elapsed += interval;
+        if (elapsed >= timeout) {
+          clearInterval(timer);
+          resolve(null);
+        }
+      }, interval);
+    });
+  },
+
+  // Human-like click event
+  humanClick: (el: HTMLElement): boolean => {
+    if (!el) return false;
+
+    try {
+      el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      ["mousedown", "mouseup", "click"].forEach((eventType) => {
+        const event = new MouseEvent(eventType, {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        });
+        el.dispatchEvent(event);
+      });
+      return true;
+    } catch (err) {
+      console.error("❌ humanClick failed:", err);
+      return false;
+    }
+  },
+
+  // Fetch LinkedIn members
+  fetchMembers: async ({ maxConnections, campaignId, message, typeOfCampaign, stopCampaign, campaignName }: any) => {
+
+    await LinkedInHelper.waitForPageLoad();
+
+    const currentWindow = window?.location?.href;
+    if (currentWindow?.includes("all")) {
+      try {
+        // Wait for "People" filter button
+        const peopleBtn = await new Promise<HTMLElement | null>((resolve) => {
+          const interval = setInterval(() => {
+            const resultDataLink = Array.from(
+              document.querySelectorAll(".search-reusables__filter-list li")
+            ).find((li) => li.querySelector("button")?.textContent.trim() === "People");
+
+            if (resultDataLink) {
+              clearInterval(interval);
+              resolve(resultDataLink.querySelector("button") as HTMLElement);
+            }
+          }, 1000);
+
+          // safety timeout
+          setTimeout(() => {
+            clearInterval(interval);
+            resolve(null);
+          }, 3000);
+        });
+
+        if (peopleBtn) {
+          const isClicked = LinkedInHelper.humanClick(peopleBtn);
+          if (isClicked) {
+            await LinkedInHelper?.waitRandom(3500, 5000);
+            const members = await LinkedInHelper.getSearchMembersData(maxConnections);
+            console.log("✅ Members fetched:", members);
+
+            if (members && members.length) {
+              const messageSentMembers = [];
+
+              // Wait a bit before starting to simulate human behavior
+              await LinkedInHelper?.waitRandom(2500, 3000);
+
+              for (const member of members) {
+                if (stopCampaign?.current) return;
+                try {
+                  // Attempt to send message to current member
+                  const isSent = await LinkedInHelper?.startCampaignMessage(
+                    { profileLink: member?.profileLink, name: member?.name },
+                    message,
+                    'message'
+                  );
+
+
+                  if (isSent) {
+                    // Collect members who were successfully sent a message
+                    messageSentMembers.push(member);
+                  }
+                } catch (err) {
+                  console.error(`Error sending message to ${member?.name}:`, err);
+                }
+              }
+
+              // Send data back to background script or extension
+              chrome.runtime.sendMessage({
+                type: "saveMembersData",
+                messageSendMember: messageSentMembers,
+                campaignId,
+                typeOfCampaign,
+                campaignName,
+              });
+            }
+
+          }
+        } else {
+          console.log("❌ People button not found within timeout");
+        }
+      } catch (error) {
+        console.error("Error fetching search members:", error);
+      }
+    } else {
+      console.log("⚠️ Not in 'all' search page, skipping fetchMembers");
+    }
+  },
+
+  getSearchMembersData: async (maxConnections: number) => {
+    try {
+      const searchMemberData: any[] = [];
+
+      while (searchMemberData.length <= maxConnections) {
+        const newMembers = await LinkedInHelper.fetchSearchData();
+
+        newMembers.forEach((member: any) => {
+          if (!searchMemberData.some((m) => m.profileLink === member.profileLink)) {
+            searchMemberData.push(member);
+          }
+        });
+        if (searchMemberData.length >= maxConnections) break;
+
+        // try scrolling + clicking next
+        const success = await LinkedInHelper.autoScrollAndNext();
+        if (!success) {
+          console.log("⚠️ No more members or Next button missing.");
+          break;
+        }
+      }
+
+      return searchMemberData.slice(0, maxConnections);
+    } catch (error) {
+      console.error("Error in getSearchMembersData:", error);
+      return [];
+    }
+  },
+
+  fetchSearchData: async () => {
+    try {
+      const searchMemberData: any = [];
+      const groupsList = document.querySelector('div.pv0.ph0.mb2.artdeco-card ul[role="list"]');
+      if (!groupsList) {
+        console.log("No list found.");
+        return [];
+      }
+
+      const items = groupsList.querySelectorAll("li");
+      items.forEach((item) => {
+        const memberTitleElement: any = item.querySelector("div.mb1 div.t-roman.t-sans div.display-flex span");
+        const profileLink: any = item.querySelector("div.mb1 div.t-roman.t-sans div.display-flex a")?.getAttribute("href");
+        const profileImage: any = item.querySelector("div.ivm-view-attr__img-wrapper div.presence-entity.presence-entity--size-3 img")?.getAttribute("src");
+
+        if (memberTitleElement && profileLink && profileImage) {
+          const name = memberTitleElement.innerText.split("\n")[0];
+          if (!searchMemberData.some((member: any) => member.profileLink === profileLink)) {
+            searchMemberData.push({ name, profileLink, profileImage });
+          }
+        }
+      });
+      return searchMemberData;
+    } catch (error) {
+      console.error("Error in fetchSearchData:", error);
+      return [];
+    }
+  },
+
+  // ✅ Proper async method now
+  autoScrollAndNext: async (timeout = 10000) => {
+    const startTime = Date.now();
+    let lastHeight = document.body.scrollHeight;
+
+    while (Date.now() - startTime < timeout) {
+      // Scroll down a small amount
+      window.scrollBy({ top: 1000, behavior: "smooth" });
+      await LinkedInHelper.waitRandom(800, 1200);
+
+      const newHeight = document.body.scrollHeight;
+
+      if (newHeight > lastHeight) {
+        lastHeight = newHeight; // new content loaded
+      } else {
+        // no new content, maybe reached end
+        break;
+      }
+    }
+
+    // Optional: try Next button if it exists
+    const nextBtn: HTMLButtonElement | null = document.querySelector('button[aria-label="Next"]');
+    if (nextBtn) {
+      nextBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+      await LinkedInHelper.humanClick(nextBtn);
+      await LinkedInHelper.waitRandom(1500, 2000);
+      return true;
+    }
+
+    return false; // no more results
+  },
+  // open 
+  startCampaignMessage: async (membersObject?: any, message?: any, action?: any) => {
+    const { profileLink, name } = membersObject;
+    let iframe = document.getElementById('openProfile');
+
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'openProfile';
+      iframe.style = `
+            position: fixed;
+            top: 0;
+            right: -700px;
+            width: 700px;
+            height: 100vh;
+            border: none;
+            z-index: 99999;
+            transition: right 0.5s ease;
+        `;
+      document.body.appendChild(iframe);
+    }
+
+    // Process member and return whether the textbox was found and the message was sent successfully
+    const isSent = await LinkedInHelper?.processMember(iframe, profileLink, name, message, action);
+    return isSent;
+  },
+
+  processMember: async (iframe: any, profileUrl: any, profileName: any, message: any, action: any) => {
+    iframe.src = profileUrl;
+    iframe.title = `Profile of ${profileName}`;
+    iframe.style.right = '0';
+
+    // Wait for the iframe to load
+
+    let result = false;
+    if (action === 'message') {
+      result = await LinkedInHelper.openMessageBox(iframe, profileName, message, action);
+    } else {
+      result = true;
+    }
+
+    await LinkedInHelper?.hideAndRemoveIframe(iframe);
+    return result;
+  },
+  hideAndRemoveIframe: async (iframe: any) => {
+    iframe.style.right = '-700px'; // Move iframe out of view
+    await LinkedInHelper?.waitRandom(1000, 2000); // Wait for 500ms to allow the transition
+    iframe.remove(); // Remove the iframe from the DOM
+  },
+
+  openMessageBox: async (iframe: HTMLIFrameElement, profileName: string, message: string, action: string) => {
+    let memberDataPosition: string | undefined;
+    let memberDataCompany: string | undefined;
+
+    // Wait for iframe document
+    const iframeDocument: any = await new Promise((resolve) => {
+      const checkIframe = () => {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (doc) resolve(doc);
+      };
+      checkIframe();
+      iframe.onload = checkIframe;
+    }).catch(() => null);
+
+    if (!iframeDocument) {
+      console.error("Iframe content not accessible.");
+      return false;
+    }
+
+    // Wait for experience section
+    const experienceSection = await LinkedInHelper.waitForElement(
+      'section div#experience',
+      15000,
+      iframeDocument
+    );
+    if (experienceSection) {
+      const closestSection = experienceSection.closest('section');
+      if (closestSection) {
+        memberDataPosition = closestSection
+          .querySelector('div.display-flex.align-items-center span[aria-hidden="true"]')
+          ?.textContent?.trim();
+        memberDataCompany = closestSection
+          .querySelector('.display-flex.flex-column.full-width .t-14.t-normal:nth-of-type(1) span[aria-hidden="true"]')
+          ?.textContent?.trim()
+          .split(" · ")[0];
+      }
+    }
+
+    // Wait for the message button
+    const openMsgButton: any = await LinkedInHelper.waitForElement(
+      `main section button[aria-label^="Message ${profileName.split(" ")[0]}"]`,
+      10000,
+      iframeDocument,
+      (el) => !(el as HTMLButtonElement).disabled
+    );
+    if (!openMsgButton) {
+      console.log("Message button not found.");
+      return false;
+    }
+
+    // Scroll into view and click
+    openMsgButton?.focus();
+    openMsgButton.scrollIntoView({ behavior: "smooth", block: "center" });
+    LinkedInHelper.humanClick(openMsgButton);
+
+    // Wait for textbox
+    const textbox: any = await LinkedInHelper.waitForElement(
+      '.msg-form__contenteditable.t-14.t-black--light.t-normal.flex-grow-1.full-height.notranslate[role="textbox"]',
+      10000,
+      iframeDocument
+    );
+    if (!textbox) {
+      console.log("Message textbox not found.");
+      const closeBtn: any = await LinkedInHelper.waitForElement(
+        "#artdeco-modal-outlet .artdeco-button[aria-label='Dismiss']",
+        15000,
+        iframeDocument
+      );
+      if (closeBtn) {
+        closeBtn?.focus();
+        closeBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+        LinkedInHelper.humanClick(closeBtn);
+      }
+      return false;
+    }
+
+    // Clear existing content and insert <p> tag
+    textbox.innerHTML = '';
+    const pTag = textbox.querySelector('p') || document.createElement('p');
+    if (!textbox.contains(pTag)) textbox.appendChild(pTag);
+
+    pTag.setAttribute('tabindex', '-1');
+    pTag.scrollIntoView({ behavior: "smooth", block: "center" });
+    pTag.focus();
+
+    // Replace placeholders
+    const nameParts = profileName.split(" ");
+    const personalizedMessage = message
+      .replace("{{firstname}}", nameParts[0])
+      .replace("{{lastname}}", nameParts[1] || "")
+      .replace("{{position}}", memberDataPosition || "")
+      .replace("{{company}}", memberDataCompany || "");
+
+    // Insert text safely
+    pTag.innerText = personalizedMessage;
+
+    // Trigger input events
+    const inputEvent = new Event('input', { bubbles: true });
+    pTag.dispatchEvent(inputEvent);
+
+    await LinkedInHelper.waitRandom(500, 1000);
+
+    // Wait for send button
+    let sendBtn: any = null;
+    if (action === 'message') {
+      sendBtn = await LinkedInHelper.waitForElement(
+        'div.msg-form__msg-content-container button.msg-form__send-btn',
+        7000,
+        iframeDocument
+      );
+
+    }
+
+    if (sendBtn) {
+      // Scroll into view and click
+      sendBtn?.focus();
+      // sendBtn.scrollIntoView({ behavior: "smooth", block: "center" }); 
+      // LinkedInHelper.humanClick(sendBtn);
+      console.log("Message ready to send.");
+      return true;
+    } else {
+      console.error("Send button not found.");
+      return false;
+    }
+
+    // Close the message box
+    const closeBtn: any = await LinkedInHelper.waitForElement(
+      'button[aria-label*="Dismiss"]',
+      5000,
+      iframeDocument
+    );
+    if (closeBtn) {
+      LinkedInHelper.humanClick(closeBtn);
+    }
+
+    return true;
+  },
+
+};
