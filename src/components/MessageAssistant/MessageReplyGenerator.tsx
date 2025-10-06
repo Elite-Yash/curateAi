@@ -391,12 +391,12 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
             {isGenerating ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                Generating...
+                <span className="text-sm">Generating replys...</span>
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Generate Reply
+                <span className="text-sm">Generate message Reply</span>
               </>
             )}
           </button>

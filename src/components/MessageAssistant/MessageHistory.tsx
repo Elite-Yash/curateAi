@@ -184,8 +184,8 @@ const MessageHistory = () => {
             <button
               onClick={() => setActiveFilter("all")}
               className={`px-4 py-1 ${activeFilter === "all"
-                  ? "bg-[#ff5c35] text-[#fff] rounded-lg"
-                  : ""
+                ? "bg-[#ff5c35] text-[#fff] rounded-lg"
+                : ""
                 }`}
             >
               All
@@ -193,8 +193,8 @@ const MessageHistory = () => {
             <button
               onClick={() => setActiveFilter("reply")}
               className={`px-4 py-1 ${activeFilter === "reply"
-                  ? "bg-[#ff5c35] text-[#fff] rounded-lg"
-                  : ""
+                ? "bg-[#ff5c35] text-[#fff] rounded-lg"
+                : ""
                 }`}
             >
               Replies

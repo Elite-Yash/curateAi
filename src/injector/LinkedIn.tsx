@@ -47,6 +47,10 @@ const LinkedIn = () => {
   const [saveGeneratedMessageData, setSaveGeneratedMessageData] = useState<any>({
     comment: '',
     comment_type: '',
+    motive: '',
+    language: '',
+    tone: '',
+    status: ''
   });
   const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
 
@@ -559,6 +563,10 @@ const LinkedIn = () => {
       comment: commentData?.comment,
       post_url: post_url,
       comment_type: commentData?.comment_type,
+      motive: commentData?.motive,
+      tone: commentData?.tone,
+      language: commentData?.language,
+      status: commentData?.status || "published",
       is_comment_posted: true,
     };
 
@@ -834,13 +842,13 @@ const LinkedIn = () => {
         const messgaegrap = messageData?.querySelector(".msg-form__contenteditable")
 
         // grab message-reply text aria
-// const form = icon.closest("form");
-// let messageContainer =
-//   form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
-// if (!messageContainer) {
-//   const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
-//   messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
-// }
+        // const form = icon.closest("form");
+        // let messageContainer =
+        //   form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
+        // if (!messageContainer) {
+        //   const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
+        //   messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
+        // }
 
         let messageText = "";
         if (messgaegrap) {

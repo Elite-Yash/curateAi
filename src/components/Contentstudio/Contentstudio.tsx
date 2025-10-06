@@ -9,30 +9,23 @@ const Contentstudio = () => {
 
   return (
     <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
-        {/*Headng */}
-           <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg shadow-sm g-box">
-                <div className="mb-6">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-r bg-blue-700 rounded-2xl flex items-center justify-center">
-                            <FileText className="w-6 h-6 text-white" />
-                        </div>
-
-                        <div>
-                            <div className="text-2xl font-bold text-slate-900">Content Studio</div>
-                            <div className="text-sm text-[#717c8c]">
-                                Manage your LinkedIn contacts and prospects
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green rounded-full"></div>
-                        <span className="text-sm text-slate-600">
-                            AI Content Generator Ready
-                        </span>
-                    </div>
-                </div>
+      {/*Headng */}
+      <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg shadow-sm g-box">
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r bg-blue-700 rounded-2xl flex items-center justify-center">
+              <FileText className="w-6 h-6 text-white" />
             </div>
+
+            <div>
+              <div className="text-2xl font-bold text-slate-900">Create Post</div>
+              <div className="text-sm text-[#717c8c]">
+                Craft new LinkedIn posts instantly and share them with your network. Save time, stay consistent, and grow your presence
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="space-y-6">
@@ -43,40 +36,37 @@ const Contentstudio = () => {
           <button
             onClick={() => setActiveTab("posts")}
             className={`flex items-center justify-center gap-2 !py-2 text-sm transition 
-              ${
-                activeTab === "posts"
-                  ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
-                  : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
+              ${activeTab === "posts"
+                ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
           >
             <FileText className="w-4 h-4" />
-            Posts
+            Create Post
           </button>
 
           <button
             onClick={() => setActiveTab("comments")}
             className={`flex items-center justify-center gap-2 !py-2 text-sm  transition 
-              ${
-                activeTab === "comments"
-                  ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
-                  : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
+              ${activeTab === "comments"
+                ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
           >
             <MessageCircle className="w-4 h-4" />
-            Comments
+            Post Ideas
           </button>
 
           <button
             onClick={() => setActiveTab("history")}
             className={`flex items-center justify-center gap-2 !py-2 text-sm transition 
-              ${
-                activeTab === "history"
-                  ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
-                  : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
+              ${activeTab === "history"
+                ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
+                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
           >
             <Sparkles className="w-4 h-4" />
-            History
+            Post History
           </button>
         </div>
 
@@ -89,7 +79,7 @@ const Contentstudio = () => {
 
         {activeTab === "comments" && (
           <div className="space-y-6">
-            <CommentGenerator popupTriggeredFrom={'comment'}/>
+            <CommentGenerator popupTriggeredFrom={'comment'} />
           </div>
         )}
 

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FileText, History, MessageSquare } from "lucide-react";
 import { FiTrendingUp } from "react-icons/fi";
-import { IoLogoLinkedin } from "react-icons/io";
 import { apiService } from "../../common/config/apiService";
 import { getImage } from "../../common/utils/logoUtils";
 import { CiCalendar } from "react-icons/ci";
 import Loader from "../Loader/Loader";
+import Swal from "sweetalert2";
 
 const ContentHistory: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<"all" | "post" | "comment">("all");
@@ -15,18 +15,16 @@ const ContentHistory: React.FC = () => {
   const [modalData, setModalData] = useState<any | null>(null);
   const [postsGenerated, setPostsGenerated] = useState(0);
   const [commentsGenerated, setCommentsGenerated] = useState(0);
-  const [actuallyUsed, setActuallyUsed] = useState(0); // you can define your own logic
+  const [actuallyUsed, setActuallyUsed] = useState(0);
   const [perWeekAvg, setPerWeekAvg] = useState(0);
 
   useEffect(() => {
     // Count posts and comments
     const posts = commentsData.filter((c) => c.comment_type === "create-post").length;
-    const comments = commentsData.filter((c) => c.comment_type === "comment").length;
     setPostsGenerated(posts);
-    setCommentsGenerated(comments);
 
     // Actually Used example: total of posts + comments (or your own logic)
-    setActuallyUsed(posts + comments);
+    setActuallyUsed(posts);
 
     // Per Week Avg example: divide by number of weeks since first entry
     if (commentsData.length > 0) {
@@ -36,11 +34,12 @@ const ContentHistory: React.FC = () => {
       const firstDate = new Date(sorted[0].created_at);
       const lastDate = new Date(sorted[sorted.length - 1].created_at);
       const weeks = Math.max(1, Math.ceil((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24 * 7)));
-      setPerWeekAvg(Math.round((posts + comments) / weeks));
+      setPerWeekAvg(Math.round((posts) / weeks));
     } else {
       setPerWeekAvg(0);
     }
-  }, [commentsData]);
+  }, 
+  [commentsData]);
 
   const escapeHtml = (text?: string) => {
     if (!text) return "";
@@ -62,7 +61,7 @@ const ContentHistory: React.FC = () => {
     return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
   };
 
-  const fetchComments = useCallback(async () => {
+  const fetchComments = useCallback(async () => { 
     setLoading(true);
     try {
       const requestUrl = apiService?.EndPoint?.getComments;
@@ -91,13 +90,71 @@ const ContentHistory: React.FC = () => {
   useEffect(() => {
     const filtered = commentsData.filter((item) => {
       const type = String(item?.comment_type ?? "").toLowerCase();
-      if (activeFilter === "all") return type === "create-post" || type === "comment";
+      if (activeFilter === "all") return type === "create-post";
       if (activeFilter === "post") return type === "create-post";
-      if (activeFilter === "comment") return type === "comment";
       return true;
     });
     setFilteredContent(filtered);
   }, [commentsData, activeFilter]);
+
+
+    const deleteComment = async (commentId: string) => {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ff5c35",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, delete it!",
+      });
+  
+      if (result.isConfirmed) {
+        try {
+          if (!chrome?.runtime?.sendMessage) {
+            throw new Error("Chrome API is not available.");
+          }
+  
+          const deleteUrl = apiService.EndPoint.deleteComments.replace(
+            ":id",
+            commentId
+          );
+  
+          await apiService.commonAPIRequest(
+            deleteUrl,
+            apiService.Method.delete,
+            undefined, // No query parameters
+            {}, // No request body
+            (result: any) => {
+              if (
+                result?.status === 200 &&
+                result?.data.message === "Comment deleted successfully"
+              ) {
+                fetchComments();
+                // Show success message
+                Swal.fire({
+                  title: "Deleted!",
+                  text: "Your comment has been deleted.",
+                  icon: "success",
+                  confirmButtonColor: "#ff5c35",
+                });
+              } else {
+                throw new Error(result?.message || "Failed to delete comment.");
+              }
+            }
+          );
+        } catch (err) {
+          console.error("Error deleting comment:", err);
+          Swal.fire({
+            title: "Error!",
+            text: "Something went wrong while deleting the comment.",
+            icon: "error",
+            confirmButtonColor: "#ff5c35",
+          });
+        }
+      }
+    };
+
 
   const closeModal = () => setModalData(null);
 
@@ -123,31 +180,33 @@ const ContentHistory: React.FC = () => {
           </div>
           <div>
             <div className="text-xl font-bold text-[#0f172a]">{commentsGenerated}</div>
-            <div className="text-sm text-gray-600">Comments Generated</div>
+            <div className="text-sm text-gray-600">Posts Published</div>
           </div>
         </div>
 
         {/* Box 3 */}
         <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
-            <FiTrendingUp className="text-[#ff5c35] text-xl" />
+            <CiCalendar className="text-[#ff5c35] text-xl" />
           </div>
           <div>
-            <div className="text-xl font-bold text-[#0f172a]">{actuallyUsed}</div>
-            <div className="text-sm text-gray-600">Actually Used</div>
+            <div className="text-xl font-bold text-[#0f172a]">{perWeekAvg}</div>
+            <div className="text-sm text-gray-600">Avg. Posts Per Week</div>
           </div>
         </div>
 
         {/* Box 4 */}
         <div className="p-4 bg-white rounded-xl g-box shadow-sm flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f]">
-            <CiCalendar className="text-[#ff5c35] text-xl" />
+            <FiTrendingUp className="text-[#ff5c35] text-xl" />
           </div>
           <div>
-            <div className="text-xl font-bold text-[#0f172a]">{perWeekAvg}</div>
-            <div className="text-sm text-gray-600">Per Week Avg</div>
+            <div className="text-xl font-bold text-[#0f172a]">{actuallyUsed}</div>
+            <div className="text-sm text-gray-600">Most Used Tone</div>
           </div>
         </div>
+
+
       </div>
 
       {/* Generated Content */}
@@ -156,9 +215,9 @@ const ContentHistory: React.FC = () => {
         <div className="flex items-center justify-between p-5">
           <div className="flex items-center gap-2 font-semibold text-base">
             <History className="w-5 h-5 text-[#ff5c35]" />
-            Generated Content
+            Generated Posts
           </div>
-          <div className="flex items-center bg-[#ff5c350f] rounded-lg text-sm text-[#737373] font-medium overflow-hidden !p-[5px]">
+          {/* <div className="flex items-center bg-[#ff5c350f] rounded-lg text-sm text-[#737373] font-medium overflow-hidden !p-[5px]">
             <button
               onClick={() => setActiveFilter("all")}
               className={`px-4 py-1 ${activeFilter === "all" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
@@ -177,83 +236,151 @@ const ContentHistory: React.FC = () => {
             >
               Comments
             </button>
-          </div>
+          </div> */}
         </div>
 
-        <div className="p-2.5 pt-0">
-         <div className="border rounded-lg border-[#e0eaf3]">
-        {/* Table Header */}
-        <div
-          className="grid gap-4 py-2 font-semibold bg-[#fff5f380]  border-b border-[#e1eaf4] rounded-t-lg p-4"
-          style={{ gridTemplateColumns: "140px 1fr 300px 120px" }}
-        >
-          <div className="text-[14px]">Message Type</div>
-          <div className="text-[14px]">Message</div>
-          <div className="text-[14px]">Post URL</div>
-          <div className="text-[14px]">Date</div>
+     <div className="p-2.5 pt-0">
+  <div className="border rounded-lg border-[#e0eaf3] ">
+    {/* Table Header */}
+    <div
+      className="grid gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4"
+      style={{
+        gridTemplateColumns: "300px 120px 120px 120px 120px 120px 120px",
+      }}
+    >
+      <div className="text-[14px]">Message</div>
+      <div className="text-[14px]">Motive</div>
+      <div className="text-[14px]">Tone</div>
+      <div className="text-[14px]">Language</div>
+      <div className="text-[14px]">Status</div>
+      {/* <div className="text-[14px]">URL</div> */}
+      <div className="text-[14px]">Date</div>
+      <div className="text-[14px]">Actions</div>
+    </div>
+
+    {/* Rows */}
+    {loading ? (
+      <div className="text-center py-12"><Loader /></div>
+    ) : filteredContent.length === 0 ? (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+          <History className="w-8 h-8 text-[#ff5c35]" />
         </div>
+        <p className="text-[#64748b] font-medium !text-xl mb-2">
+          No Posts History yet
+        </p>
+      </div>
+    ) : (
+      <div className="!border-[#e0eaf3] border-b h-125 overflow-auto">
+        {filteredContent
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          )
+          .map((c: any) => (
+            <div
+              key={c.id}
+              className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380] grid gap-4 items-start"
+              style={{
+                gridTemplateColumns:
+                  "300px 120px 120px 120px 120px 120px 120px",
+              }}
+            >
+              {/* Message */}
+              <div className="text-sm text-gray-800">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: escapeHtml(truncate(c.comment, 90)).replace(
+                      /\n/g,
+                      "<br />"
+                    ),
+                  }}
+                />
+                {c.comment && c.comment.length > 90 && (
+                  <button
+                    onClick={() => setModalData(c)}
+                    className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline"
+                  >
+                    Read More
+                  </button>
+                )}
+              </div>
 
-        {/* Rows */}
-        {loading ? (
-          <div className="text-center py-12"><Loader/></div>
-        ) : filteredContent.length === 0 ? (
-          // <div className="text-center py-12">
-          //   <p className="text-[#64748b] font-medium !text-xl mb-2">No content history yet</p>
-          // </div>
-          <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
-                          <History className="w-8 h-8 text-[#ff5c35]" />
-                        </div>
-                        <p className="text-[#64748b] font-medium !text-xl mb-2">
-                          No content history yet
-                        </p>
-                      </div>
+              {/* Motive */}
+              <div className="text-sm capitalize">
+                {c.motive ?? "N/A"}
+              </div>
 
-        ) : (
-          <div className="!border-[#e0eaf3] border-b h-125 overflow-auto">
-            {filteredContent.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((c: any) => (
-              <div
-                key={c.id}
-                className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380]"
-                style={{ display: "grid", gridTemplateColumns: "140px 1fr 300px 120px", gap: "1rem", alignItems: "start" }}
-              >
-                {/* Message Type */}
-                <div className="text-sm text-gray-700 capitalize">{String(c.comment_type ?? "N/A").replace(/-/g, " ")}</div>
+              {/* Tone */}
+              <div className="text-sm capitalize">
+                {c.tone ?? "N/A"}
+              </div>
 
-                {/* Message */}
-                <div className="text-sm text-gray-800">
-                  <div dangerouslySetInnerHTML={{ __html: escapeHtml(truncate(c.comment, 90)).replace(/\n/g, "<br />") }} />
-                  {c.comment && c.comment.length > 90 && (
-                    <button onClick={() => setModalData(c)} className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline">
-                      Read More
-                    </button>
+              {/* Language */}
+              <div className="text-sm capitalize">
+                {c.language ?? "N/A"}
+              </div>
+
+              {/* Status */}
+              <div className="text-sm capitalize">
+                {c.status ?? "N/A"}
+              </div>
+
+              {/* Post URL */}
+              {/* <div>
+                <div className="flex items-center gap-2">
+                  {c.post_url ? (
+                    <a
+                      href={c.post_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
+                        Go To LinkedIn
+                        <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                      </button>
+                    </a>
+                  ) : (
+                    "N/A"
                   )}
                 </div>
+              </div> */}
 
-                {/* Post URL */}
-                <div>
-                  <div className="flex items-center gap-2">
-                    {c.post_url ? (
-                      <a href={c.post_url} target="_blank" rel="noopener noreferrer">
-                        <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
-                          Go To LinkedIn
-                          <IoLogoLinkedin className="text-xl text-[#0a66c2]"/>
-                        </button>
-                      </a>
-                    ) : (
-                      "N/A"
-                    )}
-                  </div>
-                </div>
-
-                {/* Date */}
-                <div className="text-sm text-gray-600">{formatDate(c.created_at)}</div>
+              {/* Date */}
+              <div className="text-sm text-gray-600">
+                {formatDate(c.created_at)}
               </div>
-            ))}
-          </div>
-        )}
-          </div>
-        </div>
+
+              {/* Actions */}
+              <div className="px-4 py-3 text-sm">
+                <div className="flex items-center gap-2">
+                  {/* Edit */}
+                  <button
+                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
+                    title="Edit Post"
+                  >
+                    <i className="fa-solid fa-edit"></i>
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                   onClick={() => deleteComment(c?.id)}
+                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
+                    title="Delete Post"
+                  >
+                    <i className="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+      </div>
+    )}
+  </div>
+</div>
+
+
 
       </div>
 
@@ -275,7 +402,7 @@ const ContentHistory: React.FC = () => {
               </span>
             </div>
             <div className="p-6">
-              <p className="text-gray-700 mt-2.5" dangerouslySetInnerHTML={{ __html: escapeHtml(String(modalData.comment ?? "")).replace(/\n/g, "<br />") }} />
+              <p className="mt-2.5" dangerouslySetInnerHTML={{ __html: escapeHtml(String(modalData.comment ?? "")).replace(/\n/g, "<br />") }} />
             </div>
           </div>
         </div>

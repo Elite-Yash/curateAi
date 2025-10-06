@@ -136,12 +136,12 @@ const Connectionrequest = () => {
                         {isGenerating ? (
                             <>
                                 <RefreshCw className="w-4 h-4 animate-spin" />
-                                Generating Request...+
+                                <span className="text-sm">Generating Request...</span>
                             </>
                         ) : (
                             <>
-                                <Sparkles className="w-4 h-4" />
-                                Generate Connection Request
+                                <Sparkles className="w-4 h-4"/>
+                                <span className="text-sm">Generate Connection Request</span>
                             </>
                         )}
                     </button>
