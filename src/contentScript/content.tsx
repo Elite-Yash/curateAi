@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import LinkedIn from "../injector/LinkedIn";
+import { useEffect, useRef, useState } from "react";
+import LinkedIn, { LinkedInHelper } from "../injector/LinkedIn";
 import LinkedInProfile from "../injector/LinkedInProfile";
 import Twitter from "../injector/Twitter";
 
 const Layout = () => {
     const [platform, setPlatform] = useState<string | null>(null);
+    const stopCampaignRef = useRef(false);
 
     const detectPlatform = () => {
         const hostname = window.location.hostname;
@@ -22,23 +23,52 @@ const Layout = () => {
     };
 
     useEffect(() => {
+        // Detect platform
         chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
             if (response.token && response.success) {
                 setPlatform(detectPlatform());
 
-                // Start watching URL changes
                 const interval = setInterval(() => {
                     const currentPlatform = detectPlatform();
-                    setPlatform((prevPlatform) => {
-                        if (prevPlatform !== currentPlatform) {
-                            return currentPlatform;
-                        }
-                        return prevPlatform;
-                    });
+                    setPlatform((prev) => (prev !== currentPlatform ? currentPlatform : prev));
                 }, 1000);
+
                 return () => clearInterval(interval);
             }
         });
+
+        // --- Message listener ---
+        const messageListener = async (request: any, sender: any, sendResponse: (response?: any) => void) => {
+            try {
+                if (request.type === "stopCampaign") {
+                    stopCampaignRef.current = true;
+                }
+
+                if (request.type === "fetchSearchMembers") {
+                    // Call your LinkedIn fetch logic here
+                    await LinkedInHelper.fetchMembers({
+                        maxConnections: request.maxConnections,
+                        campaignId: request.campaign_id,
+                        message: request.message,
+                        typeOfCampaign: request.typeOfCampaign,
+                        stopCampaign: stopCampaignRef,
+                        campaignName: request.campaignName,
+                    });
+                    sendResponse({ status: "started" });
+                }
+            } catch (err) {
+                console.error(err);
+                sendResponse({ status: "error", error: err });
+            }
+
+            return true; // keep message channel open for async response
+        };
+
+        chrome.runtime.onMessage.addListener(messageListener);
+
+        return () => {
+            chrome.runtime.onMessage.removeListener(messageListener);
+        };
     }, []);
 
     if (!platform) return null;

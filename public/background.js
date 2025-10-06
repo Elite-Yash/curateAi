@@ -3,6 +3,23 @@ console.log("Background...!");
 importScripts("./apiUrlConfig.js");
 
 // background.js
+let lastLinkedInTabId = null;
+
+// Listen for updates to tabs
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (tab.url && tab.url.includes("linkedin.com")) {
+    lastLinkedInTabId = tabId; // Update the ID of the last LinkedIn tab
+  }
+});
+
+// Listen for tab activation
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  chrome.tabs.get(activeInfo.tabId, (tab) => {
+    if (tab.url && tab.url.includes("linkedin.com")) {
+      lastLinkedInTabId = tab.id; // Update the ID of the last active LinkedIn tab
+    }
+  });
+});
 
 // Set a flag when the extension is installed
 chrome.runtime.onInstalled.addListener((details) => {
@@ -27,7 +44,7 @@ chrome.runtime.onSuspend.addListener(() => {
   ]);
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   // Retrieve Token from Chrome Storage
   if (request.type === "getCookies") {
     chrome.storage.local.get(["token"], (result) => {
@@ -179,4 +196,150 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     return true; // Required for async sendResponse
   }
+
+  if (request.type === "startCampaign") {
+    const { maxConnections, url, campaign_id, message, typeOfCampaign, campaignName } = request;
+
+    chrome.tabs.create({ url }, (tab) => {
+      if (!tab.id) return;
+
+      const listener = (tabId, changeInfo, tabInfo) => {
+        if (tabId === tab.id && changeInfo.status === 'complete') {
+          const isSameUrl = tabInfo.url?.includes(url.split("?")[0]) ?? false;
+          console.log({ isSameUrl, url: tabInfo.url });
+
+          sendResponse({ status: 'tabCreated', isSameUrl });
+
+          if (isSameUrl) {
+            setTimeout(() => { // small delay to ensure content script is ready
+              if (url.includes("linkedin.com/groups/")) {
+                chrome.tabs.sendMessage(tabId, { type: "fetchGroupsMembers", maxConnections, campaign_id, message, typeOfCampaign, campaignName });
+              } else if (url.includes("linkedin.com/search/")) {
+                chrome.tabs.sendMessage(tabId, { type: "fetchSearchMembers", maxConnections, campaign_id, message, typeOfCampaign, campaignName });
+              }
+            }, 500);
+          }
+
+          chrome.tabs.onUpdated.removeListener(listener);
+        }
+      };
+
+      chrome.tabs.onUpdated.addListener(listener);
+    });
+
+    return true; // Keep sendResponse channel open for async
+  }
+
+  if (request.type === "stopCampaign") {
+    if (lastLinkedInTabId) {
+      chrome.tabs.sendMessage(lastLinkedInTabId, { type: "stopCampaign" });
+    } else {
+      console.error("No LinkedIn tab tracked.");
+    }
+  }
+
+  if (request.type === "saveMembersData") {
+    const { messageSendMember, campaignId, typeOfCampaign, campaignName } = request;
+    const success = await saveMembersData(campaignId, messageSendMember, typeOfCampaign, campaignName);
+
+    if (success) {
+      chrome.runtime.sendMessage({ type: "campaignComplate", campaignId });
+    }
+  }
+
 });
+
+const saveMembersData = async (campaign_id, members, typeOfCampaign, campaignName) => {
+  try {
+    const firstResult = await makeApiRequest(
+      `${BASE_URL}/campaigns/create-automation-process`,
+      "POST",
+      { campaign_id, name: campaignName }
+    );
+
+    if (firstResult.status === 201 && firstResult.data) {
+      const automationId = firstResult.data?.automation_id;
+
+      if (!automationId) {
+        console.error("Automation ID not found in the response:", firstResult);
+        return false;
+      }
+
+      const secondResult = await makeApiRequest(
+        `${BASE_URL}/process-activities/create-activities`,
+        "POST",
+        {
+          campaignId: campaign_id,
+          profiles: members,
+          type: typeOfCampaign,
+          automation_id: automationId
+        }
+      );
+
+      if (secondResult.status === 201) {
+        chrome.runtime.sendMessage({ type: "connectionComplete", campaign_id });
+        return true;
+      } else {
+        console.error("Second API call failed:", secondResult);
+        return false;
+      }
+    } else {
+      console.error("First API call failed:", firstResult);
+      return false;
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return false;
+  }
+};
+
+
+const makeApiRequest = async (url, method, bodyData) => {
+  try {
+    // Get token from chrome storage
+    const token = await new Promise((resolve, reject) => {
+      chrome.storage.local.get(['token'], (data) => {
+        if (data && data.token) {
+          resolve(data.token);
+        } else {
+          reject('Token not found');
+        }
+      });
+    });
+
+    if (!token) {
+      console.error('Token not found.');
+      return { data: null, status: 401 };
+    }
+
+    const options = {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    // Only include body if it's not a GET request
+    if (bodyData && method !== 'GET') {
+      options.body = JSON.stringify(bodyData);
+    }
+
+    const res = await fetch(url, options);
+    let responseData = null;
+
+    try {
+      responseData = await res.json();
+    } catch (e) {
+      responseData = null; // In case the response has no body
+    }
+
+    return {
+      data: responseData,
+      status: res.status,
+    };
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return { data: null, status: 500 };
+  }
+};
