@@ -44,7 +44,7 @@ chrome.runtime.onSuspend.addListener(() => {
   ]);
 });
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Retrieve Token from Chrome Storage
   if (request.type === "getCookies") {
     chrome.storage.local.get(["token"], (result) => {
@@ -240,13 +240,20 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
   if (request.type === "saveMembersData") {
     const { messageSendMember, campaignId, typeOfCampaign, campaignName } = request;
-    const success = await saveMembersData(campaignId, messageSendMember, typeOfCampaign, campaignName);
 
-    if (success) {
-      chrome.runtime.sendMessage({ type: "campaignComplate", campaignId });
-    }
+    saveMembersData(campaignId, messageSendMember, typeOfCampaign, campaignName)
+      .then((success) => {
+        if (success) {
+          chrome.runtime.sendMessage({ type: "campaignComplate", campaignId });
+        }
+      })
+      .catch((error) => {
+        console.error("Error saving members data:", error);
+      });
   }
 
+  // important: return true to keep the message channel open for async operations
+  return true;
 });
 
 const saveMembersData = async (campaign_id, members, typeOfCampaign, campaignName) => {
