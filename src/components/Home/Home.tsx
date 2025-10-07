@@ -17,21 +17,21 @@ import {
   FiTrendingUp,
   FiMessageSquare,
   FiArrowUpRight,
-  FiArrowDownRight,  
+  FiArrowDownRight,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { LuLightbulb } from "react-icons/lu";
 
 const actions = [
   {
-    title: "Generate Post",
-    description: "Create engaging LinkedIn content",
+    title: "Create Post",
+    description: "Create Posts on LinkedIn content",
     icon: FaRegFileAlt,
     color: "from-blue-500 to-blue-600",
     link: "content-studio",
   },
   {
-    title: "Smart Reply",
+    title: "Message Reply",
     description: "AI-powered message responses",
     icon: FaRegCommentAlt,
     color: "from-pink-500 to-pink-600",
@@ -39,7 +39,7 @@ const actions = [
   },
   {
     title: "Save Profile",
-    description: "Add LinkedIn profiles to CRM",
+    description: "Save profiles to CRM",
     icon: FaUsers,
     color: "from-purple-500 to-purple-600",
     link: "save-profile",
@@ -74,17 +74,6 @@ const Home = () => {
               <div className="text-base text-slate-600 text-[#475569] ">
                 Good morning! Ready to boost your LinkedIn presence?
               </div>
-
-              {/* Status Badges */}
-              <div className="flex gap-2 mt-3">
-                <span className="flex items-center px-3 py-1 text-xs font-bold text-[#599870] bg-[#dcfce7] rounded-md cursor-pointer">
-                  <GoDotFill className="w-6 h-4 rounded-full text-green" />
-                  LinkedIn Connected
-                </span>
-                <span className="flex items-center gap-2 px-3 py-1 text-xs font-bold text-[#ff5c35] bg-[#ff5c350f] rounded-md cursor-pointer">
-                  ⚡ AI Ready
-                </span>
-              </div>
             </div>
           </div>
 
@@ -101,9 +90,6 @@ const Home = () => {
               <span className="text-blue-600 text-lg">⚡</span>
               <div className="text-xl font-bold ">Quick Actions</div>
             </div>
-            <span className="text-sm text-[#64748b] cursor-pointer">
-              Choose your next move
-            </span>
           </div>
 
           {/* Action Cards */}
@@ -183,7 +169,7 @@ const Home = () => {
                         <FiEye className="w-4 h-4" />
                       </div>
                       <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-[#ff5c35]"/> +0%
+                        <FiArrowUpRight className="w-3 h-3 text-[#ff5c35]" /> +0%
                       </div>
                     </div>
                     <div>

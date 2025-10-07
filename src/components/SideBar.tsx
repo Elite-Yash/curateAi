@@ -65,7 +65,7 @@ const SideBar = () => {
               <div className="flex flex-col">
                 <div className="font-medium text-sm ">Content studio</div>
                 <div className="text-xs text-[#6b7280] ">
-                  Generate posts & comments
+                  Generate posts & Comments
                 </div>
               </div>
             </Link>
@@ -86,7 +86,7 @@ const SideBar = () => {
               <div className="flex flex-col">
                 <div className="font-medium text-sm ">Message Assistant</div>
                 <div className="text-xs text-[#6b7280] ">
-                  Smart messages replies
+                  Messages replies & Connection
                 </div>
               </div>
             </Link>
@@ -97,7 +97,7 @@ const SideBar = () => {
           <li className="">
             <Link
               to="/comments"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/comments"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px] hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/comments"
                 ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
                 : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
@@ -150,7 +150,7 @@ const SideBar = () => {
               <div className="flex flex-col ms">
                 <span className="font-medium text-left text-sm">Manage Campaign</span>
                 <div className="text-xs text-[#6b7280] w-max">
-                  Manage LinkedIn campaign
+                  Manage LinkedIn Campaign
                 </div>
               </div>
 

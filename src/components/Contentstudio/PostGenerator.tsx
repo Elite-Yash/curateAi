@@ -8,7 +8,7 @@ import {
   Wand2,
 } from "lucide-react";
 import {
-  TONES,  
+  TONES,
   POSTING_MOTIVES,
   LANGUAGES,
 } from "../../constants/constants";
@@ -19,6 +19,8 @@ import { removeEmoji } from "../../common/utils/removeicon";
 import ActivePlanModal from "../activeplanModal/activeplanmodal";
 import { useSelector } from "react-redux";
 import { selectActivePlanValue } from "../../redux/selector/activePlanSelector";
+import { IoCheckmarkSharp } from "react-icons/io5";
+
 
 interface ModalProps {
   post_url?: string;
@@ -150,10 +152,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
     });
   };
 
-  // regenerate button will call generatePost
-  const regeneratePost = () => {
-    handleSubmit();
-  };
+
 
   // --- Copy ---
   const copyToClipboard = () => {
@@ -280,7 +279,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
           {/* promp Topic */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-[#334155]">
-              What do you want to post about? <span className="text-red">*</span>   
+              What do you want to post about? <span className="text-red">*</span>
             </label>
 
             <div
@@ -296,37 +295,37 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
                 className="w-full min-h-24 h-full p-2 outline-none text-sm resize-none focus:ring-0 border-0"
               />
             </div>
-              <div className="text-sm text-[#8c97a9] mt-0">
-            💡 Write clearly for better generated results
-          </div>
+            <div className="text-sm text-[#8c97a9] mt-0">
+              💡 Write clearly for better generated results
+            </div>
             {errors.prompt && (
               <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.prompt}</p>
             )}
           </div>
 
-{/* Motive */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
-            Select Motive <span className="text-red">*</span>
-          </label>
-      <span className="relative">
-            <select
-            value={motive}
-            onChange={(e) => setMotive(e.target.value)}
-            className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
-            disabled={isGenerating}
-          >
-            {POSTING_MOTIVES.map((motive, index) => (
-              <option key={index} value={motive}>
-                {motive}
-              </option>
-            ))}
-          </select>
-      </span>
-          {errors.motive && (
-            <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.motive}</p>
-          )}
-        </div>
+          {/* Motive */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
+              Select Motive <span className="text-red">*</span>
+            </label>
+            <span className="relative">
+              <select
+                value={motive}
+                onChange={(e) => setMotive(e.target.value)}
+                className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
+                disabled={isGenerating}
+              >
+                {POSTING_MOTIVES.map((motive, index) => (
+                  <option key={index} value={motive}>
+                    {motive}
+                  </option>
+                ))}
+              </select>
+            </span>
+            {errors.motive && (
+              <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.motive}</p>
+            )}
+          </div>
 
           {/* Tone */}
           <div className="space-y-2">
@@ -388,12 +387,12 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
             {isGenerating ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                Generating...
+                <span className="text-sm">Generating...</span>
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Generate Post
+                <span className="text-sm">Generate Post</span>
               </>
             )}
           </button>
@@ -401,13 +400,16 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
           {/* Quick Tips */}
           <div className="p-4 bg-[#ff5c350f] rounded-lg">
             <div className="font-semibold text-base mb-2">
-              🤝 Messaging Best Practices:
+              Post Writing Tips:
             </div>
             <ul className="text-sm space-y-1">
-              <li>• Respond within 1-2 minute</li>
-              <li>• Personalize with specific details</li>
-              <li>• Always provide clear next steps</li>
-              <li>• Keep messages concise and scannable</li>
+              <li>• Start with a strong hook in the first 2 lines</li>
+              <li>• Use simple and clear language</li>
+              <li>• Add value with insights, examples, or data</li>
+              <li>• Keep paragraphs short for easy reading</li>
+              <li>• End with a question or call-to-action to boost engagement</li>
+              <li>• Use emojis sparingly to make posts more relatable</li>
+              <li>• Add 2–5 relevant hashtags to increase reach</li>
             </ul>
           </div>
 
@@ -424,16 +426,16 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
             {generatedPost && (
               <div className="flex items-center gap-2">
                 <button
-                  onClick={regeneratePost}
-                  className="p-2 rounded-lg hover:bg-[#f1f5f9]"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                </button>
-                <button
                   onClick={copyToClipboard}
                   className="p-2 rounded-lg hover:bg-[#f1f5f9]"
                 >
-                  <Copy className="w-4 h-4" />
+                  {/* <Copy className="w-4 h-4" /> */}
+
+                  {copied ? (
+                    <IoCheckmarkSharp className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             )}

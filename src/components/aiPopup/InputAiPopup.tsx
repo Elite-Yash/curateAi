@@ -99,9 +99,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-
     if (!validateForm()) return;
-
     setLoading(true);
     setError("");
     setIsTextGenerated(false);
@@ -128,7 +126,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
       const requestData = {
         language,
-        tone: removeEmoji(tone || ""),
+        status,
+        tone,
         postText:
           popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
         authorName: postData.postAutherName,
@@ -137,12 +136,13 @@ const InputAiPopup: React.FC<ModalProps> = ({
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,
-        goal: removeEmoji(motives || ""),
+        goal: motives,
         articleInfo,
         lastMessages,
         currentUserName,
         authToken,
       };
+      console.log("  ~ handleSubmit ~ requestData:", requestData)
 
       // Generate content
       chrome.runtime.sendMessage(
@@ -158,6 +158,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setSaveGeneratedMessageData?.({
               comment: generatedMessage,
               comment_type: popupTriggeredFrom,
+              motive: motives,
+              tone: tone,
+              language: language,
+              status: status,
             });
 
             let index = -1;
@@ -380,7 +384,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             ? POSTING_MOTIVES
                             : COMMENT_MOTIVES
                           ).map((motive, index) => {
-                            const textOnly = motive?.replace(/^[^\p{L}\p{N}\s]+/u, "").trim();
+                            const textOnly = removeEmoji(String(motive))
                             return (
                               <option key={index} value={textOnly}>
                                 {motive}
@@ -437,9 +441,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             disabled={loading}
                           >
                             {TONES.map((toneOption, index) => {
-                              const textOnly = toneOption
-                                .replace(/^[^\p{L}\p{N}\s]+/u, "")
-                                .trim();
+                              const textOnly = removeEmoji(toneOption)
                               return (
                                 <option key={index} value={textOnly}>
                                   {toneOption}
@@ -550,7 +552,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <div className="flex gap-5">
                         {/* Insert Button - only visible after text is generated */}
                         <button
-                          className="popup-button-insert px-4 py-2 h-[4rem] w-[28rem] bg-[#ff5c35] text-white rounded-md hover:bg-green-600"
+                          className="popup-button-insert px-4 py-2 h-[4rem] w-[28rem] text-white rounded-md hover:bg-green-600"
                           onClick={insertContent}
                           disabled={loading}
                         >
