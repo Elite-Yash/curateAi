@@ -81,7 +81,7 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        {...register("name", { required: "Name is required" })}
+                                       // {...register("name", { required: "Name is required" })}
                                         className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
                                         placeholder="Persona Name"
                                     />
