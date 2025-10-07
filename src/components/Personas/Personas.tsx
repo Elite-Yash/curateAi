@@ -1,12 +1,14 @@
 import { LuUser } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { FaUser, FaMicrophone, FaFeatherAlt, FaSmile } from "react-icons/fa";
+import PersonasFormModal from "./PersonasFormModal";
 
 const Personas = () => {
   const [personasData, setPersonasData] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const dummyData = [
+    const dummyData: any = [
       {
         title: "Professional",
         subtitle: "Formal, business-focused communication",
@@ -60,13 +62,8 @@ const Personas = () => {
         {/* Right Side: Button */}
 
         <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
-          {/* <Tooltip
-            content="Add new Personas"
-            placement="bottom"
-            className="custom-tooltip c-bottom-t ex !w-auto"
-          > */}
           <button
-            // onClick={connectToCRM}
+            onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
           >
             <i className="fa-solid fa-globe"></i>
@@ -77,7 +74,7 @@ const Personas = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {personasData.map((persona, index) => (
+        {personasData.map((persona: any, index: any) => (
           <div
             key={index}
             className="bg-white shadow-md rounded-xl p-6 flex flex-col gap-4 hover:shadow-lg transition"
@@ -130,6 +127,8 @@ const Personas = () => {
           </div>
         ))}
       </div>
+      <PersonasFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
+      />
     </div>
 
   );
