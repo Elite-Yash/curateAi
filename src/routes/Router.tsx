@@ -15,6 +15,7 @@ import Contentstudio from "../components/Contentstudio/Contentstudio";
 import Messageassistant from "../components/MessageAssistant/Messageassistant";
 import MessageCampaignTable from "../components/MessageCampaign/MessageCampaignTable";
 import MessageTamplateTable from "../components/MessageTamplate/MessageTamplate";
+import Personas from "../components/Personas/Personas";
 
 
 /**
@@ -140,14 +141,14 @@ const Router = () => {
           </Section>
         }
       /> */}
-      {/* <Route
+      <Route
         path="/personas"
         element={
           <Section>
             <Personas />
           </Section>
         }
-      /> */}
+      />
       <Route
         path="/message-campaign"
         element={
