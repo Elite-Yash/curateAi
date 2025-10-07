@@ -123,7 +123,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               tone: tone,
               language: language,
               status: "saved",
-              genarateTitle: prompt,
+              genarate_title: prompt,
             };
             console.log("  ~ handleSubmit ~ payload:", payload)
 

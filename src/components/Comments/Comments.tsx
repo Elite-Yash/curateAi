@@ -205,7 +205,7 @@ const Comments = () => {
                     )
                     .map((comment: any, index) => {
                       const fullComment = comment?.comment || "N/A";
-                      const genarateTitle = comment?.genarateTitle || "N/A";
+                      const genarate_title = comment?.genarate_title || "N/A";
                       return (
                         <div
                           key={index}
@@ -229,12 +229,12 @@ const Comments = () => {
 
                           {/* Post title */}
                           <div className="text-sm text-gray-800">
-                            {genarateTitle.length > 90
-                              ? genarateTitle.slice(0, 90) + "..."
-                              : genarateTitle}
-                            {genarateTitle.length > 90 && (
+                            {genarate_title.length > 90
+                              ? genarate_title.slice(0, 90) + "..."
+                              : genarate_title}
+                            {genarate_title.length > 90 && (
                               <button
-                                onClick={() => openModal(genarateTitle)}
+                                onClick={() => openModal(genarate_title)}
                                 className="ml-1 text-sm text-[#ff5c35] hover:underline"
                               >
                                 Read More

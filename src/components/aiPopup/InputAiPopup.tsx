@@ -161,7 +161,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
               tone: tone,
               language: language,
               status: status,
-              genarateTitle: collectedText,
+              genarate_title: collectedText,
             });
 
             let index = -1;

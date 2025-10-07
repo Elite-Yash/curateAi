@@ -143,7 +143,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               tone: tone,
               language: language,
               status: "saved",
-              genarateTitle: messageReply,
+              genarate_title: messageReply,
             };
 
             const requestUrl = apiService.EndPoint.createComments;
