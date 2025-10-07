@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { IoLogoLinkedin } from "react-icons/io5";
 import { FaMessage } from "react-icons/fa6";
 import { FaCommentSlash } from "react-icons/fa";
+import { History } from "lucide-react";
+import CommentModal from "./CommentModal";
 
 
 interface Comment {
@@ -133,9 +135,9 @@ const Comments = () => {
               </div>
 
               <div>
-                <div className="text-2xl font-bold text-slate-900">Comments Section</div>
+                <div className="text-2xl font-bold text-slate-900">AI-Powered Comments</div>
                 <div className="text-sm text-[#717c8c]">
-                  Smart AI suggestions for your LinkedIn replies
+                  Generate smart, personalized replies for LinkedIn posts directly from your feed. Keep track of all your past comments here and reuse them anytime.
                 </div>
               </div>
             </div>
@@ -148,121 +150,41 @@ const Comments = () => {
           </div>
         </div>
 
-        <div className="flex justify-between gap-6 w-full">
-          <div className="rounded-2xl w-full">
-            <div className="bg-[#f5f8fc]">
+
+        <div className="bg-white rounded-xl g-box">
+          {/* Header with Tabs */}
+          <div className="flex items-center justify-between p-5">
+            <div className="flex items-center gap-2 font-semibold text-base">
+              <History className="w-5 h-5 text-[#ff5c35]" />
+              Comments Section
+            </div>
+          </div>
+          <div className="p-2.5 pt-0">
+            <div className="border rounded-lg border-[#e0eaf3] h-[500px] flex flex-col overflow-auto bg-[#fff]">
+              {/* Table Header */}
+              <div
+                className="grid grid-cols-8 gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4 flex-shrink-0"
+
+              >
+                <div className="text-[14px]">Comment Preview</div>
+                <div className="text-[14px]">Title</div>
+                <div className="text-[14px]">Motive</div>
+                <div className="text-[14px]">Tone</div>
+                {/* <div className="text-[14px]">Language</div> */}
+                <div className="text-[14px]">Status</div>
+                <div className="text-[14px]">URL</div>
+                <div className="text-[14px]">Date</div>
+                <div className="text-[14px]">Actions</div>
+              </div>
+
+              {/* Table Rows */}
               {load ? (
-                <div className="flex justify-center items-center py-10">
+                <div className="text-center py-12">
                   <Loader />
                 </div>
-              ) : commentsData.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {commentsData.slice().sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).map((comment, index) => {
-                    const fullComment = comment?.comment || "N/A";
-                    return (
-                      <div
-                        key={index}
-                        className="bg-white rounded-2xl shadow-md p-4 relative g-box flex flex-col"
-                      >
-                        {/* Icon + Heading */}
-                        <div className="flex items-center gap-3 justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff5c350f] text-[#ff5c35]">
-                              <i className="fa-regular fa-comment text-lg"></i>
-                            </div>
-                            <div className="g-box-title sticky top-0 bg-white">
-                              <h4 className="font-medium">
-                                {" "}
-                                {comment.comment_type || "Comments"}{" "}
-                              </h4>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => deleteComment(comment?.id)}
-                            className=" w-10 h-10 flex items-center justify-center rounded-full text-base cursor-pointer text-red ms-0.5"
-                            title="Delete Comment"
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
-                        </div>
-
-                        {/* Comment Text */}
-                        <p className="leading-relaxed font-medium !text-base text-[#717c8c] p-4">
-                          {fullComment.length > 120
-                            ? fullComment.slice(0, 120) + "..."
-                            : fullComment}
-                          {fullComment.length > 120 && (
-                            <button
-                              onClick={() => openModal(comment)}
-                              className="text-[#ff5c35] text-sm font-medium hover:underline w-fit"
-                            >
-                              Read More
-                            </button>
-                          )}
-                        </p>
-
-                        {/* Link */}
-                        {/* <div className="flex items-center gap-2">
-                          <a
-                            href={comment.post_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm text-[#ff5c35] hover:text-[#003ab6] truncate"
-                          >
-                            <i className="fa-solid fa-location-dot text-xs"></i>
-                            {comment.post_url
-                              ? comment.post_url.length > 40
-                                ? comment.post_url.substring(0, 40) + "..."
-                                : comment.post_url
-                              : "N/A"}
-                            <IoLogoLinkedin className="text-xl text-[#ff5c35]" />
-                          </a>
-                        </div> */}
-                        <a
-                          href={comment.post_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-sm truncate mt-auto"
-                        >
-                          <i className="fa-solid fa-location-dot text-[13px] text-[#eb2448]"></i>
-
-                          {comment.post_url
-                            ? comment.post_url.length > 40
-                              ? comment.post_url.substring(0, 40) + "..."
-                              : comment.post_url
-                            : "N/A"}
-
-                          {/* ✅ Icon conditionally render karo */}
-                          {comment.post_url?.includes("linkedin.com") ? (
-                            <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
-                          ) : null}
-                        </a>
-
-                        <div className="!mt-[12px] !pt-[8px] border-t-[1px] border-[#b7b9bf] text-[#717c8c]">
-                          {comment.created_at
-                            ? new Date(comment.created_at).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "2-digit",
-                              year: "numeric",
-                            })
-                            : "N/A"}
-                        </div>
-
-                        {/* Footer - Date + Delete */}
-                        {/* <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
-                          <span>
-                            {new Date(comment.created_at).toLocaleDateString(
-                              "en-GB"
-                            )}
-                          </span>
-                        </div> */}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-2">
+              ) : commentsData.length === 0 ? (
+                <div className="text-center py-12 bg-white">
+                  <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
                     <FaCommentSlash className="w-8 h-8 text-[#94a3b8]" />
                   </div>
                   <p className="text-[#64748b] font-medium !text-xl mb-2">
@@ -272,47 +194,149 @@ const Comments = () => {
                     Be the first to share your thoughts
                   </div>
                 </div>
+              ) : (
+                <div className="!border-[#e0eaf3] border-b h-125 bg-white">
+                  {commentsData
+                    .slice()
+                    .sort(
+                      (a, b) =>
+                        new Date(b.created_at).getTime() -
+                        new Date(a.created_at).getTime()
+                    )
+                    .map((comment: any, index) => {
+                      const fullComment = comment?.comment || "N/A";
+                      const genarateTitle = comment?.genarateTitle || "N/A";
+                      return (
+                        <div
+                          key={index}
+                          className="py-4  px-4 odd:bg-[#fff] even:bg-[#fff5f380] grid grid-cols-8 gap-4 items-start"
 
+                        >
+                          {/* Message */}
+                          <div className="text-sm text-gray-800">
+                            {fullComment.length > 90
+                              ? fullComment.slice(0, 90) + "..."
+                              : fullComment}
+                            {fullComment.length > 90 && (
+                              <button
+                                onClick={() => openModal(fullComment)}
+                                className="ml-1 text-sm text-[#ff5c35] hover:underline"
+                              >
+                                Read More
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Post title */}
+                          <div className="text-sm text-gray-800">
+                            {genarateTitle.length > 90
+                              ? genarateTitle.slice(0, 90) + "..."
+                              : genarateTitle}
+                            {genarateTitle.length > 90 && (
+                              <button
+                                onClick={() => openModal(genarateTitle)}
+                                className="ml-1 text-sm text-[#ff5c35] hover:underline"
+                              >
+                                Read More
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Motive */}
+                          <div className="text-sm capitalize">
+                            {(comment as any).motive ?? "N/A"}
+                          </div>
+
+                          {/* Tone */}
+                          <div className="text-sm capitalize">
+                            {(comment as any).tone ?? "N/A"}
+                          </div>
+
+                          {/* Language */}
+                          {/* <div className="text-sm capitalize">
+                            {(comment as any).language ?? "N/A"}
+                          </div> */}
+
+                          {/* Status */}
+                          <div className="text-sm capitalize">
+                            {(comment as any).status ?? "N/A"}
+                          </div>
+
+                          {/* URL (commented for now) */}
+                          {/* <div className="text-sm truncate flex items-center gap-1">
+                  {comment.post_url ? (
+                    <a
+                      href={comment.post_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-[#ff5c35] hover:underline"
+                    >
+                      {comment.post_url.length > 35
+                        ? comment.post_url.substring(0, 35) + "..."
+                        : comment.post_url}
+                      {comment.post_url.includes("linkedin.com") && (
+                        <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                      )}
+                    </a>
+                  ) : (
+                    "N/A"
+                  )}
+                </div> */}
+
+                          <div>
+                            <div className="flex items-center gap-2">
+                              {comment.post_url ? (
+                                <a
+                                  href={comment.post_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
+                                    Go To LinkedIn
+                                    <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                                  </button>
+                                </a>
+                              ) : (
+                                "N/A"
+                              )}
+                            </div>
+                          </div>
+
+
+                          {/* Date */}
+                          <div className="text-sm text-gray-600">
+                            {comment.created_at
+                              ? new Date(comment.created_at).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "2-digit",
+                                year: "numeric",
+                              })
+                              : "N/A"}
+                          </div>
+
+                          {/* Actions */}
+                          <div className="px-4 py-3 text-sm">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => deleteComment(comment?.id)}
+                                className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
+                                title="Delete Comment"
+                              >
+                                <i className="fa-solid fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               )}
             </div>
           </div>
         </div>
 
         {/* Modal (Same as before) */}
-        {modalData && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
-              <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between item-center">
-                <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">
-                  <img src={getImage("fLogo")} alt="img" />
-                </span>
-                <h4 className="popup-title font-semibold text-xl leading-10">
-                  Entire Comment
-                </h4>
-                <span
-                  onClick={closeModal}
-                  role="button"
-                  aria-label="Close modal"
-                  className="close-box w-6 h-6 bg-no-repeat bg-center cursor-pointer"
-                >
-                  <img
-                    src={getImage("close")}
-                    alt="img"
-                    className="w-8 h-8 rounded-full m-2.5"
-                  />
-                </span>
-              </div>
-              <div className="p-6">
-                <p
-                  className="text-gray-700 mt-2.5"
-                  dangerouslySetInnerHTML={{
-                    __html: modalData.comment.replace(/\n/g, "<br />"),
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+        <CommentModal show={!!modalData} onClose={closeModal} data={modalData} />
       </div>
     </>
   );

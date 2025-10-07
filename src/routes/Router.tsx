@@ -109,7 +109,7 @@ const Router = () => {
         }
       />
       <Route
-        path="/content-studio"
+        path="/create-post"
         element={
           <Section>
             <Contentstudio />

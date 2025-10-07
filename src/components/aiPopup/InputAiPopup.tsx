@@ -129,7 +129,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
         status,
         tone,
         postText:
-          popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
+        popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
         authorName: postData.postAutherName,
         platform,
         command: context.length > 0 ? context : collectedText,
@@ -142,7 +142,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
         currentUserName,
         authToken,
       };
-      console.log("  ~ handleSubmit ~ requestData:", requestData)
 
       // Generate content
       chrome.runtime.sendMessage(
@@ -162,6 +161,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
               tone: tone,
               language: language,
               status: status,
+              genarateTitle: collectedText,
             });
 
             let index = -1;

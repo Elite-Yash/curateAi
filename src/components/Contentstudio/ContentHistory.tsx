@@ -38,8 +38,8 @@ const ContentHistory: React.FC = () => {
     } else {
       setPerWeekAvg(0);
     }
-  }, 
-  [commentsData]);
+  },
+    [commentsData]);
 
   const escapeHtml = (text?: string) => {
     if (!text) return "";
@@ -61,7 +61,7 @@ const ContentHistory: React.FC = () => {
     return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
   };
 
-  const fetchComments = useCallback(async () => { 
+  const fetchComments = useCallback(async () => {
     setLoading(true);
     try {
       const requestUrl = apiService?.EndPoint?.getComments;
@@ -98,62 +98,62 @@ const ContentHistory: React.FC = () => {
   }, [commentsData, activeFilter]);
 
 
-    const deleteComment = async (commentId: string) => {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#ff5c35",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Yes, delete it!",
-      });
-  
-      if (result.isConfirmed) {
-        try {
-          if (!chrome?.runtime?.sendMessage) {
-            throw new Error("Chrome API is not available.");
-          }
-  
-          const deleteUrl = apiService.EndPoint.deleteComments.replace(
-            ":id",
-            commentId
-          );
-  
-          await apiService.commonAPIRequest(
-            deleteUrl,
-            apiService.Method.delete,
-            undefined, // No query parameters
-            {}, // No request body
-            (result: any) => {
-              if (
-                result?.status === 200 &&
-                result?.data.message === "Comment deleted successfully"
-              ) {
-                fetchComments();
-                // Show success message
-                Swal.fire({
-                  title: "Deleted!",
-                  text: "Your comment has been deleted.",
-                  icon: "success",
-                  confirmButtonColor: "#ff5c35",
-                });
-              } else {
-                throw new Error(result?.message || "Failed to delete comment.");
-              }
-            }
-          );
-        } catch (err) {
-          console.error("Error deleting comment:", err);
-          Swal.fire({
-            title: "Error!",
-            text: "Something went wrong while deleting the comment.",
-            icon: "error",
-            confirmButtonColor: "#ff5c35",
-          });
+  const deleteComment = async (commentId: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ff5c35",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        if (!chrome?.runtime?.sendMessage) {
+          throw new Error("Chrome API is not available.");
         }
+
+        const deleteUrl = apiService.EndPoint.deleteComments.replace(
+          ":id",
+          commentId
+        );
+
+        await apiService.commonAPIRequest(
+          deleteUrl,
+          apiService.Method.delete,
+          undefined, // No query parameters
+          {}, // No request body
+          (result: any) => {
+            if (
+              result?.status === 200 &&
+              result?.data.message === "Comment deleted successfully"
+            ) {
+              fetchComments();
+              // Show success message
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your comment has been deleted.",
+                icon: "success",
+                confirmButtonColor: "#ff5c35",
+              });
+            } else {
+              throw new Error(result?.message || "Failed to delete comment.");
+            }
+          }
+        );
+      } catch (err) {
+        console.error("Error deleting comment:", err);
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong while deleting the comment.",
+          icon: "error",
+          confirmButtonColor: "#ff5c35",
+        });
       }
-    };
+    }
+  };
 
 
   const closeModal = () => setModalData(null);
@@ -201,7 +201,7 @@ const ContentHistory: React.FC = () => {
             <FiTrendingUp className="text-[#ff5c35] text-xl" />
           </div>
           <div>
-            <div className="text-xl font-bold text-[#0f172a]">{actuallyUsed}</div>
+            <div className="text-xl font-bold text-[#0f172a]">0</div>
             <div className="text-sm text-gray-600">Most Used Tone</div>
           </div>
         </div>
@@ -239,96 +239,96 @@ const ContentHistory: React.FC = () => {
           </div> */}
         </div>
 
-     <div className="p-2.5 pt-0">
-  <div className="border rounded-lg border-[#e0eaf3] ">
-    {/* Table Header */}
-    <div
-      className="grid gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4"
-      style={{
-        gridTemplateColumns: "300px 120px 120px 120px 120px 120px 120px",
-      }}
-    >
-      <div className="text-[14px]">Message</div>
-      <div className="text-[14px]">Motive</div>
-      <div className="text-[14px]">Tone</div>
-      <div className="text-[14px]">Language</div>
-      <div className="text-[14px]">Status</div>
-      {/* <div className="text-[14px]">URL</div> */}
-      <div className="text-[14px]">Date</div>
-      <div className="text-[14px]">Actions</div>
-    </div>
-
-    {/* Rows */}
-    {loading ? (
-      <div className="text-center py-12"><Loader /></div>
-    ) : filteredContent.length === 0 ? (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
-          <History className="w-8 h-8 text-[#ff5c35]" />
-        </div>
-        <p className="text-[#64748b] font-medium !text-xl mb-2">
-          No Posts History yet
-        </p>
-      </div>
-    ) : (
-      <div className="!border-[#e0eaf3] border-b h-125 overflow-auto">
-        {filteredContent
-          .slice()
-          .sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          )
-          .map((c: any) => (
+        <div className="p-2.5 pt-0">
+          <div className="border rounded-lg border-[#e0eaf3] ">
+            {/* Table Header */}
             <div
-              key={c.id}
-              className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380] grid gap-4 items-start"
+              className="grid gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4"
               style={{
-                gridTemplateColumns:
-                  "300px 120px 120px 120px 120px 120px 120px",
+                gridTemplateColumns: "300px 120px 120px 120px 120px 120px 120px",
               }}
             >
-              {/* Message */}
-              <div className="text-sm text-gray-800">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: escapeHtml(truncate(c.comment, 90)).replace(
-                      /\n/g,
-                      "<br />"
-                    ),
-                  }}
-                />
-                {c.comment && c.comment.length > 90 && (
-                  <button
-                    onClick={() => setModalData(c)}
-                    className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline"
-                  >
-                    Read More
-                  </button>
-                )}
-              </div>
+              <div className="text-[14px]">Message</div>
+              <div className="text-[14px]">Motive</div>
+              <div className="text-[14px]">Tone</div>
+              <div className="text-[14px]">Language</div>
+              <div className="text-[14px]">Status</div>
+              {/* <div className="text-[14px]">URL</div> */}
+              <div className="text-[14px]">Date</div>
+              <div className="text-[14px]">Actions</div>
+            </div>
 
-              {/* Motive */}
-              <div className="text-sm capitalize">
-                {c.motive ?? "N/A"}
+            {/* Rows */}
+            {loading ? (
+              <div className="text-center py-12"><Loader /></div>
+            ) : filteredContent.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <History className="w-8 h-8 text-[#ff5c35]" />
+                </div>
+                <p className="text-[#64748b] font-medium !text-xl mb-2">
+                  No Posts History yet
+                </p>
               </div>
+            ) : (
+              <div className="!border-[#e0eaf3] border-b h-125 overflow-auto">
+                {filteredContent
+                  .slice()
+                  .sort(
+                    (a, b) =>
+                      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                  )
+                  .map((c: any) => (
+                    <div
+                      key={c.id}
+                      className="py-4 px-4 odd:bg-[#fff] even:bg-[#fff5f380] grid gap-4 items-start"
+                      style={{
+                        gridTemplateColumns:
+                          "300px 120px 120px 120px 120px 120px 120px",
+                      }}
+                    >
+                      {/* Message */}
+                      <div className="text-sm text-gray-800">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: escapeHtml(truncate(c.comment, 90)).replace(
+                              /\n/g,
+                              "<br />"
+                            ),
+                          }}
+                        />
+                        {c.comment && c.comment.length > 90 && (
+                          <button
+                            onClick={() => setModalData(c)}
+                            className="mt-2 inline-block text-sm text-[#ff5c35] hover:underline"
+                          >
+                            Read More
+                          </button>
+                        )}
+                      </div>
 
-              {/* Tone */}
-              <div className="text-sm capitalize">
-                {c.tone ?? "N/A"}
-              </div>
+                      {/* Motive */}
+                      <div className="text-sm capitalize">
+                        {c.motive ?? "N/A"}
+                      </div>
 
-              {/* Language */}
-              <div className="text-sm capitalize">
-                {c.language ?? "N/A"}
-              </div>
+                      {/* Tone */}
+                      <div className="text-sm capitalize">
+                        {c.tone ?? "N/A"}
+                      </div>
 
-              {/* Status */}
-              <div className="text-sm capitalize">
-                {c.status ?? "N/A"}
-              </div>
+                      {/* Language */}
+                      <div className="text-sm capitalize">
+                        {c.language ?? "N/A"}
+                      </div>
 
-              {/* Post URL */}
-              {/* <div>
+                      {/* Status */}
+                      <div className="text-sm capitalize">
+                        {c.status ?? "N/A"}
+                      </div>
+
+                      {/* Post URL */}
+                      {/* <div>
                 <div className="flex items-center gap-2">
                   {c.post_url ? (
                     <a
@@ -347,38 +347,38 @@ const ContentHistory: React.FC = () => {
                 </div>
               </div> */}
 
-              {/* Date */}
-              <div className="text-sm text-gray-600">
-                {formatDate(c.created_at)}
-              </div>
+                      {/* Date */}
+                      <div className="text-sm text-gray-600">
+                        {formatDate(c.created_at)}
+                      </div>
 
-              {/* Actions */}
-              <div className="px-4 py-3 text-sm">
-                <div className="flex items-center gap-2">
-                  {/* Edit */}
-                  <button
+                      {/* Actions */}
+                      <div className="px-4 py-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          {/* Edit */}
+                          {/* <button
                     className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
                     title="Edit Post"
                   >
                     <i className="fa-solid fa-edit"></i>
-                  </button>
+                  </button> */}
 
-                  {/* Delete */}
-                  <button
-                   onClick={() => deleteComment(c?.id)}
-                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
-                    title="Delete Post"
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </div>
+                          {/* Delete */}
+                          <button
+                            onClick={() => deleteComment(c?.id)}
+                            className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
+                            title="Delete Post"
+                          >
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            </div>
-          ))}
-      </div>
-    )}
-  </div>
-</div>
+            )}
+          </div>
+        </div>
 
 
 

@@ -11,6 +11,7 @@ import {
   TONES,
   COMMENT_MOTIVES,
   LANGUAGES,
+  POSTING_MOTIVES,
 } from "../../constants/constants";
 import { apiService } from "../../common/config/apiService";
 import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
@@ -37,7 +38,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
   const [context, setContext] = useState("");
   const [generatedReply, setGeneratedReply] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isAuth, setIsAuth] = useState(true);
@@ -90,7 +90,8 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
       const requestData = {
         language,
-        tone: removeEmoji(tone.toString().trim()),
+        status: "saved",
+        tone,
         postText: messageReply || '',
         authorName: '',
         platform,
@@ -98,12 +99,13 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         contentType: popupTriggeredFrom,
         commentAuthorName: '',
         commentText: '',
-        goal: removeEmoji((motive ?? '').toString().trim()),
+        goal:motive,
         articleInfo,
         lastMessages,
         currentUserName,
         authToken,
       };
+      console.log("  ~ handleSubmit ~ requestData:", requestData)
 
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
@@ -132,6 +134,46 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
             type();
             apiCalled = true;
+
+             const payload = {
+              comment: generatedMessage,
+              post_url: post_url ? post_url : window.location.href,
+              comment_type: popupTriggeredFrom,
+              motive: motive,
+              tone: tone,
+              language: language,
+              status: "saved",
+              genarateTitle: messageReply,
+            };
+
+            const requestUrl = apiService.EndPoint.createComments;
+
+            apiService
+              .commonAPIRequest(
+                requestUrl,
+                apiService.Method.post,
+                undefined,
+                payload,
+                (result: any) => {
+                  if (
+                    result?.status === 201 &&
+                    result?.data.message === "Comment created successfully"
+                  ) {
+                    console.log("Comment created successfully");
+                  } else {
+                    throw new Error(
+                      result?.message || "Failed to create comment."
+                    );
+                  }
+                }
+              )
+              .catch((err: any) => {
+                console.error("API error:", err);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+
           } else {
             setError("Failed to submit the comment. Please try again.");
             setLoading(false);
@@ -173,7 +215,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
           result.selectedMotive
         ) {
         } else {
-          console.log("⚠️ Some data missing in storage, resetting...");
+          console.log("Some data missing in storage, resetting...");
           setLanguage("Language");
           setTone("Tone");
           setMotive("Motive");
@@ -317,11 +359,16 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                 className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={loading}
               >
-                {COMMENT_MOTIVES.map((motive, index) => (
-                  <option key={index} value={motive}>
-                    {motive}
-                  </option>
-                ))}
+                {POSTING_MOTIVES.map((motive, index) => {
+                                  const textOnly = removeEmoji(String(motive));
+                                  return (
+                                    <option key={index} value={textOnly}>
+                                      {motive}
+                                    </option>
+                                  );
+                                })}
+
+
               </select>
             </span>
             {errors.motive && (
@@ -341,8 +388,8 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                 className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={loading}
               >
-                {TONES.map((toneOption, index) => (
-                  <option key={index} value={toneOption}>
+               {TONES.map((toneOption, index) => (
+                  <option key={index} value={removeEmoji(String(toneOption))}>
                     {toneOption}
                   </option>
                 ))}

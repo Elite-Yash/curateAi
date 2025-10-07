@@ -53,8 +53,8 @@ const SideBar = () => {
           {/* Content studio */}
           <li className="">
             <Link
-              to="/content-studio"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/content-studio"
+              to="/create-post"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/create-post"
                 ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
                 : "text-[#334155] hover:text-[#ff5c35]"
                 }`}
@@ -63,9 +63,9 @@ const SideBar = () => {
                 <i className="fa-solid fa-file text-sm"></i>
               </span>
               <div className="flex flex-col">
-                <div className="font-medium text-sm ">Content studio</div>
+                <div className="font-medium text-sm ">Create Post</div>
                 <div className="text-xs text-[#6b7280] ">
-                  Generate posts & Comments
+                  Generate posts &  post ideas
                 </div>
               </div>
             </Link>
@@ -106,7 +106,7 @@ const SideBar = () => {
                 <i className="fas fa-comments text-sm"></i>
               </span>
               <div className="flex text-sm flex-col">
-                <div className="font-medium text-sm ">Comments</div>
+                <div className="font-medium text-sm ">AI-Powered Comments</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
                 </div>

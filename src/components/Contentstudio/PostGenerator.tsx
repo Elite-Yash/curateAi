@@ -24,7 +24,7 @@ import { IoCheckmarkSharp } from "react-icons/io5";
 
 interface ModalProps {
   post_url?: string;
-  popupTriggeredFrom?: "comment" | "create-post";
+  popupTriggeredFrom?: "create-post";
 }
 
 const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) => {
@@ -75,23 +75,25 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
 
       const requestData = {
         language,
-        tone: removeEmoji(tone.toString().trim()),
+        status: "saved",
+        tone,
         postText: prompt || "",
         authorName: "",
         platform,
         command: prompt,
         contentType: popupTriggeredFrom,
-        goal: removeEmoji(motive.toString().trim()),
+        goal: motive,
         articleInfo,
         lastMessages,
         currentUserName,
         authToken,
       };
+      console.log("  ~ handleSubmit ~ requestData:", requestData)
 
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
         (response) => {
-          if (response?.success && !apiCalled) {
+          if (response?.success && !apiCalled) {  
             setDisplayedText("");
 
             const generatedMessage = response.data?.data || "";
@@ -116,8 +118,14 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
             const payload = {
               comment: generatedMessage,
               post_url: post_url ? post_url : window.location.href,
-              comment_type: 'post',
+              comment_type: popupTriggeredFrom,
+              motive: motive,
+              tone: tone,
+              language: language,
+              status: "saved",
+              genarateTitle: prompt,
             };
+            console.log("  ~ handleSubmit ~ payload:", payload)
 
             const requestUrl = apiService.EndPoint.createComments
 
@@ -315,11 +323,14 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
                 className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={isGenerating}
               >
-                {POSTING_MOTIVES.map((motive, index) => (
-                  <option key={index} value={motive}>
-                    {motive}
-                  </option>
-                ))}
+                {POSTING_MOTIVES.map((motive, index) => {
+                  const textOnly = removeEmoji(String(motive));
+                  return (
+                    <option key={index} value={textOnly}>
+                      {motive}
+                    </option>
+                  );
+                })}
               </select>
             </span>
             {errors.motive && (
@@ -338,10 +349,11 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
                 disabled={isGenerating}
               >
                 {TONES.map((toneOption, index) => (
-                  <option key={index} value={toneOption}>
+                  <option key={index} value={removeEmoji(String(toneOption))}>
                     {toneOption}
                   </option>
                 ))}
+
               </select>
             </span>
             {errors.tone && (

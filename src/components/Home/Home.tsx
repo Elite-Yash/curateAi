@@ -28,7 +28,7 @@ const actions = [
     description: "Create Posts on LinkedIn content",
     icon: FaRegFileAlt,
     color: "from-blue-500 to-blue-600",
-    link: "content-studio",
+    link: "create-post",
   },
   {
     title: "Message Reply",
