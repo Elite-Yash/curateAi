@@ -17,6 +17,7 @@ import MessageCampaignTable from "../components/MessageCampaign/MessageCampaignT
 import MessageTamplateTable from "../components/MessageTamplate/MessageTamplate";
 import Personas from "../components/Personas/Personas";
 import ConnectionAssistant from "../components/ConnectionAssistant/ConnectionAssistant";
+import SaveProfilesTable from "../components/SaveProfile/SaveProfilesTable";
 
 
 /**
@@ -173,6 +174,14 @@ const Router = () => {
         element={
           <Section>
             <MessageTamplateTable />
+          </Section>
+        }
+      />
+      <Route
+        path="/workspace/my-workspace/group/my-group"
+        element={
+          <Section>
+            <SaveProfilesTable />
           </Section>
         }
       />
