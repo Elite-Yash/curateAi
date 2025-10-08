@@ -5,6 +5,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Header from "./UserProfile/Header";
 import { useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import SidebarSaveProfile from "./SidebarSaveProfile";
 
 // const SideBar = ({setOpenplanpopup} : any) => {
 const SideBar = () => {
@@ -115,7 +116,7 @@ const SideBar = () => {
           </li>
 
           {/* Save Profile */}
-          <li className="">
+          {/* <li className="">
             <Link
               to="/save-profile"
               className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/save-profile"
@@ -133,7 +134,9 @@ const SideBar = () => {
                 </div>
               </div>
             </Link>
-          </li>
+          </li> */}
+
+        <SidebarSaveProfile />
 
           {/* 🔹 Manage Campaign (with Submenu) */}
           <li className="">
