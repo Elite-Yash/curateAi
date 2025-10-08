@@ -11,7 +11,7 @@ interface Workspace {
 
 const SidebarSaveProfile = () => {
     const location = useLocation();
-    const [isProfileOpen, setIsProfileOpen] = useState(true);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     // Workspaces state
     const [workspaces, setWorkspaces] = useState<Workspace[]>([
