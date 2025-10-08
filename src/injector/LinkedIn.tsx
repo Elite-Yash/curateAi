@@ -837,24 +837,18 @@ const LinkedIn = () => {
           commentAuthorName: "",
         });
 
-
-        // grap message text
-        const messageDataText = icon.closest("form")
-        const messageData = messageDataText?.closest(".msg-form--is-fully-expanded")
-        const messgaegrap = messageData?.querySelector(".msg-form__contenteditable")
-
         // grab message-reply text aria
-        // const form = icon.closest("form");
-        // let messageContainer =
-        //   form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
-        // if (!messageContainer) {
-        //   const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
-        //   messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
-        // }
+        const form = icon.closest("form");
+        let messageContainer =
+          form?.querySelector(".msg-form--is-fully-expanded .msg-form__contenteditable");
+        if (!messageContainer) {
+          const scrollable = form?.querySelector(".msg-form__msg-content-container--scrollable");
+          messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
+        }
 
         let messageText = "";
-        if (messgaegrap) {
-          const pTags = messgaegrap.querySelectorAll("p");
+        if (messageContainer) {
+          const pTags = messageContainer.querySelectorAll("p");
           messageText = Array.from(pTags)
             .map((p) => p.innerText.trim() || p.textContent?.trim() || "")
             .filter((txt) => txt.length > 0)
