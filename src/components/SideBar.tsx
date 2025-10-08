@@ -50,7 +50,7 @@ const SideBar = () => {
             </Link>
           </li>
 
-                    {/* Connection Assistant*/}
+          {/* Connection Assistant*/}
           <li className="">
             <Link
               to="/connection-assistant"
