@@ -50,7 +50,8 @@ const LinkedIn = () => {
     motive: '',
     language: '',
     tone: '',
-    status: ''
+    status: '',
+    genarate_title: ''
   });
   const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
 
@@ -567,6 +568,7 @@ const LinkedIn = () => {
       tone: commentData?.tone,
       language: commentData?.language,
       status: commentData?.status || "published",
+      genarate_title: commentData?.genarate_title,
       is_comment_posted: true,
     };
 

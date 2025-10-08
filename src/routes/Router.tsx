@@ -16,6 +16,7 @@ import Messageassistant from "../components/MessageAssistant/Messageassistant";
 import MessageCampaignTable from "../components/MessageCampaign/MessageCampaignTable";
 import MessageTamplateTable from "../components/MessageTamplate/MessageTamplate";
 import Personas from "../components/Personas/Personas";
+import ConnectionAssistant from "../components/ConnectionAssistant/ConnectionAssistant";
 
 
 /**
@@ -77,6 +78,16 @@ const Router = () => {
           </Section>
         }
       />
+
+      <Route
+        path="/connection-assistant"
+        element={
+          <Section>
+            <ConnectionAssistant />
+          </Section>
+        }
+      />
+
       <Route
         path="/change-password"
         element={

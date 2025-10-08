@@ -79,7 +79,8 @@ const Contentstudio = () => {
 
         {activeTab === "comments" && (
           <div className="space-y-6">
-            <CommentGenerator popupTriggeredFrom={'comment'} />
+            {/* <CommentGenerator popupTriggeredFrom={'comment'} /> */}
+            <CommentGenerator/>
           </div>
         )}
 

@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { apiService } from "../../common/config/apiService";
-import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
 import { IoLogoLinkedin } from "react-icons/io5";
@@ -8,7 +7,6 @@ import { FaMessage } from "react-icons/fa6";
 import { FaCommentSlash } from "react-icons/fa";
 import { History } from "lucide-react";
 import CommentModal from "./CommentModal";
-
 
 interface Comment {
   id: string;
@@ -135,9 +133,13 @@ const Comments = () => {
               </div>
 
               <div>
-                <div className="text-2xl font-bold text-slate-900">AI-Powered Comments</div>
+                <div className="text-2xl font-bold text-slate-900">
+                  AI-Powered Comments
+                </div>
                 <div className="text-sm text-[#717c8c]">
-                  Generate smart, personalized replies for LinkedIn posts directly from your feed. Keep track of all your past comments here and reuse them anytime.
+                  Generate smart, personalized replies for LinkedIn posts
+                  directly from your feed. Keep track of all your past comments
+                  here and reuse them anytime.
                 </div>
               </div>
             </div>
@@ -150,7 +152,6 @@ const Comments = () => {
           </div>
         </div>
 
-
         <div className="bg-white rounded-xl g-box">
           {/* Header with Tabs */}
           <div className="flex items-center justify-between p-5">
@@ -160,183 +161,178 @@ const Comments = () => {
             </div>
           </div>
           <div className="p-2.5 pt-0">
-            <div className="border rounded-lg border-[#e0eaf3] h-[500px] flex flex-col overflow-auto bg-[#fff]">
-              {/* Table Header */}
-              <div
-                className="grid grid-cols-8 gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4 flex-shrink-0"
-
-              >
-                <div className="text-[14px]">Comment Preview</div>
-                <div className="text-[14px]">Title</div>
-                <div className="text-[14px]">Motive</div>
-                <div className="text-[14px]">Tone</div>
-                {/* <div className="text-[14px]">Language</div> */}
-                <div className="text-[14px]">Status</div>
-                <div className="text-[14px]">URL</div>
-                <div className="text-[14px]">Date</div>
-                <div className="text-[14px]">Actions</div>
-              </div>
-
-              {/* Table Rows */}
+            <div className={`overflow-auto flex-1 relative border rounded-lg border-[#e0eaf3] ${commentsData.length === 0 ? "h-[439px]" : "max-h-[439px]"}`}>
               {load ? (
-                <div className="text-center py-12">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                   <Loader />
                 </div>
               ) : commentsData.length === 0 ? (
-                <div className="text-center py-12 bg-white">
-                  <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FaCommentSlash className="w-8 h-8 text-[#94a3b8]" />
+                <>
+                  <div className="text-center bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FaCommentSlash className="w-8 h-8 text-[#94a3b8]" />
+                    </div>
+                    <p className="text-[#64748b] font-medium !text-xl mb-2">
+                      No comments found
+                    </p>
+                    <div className="!text-base text-[#94a3b8]">
+                      Be the first to share your thoughts
+                    </div>
                   </div>
-                  <p className="text-[#64748b] font-medium !text-xl mb-2">
-                    No comments found
-                  </p>
-                  <div className="!text-base text-[#94a3b8]">
-                    Be the first to share your thoughts
-                  </div>
-                </div>
+                </>
               ) : (
-                <div className="!border-[#e0eaf3] border-b h-125 bg-white">
-                  {commentsData
-                    .slice()
-                    .sort(
-                      (a, b) =>
-                        new Date(b.created_at).getTime() -
-                        new Date(a.created_at).getTime()
-                    )
-                    .map((comment: any, index) => {
-                      const fullComment = comment?.comment || "N/A";
-                      const genarate_title = comment?.genarate_title || "N/A";
-                      return (
-                        <div
-                          key={index}
-                          className="py-4  px-4 odd:bg-[#fff] even:bg-[#fff5f380] grid grid-cols-8 gap-4 items-start"
+                <>
+                  <table className="min-w-[1450px] w-full text-left border-collapse">
+                    {/* Table Header */}
+                    <thead className="sticky top-0 !bg-[#fbf7f8] border-b border-[#e1eaf4] z-10">
+                      <tr className="font-semibold text-[14px]">
+                        <th className="py-3 px-4 w-[400px]">
+                          Comment Preview
+                        </th>
+                        <th className="py-3 px-4 w-[400px]">Title</th>
+                        <th className="py-3 px-4 w-[180px] whitespace-nowrap">
+                          Motive
+                        </th>
+                        <th className="py-3 px-4">Tone</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 w-[180px] whitespace-nowrap">
+                          URL
+                        </th>
+                        <th className="py-3 px-4 whitespace-nowrap">Date</th>
+                        <th className="py-3 px-4">Actions</th>
+                      </tr>
+                    </thead>
+                    {/* Table Body */}
+                    <tbody>
+                      {commentsData
+                        .slice()
+                        .sort(
+                          (a, b) =>
+                            new Date(b.created_at).getTime() -
+                            new Date(a.created_at).getTime()
+                        )
+                        .map((comment: any, index: any) => {
+                          const fullComment = comment?.comment || "N/A";
+                          const genarate_title = comment?.genarate_title || "N/A";
+                          const isEven = index % 2 === 1;
+                          return (
+                            <tr
+                              key={index}
+                              className={`text-sm ${isEven ? "bg-[#fff5f380]" : "bg-[#fff]"
+                                }`}
+                           >
+                              {/* Comment Preview */}
+                              <td className="py-4 px-4 align-top w-[400px] text-gray-800">
 
-                        >
-                          {/* Message */}
-                          <div className="text-sm text-gray-800">
-                            {fullComment.length > 90
-                              ? fullComment.slice(0, 90) + "..."
-                              : fullComment}
-                            {fullComment.length > 90 && (
-                              <button
-                                onClick={() => openModal(fullComment)}
-                                className="ml-1 text-sm text-[#ff5c35] hover:underline"
-                              >
-                                Read More
-                              </button>
-                            )}
-                          </div>
+                                {fullComment.length > 90
+                                  ? fullComment.slice(0, 90) + "..."
+                                  : fullComment}
+                                {fullComment.length > 90 && (
+                                  <button
+                                    onClick={() => openModal(fullComment)}
+                                    className="ml-1 text-sm text-[#ff5c35] hover:underline"
+                                  >
 
-                          {/* Post title */}
-                          <div className="text-sm text-gray-800">
-                            {genarate_title.length > 90
-                              ? genarate_title.slice(0, 90) + "..."
-                              : genarate_title}
-                            {genarate_title.length > 90 && (
-                              <button
-                                onClick={() => openModal(genarate_title)}
-                                className="ml-1 text-sm text-[#ff5c35] hover:underline"
-                              >
-                                Read More
-                              </button>
-                            )}
-                          </div>
-
-                          {/* Motive */}
-                          <div className="text-sm capitalize">
-                            {(comment as any).motive ?? "N/A"}
-                          </div>
-
-                          {/* Tone */}
-                          <div className="text-sm capitalize">
-                            {(comment as any).tone ?? "N/A"}
-                          </div>
-
-                          {/* Language */}
-                          {/* <div className="text-sm capitalize">
-                            {(comment as any).language ?? "N/A"}
-                          </div> */}
-
-                          {/* Status */}
-                          <div className="text-sm capitalize">
-                            {(comment as any).status ?? "N/A"}
-                          </div>
-
-                          {/* URL (commented for now) */}
-                          {/* <div className="text-sm truncate flex items-center gap-1">
-                  {comment.post_url ? (
-                    <a
-                      href={comment.post_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-[#ff5c35] hover:underline"
-                    >
-                      {comment.post_url.length > 35
-                        ? comment.post_url.substring(0, 35) + "..."
-                        : comment.post_url}
-                      {comment.post_url.includes("linkedin.com") && (
-                        <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
-                      )}
-                    </a>
-                  ) : (
-                    "N/A"
-                  )}
-                </div> */}
-
-                          <div>
-                            <div className="flex items-center gap-2">
-                              {comment.post_url ? (
-                                <a
-                                  href={comment.post_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
-                                    Go To LinkedIn
-                                    <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                                    Read More
                                   </button>
-                                </a>
-                              ) : (
-                                "N/A"
-                              )}
-                            </div>
-                          </div>
+                                )}
+                              </td>
+                              {/* Title */}
+                              <td className="py-4 px-4 align-top w-[400px] text-gray-800">
 
+                                {genarate_title.length > 90
+                                  ? genarate_title.slice(0, 90) + "..."
+                                  : genarate_title}
+                                {genarate_title.length > 90 && (
+                                  <button
+                                    onClick={() => openModal(genarate_title)}
+                                    className="ml-1 text-sm text-[#ff5c35] hover:underline"
+                                  >
 
-                          {/* Date */}
-                          <div className="text-sm text-gray-600">
-                            {comment.created_at
-                              ? new Date(comment.created_at).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "2-digit",
-                                year: "numeric",
-                              })
-                              : "N/A"}
-                          </div>
+                                    Read More
+                                  </button>
+                                )}
+                              </td>
+                              {/* Motive */}
+                              <td className="py-4 px-4 align-top capitalize whitespace-nowrap">
 
-                          {/* Actions */}
-                          <div className="px-4 py-3 text-sm">
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => deleteComment(comment?.id)}
-                                className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
-                                title="Delete Comment"
-                              >
-                                <i className="fa-solid fa-trash"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
+                                {comment.motive ?? "N/A"}
+                              </td>
+                              {/* Tone */}
+                              <td className="py-4 px-4 align-top capitalize">
+
+                                {comment.tone ?? "N/A"}
+                              </td>
+                              {/* Status */}
+                              <td className="py-4 px-4 align-top capitalize">
+
+                                {comment.status ?? "N/A"}
+                              </td>
+                              {/* URL */}
+                              <td className="py-4 px-4 align-top w-[180px]">
+
+                                {comment.post_url ? (
+                                  <a
+                                    href={comment.post_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+
+                                    <button className="text-[#ff5c35] border border-[#ff5c35] px-2 py-[2px] rounded-[5px] flex items-center text-sm gap-1 whitespace-nowrap">
+
+                                      Go To LinkedIn
+                                      <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                                    </button>
+                                  </a>
+                                ) : (
+                                  "N/A"
+                                )}
+                              </td>
+                              {/* Date */}
+                              <td className="py-4 px-4 align-top text-gray-600 whitespace-nowrap">
+
+                                {comment.created_at
+                                  ? new Date(comment.created_at).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      month: "short",
+                                      day: "2-digit",
+                                      year: "numeric",
+                                    }
+                                  )
+                                  : "N/A"}
+                              </td>
+                              {/* Actions */}
+                              <td className="py-4 px-4 align-top">
+
+                                <div className="flex items-center gap-2">
+
+                                  <button
+                                    onClick={() => deleteComment(comment.id)}
+                                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#dc2626] bg-[#fee2e2] hover:bg-[#dc2626] hover:text-white transition"
+                                    title="Delete Comment"
+                                  >
+                                    <i className="fa-solid fa-trash"></i>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </>
               )}
             </div>
           </div>
         </div>
 
         {/* Modal (Same as before) */}
-        <CommentModal show={!!modalData} onClose={closeModal} data={modalData} />
+        <CommentModal
+          show={!!modalData}
+          onClose={closeModal}
+          data={modalData}
+        />
       </div>
     </>
   );

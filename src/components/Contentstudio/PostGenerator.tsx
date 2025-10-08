@@ -88,7 +88,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
         currentUserName,
         authToken,
       };
-      console.log("  ~ handleSubmit ~ requestData:", requestData)
 
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
@@ -125,7 +124,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               status: "saved",
               genarate_title: prompt,
             };
-            console.log("  ~ handleSubmit ~ payload:", payload)
 
             const requestUrl = apiService.EndPoint.createComments
 

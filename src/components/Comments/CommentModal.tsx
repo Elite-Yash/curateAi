@@ -12,8 +12,8 @@ const CommentModal: React.FC<CommentModalProps> = ({ show, onClose, data }) => {
     if (!show || !data) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%]">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 !m-0">
+            <div className="bg-white rounded-lg max-w-full shadow-lg overflow-auto w-[1000px] max-h-[85vh] max-[1050px]:w-[95%] ">
                 {/* Header */}
                 <div className="sticky top-0 bg-white header-top p-9 py-2 flex justify-between items-center">
                     <span className="relative s-logo border-[2.5px] border-solid rounded-full border-[#ff5c35] w-12">

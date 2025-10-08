@@ -27,7 +27,7 @@ const SideBar = () => {
       </div>
 
 
-      <div className="left-menu pt-4 p-4 w-73">
+      <div className="left-menu pt-4 p-4 w-73 max-h-[500px] overflow-auto">
         <ul className="flex flex-col gap-1">
           {/* Dashboard */}
           <li className="">
@@ -45,6 +45,27 @@ const SideBar = () => {
                 <div className="font-medium text-sm">Dashboard</div>
                 <div className="text-xs text-[#6b7280] ">
                   AI-powered LinkedIn
+                </div>
+              </div>
+            </Link>
+          </li>
+
+                    {/* Connection Assistant*/}
+          <li className="">
+            <Link
+              to="/connection-assistant"
+              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px] hover:!bg-[#eff6ff] transition-all duration-200 ${location.pathname === "/connection-assistant"
+                ? " text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                : "text-[#334155] hover:text-[#ff5c35]"
+                }`}
+            >
+              <span className="mt-1 flex w-[20px] justify-center">
+                <i className="fa-solid fa-wifi text-sm"></i>
+              </span>
+              <div className="flex flex-col ">
+                <div className="font-medium text-sm">Connection Assistant</div>
+                <div className="text-xs text-[#6b7280] ">
+                  AI-powered Connection Assistant
                 </div>
               </div>
             </Link>
