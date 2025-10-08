@@ -27,11 +27,11 @@ const dummyProfiles: Profile[] = [
         firstName: "Renuka",
         lastName: "P.",
         phone: "123-456-7890",//
-        email: "john.doe@example.com",
+        email: "renuka.p@example.com",
         jobPosition: "Data Scientist",
         city: "Bengaluru",//
         education: "B.Tech",//
-        linkedin: "https://linkedin.com/in/johndoe",//
+        linkedin: "https://www.linkedin.com/in/renuka-p-998017281/?originalSubdomain=in",//
         tags: ["AI", "Frontend"],//
         status: "Active",//
         owner: "Nilay Soni",
