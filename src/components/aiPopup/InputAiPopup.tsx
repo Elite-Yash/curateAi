@@ -26,7 +26,10 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   postData: PostData;
-  insertGeneratedComment: (comment: string, saveGeneratedMessageData: string) => void;
+  insertGeneratedComment: (
+    comment: string,
+    saveGeneratedMessageData: string
+  ) => void;
   insertGeneratedPost: (post: string, saveGeneratedMessageData: string) => void;
   popupTriggeredFrom: string;
   articleInfo?: ArticleInfo | null;
@@ -35,7 +38,9 @@ interface ModalProps {
   activePlan?: boolean;
   collectedText?: string;
   setCollectedText: React.Dispatch<React.SetStateAction<string | undefined>>;
-  relyedOfPostContent?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  relyedOfPostContent?: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
   saveGeneratedMessageData?: string | undefined;
   setSaveGeneratedMessageData?: React.Dispatch<React.SetStateAction<any>>;
 }
@@ -75,7 +80,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const [isActive, setisActive] = useState(false);
   const [copied, setCopied] = useState(false);
 
-
   const [errors, setErrors] = useState({
     collectedText: "",
     motive: "",
@@ -114,8 +118,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const platform = currentUrl.includes("linkedin.com")
       ? "linkedin"
       : currentUrl.includes("x.com")
-        ? "twitter"
-        : "";
+      ? "twitter"
+      : "";
 
     const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
 
@@ -135,7 +139,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
         status,
         tone,
         postText:
-          popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
+          popupTriggeredFrom === "comment-reply"
+            ? relyedOfPostContent
+            : collectedText,
         authorName: postData.postAutherName,
         platform,
         command: context.length > 0 ? context : collectedText,
@@ -157,7 +163,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setDisplayedText("");
             setIsTextGenerated(true);
             // Safe fallback
-            const generatedMessage: string = response?.data?.data && typeof response.data.data === "string" ? response.data.data : "";
+            const generatedMessage: string =
+              response?.data?.data && typeof response.data.data === "string"
+                ? response.data.data
+                : "";
 
             // update saveGeneratedMessageData manually
             setSaveGeneratedMessageData?.({
@@ -175,7 +184,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
             const type = () => {
               index++;
               if (index < generatedMessage.length) {
-                setDisplayedText((prev: string) => prev + generatedMessage[index]);
+                setDisplayedText(
+                  (prev: string) => prev + generatedMessage[index]
+                );
                 setTimeout(type, typingSpeed);
               } else {
                 setLoading(false);
@@ -192,7 +203,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
       );
     });
   };
-
 
   const insertContent = () => {
     if (
@@ -225,7 +235,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
           ? result.selectedMotive
           : ["", ""];
 
-        if (popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") {
+        if (
+          popupTriggeredFrom === "create-post" ||
+          popupTriggeredFrom === "message-reply"
+        ) {
           setMotive(motiveArray[0] || "");
         } else {
           setMotive(motiveArray[1] || "");
@@ -244,7 +257,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
       let updatedMotiveArray = [...existingMotiveArray];
 
-      if (popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") {
+      if (
+        popupTriggeredFrom === "create-post" ||
+        popupTriggeredFrom === "message-reply"
+      ) {
         updatedMotiveArray[0] = motive;
       } else {
         updatedMotiveArray[1] = motive;
@@ -262,7 +278,11 @@ const InputAiPopup: React.FC<ModalProps> = ({
     let newErrors: any = {};
     // check Original Message if popup is create-post
     if (!collectedText?.trim()) {
-      newErrors.collectedText = (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" ? "Original Comment is required" : "Original Message is required");
+      newErrors.collectedText =
+        popupTriggeredFrom === "comment" ||
+        popupTriggeredFrom === "comment-reply"
+          ? "Original Comment is required"
+          : "Original Message is required";
     }
 
     // motive must not include "Motive"
@@ -308,16 +328,19 @@ const InputAiPopup: React.FC<ModalProps> = ({
     }
   }, [tone]);
 
-
   return (
     <>
       <div
-        className={`popup-overlay ${isOpen ? "open" : ""
-          } fixed inset-0 flex items-center justify-center`}
+        className={`popup-overlay ${
+          isOpen ? "open" : ""
+        } fixed inset-0 flex items-center justify-center`}
       >
         <div
-          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan ? "!w-[45rem] " : " max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75] "
-            }`}
+          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${
+            !activePlan
+              ? "!w-[45rem] "
+              : " max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75] "
+          }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">
             <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
@@ -344,29 +367,40 @@ const InputAiPopup: React.FC<ModalProps> = ({
           {isAuth && activePlan ? (
             <React.Fragment>
               <div className="flex gap-[22px] w-full items-start p-9">
-
                 <div className=" flex flex-col gap-5 w-1/2">
                   <div className="flex flex-col item-center gap-8">
                     {/* original 'comment-reply"  "Original Comment" "Original Message" "message-reply" textaria"*/}
-                    {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" || popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") && (
+                    {(popupTriggeredFrom === "comment" ||
+                      popupTriggeredFrom === "comment-reply" ||
+                      popupTriggeredFrom === "create-post" ||
+                      popupTriggeredFrom === "message-reply") && (
                       <div className="w-full textarea-group relative space-y-2">
                         <label className="block text-xl font-medium text-gray-700 ms-2">
-                          {(popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply" ? "Original Comment" : "Original Message")}
+                          {popupTriggeredFrom === "comment" ||
+                          popupTriggeredFrom === "comment-reply"
+                            ? "Original Comment"
+                            : "Original Message"}
                           <span className="text-red">*</span>
                         </label>
                         <div
-                          className={`rounded-lg overflow-hidden border ${isActive ? "active" : "border-[#6b7280]"
-                            } custom_textarea h-[150px] relative`}
-                        >   <textarea
+                          className={`rounded-lg overflow-hidden border ${
+                            isActive ? "active" : "border-[#6b7280]"
+                          } custom_textarea h-[150px] relative`}
+                        >
+                          {" "}
+                          <textarea
                             placeholder="No comment found?"
                             value={collectedText}
                             onChange={(e) => setCollectedText(e.target.value)}
                             onFocus={() => setisActive(true)}
                             onBlur={() => setisActive(false)}
                             className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
-                          /></div>
+                          />
+                        </div>
                         {errors.collectedText && (
-                          <p className="text-red text-xl ms-1 mt-0 absolute">{errors.collectedText}</p>
+                          <p className="text-red text-xl ms-1 mt-0 absolute">
+                            {errors.collectedText}
+                          </p>
                         )}
                       </div>
                     )}
@@ -376,8 +410,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         Additional Message (Optional)
                       </label>
                       <div
-                        className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#6b7280]"
-                          } custom_textarea h-[150px]`}>
+                        className={`rounded-lg overflow-hidden border ${
+                          isContextActive ? "active" : "border-[#6b7280]"
+                        } custom_textarea h-[150px]`}
+                      >
                         <textarea
                           placeholder="Any additional information about the sender..."
                           value={context}
@@ -401,11 +437,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                           disabled={loading}
                         >
-                          {(popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply"
+                          {(popupTriggeredFrom === "create-post" ||
+                          popupTriggeredFrom === "message-reply"
                             ? POSTING_MOTIVES
                             : COMMENT_MOTIVES
                           ).map((motive, index) => {
-                            const textOnly = removeEmoji(String(motive))
+                            const textOnly = removeEmoji(String(motive));
                             return (
                               <option key={index} value={textOnly}>
                                 {motive}
@@ -415,7 +452,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </select>
                       </span>
                       {errors.motive && (
-                        <p className="text-red text-xl ms-1 absolute">{errors.motive}</p>
+                        <p className="text-red text-xl ms-1 absolute">
+                          {errors.motive}
+                        </p>
                       )}
                     </div>
 
@@ -445,7 +484,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           </select>
                         </span>
                         {errors.language && (
-                          <p className="text-red text-xl ms-1 absolute">{errors.language}</p>
+                          <p className="text-red text-xl ms-1 absolute">
+                            {errors.language}
+                          </p>
                         )}
                       </div>
 
@@ -462,7 +503,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             disabled={loading}
                           >
                             {TONES.map((toneOption, index) => {
-                              const textOnly = removeEmoji(toneOption)
+                              const textOnly = removeEmoji(toneOption);
                               return (
                                 <option key={index} value={textOnly}>
                                   {toneOption}
@@ -472,7 +513,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           </select>
                         </span>
                         {errors.tone && (
-                          <p className="text-red text-xl ms-1 absolute">{errors.tone}</p>
+                          <p className="text-red text-xl ms-1 absolute">
+                            {errors.tone}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -503,8 +546,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   {/* Generate Reply Button - always visible */}
                   <div className="mb-2">
                     <button
-                      className={`flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[55rem] bg-green hover:bg-[#008234] ${loading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                      className={`flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white  bg-[#ff5c35] w-full ${
+                        loading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                       onClick={handleSubmit}
                       disabled={loading}
                     >
@@ -517,34 +561,29 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         ? popupTriggeredFrom === "create-post"
                           ? "Generating Post..."
                           : popupTriggeredFrom === "comment-reply"
-                            ? "Generating Comment Reply..."
-                            : popupTriggeredFrom === "comment"
-                              ? "Generating Comment..."
-                              : popupTriggeredFrom === "message-reply"
-                                ? "Generating Message Reply..."
-                                : "Generating..."
+                          ? "Generating Comment Reply..."
+                          : popupTriggeredFrom === "comment"
+                          ? "Generating Comment..."
+                          : popupTriggeredFrom === "message-reply"
+                          ? "Generating Message Reply..."
+                          : "Generating..."
                         : popupTriggeredFrom === "create-post"
-                          ? "Generate Post"
-                          : popupTriggeredFrom === "comment-reply"
-                            ? "Generate Comment Reply"
-                            : popupTriggeredFrom === "comment"
-                              ? "Generate Comment"
-                              : popupTriggeredFrom === "message-reply"
-                                ? "Generate Message Reply"
-                                : "Generate Reply"}
+                        ? "Generate Post"
+                        : popupTriggeredFrom === "comment-reply"
+                        ? "Generate Comment Reply"
+                        : popupTriggeredFrom === "comment"
+                        ? "Generate Comment"
+                        : popupTriggeredFrom === "message-reply"
+                        ? "Generate Message Reply"
+                        : "Generate Reply"}
                     </button>
                   </div>
 
-
                   {/* Best Practices */}
                   <div
-                    style={{
-                      backgroundColor:
-                        "rgb(200 255 217 / var(--tw-bg-opacity, 1))",
-                    }}
-                    className="p-4 rounded-lg message-reply mt-4"
+                    className="p-4 bg-[#ff5c350f] rounded-lg message-reply mt-4"
                   >
-                    <h3 className="font-semibold text-[#ff5c35] flex items-center gap-2">
+                    <h3 className="font-semibold text-base mb-2">
                       💬 Messaging Best Practices:
                     </h3>
                     <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
@@ -579,13 +618,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     )}
                   </div>
 
-                  {(isTextGenerated || displayedText.length > 0) ? (
+                  {isTextGenerated || displayedText.length > 0 ? (
                     <div className=" space-y-4">
                       {/* Post Preview */}
                       <div className="border border-[#6b7280] rounded-lg bg-[#f8fafc] whitespace-pre-wrap text-xl text-[#1e293b] !h-[700px] !overflow-auto p-6 ">
-                        {displayedText.replace(/"/g, '')}
+                        {displayedText.replace(/"/g, "")}
                       </div>
-
 
                       <div className="flex gap-5">
                         {/* Insert Button - only visible after text is generated */}
@@ -598,14 +636,14 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </button>
                         {/* Regenerate Button - only visible after text is generated */}
                         <button
-                          className="flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[28rem] bg-green hover:bg-[#008234]"
+                          className="flex gap-2 leading-6 popup-button-submit !px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[28rem] bg-green hover:bg-[#008234]"
                           onClick={handleSubmit}
                           disabled={loading}
                         >
                           <img
                             src={getImage("sendIcon")}
                             alt="img"
-                            className="w-8 !static text-black"
+                            className="!w-[15px] !static text-black"
                           />
                           Regenerate
                         </button>
@@ -613,14 +651,32 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     </div>
                   ) : (
                     <div className="text-center py-6 h-[767px] flex flex-col justify-center rounded-lg border border-[#6b7280]">
-                      <div className="w-20 h-20 bg-[#f1f5f9] rounded-full flex items-center justify-center mx-auto">
-                        <FileText className="w-12 h-12 text-[#94a3b8]" />
+                      <div className="w-20 h-20 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto">
+                        <FileText className="w-12 h-12 text-[#ff5c35]" />
                       </div>
                       <p className="text-[#64748b] font-medium !text-2xl mb-2">
-                        No post generated yet
+                        {popupTriggeredFrom === "create-post"
+                          ? "No Post Generated yet"
+                          : popupTriggeredFrom === "comment-reply"
+                          ? "No Comment Reply Generated yet"
+                          : popupTriggeredFrom === "message-reply"
+                          ? "No Message Generated yet"
+                          : popupTriggeredFrom === "comment"
+                          ? "No Comment Generated yet"
+                          : ""}
                       </p>
                       <div className="!text-xl text-[#94a3b8]">
-                        Fill out the form and click "Generate Post" to get started
+                        Fill out the form and click{" "}
+                        {popupTriggeredFrom === "create-post"
+                          ? "Generate Post"
+                          : popupTriggeredFrom === "comment-reply"
+                          ? "Generate Comment Reply"
+                          : popupTriggeredFrom === "message-reply"
+                          ? "Generate Message Reply yet"
+                          : popupTriggeredFrom === "comment"  
+                          ? "No Comment Generated Comment"
+                          : ""}{" "}
+                        to get started
                       </div>
                     </div>
                   )}
@@ -634,8 +690,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   !! Alert !!
                 </span>
                 <span className="text-justify">
-                  Hey User, you don’t have an active plan on Evarobo
-                  yet. Go To the Evarobo Chrome Extension and Subscribe now and start enjoying all the amazing features!
+                  Hey User, you don’t have an active plan on Evarobo yet. Go To
+                  the Evarobo Chrome Extension and Subscribe now and start
+                  enjoying all the amazing features!
                 </span>
               </div>
             </>

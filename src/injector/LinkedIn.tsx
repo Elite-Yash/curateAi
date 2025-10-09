@@ -972,12 +972,16 @@ const LinkedIn = () => {
         // get author
         const authorEl = replyEntity?.querySelector(".comments-comment-meta__actor a.comments-comment-meta__description-container span.comments-comment-meta__description-title") as HTMLAnchorElement | null;
         const authorName = authorEl?.innerText?.trim() || "Unknown User";
-        const mainPostDiv = customIcon.closest(".feed-shared-update-v2");
+        const mainPostDiv = customIcon.closest(".feed-shared-update-v2") || customIcon?.closest(".feed-shared-update-detail-viewer__right-panel");
         const mainPostInnerText = mainPostDiv?.querySelector(
           ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
-        );
+        ) ||
+          mainPostDiv?.querySelector(".feed-shared-update-detail-viewer__overflow-content .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']");
+          
         const mainPostAuther = mainPostDiv?.querySelector(
           ".fie-impression-container > div:nth-of-type(1) .update-components-actor__container span[dir='ltr'] span.visually-hidden"
+        )?.textContent ||  mainPostDiv?.querySelector(
+          ".update-components-actor__container span[dir='ltr'] span.visually-hidden"
         )?.textContent;
 
         //  COMMENT-REPLY CASE
@@ -1003,10 +1007,6 @@ const LinkedIn = () => {
           //  NORMAL COMMENT CASE
           setPopupTriggeredFrom("comment");
 
-          const mainPostDiv = customIcon.closest(".feed-shared-update-v2");
-          const mainPostInnerText = mainPostDiv?.querySelector(
-            ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
-          );
           setPostData({
             postText: "",
             postAutherName: String(mainPostAuther),
@@ -1215,6 +1215,10 @@ const LinkedIn = () => {
   }, []);
 
   const getFormattedPost = (el: any) => {
+    if (!el) {
+      console.log("el called with undefined element");
+      return "";
+    }
     let html = el.innerHTML;
 
     // convert <br> to new lines
