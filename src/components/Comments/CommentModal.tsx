@@ -8,7 +8,6 @@ interface CommentModalProps {
 }
 
 const CommentModal: React.FC<CommentModalProps> = ({ show, onClose, data }) => {
-    console.log({ show, onClose, data })
     if (!show || !data) return null;
 
     return (
@@ -46,8 +45,8 @@ const CommentModal: React.FC<CommentModalProps> = ({ show, onClose, data }) => {
                             __html:
                                 data
                                     ?.replace(/</g, "&lt;")
-                                    .replace(/>/g, "&gt;")
-                                    .replace(/\n/g, "<br />") || "",
+                                    ?.replace(/>/g, "&gt;")
+                                    ?.replace(/\n/g, "<br />") || "",
                         }}
                     />
                 </div>
