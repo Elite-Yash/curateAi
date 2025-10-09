@@ -470,16 +470,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <Send className="w-5 h-5 text-[#ff5c35]" />
               Generated Reply
             </div>
-            {generatedReply && (
-              <div className="flex items-center gap-2">
-                <button onClick={handleSubmit} className="p-2 hover:bg-slate-100 rounded">
-                  <RefreshCw className="w-4 h-4" />
-                </button>
-                <button onClick={copyToClipboard} className="p-2 hover:bg-slate-100 rounded">
-                  <Copy className="w-4 h-4" />
-                </button>
-              </div>
-            )}
           </div>
 
           {generatedReply ? (

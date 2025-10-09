@@ -19,7 +19,6 @@ import { removeEmoji } from "../../common/utils/removeicon";
 import ActivePlanModal from "../activeplanModal/activeplanmodal";
 import { useSelector } from "react-redux";
 import { selectActivePlanValue } from "../../redux/selector/activePlanSelector";
-import { IoCheckmarkSharp } from "react-icons/io5";
 
 
 interface ModalProps {
@@ -433,23 +432,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               <FileText className="w-5 h-5 text-[#ff5c35]" />
               Generated Post
             </div>
-            {generatedPost && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={copyToClipboard}
-                  className="p-2 rounded-lg hover:bg-[#f1f5f9]"
-                >
-                  {/* <Copy className="w-4 h-4" /> */}
-
-                  {copied ? (
-                    <IoCheckmarkSharp className="w-4 h-4" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
+            </div>
 
           {generatedPost ? (
             <div className="space-y-4">

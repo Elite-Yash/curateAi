@@ -1264,7 +1264,7 @@ const LinkedIn = () => {
           insertGeneratedPost={insertGeneratedPostLinkedIn}
           popupTriggeredFrom={popupTriggeredFrom}
           articleInfo={articleInfo}
-          lastMessages={lastMessages}
+          // lastMessages={lastMessages}
           post_url={post_url}
           activePlan={activePlan}
           collectedText={collectedText}

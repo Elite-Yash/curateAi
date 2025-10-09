@@ -15,6 +15,7 @@ import { apiService } from "../../common/config/apiService";
 import { removeEmoji } from "../../common/utils/removeicon";
 import { Copy, FileText, RefreshCw } from "lucide-react";
 import ActivePlanModal from "../activeplanModal/activeplanmodal";
+import { IoCheckmarkSharp } from "react-icons/io5";
 
 export interface LinkedInMessage {
   messageSpeaker: string;
@@ -29,7 +30,7 @@ interface ModalProps {
   insertGeneratedPost: (post: string, saveGeneratedMessageData: string) => void;
   popupTriggeredFrom: string;
   articleInfo?: ArticleInfo | null;
-  lastMessages: LinkedInMessage[];
+  // lastMessages: LinkedInMessage[];
   post_url?: string;
   activePlan?: boolean;
   collectedText?: string;
@@ -46,7 +47,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
   insertGeneratedComment,
   insertGeneratedPost,
   popupTriggeredFrom,
-  lastMessages,
+  // lastMessages,
   post_url,
   activePlan,
   collectedText,
@@ -57,7 +58,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 }) => {
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
-  const [motives, setMotive] = useState(
+  const [motive, setMotive] = useState(
     popupTriggeredFrom === "create-post"
       ? POSTING_MOTIVES[0]
       : COMMENT_MOTIVES[0]
@@ -71,8 +72,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [context, setContext] = useState("");
   const [isContextActive, setIsContextActive] = useState(false);
-
   const [isActive, setisActive] = useState(false);
+    const [copied, setCopied] = useState(false);
+
 
   const [errors, setErrors] = useState({
     collectedText: "",
@@ -84,7 +86,11 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const handleCopy = () => {
     if (displayedText.trim()) {
       navigator.clipboard.writeText(displayedText);
+      setCopied(true);
     }
+     setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const articleInfo = {};
@@ -129,16 +135,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
         status,
         tone,
         postText:
-        popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
+          popupTriggeredFrom === "comment-reply" ? relyedOfPostContent : collectedText,
         authorName: postData.postAutherName,
         platform,
         command: context.length > 0 ? context : collectedText,
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,
-        goal: motives,
+        goal: motive,
         articleInfo,
-        lastMessages,
+        // lastMessages,
         currentUserName,
         authToken,
       };
@@ -157,7 +163,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
             setSaveGeneratedMessageData?.({
               comment: generatedMessage,
               comment_type: popupTriggeredFrom,
-              motive: motives,
+              motive: motive,
               tone: tone,
               language: language,
               status: status,
@@ -228,14 +234,42 @@ const InputAiPopup: React.FC<ModalProps> = ({
     );
   }, []);
 
+//   useEffect(() => {
+//   chrome.storage.local.get(
+//     ["selectedLanguage", "selectedTone", "selectedMotive"],
+//     (result) => {
+//       if (result.selectedLanguage) setLanguage(result.selectedLanguage);
+//       if (result.selectedTone) setTone(result.selectedTone);
+
+//       // Filter motive according to current popup type
+//       if (popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") {
+//         // Load only if saved motive exists in POSTING_MOTIVES
+//         if (POSTING_MOTIVES.includes(result.selectedMotive)) {
+//           setMotive(result.selectedMotive);
+//         } else {
+//           setMotive("🎯 Motive"); // default
+//         }
+//       } else if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply") {
+//         // Load only if saved motive exists in COMMENT_MOTIVES
+//         if (COMMENT_MOTIVES.includes(result.selectedMotive)) {
+//           setMotive(result.selectedMotive);
+//         } else {
+//           setMotive("🎯 Motive"); // default
+//         }
+//       }
+//     }
+//   );
+// }, [popupTriggeredFrom]);
+
+
   useEffect(() => {
     // Save selections to Chrome storage whenever they change
     chrome.storage.local.set({
       selectedLanguage: language,
       selectedTone: tone,
-      selectedMotive: motives,
+      selectedMotive: motive,
     });
-  }, [language, tone, motives]);
+  }, [language, tone, motive]);
 
   const validateForm = () => {
     let newErrors: any = {};
@@ -245,7 +279,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     }
 
     // motive must not include "Motive"
-    if (!motives || motives.includes("Motive")) {
+    if (!motive || motive.includes("Motive")) {
       newErrors.motive = "Please select a valid motive";
     }
 
@@ -270,10 +304,10 @@ const InputAiPopup: React.FC<ModalProps> = ({
   }, [collectedText, popupTriggeredFrom]);
 
   useEffect(() => {
-    if (motives && !motives.includes("Motive")) {
+    if (motive && !motive.includes("Motive")) {
       setErrors((prev) => ({ ...prev, motive: "" }));
     }
-  }, [motives]);
+  }, [motive]);
 
   useEffect(() => {
     if (language && language !== "Language") {
@@ -375,7 +409,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </label>
                       <span className="relative">
                         <select
-                          value={motives}
+                          value={motive}
                           onChange={(e) => setMotive(e.target.value)}
                           className="popup-select w-full p-2 border border-gray-300 rounded-md !mt-[5px] flex focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                           disabled={loading}
@@ -462,7 +496,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
                       Motive:{" "}
                       <span className="font-semibold text-[#545c66]">
-                        {motives}
+                        {motive}
                       </span>
                     </span>
                     <span className="bg-[#f6f9fc] border border-[#e0eaf3] py-[3px] px-[10px] text-black">
@@ -490,11 +524,30 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <img
                         src={getImage("sendIcon")}
                         alt="img"
-                        className="w-4 !static text -black"
+                        className="w-4 !static text-black"
                       />
-                      {loading ? "Generating..." : "Generate Reply"}
+                      {loading
+                        ? popupTriggeredFrom === "create-post"
+                          ? "Generating Post..."
+                          : popupTriggeredFrom === "comment-reply"
+                            ? "Generating Comment Reply..."
+                            : popupTriggeredFrom === "comment"
+                              ? "Generating Comment..."
+                              : popupTriggeredFrom === "message-reply"
+                                ? "Generating Message Reply..."
+                                : "Generating..."
+                        : popupTriggeredFrom === "create-post"
+                          ? "Generate Post"
+                          : popupTriggeredFrom === "comment-reply"
+                            ? "Generate Comment Reply"
+                            : popupTriggeredFrom === "comment"
+                              ? "Generate Comment"
+                              : popupTriggeredFrom === "message-reply"
+                                ? "Generate Message Reply"
+                                : "Generate Reply"}
                     </button>
                   </div>
+
 
                   {/* Best Practices */}
                   <div
@@ -525,21 +578,19 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     </div>
                     {isTextGenerated && (
                       <div className="flex items-center gap-4">
-                        <button
-                          onClick={handleSubmit}
-                          className="rounded-lg hover:bg-[#f1f5f9]"
-                        >
-                          <RefreshCw className="w-6 h-6" />
-                        </button>
-                        <button
+                       <button
                           onClick={handleCopy}
                           className="rounded-lg hover:bg-[#f1f5f9]"
                         >
-                          <Copy className="w-6 h-6" />
+                            {copied ? (
+                    <IoCheckmarkSharp className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                         </button>
                       </div>
                     )}
-                  </div>
+                 </div>
 
                   {(isTextGenerated || displayedText.length > 0) ? (
                     <div className=" space-y-4">

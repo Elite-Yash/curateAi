@@ -1,8 +1,8 @@
 import { FileText, MessageCircle, Sparkles } from "lucide-react";
 import { useState } from "react";
 import PostGenerator from "./PostGenerator";
-import CommentGenerator from "./CommentGenerator";
 import ContentHistory from "./ContentHistory";
+import PostIdia from "./PostIdia";
 
 const Contentstudio = () => {
   const [activeTab, setActiveTab] = useState("posts");
@@ -46,9 +46,9 @@ const Contentstudio = () => {
           </button>
 
           <button
-            onClick={() => setActiveTab("comments")}
+            onClick={() => setActiveTab("postidia")}
             className={`flex items-center justify-center gap-2 !py-2 text-sm  transition 
-              ${activeTab === "comments"
+              ${activeTab === "postidia"
                 ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
                 : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
               }`}
@@ -77,9 +77,9 @@ const Contentstudio = () => {
           </div>
         )}
 
-        {activeTab === "comments" && (
+        {activeTab === "postidia" && (
           <div className="space-y-6">
-            <CommentGenerator/>
+            <PostIdia/>
           </div>
         )}
 
