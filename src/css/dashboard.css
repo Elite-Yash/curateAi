@@ -433,4 +433,26 @@ body,
 
 /*--font family roboto--*/
 .robotofont, body {   font-family: "Roboto", sans-serif !important;}
+
+
+::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+     border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ff5c35;
+     border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff5c35;
+     border-radius: 10px;
+}
+
  

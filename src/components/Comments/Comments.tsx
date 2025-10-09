@@ -248,7 +248,6 @@ const Comments = () => {
                                     onClick={() => openModal(genarate_title)}
                                     className="ml-1 text-sm text-[#ff5c35] hover:underline"
                                   >
-
                                     Read More
                                   </button>
                                 )}
