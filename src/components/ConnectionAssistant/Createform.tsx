@@ -41,7 +41,7 @@ const Createform = () => {
                     <button
                         className="w-full flex items-center justify-center gap-2 bg-[#ff5c35] text-white font-medium py-2 px-4 rounded-lg transition">
                         <Sparkles className="w-4 h-4" />
-                        <span className="text-sm">Generate Post</span>
+                        <span className="text-sm">Send</span>
                     </button>
 
                 </div>

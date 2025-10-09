@@ -157,8 +157,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
     });
   };
 
-
-
   // --- Copy ---
   const copyToClipboard = () => {
     if (generatedPost) {

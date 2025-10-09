@@ -174,7 +174,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
               <div className="w-full input-group">
                 <input
                   type="text"
-                  className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md"
+                  className="popup-input w-full mt-1 p-2 border border-[#e2e8f0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                   placeholder="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -184,7 +184,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
               <div className="w-full input-group">
                 <input
                   type="email"
-                  className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md"
+                  className="popup-input w-full mt-1 p-2 border border-[#e2e8f0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                   placeholder={!email ? "Email not found" : "Email"}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -194,7 +194,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
               <div className="w-full input-group">
                 <input
                   type="text"
-                  className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md"
+                  className="popup-input w-full mt-1 p-2 border border-[#e2e8f0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                   placeholder={
                     !positionState ? "Position not found" : "Position"
                   }
@@ -206,7 +206,7 @@ const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
               <div className="w-full input-group">
                 <input
                   type="text"
-                  className="popup-input w-full mt-1 p-2 border border-gray-300 rounded-md"
+                  className="popup-input w-full mt-1 p-2 border border-[#e2e8f0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                   placeholder={!companyState ? "Company not found" : "Company"}
                   value={companyState}
                   onChange={(e) => setCompany(e.target.value)}
