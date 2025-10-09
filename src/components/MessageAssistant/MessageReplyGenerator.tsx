@@ -99,7 +99,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         contentType: popupTriggeredFrom,
         commentAuthorName: '',
         commentText: '',
-        goal:motive,
+        goal: motive,
         articleInfo,
         lastMessages,
         currentUserName,
@@ -135,7 +135,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
             type();
             apiCalled = true;
 
-             const payload = {
+            const payload = {
               comment: generatedMessage,
               post_url: post_url ? post_url : window.location.href,
               comment_type: popupTriggeredFrom,
@@ -195,7 +195,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
   };
 
   useEffect(() => {
-    // Load saved selections from Chrome storage after removal
     chrome.storage.local.get(
       ["selectedLanguage", "selectedTone", "selectedMotive"],
       (result) => {
@@ -205,20 +204,12 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         if (result.selectedTone) {
           setTone(result.selectedTone);
         }
-        if (result.selectedMotive) {
-          setMotive(result.selectedMotive);
-        }
-        // Check if all data is present
-        if (
-          result.selectedLanguage &&
-          result.selectedTone &&
-          result.selectedMotive
-        ) {
-        } else {
-          console.log("Some data missing in storage, resetting...");
-          setLanguage("Language");
-          setTone("Tone");
-          setMotive("Motive");
+
+        const motiveArray = Array.isArray(result.selectedMotive)
+          ? result.selectedMotive
+          : ["", ""];
+        if (motiveArray) {
+          setMotive(motiveArray[0] || "");
         }
       }
     );
@@ -226,10 +217,20 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
 
   useEffect(() => {
     // Save selections to Chrome storage whenever they change
-    chrome.storage.local.set({
-      selectedLanguage: language,
-      selectedTone: tone,
-      selectedMotive: motive,
+    chrome.storage.local.get(["selectedMotive"], (result) => {
+      // Always start with an array structure
+      const existingMotiveArray = Array.isArray(result.selectedMotive)
+        ? result.selectedMotive
+        : ["", ""];
+
+      let updatedMotiveArray = [...existingMotiveArray];
+      updatedMotiveArray[0] = motive;
+
+      chrome.storage.local.set({
+        selectedLanguage: language,
+        selectedTone: tone,
+        selectedMotive: updatedMotiveArray,
+      });
     });
   }, [language, tone, motive]);
 
@@ -360,13 +361,13 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                 disabled={loading}
               >
                 {POSTING_MOTIVES.map((motive, index) => {
-                                  const textOnly = removeEmoji(String(motive));
-                                  return (
-                                    <option key={index} value={textOnly}>
-                                      {motive}
-                                    </option>
-                                  );
-                                })}
+                  const textOnly = removeEmoji(String(motive));
+                  return (
+                    <option key={index} value={textOnly}>
+                      {motive}
+                    </option>
+                  );
+                })}
 
 
               </select>
@@ -388,7 +389,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                 className="w-full p-2 border text-sm rounded-md border-[#e2e8f0] focus:outline-none focus:ring-1 focus:ring-[#ff5c35] focus:border-[#ff5c35]"
                 disabled={loading}
               >
-               {TONES.map((toneOption, index) => (
+                {TONES.map((toneOption, index) => (
                   <option key={index} value={removeEmoji(String(toneOption))}>
                     {toneOption}
                   </option>

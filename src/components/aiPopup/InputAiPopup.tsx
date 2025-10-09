@@ -73,7 +73,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
   const [context, setContext] = useState("");
   const [isContextActive, setIsContextActive] = useState(false);
   const [isActive, setisActive] = useState(false);
-    const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
 
 
   const [errors, setErrors] = useState({
@@ -88,7 +88,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
       navigator.clipboard.writeText(displayedText);
       setCopied(true);
     }
-     setTimeout(() => {
+    setTimeout(() => {
       setCopied(false);
     }, 2000);
   };
@@ -216,60 +216,47 @@ const InputAiPopup: React.FC<ModalProps> = ({
         if (result.selectedLanguage) {
           setLanguage(result.selectedLanguage);
         }
+
         if (result.selectedTone) {
           setTone(result.selectedTone);
         }
-        if (result.selectedMotive) {
-          setMotive(result.selectedMotive);
-        }
-        // Check if all data is present
-        if (
-          result.selectedLanguage &&
-          result.selectedTone &&
-          result.selectedMotive
-        ) {
+
+        const motiveArray = Array.isArray(result.selectedMotive)
+          ? result.selectedMotive
+          : ["", ""];
+
+        if (popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") {
+          setMotive(motiveArray[0] || "");
         } else {
+          setMotive(motiveArray[1] || "");
         }
       }
     );
-  }, []);
-
-//   useEffect(() => {
-//   chrome.storage.local.get(
-//     ["selectedLanguage", "selectedTone", "selectedMotive"],
-//     (result) => {
-//       if (result.selectedLanguage) setLanguage(result.selectedLanguage);
-//       if (result.selectedTone) setTone(result.selectedTone);
-
-//       // Filter motive according to current popup type
-//       if (popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") {
-//         // Load only if saved motive exists in POSTING_MOTIVES
-//         if (POSTING_MOTIVES.includes(result.selectedMotive)) {
-//           setMotive(result.selectedMotive);
-//         } else {
-//           setMotive("🎯 Motive"); // default
-//         }
-//       } else if (popupTriggeredFrom === "comment" || popupTriggeredFrom === "comment-reply") {
-//         // Load only if saved motive exists in COMMENT_MOTIVES
-//         if (COMMENT_MOTIVES.includes(result.selectedMotive)) {
-//           setMotive(result.selectedMotive);
-//         } else {
-//           setMotive("🎯 Motive"); // default
-//         }
-//       }
-//     }
-//   );
-// }, [popupTriggeredFrom]);
-
+  }, [popupTriggeredFrom]);
 
   useEffect(() => {
     // Save selections to Chrome storage whenever they change
-    chrome.storage.local.set({
-      selectedLanguage: language,
-      selectedTone: tone,
-      selectedMotive: motive,
+    chrome.storage.local.get(["selectedMotive"], (result) => {
+      // Always start with an array structure
+      const existingMotiveArray = Array.isArray(result.selectedMotive)
+        ? result.selectedMotive
+        : ["", ""];
+
+      let updatedMotiveArray = [...existingMotiveArray];
+
+      if (popupTriggeredFrom === "create-post" || popupTriggeredFrom === "message-reply") {
+        updatedMotiveArray[0] = motive;
+      } else {
+        updatedMotiveArray[1] = motive;
+      }
+
+      chrome.storage.local.set({
+        selectedLanguage: language,
+        selectedTone: tone,
+        selectedMotive: updatedMotiveArray,
+      });
     });
-  }, [language, tone, motive]);
+  }, [language, tone, motive, popupTriggeredFrom]);
 
   const validateForm = () => {
     let newErrors: any = {};
@@ -578,19 +565,19 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     </div>
                     {isTextGenerated && (
                       <div className="flex items-center gap-4">
-                       <button
+                        <button
                           onClick={handleCopy}
                           className="rounded-lg hover:bg-[#f1f5f9]"
                         >
-                            {copied ? (
-                    <IoCheckmarkSharp className="w-4 h-4" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
+                          {copied ? (
+                            <IoCheckmarkSharp className="w-4 h-4" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
                         </button>
                       </div>
                     )}
-                 </div>
+                  </div>
 
                   {(isTextGenerated || displayedText.length > 0) ? (
                     <div className=" space-y-4">

@@ -91,7 +91,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
         (response) => {
-          if (response?.success && !apiCalled) {  
+          if (response?.success && !apiCalled) {
             setDisplayedText("");
 
             const generatedMessage = response.data?.data || "";
@@ -180,20 +180,12 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
         if (result.selectedTone) {
           setTone(result.selectedTone);
         }
-        if (result.selectedMotive) {
-          setMotive(result.selectedMotive);
-        }
-        // Check if all data is present
-        if (
-          result.selectedLanguage &&
-          result.selectedTone &&
-          result.selectedMotive
-        ) {
-        } else {
-          console.log("Some data missing in storage, resetting...");
-          setLanguage("Language");
-          setTone("Tone");
-          setMotive("Motive");
+
+        const motiveArray = Array.isArray(result.selectedMotive)
+          ? result.selectedMotive
+          : ["", ""];
+        if (motiveArray) {
+          setMotive(motiveArray[0] || "");
         }
       }
     );
@@ -201,13 +193,22 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
 
   useEffect(() => {
     // Save selections to Chrome storage whenever they change
-    chrome.storage.local.set({
-      selectedLanguage: language,
-      selectedTone: tone,
-      selectedMotive: motive,
+    chrome.storage.local.get(["selectedMotive"], (result) => {
+      // Always start with an array structure
+      const existingMotiveArray = Array.isArray(result.selectedMotive)
+        ? result.selectedMotive
+        : ["", ""];
+
+      let updatedMotiveArray = [...existingMotiveArray];
+      updatedMotiveArray[0] = motive;
+
+      chrome.storage.local.set({
+        selectedLanguage: language,
+        selectedTone: tone,
+        selectedMotive: updatedMotiveArray,
+      });
     });
   }, [language, tone, motive]);
-
 
   const validateForm = () => {
     let newErrors: any = {};
@@ -432,7 +433,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
               <FileText className="w-5 h-5 text-[#ff5c35]" />
               Generated Post
             </div>
-            </div>
+          </div>
 
           {generatedPost ? (
             <div className="space-y-4">
