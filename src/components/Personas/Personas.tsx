@@ -42,7 +42,7 @@ const Personas = () => {
         {/* Left Side */}
         <div className="flex items-center gap-4">
           {/* Icon */}
-          <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-gradient-to-r bg-[#ff5c35] rounded-2xl flex items-center justify-center">
             <LuUser className="w-6 h-6 text-white" />
           </div>
 
@@ -59,7 +59,7 @@ const Personas = () => {
           </div>
         </div>
 
-        {/* Right Side: Button */}
+        {/* Right Side: Button */}   
 
         <div className="flex flex-wrap items-center gap-3 mt-3 md:mt-0">
           <button

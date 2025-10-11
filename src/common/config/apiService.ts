@@ -56,6 +56,11 @@ export class apiService {
         getAllDataOfWorkspace:'workspace-groups/with-groups',
         addWorkspace:'workspaces',
         addGroup:'workspace-groups',
+        createpersonas: "personas",
+        getAllpersonas : "personas",
+        getpersonasByid: "personas/:id",
+        updatepersonas: "personas/:id",
+        deletepersonas: "personas/:id",
     };
 
     static Method = {
