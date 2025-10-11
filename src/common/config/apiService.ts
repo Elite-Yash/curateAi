@@ -53,6 +53,9 @@ export class apiService {
         getAllTemplate:'templates',
         updateTemplate:'templates/:id',
         deleteTemplate:'templates/:id',
+        getAllDataOfWorkspace:'workspace-groups/with-groups',
+        addWorkspace:'workspaces',
+        addGroup:'workspace-groups',
     };
 
     static Method = {

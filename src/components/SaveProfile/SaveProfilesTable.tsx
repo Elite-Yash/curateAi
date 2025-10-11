@@ -2,6 +2,7 @@ import { Users } from "lucide-react";
 import { useState } from "react";
 import { IoLogoLinkedin } from "react-icons/io5";
 import ProfileCardTable from "./ProfileCardTable";
+import { useParams } from "react-router-dom";
 
 export interface Profile {
     firstName: string;
@@ -44,6 +45,7 @@ const SaveProfilesTable = () => {
     const load = false; // simulate loading
     const [showingProfile, setShowingProfile] = useState(false);
     const [showingProfileData, setShowingProfileData] = useState<Profile | null>(null);
+    // const { workspaceId, groupId } = useParams<{ workspaceId: string; groupId: string }>();
 
     return (
         <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">

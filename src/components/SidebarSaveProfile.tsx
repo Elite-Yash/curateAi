@@ -1,61 +1,143 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { apiService } from "../common/config/apiService";
 
-// Define Workspace type
-interface Workspace {
+// Group type
+interface Group {
+    id: number;
     name: string;
-    groups: string[];
+}
+
+// Workspace type
+interface Workspace {
+    id: number;
+    name: string;
+    groups: Group[];
     isDefault: boolean;
+}
+
+// API response types
+interface WorkspaceAPIResponse {
+    id: number;
+    name: string;
+    groups: { id: number; name: string }[];
+}
+
+interface APIResponse<T = any> {
+    data: {
+        success: boolean;
+        data: T;
+    };
 }
 
 const SidebarSaveProfile = () => {
     const location = useLocation();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-    // Workspaces state
-    const [workspaces, setWorkspaces] = useState<Workspace[]>([
-        { name: "My Workspace", groups: ["My Group"], isDefault: true },
-    ]);
-
+    const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
     const [addingWorkspace, setAddingWorkspace] = useState(false);
     const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
-    // Track which workspace is adding a group
-    const [addingGroupIndex, setAddingGroupIndex] = useState<number | null>(
-        null
-    );
+    const [addingGroupId, setAddingGroupId] = useState<number | null>(null);
+    const [newGroupNames, setNewGroupNames] = useState<Record<number, string>>({});
+    const [expandedWorkspaceId, setExpandedWorkspaceId] = useState<number | null>(null);
 
-    // Track new group names per workspace
-    const [newGroupNames, setNewGroupNames] = useState<Record<number, string>>(
-        {}
-    );
+    // Helper to build route with IDs
+    const workspaceGroupPath = (workspaceId: number, groupId: number) =>
+        `/workspace/${workspaceId}/group/${groupId}`;
 
-    const [expandedWorkspace, setExpandedWorkspace] = useState<number | null>(0); // default workspace expanded
-
-    // Add new workspace
-    const handleAddWorkspace = () => {
-        if (newWorkspaceName.trim() && workspaces.length < 5) {
-            setWorkspaces([
-                ...workspaces,
-                { name: newWorkspaceName.trim(), groups: [], isDefault: false },
-            ]);
-            setNewWorkspaceName("");
-            setAddingWorkspace(false);
+    // Fetch all workspaces from API
+    const getAllData = async () => {
+        try {
+            await apiService.commonAPIRequest(
+                apiService.EndPoint.getAllDataOfWorkspace,
+                apiService.Method.get,
+                undefined,
+                {},
+                (response: APIResponse<WorkspaceAPIResponse[]>) => {
+                    if (response?.data?.success && Array.isArray(response.data.data)) {
+                        const transformed: Workspace[] = response.data.data.map((ws, idx) => ({
+                            id: ws.id,
+                            name: ws.name,
+                            groups: ws.groups.map((g) => ({ id: g.id, name: g.name })),
+                            isDefault: idx === 0,
+                        }));
+                        setWorkspaces(transformed);
+                    }
+                }
+            );
+        } catch (error) {
+            console.error("Error fetching workspaces:", error);
         }
     };
 
-    // Add new group under specific workspace
-    const handleAddGroup = (index: number) => {
-        const newName = newGroupNames[index]?.trim();
-        if (newName && workspaces[index].groups.length < 5) {
-            const updated = [...workspaces];
-            updated[index].groups.push(newName);
-            setWorkspaces(updated);
+    useEffect(() => {
+        getAllData();
+    }, []);
 
-            // Reset input for this workspace
-            setNewGroupNames({ ...newGroupNames, [index]: "" });
-            setAddingGroupIndex(null);
+    // Add workspace API
+    const addWorkspaceAPI = async (name: string) => {
+        try {
+            await apiService.commonAPIRequest(
+                apiService.EndPoint.addWorkspace,
+                apiService.Method.post,
+                undefined,
+                { name },
+                (response: APIResponse<WorkspaceAPIResponse>) => {
+                    if (response?.data?.success) {
+                        const newWs = response.data.data;
+                        setWorkspaces((prev) => [
+                            ...prev,
+                            { id: newWs.id, name: newWs.name, groups: [], isDefault: false },
+                        ]);
+                        setAddingWorkspace(false);
+                        setNewWorkspaceName("");
+                    }
+                }
+            );
+        } catch (error) {
+            console.error("Error adding workspace:", error);
+        }
+    };
+
+    // Add group API
+    const addGroupAPI = async (workspaceId: number, groupName: string) => {
+        try {
+            await apiService.commonAPIRequest(
+                apiService.EndPoint.addGroup,
+                apiService.Method.post,
+                undefined,
+                { name: groupName, workspaceId },
+                (response: APIResponse<{ id: number; name: string }>) => {
+                    if (response?.data?.success) {
+                        const newGroup = response.data.data;
+                        setWorkspaces((prev) =>
+                            prev.map((ws) =>
+                                ws.id === workspaceId ? { ...ws, groups: [...ws.groups, newGroup] } : ws
+                            )
+                        );
+                        setAddingGroupId(null);
+                        setNewGroupNames((prev) => ({ ...prev, [workspaceId]: "" }));
+                    }
+                }
+            );
+        } catch (error) {
+            console.error("Error adding group:", error);
+        }
+    };
+
+    const handleAddWorkspace = () => {
+        if (newWorkspaceName.trim() && workspaces.length < 5) {
+            addWorkspaceAPI(newWorkspaceName.trim());
+        }
+    };
+
+    const handleAddGroup = (workspaceId: number) => {
+        const newName = newGroupNames[workspaceId]?.trim();
+        const workspace = workspaces.find((ws) => ws.id === workspaceId);
+        if (newName && workspace && workspace.groups.length < 5) {
+            addGroupAPI(workspaceId, newName);
         }
     };
 
@@ -64,9 +146,7 @@ const SidebarSaveProfile = () => {
             {/* Main Save Profile Button */}
             <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px] w-full hover:!bg-[#ff5c350f] transition-all duration-200 ${isProfileOpen
-                    ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
-                    : "text-[#334155] hover:text-[#ff5c35]"
+                className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px] w-full hover:!bg-[#ff5c350f] transition-all duration-200 ${isProfileOpen ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]" : "text-[#334155] hover:text-[#ff5c35]"
                     }`}
             >
                 <span className="mt-1 flex w-[20px] justify-center">
@@ -77,8 +157,7 @@ const SidebarSaveProfile = () => {
                     <span className="text-xs text-[#6b7280]">AI-powered LinkedIn</span>
                 </div>
                 <MdKeyboardArrowDown
-                    className={`transition-transform duration-300 ${isProfileOpen ? "rotate-180" : "rotate-0"
-                        }`}
+                    className={`transition-transform duration-300 ${isProfileOpen ? "rotate-180" : "rotate-0"}`}
                     size={22}
                 />
             </button>
@@ -86,8 +165,8 @@ const SidebarSaveProfile = () => {
             {/* Submenu */}
             {isProfileOpen && (
                 <ul className="pl-8 mt-1 space-y-3">
-                    {workspaces.map((ws, idx) => (
-                        <li key={idx}>
+                    {workspaces.map((ws) => (
+                        <li key={ws.id}>
                             <div className="flex items-center justify-between mb-1">
                                 <div className="flex items-center gap-2">
                                     <span className="mt-1 flex w-[20px] justify-center">
@@ -95,16 +174,15 @@ const SidebarSaveProfile = () => {
                                     </span>
                                     <div className="flex flex-col flex-1 text-left">
                                         <span className="font-medium text-sm">{ws.name}</span>
-                                        <span className="text-xs text-[#6b7280]">Manage you Groups</span>
+                                        <span className="text-xs text-[#6b7280]">Manage your Groups</span>
                                     </div>
                                 </div>
 
-                                {/* Add Group button if under 5 groups */}
                                 {ws.groups.length < 5 && (
                                     <button
                                         onClick={() => {
-                                            setAddingGroupIndex(idx); // Start adding group for this workspace
-                                            setExpandedWorkspace(idx); // Automatically expand this workspace
+                                            setAddingGroupId(ws.id);
+                                            setExpandedWorkspaceId(ws.id);
                                         }}
                                         className="text-[#ff5c35] text-sm border px-2 rounded"
                                     >
@@ -112,40 +190,27 @@ const SidebarSaveProfile = () => {
                                     </button>
                                 )}
 
-                                {/* Expand/collapse button */}
                                 <button
                                     onClick={() =>
-                                        setExpandedWorkspace(
-                                            expandedWorkspace === idx ? null : idx
-                                        )
+                                        setExpandedWorkspaceId(expandedWorkspaceId === ws.id ? null : ws.id)
                                     }
                                     className="ml-2 text-gray-400"
                                 >
                                     <MdKeyboardArrowDown
-                                        className={`transition-transform duration-300 ${expandedWorkspace === idx ? "rotate-180" : "rotate-0"
+                                        className={`transition-transform duration-300 ${expandedWorkspaceId === ws.id ? "rotate-180" : "rotate-0"
                                             }`}
                                         size={18}
                                     />
                                 </button>
                             </div>
 
-                            {/* Groups */}
-                            {expandedWorkspace === idx && (
+                            {expandedWorkspaceId === ws.id && (
                                 <ul className="pl-4 space-y-1">
-                                    {ws.groups.map((group, gIdx) => (
-                                        <li key={gIdx}>
+                                    {ws.groups.map((group) => (
+                                        <li key={group.id}>
                                             <Link
-                                                to={`/workspace/${ws.name
-                                                    .toLowerCase()
-                                                    .replace(/\s+/g, "-")}/group/${group
-                                                        .toLowerCase()
-                                                        .replace(/\s+/g, "-")}`}
-                                                className={`flex items-start gap-2 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname ===
-                                                    `/workspace/${ws.name
-                                                        .toLowerCase()
-                                                        .replace(/\s+/g, "-")}/group/${group
-                                                            .toLowerCase()
-                                                            .replace(/\s+/g, "-")}`
+                                                to={workspaceGroupPath(ws.id, group.id)}
+                                                className={`flex items-start gap-2 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === workspaceGroupPath(ws.id, group.id)
                                                     ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
                                                     : "text-[#334155] hover:text-[#ff5c35]"
                                                     }`}
@@ -153,36 +218,37 @@ const SidebarSaveProfile = () => {
                                                 <span className="mt-[6px] flex w-[10px] justify-center">
                                                     <i className="fas fa-circle text-[6px]"></i>
                                                 </span>
-                                                <span className="font-medium text-sm">{group}</span>
+                                                <span className="font-medium text-sm">{group.name}</span>
                                             </Link>
                                         </li>
                                     ))}
 
-                                    {/* Inline add group */}
-                                    {addingGroupIndex === idx && ws.groups.length < 5 && (
+                                    {addingGroupId === ws.id && ws.groups.length < 5 && (
                                         <li className="flex items-center gap-2 mt-1">
                                             <input
                                                 type="text"
-                                                value={newGroupNames[idx] || ""}
+                                                value={newGroupNames[ws.id] || ""}
                                                 onChange={(e) =>
-                                                    setNewGroupNames({
-                                                        ...newGroupNames,
-                                                        [idx]: e.target.value,
-                                                    })
+                                                    setNewGroupNames({ ...newGroupNames, [ws.id]: e.target.value })
                                                 }
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        handleAddGroup(ws.id);
+                                                    }
+                                                }}
                                                 placeholder="New group"
-                                                className=" block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] py-0.5 px-1"
+                                                className="block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] py-0.5 px-1"
                                             />
                                             <button
-                                                onClick={() => handleAddGroup(idx)}
+                                                onClick={() => handleAddGroup(ws.id)}
                                                 className="text-[#ff5c35] text-sm border px-2 rounded"
                                             >
                                                 Save
                                             </button>
                                             <button
                                                 onClick={() => {
-                                                    setAddingGroupIndex(null);
-                                                    setNewGroupNames({ ...newGroupNames, [idx]: "" });
+                                                    setAddingGroupId(null);
+                                                    setNewGroupNames({ ...newGroupNames, [ws.id]: "" });
                                                 }}
                                                 className="text-gray-500 text-sm"
                                             >
@@ -195,13 +261,12 @@ const SidebarSaveProfile = () => {
                         </li>
                     ))}
 
-                    {/* Add workspace */}
                     {workspaces.length < 5 && (
                         <li>
                             {!addingWorkspace ? (
                                 <button
-                                    onClick={() => { setAddingWorkspace(true) }}
-                                    className="text-[#ff5c35] text-sm border px-2 rounded "
+                                    onClick={() => setAddingWorkspace(true)}
+                                    className="text-[#ff5c35] text-sm border px-2 rounded"
                                 >
                                     + Workspace
                                 </button>
@@ -211,8 +276,13 @@ const SidebarSaveProfile = () => {
                                         type="text"
                                         value={newWorkspaceName}
                                         onChange={(e) => setNewWorkspaceName(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                handleAddWorkspace();
+                                            }
+                                        }}
                                         placeholder="New workspace"
-                                        className=" block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] py-0.5 px-1"
+                                        className="block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] py-0.5 px-1"
                                     />
                                     <button
                                         onClick={handleAddWorkspace}

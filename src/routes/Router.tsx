@@ -178,7 +178,7 @@ const Router = () => {
         }
       />
       <Route
-        path="/workspace/my-workspace/group/my-group"
+        path="/workspace/:workspaceId/group/:groupId"
         element={
           <Section>
             <SaveProfilesTable />
