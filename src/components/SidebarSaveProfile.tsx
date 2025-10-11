@@ -157,7 +157,7 @@ const SidebarSaveProfile = () => {
                     <span className="text-xs text-[#6b7280]">AI-powered LinkedIn</span>
                 </div>
                 <MdKeyboardArrowDown
-                    className={`transition-transform duration-300 ${isProfileOpen ? "rotate-180" : "rotate-0"}`}
+                    className={`transition-transform duration-300 ml-auto ${isProfileOpen ? "rotate-180" : "rotate-0"}`}
                     size={22}
                 />
             </button>
@@ -177,18 +177,6 @@ const SidebarSaveProfile = () => {
                                         <span className="text-xs text-[#6b7280]">Manage your Groups</span>
                                     </div>
                                 </div>
-
-                                {ws.groups.length < 5 && (
-                                    <button
-                                        onClick={() => {
-                                            setAddingGroupId(ws.id);
-                                            setExpandedWorkspaceId(ws.id);
-                                        }}
-                                        className="text-[#ff5c35] text-sm border px-2 rounded"
-                                    >
-                                        +
-                                    </button>
-                                )}
 
                                 <button
                                     onClick={() =>
@@ -211,8 +199,8 @@ const SidebarSaveProfile = () => {
                                             <Link
                                                 to={workspaceGroupPath(ws.id, group.id)}
                                                 className={`flex items-start gap-2 rounded-xl px-1 py-1 transition-all duration-200 ${location.pathname === workspaceGroupPath(ws.id, group.id)
-                                                    ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
-                                                    : "text-[#334155] hover:text-[#ff5c35]"
+                                                        ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                                                        : "text-[#334155] hover:text-[#ff5c35]"
                                                     }`}
                                             >
                                                 <span className="mt-[6px] flex w-[10px] justify-center">
@@ -224,7 +212,7 @@ const SidebarSaveProfile = () => {
                                     ))}
 
                                     {addingGroupId === ws.id && ws.groups.length < 5 && (
-                                        <li className="flex items-center gap-2 mt-1">
+                                        <li className="flex items-center gap-1 mt-1">
                                             <input
                                                 type="text"
                                                 value={newGroupNames[ws.id] || ""}
@@ -243,16 +231,27 @@ const SidebarSaveProfile = () => {
                                                 onClick={() => handleAddGroup(ws.id)}
                                                 className="text-[#ff5c35] text-sm border px-2 rounded"
                                             >
-                                                Save
+                                                <i className="fa-solid fa-check"></i>
                                             </button>
                                             <button
                                                 onClick={() => {
                                                     setAddingGroupId(null);
                                                     setNewGroupNames({ ...newGroupNames, [ws.id]: "" });
                                                 }}
-                                                className="text-gray-500 text-sm"
+                                                className="text-[#ff5c35] text-sm border px-2 rounded"
                                             >
                                                 ✖
+                                            </button>
+                                        </li>
+                                    )}
+
+                                    {ws.groups.length < 5 && addingGroupId !== ws.id && (
+                                        <li>
+                                            <button
+                                                onClick={() => setAddingGroupId(ws.id)}
+                                                className="text-[#ff5c35] text-sm border px-2 rounded mt-1"
+                                            >
+                                                + Group
                                             </button>
                                         </li>
                                     )}

@@ -28,7 +28,7 @@ const SideBar = () => {
       </div>
 
 
-      <div className="left-menu pt-4 p-4 w-73 max-h-[500px] overflow-auto">
+      <div className="left-menu pt-4 p-4 w-73 max-h-[100vh] overflow-auto">
         <ul className="flex flex-col gap-1">
           {/* Dashboard */}
           <li className="">
@@ -179,7 +179,7 @@ const SideBar = () => {
               </div>
 
               <MdKeyboardArrowDown
-                className={`transition-transform duration-300 ease-in-out ${isCampaignOpen ? "rotate-180" : "rotate-0"
+                className={`transition-transform duration-300 ml-auto ease-in-out ${isCampaignOpen ? "rotate-180" : "rotate-0"
                   }`}
                 size={22}
               />
