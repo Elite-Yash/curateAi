@@ -615,7 +615,7 @@ const SaveProfile = () => {
           {/* Left Side: Title */}
           <div className="mb-0">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r bg-[#ff5c35] rounded-2xl flex items-center justify-center">
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div>

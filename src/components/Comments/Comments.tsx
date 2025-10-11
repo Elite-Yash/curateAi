@@ -128,7 +128,7 @@ const Comments = () => {
         <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg g-box">
           <div className="mb-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-green to-green rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r bg-[#ff5c35] rounded-2xl flex items-center justify-center">
                 <FaMessage className="w-6 h-6 text-white" />
               </div>
 
@@ -164,24 +164,25 @@ const Comments = () => {
             <div className={`overflow-auto flex-1 relative border rounded-lg border-[#e0eaf3] ${commentsData.length === 0 ? "h-[439px]" : "max-h-[439px]"}`}>
               <table className={`w-full text-left border-collapse ${commentsData.length === 0 ? "" : "min-w-[1450px]"}`}>
                 {/* Table Header */}
-                <thead className="sticky top-0 !bg-[#fbf7f8] border-b border-[#e1eaf4] z-10">
+                <thead className="sticky top-0 !bg-[#fbf7f8] z-10">
                   <tr className="font-semibold text-[14px]">
-                    <th className={`py-3 px-4 ${commentsData.length === 0 ? "" : "w-[400px]"}`}>
-                      Comment Preview
+                    <th className={` ${commentsData.length === 0 ? "" : "w-[400px] p-0"}`}>
+                      <div className="py-3 px-4 border-b border-[#e1eaf4]">Comment Preview</div>
                     </th>
-                    <th className={`py-3 px-4 ${commentsData.length === 0 ? "" : "w-[400px]"}`}>
-                      Title
+                    <th className={` ${commentsData.length === 0 ? "" : "w-[400px] p-0"}`}>
+                       <div className="py-3 px-4 border-b border-[#e1eaf4]">Title</div>
                     </th>
-                    <th className={`py-3 px-4 whitespace-nowrap ${commentsData.length === 0 ? "" : "w-[180px]"}`}>
-                      Motive
+                    <th className={` whitespace-nowrap ${commentsData.length === 0 ? "" : "w-[180px] p-0"}`}>
+                      <div className="py-3 px-4 border-b border-[#e1eaf4]">Motive</div>
                     </th>
-                    <th className="py-3 px-4">Tone</th>
-                    <th className="py-3 px-4">Status</th>
-                    <th className={`py-3 px-4 whitespace-nowrap ${commentsData.length === 0 ? "" : "w-[180px]"}`}>
-                      URL
+                    <th className="p-0"><div className="py-3 px-4 border-b border-[#e1eaf4] ">Tone</div></th>
+                    <th className="p-0"><div className="py-3 px-4 border-b border-[#e1eaf4] ">Status</div></th>
+                    <th className={` whitespace-nowrap ${commentsData.length === 0 ? "" : "w-[180px] p-0"}`}>
+                      <div className="py-3 px-4 border-b border-[#e1eaf4] ">URL</div>
                     </th>
-                    <th className="py-3 px-4 whitespace-nowrap">Date</th>
-                    <th className="py-3 px-4">Actions</th>
+                    <th className="p-0 whitespace-nowrap"><div className="py-3 px-4 border-b border-[#e1eaf4] ">Date</div></th>
+                    <th className="p-0"><div className="py-3 px-4 border-b border-[#e1eaf4] ">Actions</div></th>
+                    
                   </tr>
                 </thead>
 

@@ -13,7 +13,7 @@ const Contentstudio = () => {
       <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg shadow-sm g-box">
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r bg-blue-700 rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r bg-[#ff5c35] rounded-2xl flex items-center justify-center">
               <FileText className="w-6 h-6 text-white" />
             </div>
 

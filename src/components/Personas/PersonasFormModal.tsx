@@ -1,17 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaBriefcase, FaUser } from "react-icons/fa";
+import Swal from "sweetalert2";
 import { getImage } from "../../common/utils/logoUtils";
-import { FaBriefcase, FaPenFancy, FaUser } from "react-icons/fa";
+import { apiService } from "../../common/config/apiService";
 
 type PersonaFormData = {
     name: string;
-    headline: string;
     bio: string;
     jobTitle: string;
     company: string;
     industry: string;
-    primaryGoal: string;
-    preferredTone: string;
 };
 
 interface PersonasModalProps {
@@ -19,7 +18,7 @@ interface PersonasModalProps {
     onClose: () => void;
 }
 
-const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
+const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
     const {
         register,
         handleSubmit,
@@ -27,24 +26,82 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
         reset,
     } = useForm<PersonaFormData>();
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
     // Reset form when modal opens
     useEffect(() => {
-        if (isOpen) {
-            reset();
-        }
+        if (isOpen) reset();
     }, [isOpen, reset]);
 
+    // API call to create persona
+    const createPersonas = async (data: PersonaFormData) => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        setSuccessMessage(null);
+
+        const payload = {
+            personas_name: data.name,
+            personas_bio: data.bio,
+            jobTitle: data.jobTitle,
+            company: data.company,
+            industry: data.industry,
+        };
+
+        try {
+            await apiService.commonAPIRequest(
+                apiService.EndPoint.createpersonas,
+                apiService.Method.post,
+                undefined,
+                payload,
+                (response: any) => {
+                    setIsLoading(false);
+                    if (response?.data?.success && response?.data?.message === "Persona created successfully") {
+                        setSuccessMessage("Persona created successfully!");
+                        Swal.fire({
+                            title: "Success!",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonColor: "#ff5c35",
+                        }).then(() => {
+                            reset();
+                            onClose();
+                        });
+                    } else {
+                        setErrorMessage(response?.data?.message || "Failed to create persona.");
+                        Swal.fire({
+                            title: "Error!",
+                            text: response?.data?.message || "Failed to create persona.",
+                            icon: "error",
+                            confirmButtonColor: "#ff5c35",
+                        });
+                    }
+                }
+            );
+        } catch (err) {
+            setIsLoading(false);
+            console.error("Error creating persona:", err);
+            setErrorMessage("An unexpected error occurred. Please try again.");
+            Swal.fire({
+                title: "Error!",
+                text: "An unexpected error occurred while creating persona.",
+                icon: "error",
+                confirmButtonColor: "#ff5c35",
+            });
+        }
+
+    };
+
     const onSubmit = (data: PersonaFormData) => {
-        console.log("Form Data:", data);
-        onClose();
-        reset();
+        createPersonas(data);
     };
 
     if (!isOpen) return null;
 
     return (
         <div className="popup-overlay fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-            <div className="popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden !w-[700px] max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75]">
+            <div className="popup-container bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden !w-[700px]">
                 {/* Header */}
                 <div className="relative header-top p-9 py-4 flex justify-between items-center">
                     <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
@@ -66,10 +123,10 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                 </div>
 
                 {/* Body */}
-                <div className="p-6 flex flex-col gap-5 item-center h-[700px]">
+                <div className="p-6 flex flex-col gap-5 item-center h-[574px]">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="space-y-4 h-[600px] overflow-y-auto px-[1px]">
-                            <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-4 h-[470px] overflow-y-auto px-[1px]">
+                            <div className="grid grid-cols-1 input-group gap-y-4">
                                 <div className="col-span-2 flex items-center gap-2 mb-2">
                                     <FaUser className="text-[#ff5c35] text-lg" />
                                     <h2 className="!text-base !font-semibold text-gray-700">About You</h2>
@@ -77,41 +134,28 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                                 {/* Name */}
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Name <span className="text-red">*</span>
+                                        Persona Name <span className="text-red">*</span>
                                     </label>
                                     <input
                                         type="text"
-                                       // {...register("name", { required: "Name is required" })}
-                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
-                                        placeholder="Persona Name"
+                                        {...register("name", { required: "Persona name is required" })}
+                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
+                                        placeholder="e.g. Marketing Expert, Sales Representative"
                                     />
                                     {errors.name && (
                                         <p className="text-red text-sm ms-1">{errors.name.message}</p>
                                     )}
                                 </div>
 
-                                {/* Headline */}
-                                <div>
-                                    <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Headline
-                                    </label>
-                                    <input
-                                        type="text"
-                                        {...register("headline")}
-                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
-                                        placeholder="Headline"
-                                    />
-                                </div>
-
                                 {/* Bio */}
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Bio
+                                        Persona Bio / Description
                                     </label>
                                     <textarea
                                         {...register("bio")}
-                                        className="mt-1 block w-full h-[100px] rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 resize-none"
-                                        placeholder="Short bio..."
+                                        className="mt-1 block w-full h-[100px] rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 resize-none text-sm"
+                                        placeholder="Describe your persona’s background, expertise, and role."
                                     ></textarea>
                                 </div>
                             </div>
@@ -119,8 +163,9 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="col-span-2 flex items-center gap-2 mb-2">
                                     <FaBriefcase className="text-[#ff5c35] text-lg" />
-                                    <h2 className="!text-base !font-semibold text-gray-700">Professional Details</h2>
+                                    <h2 className="!text-base !font-semibold">Professional Details</h2>
                                 </div>
+
                                 {/* Job Title */}
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
@@ -129,7 +174,7 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                                     <input
                                         type="text"
                                         {...register("jobTitle")}
-                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
+                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="e.g. Marketing Manager"
                                     />
                                 </div>
@@ -142,7 +187,7 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                                     <input
                                         type="text"
                                         {...register("company")}
-                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
+                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="Company Name"
                                     />
                                 </div>
@@ -155,46 +200,9 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                                     <input
                                         type="text"
                                         {...register("industry")}
-                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
+                                        className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="e.g. SaaS, Retail"
                                     />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="col-span-2 flex items-center gap-2 mb-2">
-                                    <FaPenFancy className="text-[#ff5c35] text-lg" />
-                                    <h2 className="!text-base !font-semibold text-gray-700">Content Preferences</h2>
-                                </div>
-                                {/* Primary Goal */}
-                                <div>
-                                    <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Primary Goal
-                                    </label>
-                                    <select
-                                        {...register("primaryGoal")}
-                                        className="mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
-                                    >
-                                        <option value="">Select Goal</option>
-                                        <option value="brand">Build Brand</option>
-                                        <option value="sales">Drive Sales</option>
-                                        <option value="engagement">Increase Engagement</option>
-                                    </select>
-                                </div>
-
-                                {/* Preferred Tone */}
-                                <div>
-                                    <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Preferred Tone
-                                    </label>
-                                    <select
-                                        {...register("preferredTone")}
-                                        className="mt-1 block w-full rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2"
-                                    >
-                                        <option value="">Select Tone</option>
-                                        <option value="professional">Professional</option>
-                                        <option value="casual">Casual</option>
-                                        <option value="friendly">Friendly</option>
-                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -212,8 +220,9 @@ const PersonasFormModal = ({ isOpen, onClose }: PersonasModalProps) => {
                             <button
                                 type="submit"
                                 className="w-full bg-[#ff5c35] text-white py-2 px-4 font-medium text-sm rounded-md"
+                                disabled={isLoading}
                             >
-                                Save
+                                {isLoading ? "Saving..." : "Save"}
                             </button>
                         </div>
                     </form>

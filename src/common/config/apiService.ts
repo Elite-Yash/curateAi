@@ -53,6 +53,12 @@ export class apiService {
         getAllTemplate:'templates',
         updateTemplate:'templates/:id',
         deleteTemplate:'templates/:id',
+
+        createpersonas: "personas",
+        getAllpersonas : "personas",
+        getpersonasByid: "personas/:id",
+        updatepersonas: "personas/:id",
+        deletepersonas: "personas/:id",
     };
 
     static Method = {
