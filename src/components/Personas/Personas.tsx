@@ -1,6 +1,6 @@
 import { LuUser } from "react-icons/lu";
 import { useEffect, useState } from "react";
-import { FaUser, FaIdCard } from "react-icons/fa";
+import { FaUser, FaIdCard, FaEdit } from "react-icons/fa";
 import PersonasFormModal from "./PersonasFormModal";
 import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
@@ -8,14 +8,13 @@ import Loader from "../Loader/Loader";
 import { GrOrganization } from "react-icons/gr";
 import { GoOrganization } from "react-icons/go";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
-import { RiFileUserLine } from "react-icons/ri";
 
 const Personas = () => {
   const [personasData, setPersonasData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState<number | null>(null); // for loader on button
-
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
   useEffect(() => {
     fetchPersonas();
   }, []);
@@ -107,7 +106,7 @@ const Personas = () => {
   };
 
 
-  // 👉 Delete persona
+  //  Delete persona
   const handleDelete = async (personaId: number) => {
     Swal.fire({
       title: "Are you sure?",
@@ -146,6 +145,11 @@ const Personas = () => {
         }
       }
     });
+  };
+
+  const handleEditClick = (persona: any) => {
+    setSelectedPersona(persona);
+    setIsModalOpen(true);
   };
 
   return (
@@ -240,12 +244,19 @@ const Personas = () => {
                 </div>
                 {/* --- Actions (Default + Delete) --- */}
                 <div className="flex items-center gap-3 text-base text-[#ff5c35]">
-                  {/* Delete Icon */}
+                  {/* edit  */}
+                  <span
+                    className="cursor-pointer transition"
+                    onClick={() => handleEditClick(persona)}
+                  >
+                    <FaEdit className="text-[#ff5c35]" />
+                  </span>
+                  {/* Delete */}
                   <span
                     className="cursor-pointer transition"
                     onClick={() => handleDelete(persona.id)}
                   >
-                    <i className="fa-solid fa-trash text-red"></i>
+                    <i className="fa-solid fa-trash text-[#ff5c35]"></i>
                   </span>
                 </div>
               </div>
@@ -258,9 +269,9 @@ const Personas = () => {
               </div>
 
               {/* Attributes */}
-              <div className="flex flex-col gap-2 text-sm">
+              <div className="flex flex-col gap-2 text-sm mt-auto">
                 <div className="flex items-center gap-2">
-                  <FaIdCard className="text-[#ff5c35]"/>
+                  <FaIdCard className="text-[#ff5c35]" />
                   <span className="font-medium">Job Title:</span>
                   <span className="px-2 py-0.5 rounded-full text-[13px] text-[#6b7280]">
                     {persona?.jobTitle || "—"}
@@ -282,12 +293,6 @@ const Personas = () => {
                 </div>
               </div>
 
-              {/* Default Label */}
-              {/* {persona.isdefault && (
-                <div className="text-xs mt-2 flex font-semibold gap-1.5">
-                  <ImCheckboxChecked className="text-green mt-0.5" /> This is your default persona
-                </div>
-              )} */}
             </div>
           ))}
         </div>
@@ -296,8 +301,12 @@ const Personas = () => {
       {/* Modal */}
       <PersonasFormModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedPersona(null);
+        }}
         onSuccess={fetchPersonas}
+        selectedPersona={selectedPersona}
       />
     </div>
   );
