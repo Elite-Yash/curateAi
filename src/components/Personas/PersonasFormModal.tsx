@@ -17,9 +17,10 @@ interface PersonasModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    selectedPersona?: any | null;
 }
 
-const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) => {
+const PersonasFormModal = ({ isOpen, onClose, onSuccess, selectedPersona }: PersonasModalProps) => {
     const {
         register,
         handleSubmit,
@@ -33,8 +34,34 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) =
 
     // Reset form when modal opens
     useEffect(() => {
-        if (isOpen) reset();
-    }, [isOpen, reset]);
+        if (isOpen) {
+            if (selectedPersona) {
+                reset({
+                    name: selectedPersona.personas_name,
+                    bio: selectedPersona.personas_bio,
+                    jobTitle: selectedPersona.jobTitle,
+                    company: selectedPersona.company,
+                    industry: selectedPersona.industry,
+                });
+            } else {
+                reset({
+                    name: "",
+                    bio: "",
+                    jobTitle: "",
+                    company: "",
+                    industry: "",
+                });
+            }
+        } else {
+            reset({
+                name: "",
+                bio: "",
+                jobTitle: "",
+                company: "",
+                industry: "",
+            });
+        }
+    }, [isOpen, selectedPersona, reset]);
 
     // API call to create persona
     const createPersonas = async (data: PersonaFormData) => {
@@ -95,9 +122,96 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) =
 
     };
 
-    const onSubmit = (data: PersonaFormData) => {
-        createPersonas(data);
+    // const onSubmit = (data: PersonaFormData) => {
+    //     createPersonas(data);
+    // };
+
+    useEffect(() => {
+        if (isOpen) {
+            if (selectedPersona) {
+                reset({
+                    name: selectedPersona.personas_name,
+                    bio: selectedPersona.personas_bio,
+                    jobTitle: selectedPersona.jobTitle,
+                    company: selectedPersona.company,
+                    industry: selectedPersona.industry,
+                });
+            } else {
+                reset(); // create mode
+            }
+        }
+    }, [isOpen, selectedPersona, reset]);
+
+    const onSubmit = async (data: PersonaFormData) => {
+        const payload = {
+            personas_name: data.name,
+            personas_bio: data.bio,
+            jobTitle: data.jobTitle,
+            company: data.company,
+            industry: data.industry,
+        };
+        try {
+            setIsLoading(true);
+            if (selectedPersona) {
+                const isChanged =
+                    data.name !== selectedPersona.personas_name ||
+                    data.bio !== selectedPersona.personas_bio ||
+                    data.jobTitle !== selectedPersona.jobTitle ||
+                    data.company !== selectedPersona.company ||
+                    data.industry !== selectedPersona.industry;
+                if (!isChanged) {
+                    Swal.fire({
+                        title: "No Changes Detected",
+                        text: "You haven't made any changes to update.",
+                        icon: "info",
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#ff5c35",
+                    });
+                    setIsLoading(false);
+                    return;
+                }
+                const endpoint = apiService.EndPoint.updatepersonas.replace(
+                    ":id",
+                    selectedPersona.id.toString()
+                );
+                await apiService.commonAPIRequest(
+                    endpoint,
+                    apiService.Method.patch,
+                    undefined,
+                    payload,
+                    (response: any) => {
+                        setIsLoading(false);
+                        if (response?.data?.success) {
+                            Swal.fire({
+                                title: "Updated!",
+                                text: "Persona updated successfully.",
+                                icon: "success",
+                                confirmButtonColor: "#ff5c35",
+                            }).then(() => {
+                                onSuccess();
+                                onClose();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: response?.data?.message || "Failed to update persona.",
+                                icon: "error",
+                                confirmButtonColor: "#ff5c35",
+                            });
+                        }
+                    }
+                );
+            } else {
+                await createPersonas(data);
+            }
+        } catch (err) {
+            setIsLoading(false);
+            Swal.fire("Error", "Something went wrong.", "error");
+        }
     };
+
+
+
 
     if (!isOpen) return null;
 
@@ -110,7 +224,7 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) =
                         <img src={getImage("fLogo")} alt="img" />
                     </span>
                     <h4 className="popup-title font-semibold text-xl leading-10">
-                        Create Persona
+                        {selectedPersona ? "Edit Persona" : "Create Persona"}
                     </h4>
                     <span
                         onClick={onClose}
@@ -130,7 +244,7 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) =
                         <div className="space-y-4 h-[470px] overflow-y-auto px-[1px]">
                             <div className="grid grid-cols-1 input-group gap-y-4">
                                 <div className="col-span-2 flex items-center gap-2 mb-2">
-                                    <FaUser className="text-[#ff5c35] text-lg"/>
+                                    <FaUser className="text-[#ff5c35] text-lg" />
                                     <h2 className="!text-base !font-semibold text-gray-700">About You</h2>
                                 </div>
                                 {/* Name */}
@@ -181,7 +295,8 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) =
                                     <input
                                         type="text"
                                         {...register("jobTitle", {
-                                            required: "job Title is required"                                        })}
+                                            required: "job Title is required"
+                                        })}
                                         className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="e.g. Marketing Manager"
                                     />
@@ -237,8 +352,14 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) =
                                 className="w-full bg-[#ff5c35] text-white py-2 px-4 font-medium text-sm rounded-md"
                                 disabled={isLoading}
                             >
-                                {isLoading ? "Saving..." :"Save"}
-                            </button> 
+                                {isLoading
+                                    ? selectedPersona
+                                        ? "Updating..."
+                                        : "Saving..."
+                                    : selectedPersona
+                                        ? "Update"
+                                        : "Save"}
+                            </button>
                         </div>
                     </form>
                 </div>
