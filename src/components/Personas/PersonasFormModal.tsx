@@ -16,9 +16,10 @@ type PersonaFormData = {
 interface PersonasModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess: () => void;
 }
 
-const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
+const PersonasFormModal = ({ isOpen, onClose, onSuccess }: PersonasModalProps) => {
     const {
         register,
         handleSubmit,
@@ -67,6 +68,7 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                         }).then(() => {
                             reset();
                             onClose();
+                            onSuccess();
                         });
                     } else {
                         setErrorMessage(response?.data?.message || "Failed to create persona.");
@@ -128,7 +130,7 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                         <div className="space-y-4 h-[470px] overflow-y-auto px-[1px]">
                             <div className="grid grid-cols-1 input-group gap-y-4">
                                 <div className="col-span-2 flex items-center gap-2 mb-2">
-                                    <FaUser className="text-[#ff5c35] text-lg" />
+                                    <FaUser className="text-[#ff5c35] text-lg"/>
                                     <h2 className="!text-base !font-semibold text-gray-700">About You</h2>
                                 </div>
                                 {/* Name */}
@@ -138,12 +140,14 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        {...register("name", { required: "Persona name is required" })}
+                                        {...register("name", {
+                                            required: "Persona name is required",
+                                        })}
                                         className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="e.g. Marketing Expert, Sales Representative"
                                     />
                                     {errors.name && (
-                                        <p className="text-red text-sm ms-1">{errors.name.message}</p>
+                                        <p className="text-red !text-sm ms-1 absolute">{errors.name.message}</p>
                                     )}
                                 </div>
 
@@ -153,10 +157,13 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                                         Persona Bio / Description
                                     </label>
                                     <textarea
-                                        {...register("bio")}
+                                        {...register("bio", {
+                                            required: "Persona Bio is required"
+                                        })}
                                         className="mt-1 block w-full h-[100px] rounded-md border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 resize-none text-sm"
                                         placeholder="Describe your persona’s background, expertise, and role."
                                     ></textarea>
+                                    {errors.bio && <p className="text-red !text-sm ms-1 absolute">{errors.bio.message}</p>}
                                 </div>
                             </div>
 
@@ -173,10 +180,12 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        {...register("jobTitle")}
+                                        {...register("jobTitle", {
+                                            required: "job Title is required"                                        })}
                                         className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="e.g. Marketing Manager"
                                     />
+                                    {errors.jobTitle && <p className="text-red !text-sm ms-1 absolute">{errors.jobTitle.message}</p>}
                                 </div>
 
                                 {/* Company */}
@@ -186,10 +195,13 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        {...register("company")}
+                                        {...register("company", {
+                                            required: "Company is required",
+                                        })}
                                         className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="Company Name"
                                     />
+                                    {errors.company && <p className="text-red !text-sm ms-1 absolute">{errors.company.message}</p>}
                                 </div>
 
                                 {/* Industry */}
@@ -199,10 +211,13 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                                     </label>
                                     <input
                                         type="text"
-                                        {...register("industry")}
+                                        {...register("industry", {
+                                            required: "industry is required",
+                                        })}
                                         className="mt-1 block w-full rounded-md border border-[#d1d5db] shadow-sm focus:ring-[#ff5c35] focus:border-[#ff5c35] p-2 text-sm"
                                         placeholder="e.g. SaaS, Retail"
                                     />
+                                    {errors.industry && <p className="text-red !text-sm ms-1 absolute">{errors.industry.message}</p>}
                                 </div>
                             </div>
                         </div>
@@ -222,8 +237,8 @@ const PersonasFormModal = ({ isOpen, onClose, }: PersonasModalProps) => {
                                 className="w-full bg-[#ff5c35] text-white py-2 px-4 font-medium text-sm rounded-md"
                                 disabled={isLoading}
                             >
-                                {isLoading ? "Saving..." : "Save"}
-                            </button>
+                                {isLoading ? "Saving..." :"Save"}
+                            </button> 
                         </div>
                     </form>
                 </div>

@@ -258,25 +258,25 @@ const SideBar = () => {
           </li>
 
           {/* {Personas} */}
-          <li className="">
-            <Link
-              to="/personas"
-              className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/personas"
-                ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
-                : "text-[#334155] hover:text-[#ff5c35]"
-                }`}
-            >
-              <span className="mt-1 flex w-[20px] justify-center">
-                <i className="fa-solid fa-user-circle text-sm"></i>
-              </span>
-              <div className="flex flex-col">
-                <div className="font-medium text-sm ">Your Personas</div>
-                <div className="text-xs text-[#6b7280] ">
-                  Define How Eva Creates Content for You
+            <li className="">
+              <Link
+                to="/personas"
+                className={`flex items-start gap-3 rounded-xl px-[16px] py-[7px]  hover:!bg-[#ff5c350f] transition-all duration-200 ${location.pathname === "/personas"
+                  ? "text-[#ff5c35] shadow-sm !bg-[#ff5c350f]"
+                  : "text-[#334155] hover:text-[#ff5c35]"
+                  }`}
+              >
+                <span className="mt-1 flex w-[20px] justify-center">
+                  <i className="fa-solid fa-user-circle text-sm"></i>
+                </span>
+                <div className="flex flex-col">
+                  <div className="font-medium text-sm ">My Personas</div>
+                  <div className="text-xs text-[#6b7280] ">
+                    Control how Eva writes based on your personas
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </li>
+              </Link>
+            </li>
 
           {/* LinkedIn  */}
           {/* <li className="">

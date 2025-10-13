@@ -51,15 +51,6 @@ const MessageCampaignTable = () => {
           if (response?.status === 200 && response?.data?.statusCode === 200) {
             setCampaigns(response.data.data);
           }
-          // else {
-          //   console.error("Failed to fetch campaigns:", response?.data?.message);
-          //   Swal.fire({
-          //     title: "Error!",
-          //     text: response?.data?.message || "Failed to fetch campaigns",
-          //     icon: "error",
-          //     confirmButtonColor: "#ff5c35",
-          //   });
-          // }
         }
       );
     } catch (err) {
