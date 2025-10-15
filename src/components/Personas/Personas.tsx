@@ -227,9 +227,7 @@ const Personas = () => {
                       className="cursor-pointer transition"
                       onClick={() => !persona.isdefault && handleSetDefault(persona.id)}
                     >
-                      {updatingId === persona.id ? (
-                        <Loader />
-                      ) : persona.isdefault ? (
+                      {persona.isdefault ? (
                         <div className="flex items-center gap-2">
                           <ImCheckboxChecked className="text-green" />
                           <div className="text-xs flex font-semibold gap-1.5">
