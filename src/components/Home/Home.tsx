@@ -38,11 +38,11 @@ const actions = [
     link: "message-assistant",
   },
   {
-    title: "Save Profile",
-    description: "Save profiles to CRM",
+    title: "My Personas",
+    description: "Create and manage your ideal customer personas",
     icon: FaUsers,
     color: "from-purple-500 to-purple-600",
-    link: "save-profile",
+    link: "personas",
   },
   {
     title: "Message Campaign",
@@ -52,6 +52,8 @@ const actions = [
     link: "message-campaign",
   },
 ];
+
+
 
 const Home = () => {
   return (

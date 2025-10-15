@@ -167,7 +167,9 @@ const SidebarSaveProfile = () => {
                 <ul className="pl-8 mt-1 space-y-3">
                     {workspaces.map((ws) => (
                         <li key={ws.id}>
-                            <div className="flex items-center justify-between mb-1">
+                            <div onClick={() =>
+                                        setExpandedWorkspaceId(expandedWorkspaceId === ws.id ? null : ws.id)
+                                    } className="flex items-center justify-between mb-1 cursor-pointer">
                                 <div className="flex items-center gap-2">
                                     <span className="mt-1 flex w-[20px] justify-center">
                                         <i className="fa-solid fa-briefcase text-sm"></i>
@@ -178,10 +180,7 @@ const SidebarSaveProfile = () => {
                                     </div>
                                 </div>
 
-                                <button
-                                    onClick={() =>
-                                        setExpandedWorkspaceId(expandedWorkspaceId === ws.id ? null : ws.id)
-                                    }
+                                <button                                  
                                     className="ml-2 text-gray-400"
                                 >
                                     <MdKeyboardArrowDown

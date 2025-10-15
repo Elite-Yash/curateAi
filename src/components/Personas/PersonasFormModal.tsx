@@ -268,7 +268,7 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess, selectedPersona }: Pers
                                 {/* Bio */}
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Persona Bio / Description
+                                        Persona Bio / Description <span className="text-red">*</span>
                                     </label>
                                     <textarea
                                         {...register("bio", {
@@ -290,7 +290,7 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess, selectedPersona }: Pers
                                 {/* Job Title */}
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Job Title
+                                        Job Title <span className="text-red">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -306,7 +306,7 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess, selectedPersona }: Pers
                                 {/* Company */}
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Company
+                                        Company <span className="text-red">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -322,7 +322,7 @@ const PersonasFormModal = ({ isOpen, onClose, onSuccess, selectedPersona }: Pers
                                 {/* Industry */}
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] ms-1">
-                                        Industry
+                                        Industry <span className="text-red">*</span>
                                     </label>
                                     <input
                                         type="text"
