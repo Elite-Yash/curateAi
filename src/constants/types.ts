@@ -12,3 +12,11 @@ export interface ArticleInfo {
     contentHTML: string;
     rawText: string;
 }
+
+export interface personasInfo {
+    personas_name: string;
+    personas_bio: string;
+    jobTitle: string;
+    company: string;
+    industry: string;
+}

@@ -14,7 +14,7 @@ const Personas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  // const [updatingId, setUpdatingId] = useState<number | null>(null);
   useEffect(() => {
     fetchPersonas();
   }, []);
@@ -58,7 +58,7 @@ const Personas = () => {
       confirmButtonText: "Yes, set as default!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        setUpdatingId(personaId);
+        // setUpdatingId(personaId);
         const payload = {
           isdefault: true
         };
@@ -98,8 +98,6 @@ const Personas = () => {
             icon: "error",
             confirmButtonColor: "#ff5c35",
           });
-        } finally {
-          setUpdatingId(null);
         }
       }
     });
@@ -240,7 +238,7 @@ const Personas = () => {
                     </span>
                   </div>
                 </div>
-                {/* --- Actions (Default + Delete) --- */}
+                {/* --- Actions (Default + Delete) ---  */}
                 <div className="flex items-center gap-3 text-base text-[#ff5c35]">
                   {/* edit  */}
                   <span

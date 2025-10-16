@@ -54,6 +54,9 @@ const LinkedIn = () => {
     genarate_title: ''
   });
   const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
+  const [personasData, setPersonasData] = useState<any>([]);
+
+
 
   const getPostText = (commentBoxEditor: HTMLElement): string => {
     let parentElement = commentBoxEditor.parentElement;
@@ -977,10 +980,10 @@ const LinkedIn = () => {
           ".fie-impression-container > div:nth-of-type(2)[tabindex='-1'] .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']"
         ) ||
           mainPostDiv?.querySelector(".feed-shared-update-detail-viewer__overflow-content .feed-shared-inline-show-more-text .update-components-text span.break-words.tvm-parent-container span[dir='ltr']");
-          
+
         const mainPostAuther = mainPostDiv?.querySelector(
           ".fie-impression-container > div:nth-of-type(1) .update-components-actor__container span[dir='ltr'] span.visually-hidden"
-        )?.textContent ||  mainPostDiv?.querySelector(
+        )?.textContent || mainPostDiv?.querySelector(
           ".update-components-actor__container span[dir='ltr'] span.visually-hidden"
         )?.textContent;
 
@@ -1182,6 +1185,33 @@ const LinkedIn = () => {
   }, []);
 
   useEffect(() => {
+    fetchPersonas();
+  }, []);
+
+  const fetchPersonas = async () => {
+    try {
+      await apiService.commonAPIRequest(
+        apiService.EndPoint.getAllpersonas,
+        apiService.Method.get,
+        undefined,
+        {},
+        (response: any) => {
+          if (response?.status === 200 && response.data.data) {
+            const alldata = (response.data.data || [])
+            const defaultOne = alldata.find((d: any) => d.isdefault === true);
+            setPersonasData(defaultOne);
+          }
+        }
+      );
+    } catch (err) {
+      console.error("Error fetching personas:", err);
+    }
+  };
+
+
+
+
+  useEffect(() => {
     const checkActivePlan = async () => {
       try {
         const url = apiService.EndPoint.checkActivePlan;
@@ -1276,6 +1306,7 @@ const LinkedIn = () => {
           relyedOfPostContent={(relyedOfPostContent) as any}
           saveGeneratedMessageData={saveGeneratedMessageData}
           setSaveGeneratedMessageData={setSaveGeneratedMessageData}
+          personasData={personasData}
         />
       </div>
     );
@@ -1715,3 +1746,4 @@ export const LinkedInHelper = {
   },
 
 };
+  

@@ -6,7 +6,7 @@ import {
   COMMENT_MOTIVES,
   POSTING_MOTIVES,
 } from "../../constants/constants";
-import { ArticleInfo, PostData } from "../../constants/types";
+import { ArticleInfo, personasInfo, PostData } from "../../constants/types";
 import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/commonHelper";
 import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -43,6 +43,7 @@ interface ModalProps {
   >;
   saveGeneratedMessageData?: string | undefined;
   setSaveGeneratedMessageData?: React.Dispatch<React.SetStateAction<any>>;
+  personasData?: personasInfo | null;
 }
 
 const InputAiPopup: React.FC<ModalProps> = ({
@@ -60,6 +61,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
   relyedOfPostContent,
   saveGeneratedMessageData,
   setSaveGeneratedMessageData,
+  personasData,
 }) => {
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
@@ -107,6 +109,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
   if (!isOpen) return null;
 
+
+
+  const personasvalue = {
+    personas_name: personasData?.personas_name,
+    personas_bio: personasData?.personas_bio,
+    jobTitle: personasData?.jobTitle,
+    company: personasData?.company,
+    industry: personasData?.industry
+  }
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -118,8 +130,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
     const platform = currentUrl.includes("linkedin.com")
       ? "linkedin"
       : currentUrl.includes("x.com")
-      ? "twitter"
-      : "";
+        ? "twitter"
+        : "";
 
     const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
 
@@ -144,7 +156,9 @@ const InputAiPopup: React.FC<ModalProps> = ({
             : collectedText,
         authorName: postData.postAutherName,
         platform,
-        command: context.length > 0 ? context : collectedText,
+        // command: context.length > 0 ? context : collectedText ,
+        command: `${context?.length ? context : ""
+          } This is my persona ${JSON.stringify(personasvalue)}. Please generate content according to this persona information.`,
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,
@@ -154,6 +168,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
         currentUserName,
         authToken,
       };
+      console.log(" ~ handleSubmit ~ requestData:", requestData)
 
       // Generate content
       chrome.runtime.sendMessage(
@@ -280,7 +295,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
     if (!collectedText?.trim()) {
       newErrors.collectedText =
         popupTriggeredFrom === "comment" ||
-        popupTriggeredFrom === "comment-reply"
+          popupTriggeredFrom === "comment-reply"
           ? "Original Comment is required"
           : "Original Message is required";
     }
@@ -331,16 +346,14 @@ const InputAiPopup: React.FC<ModalProps> = ({
   return (
     <>
       <div
-        className={`popup-overlay ${
-          isOpen ? "open" : ""
-        } fixed inset-0 flex items-center justify-center`}
+        className={`popup-overlay ${isOpen ? "open" : ""
+          } fixed inset-0 flex items-center justify-center`}
       >
         <div
-          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${
-            !activePlan
-              ? "!w-[45rem] "
-              : " max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75] "
-          }`}
+          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan
+            ? "!w-[45rem] "
+            : " max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75] "
+            }`}
         >
           <div className="relative header-top p-9 py-4 flex justify-between item-center">
             <span className="relative p-logo border-[2.5px] border-solid rounded-full border-[#ff5c35]">
@@ -374,45 +387,51 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       popupTriggeredFrom === "comment-reply" ||
                       popupTriggeredFrom === "create-post" ||
                       popupTriggeredFrom === "message-reply") && (
-                      <div className="w-full textarea-group relative space-y-2">
-                        <label className="block text-xl font-medium text-gray-700 ms-2">
-                          {popupTriggeredFrom === "comment" ||
-                          popupTriggeredFrom === "comment-reply"
-                            ? "Original Comment"
-                            : "Original Message"}
-                          <span className="text-red">*</span>
-                        </label>
-                        <div
-                          className={`rounded-lg overflow-hidden border ${
-                            isActive ? "active" : "border-[#6b7280]"
-                          } custom_textarea h-[150px] relative`}
-                        >
-                          {" "}
-                          <textarea
-                            placeholder="No comment found?"
-                            value={collectedText}
-                            onChange={(e) => setCollectedText(e.target.value)}
-                            onFocus={() => setisActive(true)}
-                            onBlur={() => setisActive(false)}
-                            className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
-                          />
+                        <div className="w-full textarea-group relative space-y-2">
+                          <label className="block text-xl font-medium  ms-2">
+                            {popupTriggeredFrom === "comment" ||
+                              popupTriggeredFrom === "comment-reply"
+                              ? "Original Comment"
+                              : "Original Message"}
+                            <span className="text-red">*</span>
+                          </label>
+                          <div
+                            className={`rounded-lg overflow-hidden border ${isActive ? "active" : "border-[#6b7280]"
+                              } custom_textarea h-[150px] relative`}
+                          >
+                            {" "}
+                            <textarea
+                              placeholder="No comment found?"
+                              value={collectedText}
+                              onChange={(e) => setCollectedText(e.target.value)}
+                              onFocus={() => setisActive(true)}
+                              onBlur={() => setisActive(false)}
+                              className="popup-textarea w-full p-2 text-black focus:ring-0 border-0 resize-none"
+                            />
+                          </div>
+                          {errors.collectedText && (
+                            <p className="text-red text-xl ms-1 mt-0 absolute">
+                              {errors.collectedText}
+                            </p>
+                          )}
                         </div>
-                        {errors.collectedText && (
-                          <p className="text-red text-xl ms-1 mt-0 absolute">
-                            {errors.collectedText}
-                          </p>
-                        )}
-                      </div>
-                    )}
+                      )}
                     {/* addision text textaria */}
                     <div className="space-y-2">
-                      <label className="block text-xl font-medium text-gray-700 ms-2">
-                        Additional Message (Optional)
-                      </label>
+                      <div className="flex justify-between">
+                        <label className="flex text-xl font-medium items-end ms-2">
+                          Additional Message (Optional)
+                        </label>
+                        <span className="bg-[#f6f9fc] border font-bold border-[#e0eaf3] py-[3px] px-[10px] text-black">
+                          Current Personas:{" "}
+                          <span className="font-semibold text-[#545c66]">
+                            {personasData?.personas_name}
+                          </span>
+                        </span>
+                      </div>
                       <div
-                        className={`rounded-lg overflow-hidden border ${
-                          isContextActive ? "active" : "border-[#6b7280]"
-                        } custom_textarea h-[150px]`}
+                        className={`rounded-lg overflow-hidden border ${isContextActive ? "active" : "border-[#6b7280]"
+                          } custom_textarea h-[150px]`}
                       >
                         <textarea
                           placeholder="Any additional information about the sender..."
@@ -427,7 +446,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                     {/* Motive */}
                     <div className="w-full input-group ">
-                      <label className="block text-xl font-medium text-gray-700 ms-2">
+                      <label className="block text-xl font-medium  ms-2">
                         Select Motive<span className="text-red">*</span>
                       </label>
                       <span className="relative">
@@ -438,7 +457,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                           disabled={loading}
                         >
                           {(popupTriggeredFrom === "create-post" ||
-                          popupTriggeredFrom === "message-reply"
+                            popupTriggeredFrom === "message-reply"
                             ? POSTING_MOTIVES
                             : COMMENT_MOTIVES
                           ).map((motive, index) => {
@@ -461,7 +480,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     <div className="flex gap-5 ">
                       {/* Language */}
                       <div className="w-full input-group ">
-                        <label className="block text-xl font-medium text-gray-700 ms-2">
+                        <label className="block text-xl font-medium  ms-2">
                           Select Language<span className="text-red">*</span>
                         </label>
                         <span className="relative">
@@ -492,7 +511,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
 
                       {/* Tone */}
                       <div className="w-full input-group">
-                        <label className="block text-xl font-medium text-gray-700 ms-2">
+                        <label className="block text-xl font-medium  ms-2">
                           Select Tone<span className="text-red">*</span>
                         </label>
                         <span className="relative">
@@ -546,9 +565,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                   {/* Generate Reply Button - always visible */}
                   <div className="mb-2">
                     <button
-                      className={`flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white  bg-[#ff5c35] w-full ${
-                        loading ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
+                      className={`flex gap-2 leading-6 popup-button-submit px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white  bg-[#ff5c35] w-full ${loading ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                       onClick={handleSubmit}
                       disabled={loading}
                     >
@@ -561,21 +579,21 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         ? popupTriggeredFrom === "create-post"
                           ? "Generating Post..."
                           : popupTriggeredFrom === "comment-reply"
-                          ? "Generating Comment Reply..."
-                          : popupTriggeredFrom === "comment"
-                          ? "Generating Comment..."
-                          : popupTriggeredFrom === "message-reply"
-                          ? "Generating Message Reply..."
-                          : "Generating..."
+                            ? "Generating Comment Reply..."
+                            : popupTriggeredFrom === "comment"
+                              ? "Generating Comment..."
+                              : popupTriggeredFrom === "message-reply"
+                                ? "Generating Message Reply..."
+                                : "Generating..."
                         : popupTriggeredFrom === "create-post"
-                        ? "Generate Post"
-                        : popupTriggeredFrom === "comment-reply"
-                        ? "Generate Comment Reply"
-                        : popupTriggeredFrom === "comment"
-                        ? "Generate Comment"
-                        : popupTriggeredFrom === "message-reply"
-                        ? "Generate Message Reply"
-                        : "Generate Reply"}
+                          ? "Generate Post"
+                          : popupTriggeredFrom === "comment-reply"
+                            ? "Generate Comment Reply"
+                            : popupTriggeredFrom === "comment"
+                              ? "Generate Comment"
+                              : popupTriggeredFrom === "message-reply"
+                                ? "Generate Message Reply"
+                                : "Generate Reply"}
                     </button>
                   </div>
 
@@ -586,7 +604,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     <h3 className="font-semibold text-base mb-2">
                       💬 Messaging Best Practices:
                     </h3>
-                    <ul className="list-disc list-inside text-xl text-gray-700 mt-2 space-y-1">
+                    <ul className="list-disc list-inside text-xl  mt-2 space-y-1">
                       <li>Respond within 1-2 minute</li>
                       <li>Personalize with specific details</li>
                       <li>Always provide clear next steps</li>
@@ -658,24 +676,24 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         {popupTriggeredFrom === "create-post"
                           ? "No Post Generated yet"
                           : popupTriggeredFrom === "comment-reply"
-                          ? "No Comment Reply Generated yet"
-                          : popupTriggeredFrom === "message-reply"
-                          ? "No Message Generated yet"
-                          : popupTriggeredFrom === "comment"
-                          ? "No Comment Generated yet"
-                          : ""}
+                            ? "No Comment Reply Generated yet"
+                            : popupTriggeredFrom === "message-reply"
+                              ? "No Message Generated yet"
+                              : popupTriggeredFrom === "comment"
+                                ? "No Comment Generated yet"
+                                : ""}
                       </p>
                       <div className="!text-xl text-[#94a3b8]">
                         Fill out the form and click{" "}
                         {popupTriggeredFrom === "create-post"
                           ? "Generate Post"
                           : popupTriggeredFrom === "comment-reply"
-                          ? "Generate Comment Reply"
-                          : popupTriggeredFrom === "message-reply"
-                          ? "Generate Message Reply yet"
-                          : popupTriggeredFrom === "comment"  
-                          ? "No Comment Generated Comment"
-                          : ""}{" "}
+                            ? "Generate Comment Reply"
+                            : popupTriggeredFrom === "message-reply"
+                              ? "Generate Message Reply yet"
+                              : popupTriggeredFrom === "comment"
+                                ? "No Comment Generated Comment"
+                                : ""}{" "}
                         to get started
                       </div>
                     </div>
