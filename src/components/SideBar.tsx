@@ -6,6 +6,7 @@ import Header from "./UserProfile/Header";
 import { useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import SidebarSaveProfile from "./SidebarSaveProfile";
+import SidebarMyLinkedinConnection from "./SidebarMyLinkedinConnection";
 
 // const SideBar = ({setOpenplanpopup} : any) => {
 const SideBar = () => {
@@ -277,6 +278,8 @@ const SideBar = () => {
                 </div>
               </Link>
             </li>
+
+            <SidebarMyLinkedinConnection/>
 
           {/* LinkedIn  */}
           {/* <li className="">

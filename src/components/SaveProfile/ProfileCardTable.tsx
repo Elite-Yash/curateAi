@@ -14,7 +14,6 @@ import { getImage } from "../../common/utils/logoUtils";
 import { IoLogoLinkedin } from "react-icons/io5";
 
 const ProfileCardTable = ({ profile, onClose }: any) => {
-    console.log("  ~ ProfileCardTable ~ profile:", profile)
     return (
         <>
             <>

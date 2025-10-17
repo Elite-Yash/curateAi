@@ -1,7 +1,7 @@
 import { FileText, Sparkles } from "lucide-react";
 import { useState } from "react";
-import Createform from "./createform";
-import Listpage from "./listpage";
+import Createform from "./Createform";
+import Listpage from "./Listpage";
 import { ImConnection } from "react-icons/im";
 
 const ConnectionAssistant = () => {

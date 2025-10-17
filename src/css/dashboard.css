@@ -187,8 +187,9 @@ body,
 .left-menu a:hover {
   background: #ff5c350f !important;
 }
-.left-menu a.active .text-\[\#6b7280\], .left-menu a:hover .text-\[\#6b7280\] {
-    color: #ff5c35;
+.left-menu a.active .text-\[\#6b7280\],
+.left-menu a:hover .text-\[\#6b7280\] {
+  color: #ff5c35;
 }
 
 .left-menu a.active {
@@ -204,7 +205,7 @@ body,
 .left-menu a.active i,
 .left-menu a:hover i,
 .left-menu a:hover span {
-  color: #ff5c35!important;
+  color: #ff5c35 !important;
 }
 
 .g-box {
@@ -309,7 +310,7 @@ body,
 } */
 .drop-menu button:hover,
 .leftmenu-bottom a.bg-white:hover {
-  background: #ff5c35!important;
+  background: #ff5c35 !important;
   color: #fff !important;
 }
 
@@ -432,28 +433,40 @@ body,
 }
 
 /*--font family roboto--*/
-.robotofont, body {   font-family: "Roboto", sans-serif !important;}
-
+.robotofont,
+body {
+  font-family: "Roboto", sans-serif !important;
+}
 
 ::-webkit-scrollbar {
-    height: 5px;
-    width: 5px;
-    border-radius: 10px;
+  height: 5px;
+  width: 5px;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-     border-radius: 10px;
+  background: #f1f1f1;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ff5c35;
-     border-radius: 10px;
+  background: #ff5c35;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #ff5c35;
-     border-radius: 10px;
+  background: #ff5c35;
+  border-radius: 10px;
 }
 
- 
+@keyframes fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 15%;
+  }
+}
+.animate-fill {
+  animation: fill 2s ease-out forwards;
+}

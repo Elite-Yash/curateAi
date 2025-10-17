@@ -18,6 +18,8 @@ import MessageTamplateTable from "../components/MessageTamplate/MessageTamplate"
 import Personas from "../components/Personas/Personas";
 import ConnectionAssistant from "../components/ConnectionAssistant/ConnectionAssistant";
 import SaveProfilesTable from "../components/SaveProfile/SaveProfilesTable";
+import LinkedinConnection from "../components/MyLinkedinConnection/LinkedinConnection";
+
 
 
 /**
@@ -182,6 +184,15 @@ const Router = () => {
         element={
           <Section>
             <SaveProfilesTable />
+          </Section>
+        }
+      />
+
+      <Route
+        path="/workspace/:id"
+        element={
+          <Section>
+            <LinkedinConnection />
           </Section>
         }
       />
