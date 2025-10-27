@@ -306,7 +306,7 @@ const Comments = () => {
                     })
                   )}
                 </tbody>
-              </table>q
+              </table>
             </div>
           </div>
         </div>
