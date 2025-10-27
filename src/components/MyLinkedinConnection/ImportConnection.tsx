@@ -25,9 +25,9 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({ onClose }) => {
       <div className="w-[80%] h-5 rounded-full overflow-hidden bg-[#ff5c35]/10">
         <div
           className="bg-[#ff5c35] h-full text-xs text-center text-white flex items-center justify-center animate-fill"
-          style={{ width: "15%" }}
+          style={{ width: "76%" }}
         >
-          15%
+          76%
         </div>
       </div>
     </div>

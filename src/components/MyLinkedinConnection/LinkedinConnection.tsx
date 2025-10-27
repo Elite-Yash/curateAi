@@ -60,12 +60,31 @@ const LinkedinConnection = () => {
         </div>
       </div>
 
+      {/* Group Tabs - New Design */}
+      <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(0,1fr))] bg-white/80 backdrop-blur-sm overflow-hidden p-[5px] g-box rounded-[10px] gap-[5px] sticky top-0 z-20 mb-6">
+        {groups.map((group) => (
+          <button
+            key={group.id}
+            onClick={() => setActiveGroup(group.id)}
+            className={`flex items-center justify-center gap-2 py-2 text-sm transition
+        ${activeGroup === group.id
+                ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm font-semibold"
+                : "text-[#737373] hover:bg-[#ff5c350f] font-medium"
+              }`}
+          >
+            {group.name}
+          </button>
+        ))}
+      </div>
+
+
+
       {/* Body Section */}
       <div className="space-y-6">
-        <div className="w-full min-h-[510px] bg-white g-box rounded-lg shadow-sm flex flex-col items-center justify-center relative">
+        <div className="w-full min-h-[443px] bg-white g-box rounded-lg shadow-sm flex flex-col items-center justify-center relative">
 
           {/* Group Tabs - Sticky Top */}
-          <div className="grid grid-cols-5 w-full bg-[#ff5c35]/10 rounded-t-lg top-0 z-20 absolute">
+          {/* <div className="grid grid-cols-5 w-full bg-[#ff5c35]/10 rounded-t-lg top-0 z-20 absolute">
             {groups.map((group) => (
               <button
                 key={group.id}
@@ -79,31 +98,31 @@ const LinkedinConnection = () => {
                 {group.name}
               </button>
             ))}
+          </div> */}
+
+          <div className="p-8">
+            {/* Main or Import Section */}
+            {activeTab === "main" ? (
+              <div className="flex flex-col items-center justify-center gap-6 mt-6">
+                <p className="text-2xl font-normal text-center text-slate-700">
+                  You have 500 connections in LinkedIn, it will take approx 5 days
+                  to import all.
+                </p>
+
+                <button
+                  onClick={handleImportClick}
+                  className="flex flex-col items-center justify-center border border-dashed border-[#ff5c35] w-[450px] rounded-xl px-8 py-6 hover:bg-[#ff5c35]/5 transition"
+                >
+                  <div className="w-12 h-12 bg-[#ff5c35]/10 text-[#ff5c35] rounded-full flex items-center justify-center mb-3">
+                    <PiLinkSimpleBold className="w-6 h-6" />
+                  </div>
+                  <span className="text-base font-bold">Import Connections</span>
+                </button>
+              </div>
+            ) : (
+              <ImportConnection onClose={() => setActiveTab("main")} />
+            )}
           </div>
-
-         <div className="p-8">
-           {/* Main or Import Section */}
-          {activeTab === "main" ? (
-            <div className="flex flex-col items-center justify-center gap-6 mt-6">
-              <p className="text-2xl font-normal text-center text-slate-700">
-                You have 500 connections in LinkedIn, it will take approx 5 days
-                to import all.
-              </p>
-
-              <button
-                onClick={handleImportClick}
-                className="flex flex-col items-center justify-center border border-dashed border-[#ff5c35] w-[450px] rounded-xl px-8 py-6 hover:bg-[#ff5c35]/5 transition"
-              >
-                <div className="w-12 h-12 bg-[#ff5c35]/10 text-[#ff5c35] rounded-full flex items-center justify-center mb-3">
-                  <PiLinkSimpleBold className="w-6 h-6" />
-                </div>
-                <span className="text-base font-bold">Import Connections</span>
-              </button>
-            </div>
-          ) : (
-            <ImportConnection onClose={() => setActiveTab("main")} />
-          )}
-         </div>
         </div>
       </div>
     </div>

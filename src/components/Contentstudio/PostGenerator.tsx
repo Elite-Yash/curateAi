@@ -19,6 +19,7 @@ import { removeEmoji } from "../../common/utils/removeicon";
 import ActivePlanModal from "../activeplanModal/activeplanmodal";
 import { useSelector } from "react-redux";
 import { selectActivePlanValue } from "../../redux/selector/activePlanSelector";
+import { IoCheckmarkSharp } from "react-icons/io5";
 
 
 interface ModalProps {
@@ -86,8 +87,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
         authorName: "",
         platform,
         // command: prompt,
-        command: `${prompt?.length ? prompt : ""
-          } This is my persona ${JSON.stringify(personasvalue)}. Please generate content according to this persona information.`,
+        command: `This is my persona ${JSON.stringify(personasvalue)}. Please generate content according to this persona information.`,
         contentType: popupTriggeredFrom,
         goal: motive,
         articleInfo,
@@ -95,7 +95,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
         currentUserName,
         authToken,
       };
-
 
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
@@ -121,7 +120,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
             type();
             apiCalled = true;
 
-            // ✅ Correct API endpoint for post
+            // Correct API endpoint for post
             const payload = {
               comment: generatedMessage,
               post_url: post_url ? post_url : window.location.href,
@@ -131,6 +130,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
               language: language,
               status: "saved",
               genarate_title: prompt,
+              command: requestData.command,
             };
 
             const requestUrl = apiService.EndPoint.createComments
@@ -475,8 +475,15 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
                   onClick={copyToClipboard}
                   className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
                 >
-                  <Copy className="w-4 h-4" />
-                  {copied ? "Post Copied!" : "Copy Post"}
+                  {copied ?
+                    <>
+                      <IoCheckmarkSharp className="w-4 h-4" />Post Copied!
+                    </>
+                    : (
+                      <>
+                        <Copy className="w-4 h-4" />Copy Post
+                      </>
+                    )}
                 </button>
                 <button
                   className="flex-1 flex items-center justify-center gap-2 bg-[#ff5c35] text-white rounded-lg py-2"

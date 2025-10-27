@@ -858,6 +858,18 @@ const LinkedIn = () => {
             .join("\n");
         }
 
+        // Last message show on message-reply box
+        // const messageContainers = document.querySelectorAll(".msg-s-message-list__event.clearfix");
+        // let messageText = "";
+
+        // if (messageContainers.length > 0) {
+        //   const lastMessage = messageContainers[messageContainers.length - 1];
+        //   const pTag = lastMessage.querySelector("p");
+        //   messageText = pTag ? pTag.innerText.trim() : "";
+        // } else {
+        //   console.warn("Message container not found!");
+        // }
+
         setCollectedText(messageText);
         setSelectedMessageBoxContainer(messageBoxTextEditorContainer);
         setPopupTriggeredFrom("message-reply");
@@ -1746,4 +1758,3 @@ export const LinkedInHelper = {
   },
 
 };
-  

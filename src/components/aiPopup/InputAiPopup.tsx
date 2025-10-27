@@ -11,10 +11,8 @@ import { getCurrentLinkedInUsernameFromLocalStorage } from "../../helpers/common
 import SignIn from "./Signin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getImage } from "../../common/utils/logoUtils";
-import { apiService } from "../../common/config/apiService";
 import { removeEmoji } from "../../common/utils/removeicon";
-import { Copy, FileText, RefreshCw } from "lucide-react";
-import ActivePlanModal from "../activeplanModal/activeplanmodal";
+import { Copy, FileText } from "lucide-react";
 import { IoCheckmarkSharp } from "react-icons/io5";
 
 export interface LinkedInMessage {
