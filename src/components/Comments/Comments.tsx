@@ -170,7 +170,7 @@ const Comments = () => {
                       <div className="py-3 px-4 border-b border-[#e1eaf4]">Comment Preview</div>
                     </th>
                     <th className={` ${commentsData.length === 0 ? "" : "w-[400px] p-0"}`}>
-                       <div className="py-3 px-4 border-b border-[#e1eaf4]">Title</div>
+                      <div className="py-3 px-4 border-b border-[#e1eaf4]">Title</div>
                     </th>
                     <th className={` whitespace-nowrap ${commentsData.length === 0 ? "" : "w-[180px] p-0"}`}>
                       <div className="py-3 px-4 border-b border-[#e1eaf4]">Motive</div>
@@ -182,7 +182,7 @@ const Comments = () => {
                     </th>
                     <th className="p-0 whitespace-nowrap"><div className="py-3 px-4 border-b border-[#e1eaf4] ">Date</div></th>
                     <th className="p-0"><div className="py-3 px-4 border-b border-[#e1eaf4] ">Actions</div></th>
-                    
+
                   </tr>
                 </thead>
 
@@ -262,20 +262,22 @@ const Comments = () => {
                           </td>
                           {/* URL */}
                           <td className="py-4 px-4 align-top w-[180px]">
-                            {comment.post_url ? (
-                              <a
-                                href={comment.post_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <button className="text-[#ff5c35] border border-[#ff5c35] px-2 py-[2px] rounded-[5px] flex items-center text-sm gap-1 whitespace-nowrap">
-                                  Go To LinkedIn
-                                  <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
-                                </button>
-                              </a>
-                            ) : (
-                              "N/A"
-                            )}
+                            {comment.status === "published" ? (
+                              comment.post_url ? (
+                                <a
+                                  href={comment.post_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <button className="text-[#ff5c35] border border-[#ff5c35] px-2 py-[2px] rounded-[5px] flex items-center text-sm gap-1 whitespace-nowrap">
+                                    Go To LinkedIn
+                                    <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
+                                  </button>
+                                </a>
+                              ) : (
+                                "N/A"
+                              )
+                            ) : "N/A"}
                           </td>
                           {/* Date */}
                           <td className="py-4 px-4 align-top text-gray-600 whitespace-nowrap">
@@ -304,7 +306,7 @@ const Comments = () => {
                     })
                   )}
                 </tbody>
-              </table>
+              </table>q
             </div>
           </div>
         </div>

@@ -1,11 +1,37 @@
 import { FileText, MessageCircle, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostGenerator from "./PostGenerator";
 import ContentHistory from "./ContentHistory";
 import PostIdia from "./PostIdia";
+import { apiService } from "../../common/config/apiService";
 
 const Contentstudio = () => {
   const [activeTab, setActiveTab] = useState("posts");
+  const [personasData, setPersonasData] = useState<any>([]);
+
+    useEffect(() => {
+      fetchPersonas();
+    }, []);
+
+  const fetchPersonas = async () => {
+    try {
+      await apiService.commonAPIRequest(
+        apiService.EndPoint.getAllpersonas,
+        apiService.Method.get,
+        undefined,
+        {},
+        (response: any) => {
+          if (response?.status === 200 && response.data.data) {
+            const alldata = (response.data.data || [])
+            const defaultOne = alldata.find((d: any) => d.isdefault === true);
+            setPersonasData(defaultOne);
+          }
+        }
+      );
+    } catch (err) {
+      console.error("Error fetching personas:", err);
+    }
+  };
 
   return (
     <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
@@ -73,7 +99,7 @@ const Contentstudio = () => {
         {/* Tab Content */}
         {activeTab === "posts" && (
           <div className="space-y-6">
-            <PostGenerator popupTriggeredFrom={'create-post'} />
+            <PostGenerator popupTriggeredFrom={'create-post'} personasData={personasData} />
           </div>
         )}
 

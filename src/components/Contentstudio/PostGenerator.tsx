@@ -24,9 +24,10 @@ import { selectActivePlanValue } from "../../redux/selector/activePlanSelector";
 interface ModalProps {
   post_url?: string;
   popupTriggeredFrom?: "create-post";
+  personasData: any;
 }
 
-const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) => {
+const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, personasData }) => {
   const [prompt, setPrompt] = useState("");
   const [generatedPost, setGeneratedPost] = useState("");
   const [displayedText, setDisplayedText] = useState("");
@@ -69,9 +70,14 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
         setIsAuth(true);
         return;
       }
-
+      const personasvalue = {
+        personas_name: personasData?.personas_name,
+        personas_bio: personasData?.personas_bio,
+        jobTitle: personasData?.jobTitle,
+        company: personasData?.company,
+        industry: personasData?.industry
+      }
       const authToken = response.token;
-
       const requestData = {
         language,
         status: "saved",
@@ -79,7 +85,9 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
         postText: prompt || "",
         authorName: "",
         platform,
-        command: prompt,
+        // command: prompt,
+        command: `${prompt?.length ? prompt : ""
+          } This is my persona ${JSON.stringify(personasvalue)}. Please generate content according to this persona information.`,
         contentType: popupTriggeredFrom,
         goal: motive,
         articleInfo,
@@ -87,6 +95,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
         currentUserName,
         authToken,
       };
+
 
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
@@ -299,8 +308,14 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom }) =
                 className="w-full min-h-24 h-full p-2 outline-none text-sm resize-none focus:ring-0 border-0"
               />
             </div>
-            <div className="text-sm text-[#8c97a9] mt-0">
-              💡 Write clearly for better generated results
+            <div className="text-sm flex text-[#8c97a9] mt-0">
+              {/* <span>💡 Write clearly for better generated results</span> */}
+              <span className="bg-[#f6f9fc] border font-bold border-[#e0eaf3] py-[3px] px-[10px] text-black">
+                Current Personas:{" "}
+                <span className="font-semibold text-[#545c66]">
+                  {personasData?.personas_name}
+                </span>
+              </span>
             </div>
             {errors.prompt && (
               <p className="text-red !text-sm ms-1 !mt-0 absolute">{errors.prompt}</p>

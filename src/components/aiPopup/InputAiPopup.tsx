@@ -168,7 +168,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
         currentUserName,
         authToken,
       };
-      console.log(" ~ handleSubmit ~ requestData:", requestData)
 
       // Generate content
       chrome.runtime.sendMessage(

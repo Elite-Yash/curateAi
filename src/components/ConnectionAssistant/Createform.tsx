@@ -44,9 +44,6 @@ const Createform = () => {
                         <span className="text-sm">Send</span>
                     </button>
 
-                </div>
-
-                <div className="border-none g-box  bg-white/80 backdrop-blur-sm rounded-xl p-6">
                     {/* Quick Tips */}
                     <div className="p-4 bg-[#ff5c350f] rounded-lg">
                         <div className="font-semibold text-base mb-2">
@@ -60,6 +57,10 @@ const Createform = () => {
                             <li>• Personalization increases acceptance rates by 3x 🚀</li>
                         </ul>
                     </div>
+                </div>
+
+                <div className="border-none g-box  bg-white/80 backdrop-blur-sm rounded-xl p-6">
+
 
                 </div>
             </div>
