@@ -4,21 +4,25 @@ importScripts("./apiUrlConfig.js");
 
 // background.js
 let lastLinkedInTabId = null;
+let campaignActive = false;
+let campaignTabIds = [];
 
-// Listen for updates to tabs
+// Track tabs that belong to LinkedIn during an active campaign
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (tab.url && tab.url.includes("linkedin.com")) {
-    lastLinkedInTabId = tabId; // Update the ID of the last LinkedIn tab
+    lastLinkedInTabId = tabId;
+
+    // Track tab if campaign is running and not already tracked
+    if (campaignActive && !campaignTabIds.includes(tabId)) {
+      campaignTabIds.push(tabId);
+      console.log("🆕 Tracked LinkedIn tab:", tabId);
+    }
   }
 });
 
-// Listen for tab activation
-chrome.tabs.onActivated.addListener((activeInfo) => {
-  chrome.tabs.get(activeInfo.tabId, (tab) => {
-    if (tab.url && tab.url.includes("linkedin.com")) {
-      lastLinkedInTabId = tab.id; // Update the ID of the last active LinkedIn tab
-    }
-  });
+// Remove closed tabs from tracking
+chrome.tabs.onRemoved.addListener((tabId) => {
+  campaignTabIds = campaignTabIds.filter((id) => id !== tabId);
 });
 
 // Set a flag when the extension is installed
@@ -200,6 +204,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "startCampaign") {
     const { maxConnections, url, campaign_id, message, typeOfCampaign, campaignName } = request;
 
+    campaignActive = true;
+    campaignTabIds = [];
+
     chrome.tabs.create({ url }, (tab) => {
       if (!tab.id) return;
 
@@ -211,11 +218,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           sendResponse({ status: 'tabCreated', isSameUrl });
 
           if (isSameUrl) {
-            setTimeout(() => { // small delay to ensure content script is ready
+            setTimeout(() => {
               if (url.includes("linkedin.com/groups/")) {
-                chrome.tabs.sendMessage(tabId, { type: "fetchGroupsMembers", maxConnections, campaign_id, message, typeOfCampaign, campaignName });
+                chrome.tabs.sendMessage(tabId, {
+                  type: "fetchGroupsMembers",
+                  maxConnections,
+                  campaign_id,
+                  message,
+                  typeOfCampaign,
+                  campaignName
+                });
               } else if (url.includes("linkedin.com/search/")) {
-                chrome.tabs.sendMessage(tabId, { type: "fetchSearchMembers", maxConnections, campaign_id, message, typeOfCampaign, campaignName });
+                chrome.tabs.sendMessage(tabId, {
+                  type: "fetchSearchMembers",
+                  maxConnections,
+                  campaign_id,
+                  message,
+                  typeOfCampaign,
+                  campaignName
+                });
               }
             }, 500);
           }
@@ -227,15 +248,108 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.tabs.onUpdated.addListener(listener);
     });
 
-    return true; // Keep sendResponse channel open for async
+    return true;
   }
 
-  if (request.type === "stopCampaign") {
-    if (lastLinkedInTabId) {
-      chrome.tabs.sendMessage(lastLinkedInTabId, { type: "stopCampaign" });
-    } else {
-      console.error("No LinkedIn tab tracked.");
+  // --- OPEN PROFILE TAB ---
+  if (request.type === "OPEN_PROFILE_TAB") {
+    const { profileLink, name, message, action } = request.data;
+    console.log("Opening profile:", { profileLink, name, message, action });
+
+    if (!campaignActive) {
+      console.warn("⚠️ Campaign not active, ignoring OPEN_PROFILE_TAB.");
+      return;
     }
+
+    chrome.tabs.create({ url: profileLink, active: false }, (tab) => {
+      if (!tab?.id) return;
+
+      // Add immediately in case URL isn’t ready yet
+      if (!campaignTabIds.includes(tab.id)) {
+        campaignTabIds.push(tab.id);
+        console.log("🆕 Added new profile tab:", tab.id);
+      }
+
+      const tabId = tab.id;
+      let retryCount = 0;
+      const maxRetries = 10;
+
+      const onLoad = (updatedTabId, changeInfo) => {
+        if (!campaignActive) {
+          chrome.tabs.onUpdated.removeListener(onLoad);
+          return;
+        }
+
+        if (updatedTabId === tabId && changeInfo.status === "complete") {
+          const sendProcessMessage = () => {
+            if (!campaignActive) return;
+
+            if (retryCount >= maxRetries) {
+              console.warn("⚠️ Max retries reached for PROCESS_MEMBER.");
+              return;
+            }
+
+            retryCount++;
+
+            chrome.tabs.sendMessage(
+              tabId,
+              { type: "PROCESS_MEMBER", data: { name, message, action } },
+              (response) => {
+                if (chrome.runtime.lastError) {
+                  console.warn(`⏳ Content script not ready (attempt ${retryCount})...`);
+                  setTimeout(sendProcessMessage, 1000);
+                } else {
+                  console.log("📨 PROCESS_MEMBER sent successfully.");
+                }
+              }
+            );
+          };
+
+          setTimeout(sendProcessMessage, 1500);
+          chrome.tabs.onUpdated.removeListener(onLoad);
+        }
+      };
+
+      chrome.tabs.onUpdated.addListener(onLoad);
+    });
+
+    return true;
+  }
+
+  // --- CLOSE PROFILE TAB AFTER MESSAGE SENT ---
+  if (request.type === "CLOSE_ACTIVE_TAB" && sender.tab && sender.tab.id) {
+    setTimeout(() => {
+      chrome.tabs.remove(sender.tab.id);
+      chrome.runtime.sendMessage({ type: "PROFILE_DONE" });
+    }, 1500);
+    return;
+  }
+
+  // --- STOP CAMPAIGN ---
+  if (request.type === "stopCampaign") {
+    console.log("🛑 Stopping campaign...");
+    campaignActive = false;
+
+    if (campaignTabIds.length > 0) {
+      console.log("Closing all LinkedIn tabs:", campaignTabIds);
+      for (const tabId of campaignTabIds) {
+        chrome.tabs.remove(tabId, () => {
+          console.log("✅ Closed LinkedIn tab:", tabId);
+        });
+      }
+      campaignTabIds = [];
+    } else {
+      console.warn("⚠️ No LinkedIn tabs tracked.");
+    }
+
+    lastLinkedInTabId = null;
+    return;
+  }
+
+  // --- STATUS CHECK ---
+  if (request.type === "isCampaignActive") {
+    sendResponse({ active: campaignActive });
+    return true;
   }
 
   if (request.type === "saveMembersData") {

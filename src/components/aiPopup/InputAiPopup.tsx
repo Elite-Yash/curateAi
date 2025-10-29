@@ -143,6 +143,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
       }
 
       const authToken = response.token;
+      const hasPersonaData = personasvalue && Object.keys(personasvalue).length > 0;
 
       const requestData = {
         language,
@@ -155,8 +156,19 @@ const InputAiPopup: React.FC<ModalProps> = ({
         authorName: postData.postAutherName,
         platform,
         // command: context.length > 0 ? context : collectedText ,
-        command: `${context?.length ? context : ""
-          } This is my persona ${JSON.stringify(personasvalue)}. Please generate content according to this persona information.`,
+        command: `
+          ${context?.length > 0 ? context : ""}
+
+          ${hasPersonaData
+            ? `Persona Information:\n${Object.entries(personasvalue)
+              .map(([key, value]) => `${key}: ${value}`)
+              .join("\n")}\n`
+            : ""
+          }
+
+          Instruction:
+          Please generate content for the "${platform}" platform.
+            `.trim(),
         contentType: popupTriggeredFrom,
         commentAuthorName: postData.commentAuthorName,
         commentText: postData.commentText,

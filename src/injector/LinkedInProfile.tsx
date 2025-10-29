@@ -162,6 +162,18 @@ const LinkedInProfile = () => {
             return () => {
                 customSpan.removeEventListener("click", handleClick);
             };
+        } else {
+            const mainDiv: any = document.querySelector("div._83fbf827._85c77598  div._0182ff4d div._0182ff4d.dc20e8a0")
+            const customSpan = createCustomButton('Save', getImage("saveProfileIcon"), 'Save Profile');
+            customSpan.classList.add("custom-save-btn");
+            mainDiv?.appendChild(customSpan);
+             // Add event listener to the button
+            customSpan.addEventListener("click", handleClick);
+
+            // Cleanup function to remove event listener
+            return () => {
+                customSpan.removeEventListener("click", handleClick);
+            };
         }
     }
     const checkActivePlan = async () => {
