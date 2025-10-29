@@ -29,7 +29,7 @@ const SideBar = () => {
       </div>
 
 
-      <div className="left-menu pt-4 p-4 w-73 max-h-[100vh] overflow-auto">
+      <div className="left-menu pt-0 p-4 w-73 max-h-[100vh] overflow-auto">
         <ul className="flex flex-col gap-1">
           {/* Dashboard */}
           <li className="">

@@ -2,25 +2,24 @@ import {
   FaRegFileAlt,
   FaRegCommentAlt,
   FaUsers,
-  FaUser,
   FaArrowRight,
 } from "react-icons/fa";
 import { FaMessage, FaRegClock } from "react-icons/fa6";
-import { GoDotFill } from "react-icons/go";
 import { GiStarFormation } from "react-icons/gi";
 import { HiOutlineLightBulb } from "react-icons/hi2";
 import { MdOutlineWifiTetheringErrorRounded } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   FiEye,
   FiUsers,
   FiTrendingUp,
   FiMessageSquare,
-  FiArrowUpRight,
-  FiArrowDownRight,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { LuLightbulb } from "react-icons/lu";
+import { useCallback, useEffect, useState } from "react";
+import { apiService } from "../../common/config/apiService";
 
 const actions = [
   {
@@ -54,8 +53,80 @@ const actions = [
 ];
 
 
-
 const Home = () => {
+  const [commentsData, setCommentsData] = useState<any[]>([]);
+  const [profilesData, setProfilesData] = useState<any[]>([]);
+  // const navigate = useNavigate();
+
+  const fetchComments = useCallback(async () => {
+    try {
+      if (!chrome?.runtime?.sendMessage) {
+        throw new Error("Chrome API is not available.");
+      }
+
+      const requestUrl = apiService.EndPoint.getComments;
+
+      // Make the API request to fetch comments
+      await apiService.commonAPIRequest(
+        requestUrl,
+        apiService.Method.get,
+        undefined, // No query parameters
+        {}, // No request body
+        (result: any) => {
+          if (result?.status === 200 && Array.isArray(result?.data.data)) {
+            setCommentsData(result.data.data);
+          } else {
+            setCommentsData([]);
+            throw new Error(result?.message || "Failed to fetch comments.");
+          }
+        }
+      );
+    } catch (err) {
+      console.error("An unexpected error occurred:", err);
+    }
+  }, []);
+
+  const fetchProfiles = useCallback(async () => {
+    try {
+      if (!chrome?.runtime?.sendMessage) {
+        throw new Error("Chrome API is not available.");
+      }
+
+      const requestUrl = `${apiService.EndPoint.getProfiles}`;
+
+      await apiService.commonAPIRequest(
+        requestUrl,
+        apiService.Method.get,
+        undefined,
+        {},
+        (response: any) => {
+          if (response?.status === 200 && response?.data?.data.profiles) {
+            setProfilesData(response?.data?.data.profiles || []);
+          } else {
+            console.error(response?.message || "Failed to fetch profiles.");
+          }
+        }
+      );
+    } catch (err) {
+      console.error("An unexpected error occurred:", err);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    fetchComments();
+    fetchProfiles();
+  }, [fetchComments]);
+
+  const getLast7Data = (data: any[], type?: string) => {
+    const now = new Date();
+    return data.filter((item) => {
+      const diffHours =
+        (now.getTime() - new Date(item.created_at).getTime()) / (1000 * 60 * 60);
+      return diffHours <= 24 * 7 && (!type || item.comment_type === type);
+    }).length;
+  };
+
   return (
     <>
       <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
@@ -70,10 +141,10 @@ const Home = () => {
 
             {/* Text Content */}
             <div>
-              <div className="text-2xl font-bold text-slate-900">
+              <div className="text-2xl font-bold ">
                 EVA Command Center
               </div>
-              <div className="text-base text-slate-600 text-[#475569] ">
+              <div className="text-base text-[#475569] ">
                 Good morning! Ready to boost your LinkedIn presence?
               </div>
             </div>
@@ -98,7 +169,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {actions.map((action, index) => (
               <Link key={index} to={action.link}>
-                <div className="p-6 border border-[#e2e8f0] rounded-xl hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col items-center gap-4 group h-full">
+                <div className="p-6 border border-[#e2e8f0] rounded-xl hover:shadow-md transition-all duration-200 flex flex-col items-center gap-4 group h-full">
                   {/* Icon */}
                   <div
                     className={`w-12 h-12 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}
@@ -108,7 +179,7 @@ const Home = () => {
 
                   {/* Text */}
                   <div className="text-center">
-                    <div className="font-medium text-slate-800">
+                    <div className="font-medium ">
                       {action.title}
                     </div>
                     <div className="text-sm text-[#64748b]">
@@ -128,36 +199,110 @@ const Home = () => {
           {/* Left Side (Recent Activity + Performance) */}
           <div className="w-full lg:w-2/3 flex flex-col gap-6">
             {/* Recent Activity Section */}
-            <div className="bg-white shadow-md rounded-xl p-5 w-full g-box">
+
+            <div className="bg-white rounded-xl g-box">
               {/* Header */}
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <FaRegClock className="text-[#4b5563] text-xl" />
-                  <div className="text-xl font-bold text-slate-900">
-                    Recent Activity
-                  </div>
+              <div className="flex items-center justify-between p-5">
+                <div className="flex items-center gap-2 font-semibold text-base">
+                  <FaRegClock className="w-5 h-5 text-[#ff5c35]" />
+                  Recent Activity
                 </div>
-                <button className="text-sm text-[#ff5c35] hover:underline">
-                  View All
-                </button>
               </div>
 
-              {/* Empty State */}
-              <div className="flex flex-col items-center justify-center py-18">
-                <div className="text-[#9ca3af] text-xl">No recent activity</div>
-                <div className="text-[#9ca3af] text-sm mb-1">
-                  Start generating content to see your activity here..
+              <div className="p-2.5 pt-0">
+                <div className="border rounded-lg border-[#e0eaf3]">
+                  {/* Table Header */}
+                  <div className="grid grid-cols-12 gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4">
+                    <div className="text-[14px] col-span-3">Type</div>
+                    <div className="text-[14px] col-span-3">Title / Name</div>
+                    <div className="text-[14px] col-span-6">Details</div>
+                    {/* <div className="text-[14px] col-span-3">Action</div> */}
+                  </div>
+
+                  {/* Rows */}
+                  {commentsData.length > 0 || profilesData.length > 0 ? (
+                    <div className="!border-[#e0eaf3] max-h-125 !h-auto overflow-auto">
+                      {(
+                        [
+                          ...commentsData.map((item) => ({
+                            type: "comment",
+                            comment_type: item.comment_type || "Post",
+                            title: item.genarate_title || "Untitled",
+                            details: item.comment || "—",
+                            date: new Date(item.created_at),
+                          })),
+                          ...profilesData.map((profile) => ({
+                            type: "profile",
+                            comment_type: "Saved Profile",
+                            title: `${profile.first_name} ${profile.last_name}`,
+                            details: `${profile.position} @ ${profile.organization}`,
+                            date: new Date(profile.created_at),
+                          })),
+                        ]
+                          .filter((item) => {
+                            const now = new Date();
+                            const diffHours =
+                              (now.getTime() - item.date.getTime()) / (1000 * 60 * 60);
+                            return diffHours <= 24;
+                          })
+                          .sort((a, b) => b.date.getTime() - a.date.getTime())
+                      ).map((item, index) => (
+                        <div
+                          key={index}
+                          className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
+                        >
+                          {/* Type */}
+                          <div
+                            className={`text-sm capitalize col-span-3 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
+                              }`}
+                          >
+                            {item.comment_type}
+                          </div>
+
+                          {/* Title */}
+                          <div className="text-sm capitalize col-span-3 font-medium ">
+                            {item.title}
+                          </div>
+
+                          {/* Details */}
+                          <div className="text-sm capitalize col-span-6 truncate">
+                            {item.details}
+                          </div>
+
+                          {/* Action */}
+                          {/* <button
+                            onClick={() => { { item.type === "comment" ? navigate("/comments") : navigate(`/workspace/${workspaceId}/group/${groupId}`) } }}
+                            className="text-sm text-[#ff5c35] hover:underline col-span-3 font-medium"
+                          >
+                            {item.type === "comment" ? "View All" : "View Profile"}
+                          </button> */}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    // Empty State
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FaRegClock className="w-8 h-8 text-[#ff5c35]" />
+                      </div>
+                      <p className="text-[#64748b] font-medium !text-xl mb-2">
+                        No Recent Activity yet
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
+
+
 
             {/* This Week's Performance Section */}
             <div className="rounded-xl border text-div-foreground border-none shadow-lg bg-white/80 backdrop-blur-sm g-box">
               {/* Header */}
               <div className="flex flex-col space-y-1.5 p-6 pb-4">
                 <div className="font-semibold leading-none tracking-tight flex text-xl items-center gap-2">
-                  <FiTrendingUp className="w-5 h-5 text-slate-600" />
-                  This Week&apos;s Performance
+                  <FiTrendingUp className="w-5 h-5" />
+                  This Week's Performance
                 </div>
               </div>
 
@@ -165,37 +310,31 @@ const Home = () => {
               <div className="p-6 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Profile Views */}
-                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
+                  <div className="p-4 bg-[#f4f7fc] rounded-xl">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiEye className="w-4 h-4" />
                       </div>
-                      <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-[#ff5c35]" /> +0%
-                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
-                        0
+                      <div className="text-2xl font-bold mb-1">
+                        {getLast7Data(profilesData)}
                       </div>
                       <div className="text-sm text-[#64748b]">
-                        Profile Views
+                        Profile Saved 
                       </div>
                     </div>
                   </div>
 
                   {/* Connection Requests */}
-                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
+                  <div className="p-4 bg-[#f4f7fc] rounded-xl">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiUsers className="w-4 h-4" />
                       </div>
-                      <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
-                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
+                      <div className="text-2xl font-bold mb-1">
                         0
                       </div>
                       <div className="text-sm text-[#64748b]">
@@ -205,41 +344,35 @@ const Home = () => {
                   </div>
 
                   {/* Post Engagement */}
-                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
+                  <div className="p-4 bg-[#f4f7fc] rounded-xl">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiTrendingUp className="w-4 h-4" />
                       </div>
-                      <div className="flex items-center gap-1 text-xs font-medium text-green">
-                        <FiArrowUpRight className="w-3 h-3 text-green" /> +0%
-                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
-                        0
+                      <div className="text-2xl font-bold mb-1">
+                        {getLast7Data(commentsData, "create-post")}
                       </div>
                       <div className="text-sm text-[#64748b]">
-                        Post Engagement
+                        Create Post Generated
                       </div>
                     </div>
                   </div>
 
                   {/* Messages Sent */}
-                  <div className="p-4 bg-[#ff5c350f] rounded-xl hover:bg-[#f3a16b33] transition-colors duration-200">
+                  <div className="p-4 bg-[#f4f7fc] rounded-xl">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-[#ff5c35]">
                         <FiMessageSquare className="w-4 h-4" />
                       </div>
-                      <div className="flex items-center gap-1 text-xs font-medium text-red">
-                        <FiArrowDownRight className="w-3 h-3 text-red" /> -0%
-                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
-                        0
+                      <div className="text-2xl font-bold mb-1">
+                        {getLast7Data(commentsData, "message-reply")}
                       </div>
                       <div className="text-sm text-[#64748b]">
-                        Messages Sent
+                        Message-reply Generated
                       </div>
                     </div>
                   </div>
@@ -258,7 +391,7 @@ const Home = () => {
                 <div className="flex items-center justify-center w-12 h-12  border-[#ff5c35] border-[2px] rounded-full text-white">
                   <img src="f-logo.png" />
                 </div>
-                <div className="text-2xl font-bold text-slate-900">
+                <div className="text-2xl font-bold">
                   AI Insights
                 </div>
               </div>
@@ -280,15 +413,16 @@ const Home = () => {
                       high
                     </span>
                   </div>
-                  <div className="text-sm text-[#64748b] mb-3">
+                  <div className="text-sm text-[#64748b] mb-3 blur-[1px]">
                     Your audience is most active in 2 hours
                   </div>
                   <a
                     href="#"
-                    className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2 "
-                  >
+                    className="blur-[1px] text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2 "
+                  > 
                     Schedule Post <span className="ml-1">→</span>
                   </a>
+                  <span className="float-end font-semibold text-sm text-[#ff5d35] mt-2">Coming soon</span>
                 </div>
               </div>
 
@@ -310,15 +444,16 @@ const Home = () => {
                         medium
                       </span>
                     </div>
-                    <div className="text-sm text-[#64748b] mb-3">
+                    <div className="text-sm text-[#64748b] mb-3 blur-[1px]">
                       Add industry hashtags to increase reach by 40%
                     </div>
                     <a
                       href="#"
-                      className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                      className="blur-[1px] text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
                     >
                       See Hashtags <span className="ml-1">→</span>
                     </a>
+                    <span className="float-end font-semibold text-sm text-[#ff5d35] mt-2">Coming soon</span>
                   </div>
                 </div>
               </div>
@@ -340,15 +475,16 @@ const Home = () => {
                       low
                     </span>
                   </div>
-                  <div className="text-sm text-[#64748b] mb-3">
+                  <div className="text-sm text-[#64748b] mb-3 blur-[1px]">
                     5 mutual connections found in target companies
                   </div>
                   <a
                     href="#"
-                    className="text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
+                    className="blur-[1px] text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2"
                   >
                     View Profiles <span className="ml-1">→</span>
                   </a>
+                  <span className="float-end font-semibold text-sm text-[#ff5d35] mt-2">Coming soon</span>
                 </div>
               </div>
 
@@ -360,84 +496,12 @@ const Home = () => {
                 >
                   <span className="">
                     <GiStarFormation className="text-xl me-2" />
-                  </span>{" "}
+                  </span>
                   Get More Insights <FaArrowRight className="ml-auto" />
 
                 </a>
               </div>
             </div>
-
-            {/* LinkedIn Tips */}
-            {/* <Card className="border-none shadow-lg bg-gradient-to-br from-[#fffbeb] to-orange-50">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Target className="w-5 h-5 text-amber-600" />
-                  LinkedIn Tips
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-slate-700">
-                    Post at optimal times
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    Tuesday-Thursday, 8-10 AM shows highest engagement
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-slate-700">
-                    Use relevant hashtags
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    3-5 industry hashtags boost visibility by 40%
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-slate-700">
-                    Engage authentically
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    Meaningful comments get 5x more responses
-                  </p>
-                </div>
-              </CardContent>
-            </Card> */}
-            {/* <div className="border-none shadow-lg bg-gradient-to-br rounded-xl p-5 from-[#fffbeb] to-orange-50">
-              <div className="pb-3">
-                <div className="flex items-center gap-2 text-lg">
-                  <Target className="w-5 h-5 text-[#d97706]" />
-                  LinkedIn Tips
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <div className="font-semibold text-gray-800 text-base">
-                    Post at optimal times
-                  </div>
-                  <div className="text-sm text-[#64748b] mt-1">
-                    Tuesday-Thursday, 8-10 AM shows highest engagement
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="font-semibold text-gray-800 text-base">
-                    Use relevant hashtags
-                  </div>
-                  <div className="text-sm text-[#64748b] mt-1">
-                    3-5 industry hashtags boost visibility by 40%
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="font-semibold text-gray-800 text-base">
-                    Engage authentically
-                  </div>
-                  <div className="text-sm text-[#64748b] mt-1">
-                    Meaningful comments get 5x more responses
-                  </div>
-                </div>
-              </div>
-            </div> */}
-
-
           </div>
         </div>
       </div>

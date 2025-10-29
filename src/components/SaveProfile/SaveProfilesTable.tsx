@@ -48,7 +48,6 @@ const SaveProfilesTable = () => {
                 return;
             }
 
-            // ✅ Use proper limit & page values
             const page = 1;
             const limit = 10;
 
