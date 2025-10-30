@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import LinkedIn, { LinkedInHelper } from "../injector/LinkedIn";
+import LinkedIn from "../injector/LinkedIn";
 import LinkedInProfile from "../injector/LinkedInProfile";
 import Twitter from "../injector/Twitter";
+import { LinkedInHelper } from "../utils";
 
 const Layout = () => {
     const [platform, setPlatform] = useState<string | null>(null);
@@ -55,6 +56,11 @@ const Layout = () => {
                         campaignName: request.campaignName,
                     });
                     sendResponse({ status: "started" });
+                }
+
+                if (request.type === 'PROCESS_MEMBER') {
+                    const { name, message, action } = request.data;
+                    await LinkedInHelper.openMessageBox(name, message, action);
                 }
             } catch (err) {
                 console.error(err);

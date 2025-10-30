@@ -19,10 +19,10 @@ const MessageCampaignTable = () => {
   }, []);
 
   useEffect(() => {
-    chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener(async (request) => {
       if (request.type === "campaignComplate") {
         const { campaignId } = request;
-        endCampaignToLinkedIn(campaignId);
+        autoEndCampaign(campaignId, setCampaignStatus);
         return true;
       }
     });
@@ -460,5 +460,20 @@ export const endCampaignToLinkedIn = async (campaign: any, setCampaignStatus?: a
     }
   } catch (error) {
     console.error('An error occurred:', error);
+  }
+};
+
+export const autoEndCampaign = async (campaign: any, setCampaignStatus?: any) => {
+  try {
+    if (setCampaignStatus) {
+      setCampaignStatus((prev: { [id: number]: boolean }) => ({
+        ...prev,
+        [campaign.id]: false
+      }));
+    }
+    chrome.runtime.sendMessage({ type: "stopCampaign" });
+    console.log(`Campaign ${campaign.id} stopped automatically.`);
+  } catch (error) {
+    console.error('Error auto-ending campaign:', error);
   }
 };
