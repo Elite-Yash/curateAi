@@ -252,6 +252,92 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
   }
 
+//  My Linkedin scripting data message pass
+  if (request.type === "START_SCRAPING") {
+    chrome.storage.local.get(["lastScrapeTime", "totalScraped", "scrapedConnections"], (data) => {
+      const now = new Date().getTime();
+      const lastScrape = data.lastScrapeTime ? new Date(data.lastScrapeTime).getTime() : 0;
+      const hoursPassed = (now - lastScrape) / (1000 * 60 * 60);
+      // const minutesPassed = (now - lastScrape) / (60 * 1000);
+
+      const totalScraped = data.totalScraped || 0;
+
+      // ✅ Limit check 500
+      if (totalScraped >= 500) {
+        chrome.runtime.sendMessage({
+          type: "SHOW_ALERT",
+          message: "You have reached the 500 connections limit!",
+        });
+        return;
+      }
+
+      //       if (minutesPassed < 1 && totalScraped > 0) {
+      //   const remaining = Math.ceil(1 - minutesPassed);
+      //   chrome.runtime.sendMessage({
+      //     type: "SHOW_ALERT",
+      //     message: `You can scrape again after ${remaining} minute(s).`,
+      //   });
+      //   return;
+      // }
+
+      // ⏰ 24 hour lock check
+      if (hoursPassed < 24 && totalScraped > 0) {
+        const remaining = (24 - hoursPassed).toFixed(1);
+        chrome.runtime.sendMessage({
+          type: "SHOW_ALERT",
+          message: `You can scrape again after ${remaining} hours.`,
+        });
+        return;
+      }
+
+      // ✅ Allowed to scrape next 100
+      const startFrom = totalScraped + 1;
+      const endAt = Math.min(totalScraped + 100, 500);
+
+      chrome.tabs.create(
+        { url: "https://www.linkedin.com/mynetwork/invite-connect/connections/" },
+        (tab) => {
+          chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+            if (tabId === tab.id && info.status === "complete") {
+              chrome.scripting.executeScript(
+                {
+                  target: { tabId: tab.id },
+                  func: scrapeLinkedInConnections,
+                  args: [startFrom, endAt],
+                },
+                async (results) => {
+                  const newData = results?.[0]?.result || [];
+
+                  // Close tab safely
+                  chrome.tabs.remove(tab.id);
+
+                  const updatedConnections = [
+                    ...(data.scrapedConnections || []),
+                    ...newData,
+                  ];
+
+                  chrome.storage.local.set({
+                    scrapedConnections: updatedConnections,
+                    totalScraped: updatedConnections.length,
+                    lastScrapeTime: new Date().toISOString(),
+                  });
+
+                  chrome.runtime.sendMessage({
+                    type: "CONNECTIONS_IMPORTED",
+                    data: updatedConnections,
+                  });
+                }
+              );
+
+              chrome.tabs.onUpdated.removeListener(listener);
+            }
+          });
+        }
+      );
+    });
+  }
+
+
   // important: return true to keep the message channel open for async operations
   return true;
 });
@@ -350,3 +436,72 @@ const makeApiRequest = async (url, method, bodyData) => {
     return { data: null, status: 500 };
   }
 };
+
+//  My Linkedin scripting data 100 connection
+async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) {
+  async function autoScrollDown(scrollStep = 1000, intervalTime = 600, maxSteps = 10) {
+    function findScrollable() { 
+      const all = [...document.querySelectorAll("body, body *")];
+      const sorted = all
+        .map(e => ({ el: e, diff: e.scrollHeight - e.clientHeight }))
+        .filter(x => x.diff > 10)
+        .sort((a, b) => b.diff - a.diff);
+      return sorted.length
+        ? sorted[0].el
+        : (document.scrollingElement || document.documentElement);
+    }
+
+    const el = findScrollable();
+    let count = 0;
+    return new Promise(resolve => {
+      const id = setInterval(() => {
+        if (el === window || el === document.scrollingElement || el === document.documentElement) {
+          window.scrollBy({ top: scrollStep, behavior: "smooth" });
+          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 5) {
+            clearInterval(id);
+            resolve();
+          }
+        } else {
+          el.scrollBy({ top: scrollStep, behavior: "smooth" });
+          if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
+            clearInterval(id);
+            resolve();
+          }
+        }
+        count++;
+        if (count > maxSteps) {
+          clearInterval(id);
+          resolve();
+        }
+      }, intervalTime);
+    });
+  }
+
+  async function extractConnections(start, end) {
+    const connections = [];
+
+    for (let i = 0; i < 15; i++) {
+      const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+      if (cards.length >= end) break;
+      await autoScrollDown(1000, 800, 4);
+      await new Promise(r => setTimeout(r, 1500));
+    }
+
+    const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+    cards.forEach((el, i) => {
+      if (i >= start - 1 && i < end) {
+        const name = el.querySelector("a p")?.innerText?.trim() || "";
+        const occupation = el.querySelectorAll("a p")[1]?.innerText?.trim() || "";
+        const profileLink = el.querySelector('a[href*="/in/"]')?.href || "";
+
+        if (name) {
+          connections.push({ name, occupation, profileLink });
+        }
+      }
+    });
+    return connections;
+  }
+
+  const connetionMemberData = await extractConnections(startIndex, endIndex);
+  return connetionMemberData;
+}

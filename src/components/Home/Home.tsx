@@ -216,82 +216,71 @@ const Home = () => {
                     <div className="text-[14px] col-span-3">Type</div>
                     <div className="text-[14px] col-span-3">Title / Name</div>
                     <div className="text-[14px] col-span-6">Details</div>
-                    {/* <div className="text-[14px] col-span-3">Action</div> */}
                   </div>
 
-                  {/* Rows */}
-                  {commentsData.length > 0 || profilesData.length > 0 ? (
-                    <div className="!border-[#e0eaf3] max-h-125 !h-auto overflow-auto">
-                      {(
-                        [
-                          ...commentsData.map((item) => ({
-                            type: "comment",
-                            comment_type: item.comment_type || "Post",
-                            title: item.genarate_title || "Untitled",
-                            details: item.comment || "—",
-                            date: new Date(item.created_at),
-                          })),
-                          ...profilesData.map((profile) => ({
-                            type: "profile",
-                            comment_type: "Saved Profile",
-                            title: `${profile.first_name} ${profile.last_name}`,
-                            details: `${profile.position} @ ${profile.organization}`,
-                            date: new Date(profile.created_at),
-                          })),
-                        ]
-                          .filter((item) => {
-                            const now = new Date();
-                            const diffHours =
-                              (now.getTime() - item.date.getTime()) / (1000 * 60 * 60);
-                            return diffHours <= 24;
-                          })
-                          .sort((a, b) => b.date.getTime() - a.date.getTime())
-                      ).map((item, index) => (
-                        <div
-                          key={index}
-                          className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
-                        >
-                          {/* Type */}
+                  {(() => {
+                    // Merge and filter both data types
+                    const mergedData = [
+                      ...commentsData.map((item) => ({
+                        type: "comment",
+                        comment_type: item.comment_type || "Post",
+                        title: item.genarate_title || "Untitled",
+                        details: item.comment || "—",
+                        date: new Date(item.created_at),
+                      })),
+                      ...profilesData.map((profile) => ({
+                        type: "profile",
+                        comment_type: "Saved Profile",
+                        title: `${profile.first_name} ${profile.last_name}`,
+                        details: `${profile.position} @ ${profile.organization}`,
+                        date: new Date(profile.created_at),
+                      })),
+                    ]
+                      .filter((item) => {
+                        const now = new Date();
+                        const diffHours = (now.getTime() - item.date.getTime()) / (1000 * 60 * 60);
+                        return diffHours <= 24;
+                      })
+                      .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+                    // ✅ Show recent or empty message
+                    return mergedData.length > 0 ? (
+                      <div className="!border-[#e0eaf3] max-h-125 !h-auto overflow-auto">
+                        {mergedData.map((item, index) => (
                           <div
-                            className={`text-sm capitalize col-span-3 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
-                              }`}
+                            key={index}
+                            className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
                           >
-                            {item.comment_type}
+                            <div
+                              className={`text-sm capitalize col-span-3 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
+                                }`}
+                            >
+                              {item.comment_type}
+                            </div>
+                            <div className="text-sm capitalize col-span-3 font-medium ">
+                              {item.title}
+                            </div>
+                            <div className="text-sm capitalize col-span-6 truncate">
+                              {item.details}
+                            </div>
                           </div>
-
-                          {/* Title */}
-                          <div className="text-sm capitalize col-span-3 font-medium ">
-                            {item.title}
-                          </div>
-
-                          {/* Details */}
-                          <div className="text-sm capitalize col-span-6 truncate">
-                            {item.details}
-                          </div>
-
-                          {/* Action */}
-                          {/* <button
-                            onClick={() => { { item.type === "comment" ? navigate("/comments") : navigate(`/workspace/${workspaceId}/group/${groupId}`) } }}
-                            className="text-sm text-[#ff5c35] hover:underline col-span-3 font-medium"
-                          >
-                            {item.type === "comment" ? "View All" : "View Profile"}
-                          </button> */}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    // Empty State
-                    <div className="text-center py-12">
-                      <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FaRegClock className="w-8 h-8 text-[#ff5c35]" />
+                        ))}
                       </div>
-                      <p className="text-[#64748b] font-medium !text-xl mb-2">
-                        No Recent Activity yet
-                      </p>
-                    </div>
-                  )}
+                    ) : (
+                      // Empty state
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                          <FaRegClock className="w-8 h-8 text-[#ff5c35]" />
+                        </div>
+                        <p className="text-[#64748b] font-medium !text-xl mb-2">
+                          No Recent Activity yet
+                        </p>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
+
             </div>
 
 
@@ -321,7 +310,7 @@ const Home = () => {
                         {getLast7Data(profilesData)}
                       </div>
                       <div className="text-sm text-[#64748b]">
-                        Profile Saved 
+                        Profile Saved
                       </div>
                     </div>
                   </div>
@@ -419,7 +408,7 @@ const Home = () => {
                   <a
                     href="#"
                     className="blur-[1px] text-[#ff5d35] text-sm font-medium mt-2 inline-flex items-center transform transition-transform duration-300 group-hover:translate-x-2 "
-                  > 
+                  >
                     Schedule Post <span className="ml-1">→</span>
                   </a>
                   <span className="float-end font-semibold text-sm text-[#ff5d35] mt-2">Coming soon</span>

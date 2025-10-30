@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PiLinkSimpleBold } from "react-icons/pi";
 import ImportConnection from "./ImportConnection";
 import Swal from "sweetalert2";
@@ -14,6 +14,7 @@ const groups = [
 const LinkedinConnection = () => {
   const [activeTab, setActiveTab] = useState<"main" | "import">("main");
   const [activeGroup, setActiveGroup] = useState<number>(1);
+  const [connections, setConnections] = useState([]);
 
   const handleImportClick = () => {
     Swal.fire({
@@ -26,10 +27,31 @@ const LinkedinConnection = () => {
       confirmButtonText: "Yes, Import!",
     }).then((result) => {
       if (result.isConfirmed) {
-        setActiveTab("import");
+        chrome.runtime.sendMessage({ type: "START_SCRAPING" });
       }
     });
   };
+
+  // Listen for messages (alerts)
+  useEffect(() => {
+    const listener = (message: any) => {
+      if (message.type === "SHOW_ALERT") {
+        Swal.fire({
+          icon: "info",
+          title: "Notice",
+          text: message.message,
+          confirmButtonColor: "#ff5c35",
+        });
+      }
+
+      if (message.type === "CONNECTIONS_IMPORTED") {
+        setConnections(message.data);
+        setActiveTab("import");
+      }
+    };
+    chrome.runtime.onMessage.addListener(listener);
+    return () => chrome.runtime.onMessage.removeListener(listener);
+  }, []);
 
   return (
     <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
@@ -81,7 +103,7 @@ const LinkedinConnection = () => {
 
       {/* Body Section */}
       <div className="space-y-6">
-        <div className="w-full min-h-[443px] bg-white g-box rounded-lg shadow-sm flex flex-col items-center justify-center relative">
+        <div className="w-full min-h-[443px] bg-white g-box rounded-lg shadow-sm flex flex-col items-center p-6 relative">
 
           {/* Group Tabs - Sticky Top */}
           {/* <div className="grid grid-cols-5 w-full bg-[#ff5c35]/10 rounded-t-lg top-0 z-20 absolute">
@@ -100,9 +122,18 @@ const LinkedinConnection = () => {
             ))}
           </div> */}
 
-          <div className="p-8">
+          {activeTab === "main" ?
+            <div className="w-full flex justify-end items-center">
+              <button onClick={() => setActiveTab("import")} className="flex items-center float-end border gap-2  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition">
+                Show Your Connection
+              </button>
+            </div> : <></>
+          }
+
+          <div className="">
             {/* Main or Import Section */}
             {activeTab === "main" ? (
+
               <div className="flex flex-col items-center justify-center gap-6 mt-6">
                 <p className="text-2xl font-normal text-center text-slate-700">
                   You have 500 connections in LinkedIn, it will take approx 5 days
@@ -120,7 +151,9 @@ const LinkedinConnection = () => {
                 </button>
               </div>
             ) : (
-              <ImportConnection onClose={() => setActiveTab("main")} />
+              <ImportConnection onClose={() => setActiveTab("main")}
+                connections={connections}
+              />
             )}
           </div>
         </div>
