@@ -5,9 +5,10 @@ import { PiLinkSimpleBold } from "react-icons/pi";
 interface ImportConnectionProps {
   onClose: () => void;
   connections: any[];
+  progress: number;
 }
 
-const ImportConnection: React.FC<ImportConnectionProps> = ({ onClose, connections }) => {
+const ImportConnection: React.FC<ImportConnectionProps> = ({ onClose, connections, progress }) => {
   return (
     <div className="flex flex-col items-center justify-center gap-6 w-full h-full ">
 
@@ -28,9 +29,10 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({ onClose, connection
       <div className="w-[80%] h-5 rounded-full overflow-hidden bg-[#ff5c35]/10">
         <div
           className="bg-[#ff5c35] h-full text-xs text-center text-white flex items-center justify-center animate-fill"
-          style={{ width: "76%" }}
+          style={{ width: `${progress}%` }}
         >
-          76%
+          {/* 76% */}
+          <p className="text-sm text-gray-500">{progress}% Completed</p>
         </div>
       </div>
 
@@ -38,9 +40,12 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({ onClose, connection
         <div className="border rounded-lg border-[#e0eaf3]">
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-4 py-2 font-semibold bg-[#fff5f380] border-b border-[#e1eaf4] rounded-t-lg p-4">
-            <div className="text-[14px] col-span-3">Name</div>
-            <div className="text-[14px] col-span-6">Position</div>
-            <div className="text-[14px] col-span-3">profileLink</div>
+            <div className="text-[14px] col-span-2">Name</div>
+            <div className="text-[14px] col-span-2">Email</div>
+            <div className="text-[14px] col-span-2">Phone No</div>
+            <div className="text-[14px] col-span-2">city</div>
+            <div className="text-[14px] col-span-2">Position</div>
+            <div className="text-[14px] col-span-2">profileLink</div>
           </div>
 
           {(() => {
@@ -52,15 +57,24 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({ onClose, connection
                     className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
                   >
                     <div
-                      className={`text-sm capitalize col-span-3 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
+                      className={`text-sm capitalize col-span-2 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
                         }`}
                     >
-                      {item.name}
+                      {item.name || "N/A"}
                     </div>
-                    <div className="text-sm capitalize col-span-6 font-medium ">
-                      {item.occupation}
+                    <div className="text-sm capitalize col-span-2 font-medium ">
+                      {item.email || "N/A"}
                     </div>
-                    <div className="text-sm capitalize col-span-3 truncate">
+                    <div className="text-sm capitalize col-span-2 font-medium ">
+                      {item.phone || "N/A"}
+                    </div>
+                    <div className="text-sm capitalize col-span-2 font-medium ">
+                      {item.city || "N/A"}
+                    </div>
+                    <div className="text-sm capitalize col-span-2 font-medium ">
+                      {item.occupation || "N/A"}
+                    </div>
+                    <div className="text-sm capitalize col-span-2 truncate">
                       <a
                         href={item.profileLink}
                         target="_blank"

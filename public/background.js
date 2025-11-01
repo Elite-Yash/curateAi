@@ -366,17 +366,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
   }
 
-//  My Linkedin scripting data message pass
+
+
+
+
+
+  // 🚀 Start main scraping
   if (request.type === "START_SCRAPING") {
     chrome.storage.local.get(["lastScrapeTime", "totalScraped", "scrapedConnections"], (data) => {
-      const now = new Date().getTime();
+      const now = Date.now();
       const lastScrape = data.lastScrapeTime ? new Date(data.lastScrapeTime).getTime() : 0;
       const hoursPassed = (now - lastScrape) / (1000 * 60 * 60);
-      // const minutesPassed = (now - lastScrape) / (60 * 1000);
-
       const totalScraped = data.totalScraped || 0;
 
-      // ✅ Limit check 500
+      // ✅ 500 Limit Check
       if (totalScraped >= 500) {
         chrome.runtime.sendMessage({
           type: "SHOW_ALERT",
@@ -385,16 +388,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return;
       }
 
-      //       if (minutesPassed < 1 && totalScraped > 0) {
-      //   const remaining = Math.ceil(1 - minutesPassed);
-      //   chrome.runtime.sendMessage({
-      //     type: "SHOW_ALERT",
-      //     message: `You can scrape again after ${remaining} minute(s).`,
-      //   });
-      //   return;
-      // }
-
-      // ⏰ 24 hour lock check
+      // ⏰ 24 Hour Restriction
       if (hoursPassed < 24 && totalScraped > 0) {
         const remaining = (24 - hoursPassed).toFixed(1);
         chrome.runtime.sendMessage({
@@ -404,7 +398,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return;
       }
 
-      // ✅ Allowed to scrape next 100
+      // ✅ Start Range
       const startFrom = totalScraped + 1;
       const endAt = Math.min(totalScraped + 100, 500);
 
@@ -413,17 +407,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         (tab) => {
           chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
             if (tabId === tab.id && info.status === "complete") {
-              chrome.scripting.executeScript(
-                {
-                  target: { tabId: tab.id },
-                  func: scrapeLinkedInConnections,
-                  args: [startFrom, endAt],
-                },
-                async (results) => {
-                  const newData = results?.[0]?.result || [];
+              setTimeout(() => {
+                chrome.tabs.sendMessage(tab.id, {
+                  type: "START_CONNECTION_SCRAPING",
+                  startFrom,
+                  endAt,
+                });
+              }, 2000);
 
-                  // Close tab safely
-                  chrome.tabs.remove(tab.id);
+              chrome.runtime.onMessage.addListener(function handleResponse(msg) {
+                if (msg.type === "CONNECTIONS_SCRAPED") {
+                  const newData = msg.data || [];
+                  console.log("✅ 100 Connection Scraped:", newData);
 
                   const updatedConnections = [
                     ...(data.scrapedConnections || []),
@@ -436,12 +431,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     lastScrapeTime: new Date().toISOString(),
                   });
 
-                  chrome.runtime.sendMessage({
-                    type: "CONNECTIONS_IMPORTED",
-                    data: updatedConnections,
-                  });
+                  chrome.tabs.remove(tab.id);
+
+                  // 🚀 Now start one-by-one profile scraping
+                  scrapeAllProfiles(newData);
+
+                  chrome.runtime.onMessage.removeListener(handleResponse);
                 }
-              );
+              });
 
               chrome.tabs.onUpdated.removeListener(listener);
             }
@@ -451,10 +448,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 
+  // 🧠 Cleanup for profile tabs
+  if (request.type === "PROFILE_SCRAPING_DONE" && sender.tab?.id) {
+    chrome.tabs.remove(sender.tab.id);
+  }
 
-  // important: return true to keep the message channel open for async operations
+
+
+
   return true;
 });
+
+
+
+
 
 const saveMembersData = async (campaign_id, members, typeOfCampaign, campaignName) => {
   try {
@@ -551,71 +558,253 @@ const makeApiRequest = async (url, method, bodyData) => {
   }
 };
 
-//  My Linkedin scripting data 100 connection
-async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) {
-  async function autoScrollDown(scrollStep = 1000, intervalTime = 600, maxSteps = 10) {
-    function findScrollable() { 
-      const all = [...document.querySelectorAll("body, body *")];
-      const sorted = all
-        .map(e => ({ el: e, diff: e.scrollHeight - e.clientHeight }))
-        .filter(x => x.diff > 10)
-        .sort((a, b) => b.diff - a.diff);
-      return sorted.length
-        ? sorted[0].el
-        : (document.scrollingElement || document.documentElement);
-    }
 
-    const el = findScrollable();
-    let count = 0;
-    return new Promise(resolve => {
-      const id = setInterval(() => {
-        if (el === window || el === document.scrollingElement || el === document.documentElement) {
-          window.scrollBy({ top: scrollStep, behavior: "smooth" });
-          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 5) {
-            clearInterval(id);
-            resolve();
-          }
-        } else {
-          el.scrollBy({ top: scrollStep, behavior: "smooth" });
-          if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
-            clearInterval(id);
-            resolve();
-          }
+
+
+
+
+
+// 🧩 Open each profile & scrape data
+// async function scrapeAllProfiles(connectionList) {
+//   const results = [];
+
+//   for (let i = 0; i < connectionList.length; i++) {
+//     const { profileLink, name } = connectionList[i];
+//     console.log(`🔍 Scraping ${i + 1}/${connectionList.length}: ${name}`);
+
+//     const tab = await new Promise((resolve) =>
+//       chrome.tabs.create({ url: profileLink, active: false }, resolve)
+//     );
+
+//     // Wait for page load
+//     await new Promise((resolve) => {
+//       const listener = (tabId, info) => {
+//         if (tabId === tab.id && info.status === "complete") {
+//           chrome.tabs.onUpdated.removeListener(listener);
+//           resolve();
+//         }
+//       };
+//       chrome.tabs.onUpdated.addListener(listener);
+//     });
+
+//     // Inject scraper in that tab
+//     const [{ result }] = await chrome.scripting.executeScript({
+//       target: { tabId: tab.id },
+//       func: scrapeSingleProfile,
+//     });
+
+//     console.log("✅ Profile Scraped:", result);
+
+//     const fullProfile = { ...connectionList[i], ...result };
+//     results.push(fullProfile);
+
+//     // ✅ Send live update to React (real-time)
+//     chrome.runtime.sendMessage({
+//       type: "LIVE_PROFILE_SCRAPED",
+//       data: fullProfile,
+//       current: i + 1,
+//       total: connectionList.length,
+//     });
+
+//     // Close tab
+//     await chrome.tabs.remove(tab.id);
+//     await new Promise((r) => setTimeout(r, 4000));
+//   }
+
+//   console.log("🎉 All profiles scraped:", results.length);
+
+//   // Save all data
+//   chrome.storage.local.set({ profileDetails: results }, () => {
+//     chrome.runtime.sendMessage({
+//       type: "SCRAPING_COMPLETE",
+//       data: results,
+//     });
+//   });
+// }
+
+
+
+// background.js — updated scrapeAllProfiles with overlay contact scraping
+async function scrapeAllProfiles(connectionList, connectionTabId) {
+  const results = [];
+
+  for (let i = 0; i < connectionList.length; i++) {
+    const { profileLink, name } = connectionList[i];
+    console.log(`🔍 [${i + 1}/${connectionList.length}] Opening profile: ${name} — ${profileLink}`);
+
+    // 1) Open profile in a VISIBLE tab (user should see it)
+    const tab = await new Promise((resolve) =>
+      chrome.tabs.create({ url: profileLink, active: true }, resolve)
+    );
+
+    // 2) Wait for profile page to finish loading (status "complete")
+    await new Promise((resolve) => {
+      const listener = (tabId, info) => {
+        if (tabId === tab.id && info.status === "complete") {
+          chrome.tabs.onUpdated.removeListener(listener);
+          // small extra delay to let LinkedIn render SPA content
+          setTimeout(resolve, 1200);
         }
-        count++;
-        if (count > maxSteps) {
-          clearInterval(id);
-          resolve();
-        }
-      }, intervalTime);
+      };
+      chrome.tabs.onUpdated.addListener(listener);
     });
-  }
 
-  async function extractConnections(start, end) {
-    const connections = [];
-
-    for (let i = 0; i < 15; i++) {
-      const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
-      if (cards.length >= end) break;
-      await autoScrollDown(1000, 800, 4);
-      await new Promise(r => setTimeout(r, 1500));
+    // 3) Scrape main profile fields (name, position, city) using executeScript
+    let mainResult = { name: "", position: "", city: "" };
+    try {
+      const execRes = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          // This runs inside profile page context
+          const grab = (sel) =>
+            document.querySelector(sel)?.innerText?.trim?.() || "";
+          const name = grab(".text-heading-xlarge") || grab("h1");
+          const position = grab(".text-body-medium.break-words");
+          const city = grab(".text-body-small.inline.t-black--light.break-words");
+          return { name, position, city };
+        },
+      });
+      mainResult = (execRes && execRes[0] && execRes[0].result) || mainResult;
+    } catch (e) {
+      console.warn("⚠️ main profile scrape failed:", e);
     }
 
-    const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
-    cards.forEach((el, i) => {
-      if (i >= start - 1 && i < end) {
-        const name = el.querySelector("a p")?.innerText?.trim() || "";
-        const occupation = el.querySelectorAll("a p")[1]?.innerText?.trim() || "";
-        const profileLink = el.querySelector('a[href*="/in/"]')?.href || "";
+    // 4) Now navigate this SAME tab to overlay contact page
+    // ensure trailing slash and then 'overlay/contact-info/'
+    const overlayUrl = profileLink.replace(/\/+$/, "") + "/overlay/contact-info/";
+    try {
+      await new Promise((resolve) => {
+        chrome.tabs.update(tab.id, { url: overlayUrl, active: true }, (updatedTab) => {
+          // Wait for overlay page to load
+          const listener2 = (tabId, info) => {
+            if (tabId === updatedTab.id && info.status === "complete") {
+              chrome.tabs.onUpdated.removeListener(listener2);
+              // give a bit of time for overlay content to render
+              setTimeout(resolve, 1000);
+            }
+          };
+          chrome.tabs.onUpdated.addListener(listener2);
+        });
+      });
+    } catch (e) {
+      console.warn("⚠️ overlay navigation failed:", e);
+    }
 
-        if (name) {
-          connections.push({ name, occupation, profileLink });
-        }
+    // 5) Scrape overlay page: try DOM selectors, fallback to body text + regex
+    let contactResult = { email: "", phone: "" };
+    try {
+      const execRes2 = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          // run inside overlay page
+          const out = { email: "", phone: "" };
+
+          // 1) try common selectors (LinkedIn overlay may have mailto/tel anchors)
+          const emailEl = document.querySelector("a[href^='mailto:']");
+          if (emailEl) out.email = emailEl.innerText?.trim?.() || emailEl.getAttribute("href")?.replace(/^mailto:/, "") || "";
+
+          const phoneEl = document.querySelector("a[href^='tel:']");
+          if (phoneEl) out.phone = phoneEl.innerText?.trim?.() || phoneEl.getAttribute("href")?.replace(/^tel:/, "") || "";
+
+          // 2) fallback: search visible text for emails/phones
+          if (!out.email || !out.phone) {
+            const text = (document.body && document.body.innerText) || "";
+            // email regex
+            const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
+            const foundEmails = text.match(emailRegex);
+            if (!out.email && foundEmails && foundEmails.length) out.email = foundEmails[0];
+
+            // phone regex (lenient)
+            const phoneRegex = /(\+\d{1,3}[\s-]?)?\(?\d{2,4}\)?[\s-]?\d{3,5}[\s-]?\d{4,6}/g;
+            const foundPhones = (text.match(phoneRegex) || []).filter(p => p.replace(/\D/g, "").length >= 8);
+            if (!out.phone && foundPhones.length) out.phone = foundPhones[0];
+          }
+
+          return out;
+        },
+      });
+
+      contactResult = (execRes2 && execRes2[0] && execRes2[0].result) || contactResult;
+    } catch (e) {
+      console.warn("⚠️ overlay scrape failed:", e);
+    }
+
+    // 6) Merge results and push
+    const fullProfile = {
+      ...connectionList[i],
+      name: mainResult.name || connectionList[i].name,
+      position: mainResult.position || "",
+      city: mainResult.city || "",
+      email: contactResult.email || "",
+      phone: contactResult.phone || "",
+      scrapedAt: new Date().toISOString(),
+    };
+
+    results.push(fullProfile);
+
+    // 7) Send LIVE update to React/UI so table can show row-by-row
+    chrome.runtime.sendMessage({
+      type: "LIVE_PROFILE_SCRAPED",
+      data: fullProfile,
+      current: i + 1,
+      total: connectionList.length,
+    });
+
+    // 8) Close this profile tab
+    try {
+      await chrome.tabs.remove(tab.id);
+    } catch (e) {
+      console.warn("⚠️ failed to close profile tab:", e);
+    }
+
+    // 9) Focus back to connection tab so user returns there
+    try {
+      await chrome.tabs.update(connectionTabId, { active: true });
+    } catch (e) {
+      // ignore
+    }
+
+    // 10) polite delay before next profile to avoid rate-limit
+    await new Promise((r) => setTimeout(r, 2500));
+  } // for each profile
+
+  // All done: merge into chrome.storage and notify
+  chrome.storage.local.get(["profileDetails"], (store) => {
+    const merged = [...(store.profileDetails || []), ...results];
+    chrome.storage.local.set({ profileDetails: merged }, () => {
+      console.log("✅ All profiles saved:", merged.length);
+
+      // close the connection tab (if you want)
+      try {
+        chrome.tabs.remove(connectionTabId);
+      } catch (e) {
+        // ignore
       }
-    });
-    return connections;
-  }
 
-  const connetionMemberData = await extractConnections(startIndex, endIndex);
-  return connetionMemberData;
+      chrome.runtime.sendMessage({
+        type: "SCRAPING_COMPLETE",
+        data: merged,
+      });
+    });
+  });
 }
+
+
+
+
+// // 🔍 Actual DOM scraping inside LinkedIn profile
+// function scrapeSingleProfile() {
+//   const name =
+//     document.querySelector(".text-heading-xlarge, h1")?.innerText?.trim() || "";
+//   const position =
+//     document.querySelector(".text-body-medium.break-words")?.innerText?.trim() || "";
+//   const city =
+//     document.querySelector(".text-body-small.inline.t-black--light.break-words")?.innerText?.trim() || "";
+//   const email =
+//     document.querySelector("a[href^='mailto:']")?.innerText?.trim() || "";
+//   const phone =
+//     document.querySelector("a[href^='tel:']")?.innerText?.trim() || "";
+
+//   return { name, position, city, email, phone };
+// }
+

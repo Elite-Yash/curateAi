@@ -398,3 +398,96 @@ export const LinkedInHelper = {
     })
   },
 };
+
+
+
+
+
+export async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) {
+  async function autoScrollDown(scrollStep = 1000, intervalTime = 600, maxSteps = 10) {
+    function findScrollable() {
+      const all = [...document.querySelectorAll("body, body *")];
+      const sorted = all
+        .map(e => ({ el: e, diff: e.scrollHeight - e.clientHeight }))
+        .filter(x => x.diff > 10)
+        .sort((a, b) => b.diff - a.diff);
+      return sorted.length ? sorted[0].el : (document.scrollingElement || document.documentElement);
+    }
+
+    const el = findScrollable();
+    let count = 0;
+    return new Promise<void>((resolve) => {
+      const id = setInterval(() => {
+        if (el instanceof Window || el === document.scrollingElement || el === document.documentElement) {
+          window.scrollBy({ top: scrollStep, behavior: "smooth" });
+          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 5) {
+            clearInterval(id);
+            resolve();
+          }
+        } else {
+          el.scrollBy({ top: scrollStep, behavior: "smooth" });
+          if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
+            clearInterval(id);
+            resolve();
+          }
+        }
+        count++;
+        if (count > maxSteps) {
+          clearInterval(id);
+          resolve();
+        }
+      }, intervalTime);
+    });
+  }
+
+  async function extractConnections(start: any, end: any) {
+    const connections: any[] = [];
+
+    // 🧠 Step 1: Find total connections count from <p> tag
+    const pTag = [...document.querySelectorAll("main p")]
+      .find(p => p.textContent.toLowerCase().includes("connections"));
+    const totalConnections = pTag ? parseInt(pTag.textContent) || 0 : 0;
+
+    console.log("🔢 Total connections found:", totalConnections);
+
+    // 🧠 Step 2: Decide how many we should actually scrape
+    const targetCount = Math.min(end, totalConnections);
+
+    // 🧠 Step 3: Auto scroll only until we have enough cards visible
+    for (let i = 0; i < 10; i++) {
+      const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+      console.log(`📜 Currently loaded cards: ${cards.length}`);
+
+      // Stop if enough cards are loaded or user has fewer connections
+      if (cards.length >= targetCount || cards.length >= totalConnections) {
+        break;
+      }
+
+      // Scroll down to load more connections
+      await autoScrollDown(1000, 800, 4);
+      await new Promise(r => setTimeout(r, 1500));
+    }
+
+    // 🧠 Step 4: Collect visible connections
+    const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+    cards.forEach((el: any, i: any) => {
+      if (i >= start - 1 && i < targetCount) {
+        const name = el.querySelector("a p")?.innerText?.trim() || "";
+        const occupation = el.querySelectorAll("a p")[1]?.innerText?.trim() || "";
+        const profileLink = el.querySelector('a[href*="/in/"]')?.href || "";
+
+        if (name && profileLink) {
+          connections.push({ name, occupation, profileLink });
+        }
+      }
+    });
+
+    console.log(`✅ Extracted ${connections.length} connections`);
+    return connections;
+  }
+
+
+  const connectionData = await extractConnections(startIndex, endIndex);
+  console.log("✅ 100 Connections Scraped:", connectionData);
+  return connectionData;
+}

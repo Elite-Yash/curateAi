@@ -459,14 +459,14 @@ body {
   border-radius: 10px;
 }
 
-@keyframes fill {
+/* @keyframes fill {
   from {
     width: 0%;
   }
   to {
     width: 76%;
   }
-}
+} */
 .animate-fill {
   animation: fill 2s ease-out forwards;
 }

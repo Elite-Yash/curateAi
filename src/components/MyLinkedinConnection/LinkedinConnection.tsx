@@ -11,11 +11,20 @@ const groups = [
   { id: 5, name: "Group 5" },
 ];
 
+interface ProfileData {
+  name: string;
+  position: string;
+  city?: string;
+  email?: string;
+  phone?: string;
+}
+
+
 const LinkedinConnection = () => {
   const [activeTab, setActiveTab] = useState<"main" | "import">("main");
   const [activeGroup, setActiveGroup] = useState<number>(1);
-  const [connections, setConnections] = useState([]);
-
+  const [connections, setConnections] = useState<ProfileData[]>([]);
+  const [progress, setProgress] = useState<number>(0);
   const handleImportClick = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -32,7 +41,7 @@ const LinkedinConnection = () => {
     });
   };
 
-  // Listen for messages (alerts)
+
   useEffect(() => {
     const listener = (message: any) => {
       if (message.type === "SHOW_ALERT") {
@@ -44,14 +53,31 @@ const LinkedinConnection = () => {
         });
       }
 
-      if (message.type === "CONNECTIONS_IMPORTED") {
-        setConnections(message.data);
+      // ✅ When one profile is scraped, show ImportConnection tab
+      if (message.type === "LIVE_PROFILE_SCRAPED") {
         setActiveTab("import");
+        setConnections((prev) => [...prev, message.data]);
+
+        // ✅ Add this new part for live progress bar
+        const progress = Math.round((message.current / message.total) * 100);
+        setProgress(progress);
+      }
+
+      // ✅ When all done
+      if (message.type === "SCRAPING_COMPLETE") {
+        Swal.fire({
+          icon: "success",
+          title: "Scraping Complete!",
+          text: "All profiles scraped successfully.",
+          confirmButtonColor: "#ff5c35",
+        });
       }
     };
+
     chrome.runtime.onMessage.addListener(listener);
     return () => chrome.runtime.onMessage.removeListener(listener);
   }, []);
+
 
   return (
     <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
@@ -76,7 +102,7 @@ const LinkedinConnection = () => {
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <span className="text-sm text-slate-600">
-              My LinkedIn Connection Ready
+              {connections.length} My LinkedIn Connection Ready
             </span>
           </div>
         </div>
@@ -153,6 +179,7 @@ const LinkedinConnection = () => {
             ) : (
               <ImportConnection onClose={() => setActiveTab("main")}
                 connections={connections}
+                progress={progress}
               />
             )}
           </div>
