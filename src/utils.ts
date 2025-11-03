@@ -448,15 +448,12 @@ export async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) 
       .find(p => p.textContent.toLowerCase().includes("connections"));
     const totalConnections = pTag ? parseInt(pTag.textContent) || 0 : 0;
 
-    console.log("🔢 Total connections found:", totalConnections);
-
     // 🧠 Step 2: Decide how many we should actually scrape
     const targetCount = Math.min(end, totalConnections);
 
     // 🧠 Step 3: Auto scroll only until we have enough cards visible
     for (let i = 0; i < 10; i++) {
       const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
-      console.log(`📜 Currently loaded cards: ${cards.length}`);
 
       // Stop if enough cards are loaded or user has fewer connections
       if (cards.length >= targetCount || cards.length >= totalConnections) {
@@ -482,12 +479,10 @@ export async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) 
       }
     });
 
-    console.log(`✅ Extracted ${connections.length} connections`);
     return connections;
   }
 
 
   const connectionData = await extractConnections(startIndex, endIndex);
-  console.log("✅ 100 Connections Scraped:", connectionData);
   return connectionData;
 }

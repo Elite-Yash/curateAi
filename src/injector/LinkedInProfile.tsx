@@ -89,8 +89,7 @@ const LinkedInProfile = () => {
                 const emails = bodyText.match(emailRegex);
                 const emailData = emails ? emails[0] : ""
                 //  Phone Regex
-                const phoneRegex = /(\+\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,5}[-.\s]?\d{4,6}/g;
-                // const phoneRegex = /(\+?\d{1,4}[\s-]?)?(\(?\d{2,5}\)?[\s-]?)?[\d\s-]{5,15}\d/g;
+                const phoneRegex = /(\+\d{1,3}[\s-]?)?\(?\d{3,5}\)?[\s-]?\d{3,5}[\s-]?\d{4,6}/g;
                 const phones = bodyText.match(phoneRegex);
                 const phoneData = phones ? phones[0] : "";
 

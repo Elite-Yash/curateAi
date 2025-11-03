@@ -64,16 +64,14 @@ const Layout = () => {
         }
 
         if (request.type === "START_CONNECTION_SCRAPING") {
-          console.log("📩 Starting connection scraping...");
           const data = await scrapeLinkedInConnections(request.startFrom, request.endAt);
-          console.log("  ~ messageListener ~ data:", data)
           chrome.runtime.sendMessage({
             type: "CONNECTIONS_SCRAPED",
             data,
           });
         }
 
-        
+
       } catch (err) {
         console.error(err);
         sendResponse({ status: "error", error: err });
