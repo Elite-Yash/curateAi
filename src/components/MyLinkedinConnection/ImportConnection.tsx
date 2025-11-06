@@ -38,6 +38,7 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({
   connections,
   progress,
 }) => {
+          console.log("  ~ ImportConnection ~ connections:", connections)
   return (
     <div className="flex flex-col items-center justify-center gap-6 w-full h-full">
       <div className="flex items-center justify-between w-full gap-3">
@@ -49,7 +50,7 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({
         {/* Back Button */}
         <div
           onClick={onClose}
-          className="flex items-center border gap-2 px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition cursor-pointer"
+          className="flex items-center border gap-2 px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition cursor-pointer"
         >
           <i className="fa-solid fa-turn-up -rotate-90"></i>
         </div>
@@ -106,8 +107,8 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({
 
           {connections.length > 0 ? (
             <div className="!border-[#e0eaf3] max-h-125 !h-auto overflow-auto">
-              {connections.map((item, index) => (
-                <div
+              {connections.map((item, index) => {
+                return <div
                   key={index}
                   className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
                 >
@@ -133,11 +134,11 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({
                   </div>
 
                   {/* ✅ Occupation Column with Read More / Show Less */}
-                  <OccupationText text={item.occupation || ""} />
+                  <OccupationText text={item.position || ""} />
 
                   <div className="text-sm capitalize col-span-2 truncate">
                     <a
-                      href={item.profileLink}
+                      href={item.navigationUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -147,8 +148,8 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({
                       </button>
                     </a>
                   </div>
-                </div>
-              ))}
+                </div>;
+              })}
             </div>
           ) : (
             // Empty state

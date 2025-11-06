@@ -456,7 +456,7 @@ const CampaignModal = ({ isOpen, closeModalPoupBox, onCampaignCreated, editableC
                                                     <button type="button" className="relative UploadFile">
                                                         <span className="flex items-center gap-2 mt-[2px]">
                                                             <span
-                                                                className="UploadFile-btn z-9 flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition cursor-pointer"
+                                                                className="UploadFile-btn z-9 flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition cursor-pointer"
                                                                 onClick={handleClick}
                                                             >
                                                                 Choose File

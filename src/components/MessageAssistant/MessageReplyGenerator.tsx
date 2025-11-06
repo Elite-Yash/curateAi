@@ -485,7 +485,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               <div className="flex gap-3">
                 <button
                   onClick={copyToClipboard}
-                  className="flex-1 px-4 py-2 border text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition flex items-center justify-center"
+                  className="flex-1 px-4 py-2 border text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition flex items-center justify-center"
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   {copied ? "Reply Copied!" : "Copy Reply"}

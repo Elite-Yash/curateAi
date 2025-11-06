@@ -646,7 +646,7 @@ const SaveProfile = () => {
             >
               <button
                 onClick={connectToCRM}
-                className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
+                className="flex items-center gap-2 border  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition"
               >
                 <i className="fa-solid fa-globe"></i>
                 <span>Connect to CRM</span>

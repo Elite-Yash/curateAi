@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { LuLightbulb } from "react-icons/lu";
 import { useCallback, useEffect, useState } from "react";
 import { apiService } from "../../common/config/apiService";
+import RecentActityTable from "./RecentActivityTable";
 
 const actions = [
   {
@@ -56,6 +57,7 @@ const actions = [
 const Home = () => {
   const [commentsData, setCommentsData] = useState<any[]>([]);
   const [profilesData, setProfilesData] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // const navigate = useNavigate();
 
   const fetchComments = useCallback(async () => {
@@ -73,6 +75,7 @@ const Home = () => {
         undefined, // No query parameters
         {}, // No request body
         (result: any) => {
+          console.log("  ~ Home ~ result:", result)
           if (result?.status === 200 && Array.isArray(result?.data.data)) {
             setCommentsData(result.data.data);
           } else {
@@ -100,6 +103,7 @@ const Home = () => {
         undefined,
         {},
         (response: any) => {
+          console.log("  ~ Home ~ response profile:", response)
           if (response?.status === 200 && response?.data?.data.profiles) {
             setProfilesData(response?.data?.data.profiles || []);
           } else {
@@ -126,6 +130,37 @@ const Home = () => {
       return diffHours <= 24 * 7 && (!type || item.comment_type === type);
     }).length;
   };
+
+
+  // ✅ Merge & Filter data (same logic)
+  const mergedData = [
+    ...commentsData.map((item) => ({
+      type: "comment",
+      comment_type: item.comment_type || "Post",
+      title: item.genarate_title || "Untitled",
+      details: item.comment || "—",
+      date: new Date(item.created_at),
+      LinkedinUrl: item.post_url || "N/A",
+      status: item.status || "N/A",
+    })),
+    ...profilesData.map((profile) => ({
+      type: "profile",
+      comment_type: "Saved Profile",
+      title: `${profile.first_name} ${profile.last_name}`,
+      details: `${profile.position} @ ${profile.organization}`,
+      date: new Date(profile.created_at),
+      LinkedinUrl: profile.url || "N/A",
+    })),
+  ]
+    .filter((item) => {
+      const now = new Date();
+      const diffHours =
+        (now.getTime() - item.date.getTime()) / (1000 * 60 * 60);
+      return diffHours <= 24;
+    })
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+
 
   return (
     <>
@@ -207,6 +242,13 @@ const Home = () => {
                   <FaRegClock className="w-5 h-5 text-[#ff5c35]" />
                   Recent Activity
                 </div>
+
+                <div className="flex justify-end items-center">
+                  <button onClick={() => setIsModalOpen(true)} className="flex items-center float-end border gap-2 px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition">
+                    Show Your Full View
+                  </button>
+                </div>
+
               </div>
 
               <div className="p-2.5 pt-0">
@@ -218,66 +260,41 @@ const Home = () => {
                     <div className="text-[14px] col-span-6">Details</div>
                   </div>
 
-                  {(() => {
-                    // Merge and filter both data types
-                    const mergedData = [
-                      ...commentsData.map((item) => ({
-                        type: "comment",
-                        comment_type: item.comment_type || "Post",
-                        title: item.genarate_title || "Untitled",
-                        details: item.comment || "—",
-                        date: new Date(item.created_at),
-                      })),
-                      ...profilesData.map((profile) => ({
-                        type: "profile",
-                        comment_type: "Saved Profile",
-                        title: `${profile.first_name} ${profile.last_name}`,
-                        details: `${profile.position} @ ${profile.organization}`,
-                        date: new Date(profile.created_at),
-                      })),
-                    ]
-                      .filter((item) => {
-                        const now = new Date();
-                        const diffHours = (now.getTime() - item.date.getTime()) / (1000 * 60 * 60);
-                        return diffHours <= 24;
-                      })
-                      .sort((a, b) => b.date.getTime() - a.date.getTime());
-
-                    // ✅ Show recent or empty message
-                    return mergedData.length > 0 ? (
-                      <div className="!border-[#e0eaf3] max-h-125 !h-auto overflow-auto">
-                        {mergedData.map((item, index) => (
+                  {/* // ✅ Show recent or empty message */}
+                  {mergedData.length > 0 ? (
+                    <div className="!border-[#e0eaf3] max-h-125 !h-auto overflow-auto">
+                      {mergedData.map((item, index) => (
+                        <div
+                          key={index}
+                          className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
+                        >
                           <div
-                            key={index}
-                            className="py-4 px-4 even:bg-[#fff5f380] grid grid-cols-12 gap-4 items-start"
+                            className={`text-sm capitalize col-span-3 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
+                              }`}
                           >
-                            <div
-                              className={`text-sm capitalize col-span-3 font-semibold ${item.type === "profile" ? "text-blue-500" : "text-[#ff5c35]"
-                                }`}
-                            >
-                              {item.comment_type}
-                            </div>
-                            <div className="text-sm capitalize col-span-3 font-medium ">
-                              {item.title}
-                            </div>
-                            <div className="text-sm capitalize col-span-6 truncate">
-                              {item.details}
-                            </div>
+                            {item.comment_type}
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      // Empty state
-                      <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
-                          <FaRegClock className="w-8 h-8 text-[#ff5c35]" />
+                          <div className="text-sm capitalize col-span-3 font-medium ">
+                            {item.title}
+                          </div>
+                          <div className="text-sm capitalize col-span-6 truncate">
+                            {item.details}
+                          </div>
                         </div>
-                        <p className="text-[#64748b] font-medium !text-xl mb-2">
-                          No Recent Activity yet
-                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    // Empty state
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FaRegClock className="w-8 h-8 text-[#ff5c35]" />
                       </div>
-                    );
-                  })()}
+                      <p className="text-[#64748b] font-medium !text-xl mb-2">
+                        No Recent Activity yet
+                      </p>
+                    </div>
+                  )
+                  }
                 </div>
               </div>
 
@@ -494,6 +511,14 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* 🔹 Modal Component */}
+      <RecentActityTable
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        mergedData={mergedData}
+      />
+
     </>
   );
 };

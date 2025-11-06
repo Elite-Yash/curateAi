@@ -22,7 +22,7 @@ const ProfileCardTable = ({ profile, onClose }: any) => {
                         <User className="w-5 h-5 text-[#ff5c35]" />
                         Profile Details
                     </div>
-                    <div onClick={onClose} className="flex items-center border gap-2  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition">
+                    <div onClick={onClose} className="flex items-center border gap-2  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition">
                         <i className="fa-solid fa-turn-up -rotate-90"></i>
                     </div>
                 </div>

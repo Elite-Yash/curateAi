@@ -190,7 +190,7 @@ const MessageCampaignTable = () => {
           > */}
           <button
             onClick={() => { console.log("Add Campaign button clicked!"); setIsModalOpen(true) }}
-            className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
+            className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition"
           >
             <MdCampaign className='text-xl' />
             <span>Add Campaign</span>

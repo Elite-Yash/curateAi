@@ -369,15 +369,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 
-
-
   // 🚀 Start main scraping
   if (request.type === "START_SCRAPING") {
     chrome.storage.local.get(["lastScrapeTime", "totalScraped", "scrapedConnections"], (data) => {
       const now = Date.now();
       const lastScrape = data.lastScrapeTime ? new Date(data.lastScrapeTime).getTime() : 0;
       const hoursPassed = (now - lastScrape) / (1000 * 60 * 60);
-      // const minutesPassed = (now - lastScrape) / (1000 * 60);
       const totalScraped = data.totalScraped || 0;
 
       // 500 Limit Check
@@ -389,16 +386,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return;
       }
 
-      // ⏰ 1 Minute Restriction (for testing)
-      // if (minutesPassed < 1 && totalScraped > 0) {
-      //   const remaining = (1 - minutesPassed).toFixed(1);
-      //   chrome.runtime.sendMessage({
-      //     type: "SHOW_ALERT",
-      //     message: `⏳ You can scrape again after ${remaining} minutes.`,
-      //   });
-      //   return;
-      // }
-      // ⏰ 24 Hour Restriction
+      // 24 Hour Restriction
       if (hoursPassed < 24 && totalScraped > 0) {
         const remaining = (24 - hoursPassed).toFixed(1);
         chrome.runtime.sendMessage({
@@ -408,8 +396,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return;
       }
 
-      // ✅ Start Range
-      const startFrom = totalScraped + 1;
+      // Start Range
+      const startFrom = totalScraped;
       const endAt = Math.min(totalScraped + 100, 500);
 
       chrome.tabs.create(
@@ -442,9 +430,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
                   chrome.tabs.remove(tab.id);
 
-                  // 🚀 Now start one-by-one profile scraping
+                  //  Now start one-by-one profile scraping
                   scrapeAllProfiles(newData);
-
                   chrome.runtime.onMessage.removeListener(handleResponse);
                 }
               });
@@ -457,7 +444,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 
-  // 🧠 Cleanup for profile tabs
+  // Cleanup for profile tabs
   if (request.type === "PROFILE_SCRAPING_DONE" && sender.tab?.id) {
     chrome.tabs.remove(sender.tab.id);
   }
@@ -571,11 +558,11 @@ async function scrapeAllProfiles(connectionList, connectionTabId) {
   const results = [];
 
   for (let i = 0; i < connectionList.length; i++) {
-    const { profileLink, name } = connectionList[i];
+    const { navigationUrl } = connectionList[i];
 
     // 1) Open profile in a VISIBLE tab (user should see it)
     const tab = await new Promise((resolve) =>
-      chrome.tabs.create({ url: profileLink, active: true }, resolve)
+      chrome.tabs.create({ url: navigationUrl, active: true }, resolve)
     );
 
     // 2) Wait for profile page to finish loading (status "complete")
@@ -612,7 +599,7 @@ async function scrapeAllProfiles(connectionList, connectionTabId) {
 
     // 4) Now navigate this SAME tab to overlay contact page
     // ensure trailing slash and then 'overlay/contact-info/'
-    const overlayUrl = profileLink.replace(/\/+$/, "") + "/overlay/contact-info/";
+    const overlayUrl = navigationUrl.replace(/\/+$/, "") + "/overlay/contact-info/";
     try {
       await new Promise((resolve) => {
         chrome.tabs.update(tab.id, { url: overlayUrl, active: true }, (updatedTab) => {

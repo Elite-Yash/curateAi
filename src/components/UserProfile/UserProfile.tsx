@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getImage } from "../../common/utils/logoUtils";
+// import { getImage } from "../../common/utils/logoUtils";
 import Loader from "../Loader/Loader";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { apiService } from "../../common/config/apiService";
 import Swal from "sweetalert2";
 import { openWindowTab } from "../../common/helpers/commonHelpers";
@@ -19,7 +19,7 @@ interface TrialPlanDetails {
   current_period_end: number;
 }
 const UserProfile = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [load, setLoad] = useState<any>(true);
   const [activePlan, setActiveplan] = useState(false);
   const [userDetails, seUserDetails] = useState({
@@ -161,8 +161,8 @@ const UserProfile = () => {
 
   return (
     <>
-      <div className="c-padding-r pt-12 relative pl-[390px] pr-[110px]">
-        {load ? (
+      <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
+        {load ? (     
           <div className="flex justify-between gap-5 w-full">
             <div className="rounded-2xl w-full">
               <div className="p-5 bg-white g-box g-box-table pt-[15%] pb-[15%] px-0">
@@ -183,12 +183,14 @@ const UserProfile = () => {
                     </div>
                     <div className="mt-6">
                       <div className="flex items-center space-x-4 mt-4">
-                        <span className="relative w-16 h-16 p-[3px] border-[#ff5c35] border-[2.5px] rounded-full overflow-hidden">
-                          <img
+                        <span className="icon w-16 text-[48px] h-16 rounded-full overflow-hidden border-2 border-solid border-[#ff5c35] bg-[#ff5c35] outline-1 outline-green-950 outline flex justify-center items-center text-white">
+                         {userDetails?.name ? userDetails.name.charAt(0).toUpperCase() : "U"}
+           
+                          {/* <img
                             src={getImage("userprofile")}
                             alt="img"
                             className="w-full h-full rounded-full object-cover"
-                          />
+                          /> */}
                         </span>
                         <div>
                           <p className="text-lg font-semibold">

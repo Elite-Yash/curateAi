@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+
 /**
  * Merge Tailwind + clsx classes
  *
@@ -403,86 +404,177 @@ export const LinkedInHelper = {
 
 
 
-export async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) {
-  async function autoScrollDown(scrollStep = 1000, intervalTime = 600, maxSteps = 10) {
-    function findScrollable() {
-      const all = [...document.querySelectorAll("body, body *")];
-      const sorted = all
-        .map(e => ({ el: e, diff: e.scrollHeight - e.clientHeight }))
-        .filter(x => x.diff > 10)
-        .sort((a, b) => b.diff - a.diff);
-      return sorted.length ? sorted[0].el : (document.scrollingElement || document.documentElement);
-    }
+// export async function scrapeLinkedInConnections(startIndex = 1, endIndex = 100) {
+//   async function autoScrollDown(scrollStep = 1000, intervalTime = 600, maxSteps = 10) {
+//     function findScrollable() {
+//       const all = [...document.querySelectorAll("body, body *")];
+//       const sorted = all
+//         .map(e => ({ el: e, diff: e.scrollHeight - e.clientHeight }))
+//         .filter(x => x.diff > 10)
+//         .sort((a, b) => b.diff - a.diff);
+//       return sorted.length ? sorted[0].el : (document.scrollingElement || document.documentElement);
+//     }
 
-    const el = findScrollable();
-    let count = 0;
-    return new Promise<void>((resolve) => {
-      const id = setInterval(() => {
-        if (el instanceof Window || el === document.scrollingElement || el === document.documentElement) {
-          window.scrollBy({ top: scrollStep, behavior: "smooth" });
-          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 5) {
-            clearInterval(id);
-            resolve();
-          }
-        } else {
-          el.scrollBy({ top: scrollStep, behavior: "smooth" });
-          if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
-            clearInterval(id);
-            resolve();
-          }
+//     const el = findScrollable();
+//     let count = 0;
+//     return new Promise<void>((resolve) => {
+//       const id = setInterval(() => {
+//         if (el instanceof Window || el === document.scrollingElement || el === document.documentElement) {
+//           window.scrollBy({ top: scrollStep, behavior: "smooth" });
+//           if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 5) {
+//             clearInterval(id);
+//             resolve();
+//           }
+//         } else {
+//           el.scrollBy({ top: scrollStep, behavior: "smooth" });
+//           if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5) {
+//             clearInterval(id);
+//             resolve();
+//           }
+//         }
+//         count++;
+//         if (count > maxSteps) {
+//           clearInterval(id);
+//           resolve();
+//         }
+//       }, intervalTime);
+//     });
+//   }
+
+//   async function extractConnections(start: any, end: any) {
+//     const connections: any[] = [];
+
+//     // 🧠 Step 1: Find total connections count from <p> tag
+//     const pTag = [...document.querySelectorAll("main p")]
+//       .find(p => p.textContent.toLowerCase().includes("connections"));
+//     const totalConnections = pTag ? parseInt(pTag.textContent) || 0 : 0;
+
+//     // 🧠 Step 2: Decide how many we should actually scrape
+//     const targetCount = Math.min(end, totalConnections);
+
+//     // 🧠 Step 3: Auto scroll only until we have enough cards visible
+//     for (let i = 0; i < 10; i++) {
+//       const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+
+//       // Stop if enough cards are loaded or user has fewer connections
+//       if (cards.length >= targetCount || cards.length >= totalConnections) {
+//         break;
+//       }
+
+//       // Scroll down to load more connections
+//       await autoScrollDown(1000, 800, 4);
+//       await new Promise(r => setTimeout(r, 1500));
+//     }
+
+//     // 🧠 Step 4: Collect visible connections
+//     const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+//     cards.forEach((el: any, i: any) => {
+//       if (i >= start - 1 && i < targetCount) {
+//         const name = el.querySelector("a p")?.innerText?.trim() || "";
+//         const occupation = el.querySelectorAll("a p")[1]?.innerText?.trim() || "";
+//         const profileLink = el.querySelector('a[href*="/in/"]')?.href || "";
+
+//         if (name && profileLink) {
+//           connections.push({ name, occupation, profileLink });
+//         }
+//       }
+//     });
+
+//     return connections;
+//   }
+
+
+//   const connectionData = await extractConnections(startIndex, endIndex);
+//   return connectionData;
+// }
+
+
+
+
+
+
+  // APi use 
+export async function scrapeLinkedInConnections(start:any, limit: any) {
+  try {
+    const getCsrfToken = async () => {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'JSESSIONID') {
+          return value.replace(/"/g, '');
         }
-        count++;
-        if (count > maxSteps) {
-          clearInterval(id);
-          resolve();
-        }
-      }, intervalTime);
+      }
+      throw new Error('CSRF token not found');
+    };
+
+    const postSavelinkedinFConnections = async (connections : any) => {
+      console.log('💾 Saving connections...', connections);
+      // Example placeholder for saving API call
+      // await fetch("https://your-api-url.com/save", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(connections),
+      // });
+    };
+
+    const csrfToken = await getCsrfToken();
+    const apiUrl = `https://www.linkedin.com/voyager/api/relationships/connections?count=${limit}&sortType=RECENTLY_ADDED&start=${start}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'csrf-token': csrfToken,
+        'x-restli-protocol-version': '2.0.0',
+        'accept': 'application/json',
+      },
+      credentials: 'include',
     });
-  }
 
-  async function extractConnections(start: any, end: any) {
-    const connections: any[] = [];
+    if (!response.ok) throw new Error(`LinkedIn API request failed: ${response.status}`);
 
-    // 🧠 Step 1: Find total connections count from <p> tag
-    const pTag = [...document.querySelectorAll("main p")]
-      .find(p => p.textContent.toLowerCase().includes("connections"));
-    const totalConnections = pTag ? parseInt(pTag.textContent) || 0 : 0;
+    const data = await response.json();
+    const connections = [];
 
-    // 🧠 Step 2: Decide how many we should actually scrape
-    const targetCount = Math.min(end, totalConnections);
+    if (data && data.elements && data.elements.length > 0) {
+      for (const el of data.elements) {
+        const miniProfile = el.miniProfile;
+        if (!miniProfile) continue;
 
-    // 🧠 Step 3: Auto scroll only until we have enough cards visible
-    for (let i = 0; i < 10; i++) {
-      const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
+        let image = '';
+        const pic = miniProfile.picture?.['com.linkedin.common.VectorImage'];
+        if (pic?.artifacts?.length && pic.rootUrl) {
+          image = pic.rootUrl + pic.artifacts[0].fileIdentifyingUrlPathSegment;
+        }
 
-      // Stop if enough cards are loaded or user has fewer connections
-      if (cards.length >= targetCount || cards.length >= totalConnections) {
-        break;
+        let company_Name = '';
+        let profile_job_title = '';
+        const occ = miniProfile.occupation || '';
+        if (occ.includes('chez')) [profile_job_title, company_Name] = occ.split('chez ');
+        else if (occ.includes('at')) [profile_job_title, company_Name] = occ.split('at ');
+        else if (occ.includes('/')) [profile_job_title, company_Name] = occ.split('/ ');
+        else if (occ.includes(',')) [profile_job_title, company_Name] = occ.split(', ');
+        else profile_job_title = occ;
+
+        connections.push({
+          full_name: `${miniProfile.firstName} ${miniProfile.lastName}`,
+          firstname: miniProfile.firstName,
+          lastname: miniProfile.lastName,
+          Company_Name: company_Name || '',
+          profile_job_title: profile_job_title || '',
+          navigationUrl: `https://www.linkedin.com/in/${miniProfile.publicIdentifier}`,
+          Localisation: '',
+          profile_image_url: image,
+        });
       }
 
-      // Scroll down to load more connections
-      await autoScrollDown(1000, 800, 4);
-      await new Promise(r => setTimeout(r, 1500));
+      await postSavelinkedinFConnections(connections);
+      return connections;
+    } else {
+      return [];
     }
 
-    // 🧠 Step 4: Collect visible connections
-    const cards = document.querySelectorAll('div[data-view-name="connections-list"] > div');
-    cards.forEach((el: any, i: any) => {
-      if (i >= start - 1 && i < targetCount) {
-        const name = el.querySelector("a p")?.innerText?.trim() || "";
-        const occupation = el.querySelectorAll("a p")[1]?.innerText?.trim() || "";
-        const profileLink = el.querySelector('a[href*="/in/"]')?.href || "";
-
-        if (name && profileLink) {
-          connections.push({ name, occupation, profileLink });
-        }
-      }
-    });
-
-    return connections;
+  } catch (err) {
+    console.error('❌ Error in extractConnections:', err);
+    return [];
   }
-
-
-  const connectionData = await extractConnections(startIndex, endIndex);
-  return connectionData;
 }

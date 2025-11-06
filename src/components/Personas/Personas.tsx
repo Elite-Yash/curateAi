@@ -8,6 +8,7 @@ import Loader from "../Loader/Loader";
 import { GrOrganization } from "react-icons/gr";
 import { GoOrganization } from "react-icons/go";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
+import { BsShieldCheck } from "react-icons/bs";
 
 const Personas = () => {
   const [personasData, setPersonasData] = useState<any[]>([]);
@@ -176,7 +177,7 @@ const Personas = () => {
         {/* Add Button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
+          className="flex items-center gap-2 border px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition"
         >
           <i className="fa-solid fa-globe"></i>
           <span>+ Add new Personas</span>
@@ -228,8 +229,14 @@ const Personas = () => {
                       {persona.isdefault ? (
                         <div className="flex items-center gap-2">
                           <ImCheckboxChecked className="text-green" />
-                          <div className="text-xs flex font-semibold gap-1.5">
+                          {/* <div className="text-xs flex font-semibold gap-1.5">
                             This is your default persona
+                          </div>  */}
+                          <div className="border rounded-full p-1 font-bold bg-[#ff5c350f] border-[#ff5c350f] text-[#ff5c35]">
+                            <div className="flex gap-2">
+                              <span className="mt-[2px] ps-1"><BsShieldCheck /></span>
+                              <span className="pe-2">Default</span>
+                            </div>
                           </div>
                         </div>
                       ) : (

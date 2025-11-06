@@ -464,7 +464,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
                   {(generatedPost.match(/#\w+/g) || []).length} hashtags
                 </span>
               </div>
-              <span className="px-2 py-1 border rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition cursor-pointer">
+              <span className="px-2 py-1 border rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition cursor-pointer">
                 Ready to post
               </span>
             </div> */}
@@ -473,7 +473,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
               <div className="flex gap-3">
                 <button
                   onClick={copyToClipboard}
-                  className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition"
+                  className="flex-1 flex items-center justify-center gap-2 border text-sm font-medium rounded-lg text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition"
                 >
                   {copied ?
                     <>

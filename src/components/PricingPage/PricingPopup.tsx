@@ -195,7 +195,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
 
 
                     {/* Modal Header */}
-                    <div className="relative flex justify-between item-center">
+                    <div className=" relative flex justify-between item-center header-top pb-4">
                       <div className="flex gap-3">
                         <span className="relative p-logo border-[2.5px] border-solid h-12 w-12 rounded-full border-[#ff5c35]">
                           <img src={getImage("fLogo")} alt="img" className="" />
@@ -256,11 +256,7 @@ const PricingPopup = ({ isOpen, onClose }: any) => {
                         </Tooltip>
                       </div>
                     </div> */}
-                    <div className="gap-5 !flex justify-center items-center mt-1 p-5 header-top pb-10">
-
-
-
-
+                    <div className="gap-5 !flex justify-center items-center mt-1 p-5 pb-10">
                       {/* Plan 1 */}
                       <div
                         className={`before:content-[''] before:bg-[#ff5c35] before:w-[80%] before:h-[5px] rounded-[100px] before:absolute before:top-[-3px] before:left-[50%] before:-translate-x-[50%] price-box p-6 w-72 background-three g-box relative ${activePlanDetails.id === allPlans[1]?.price_id

@@ -130,27 +130,9 @@ const LinkedinConnection = () => {
       {/* Body Section */}
       <div className="space-y-6">
         <div className="w-full min-h-[443px] bg-white g-box rounded-lg shadow-sm flex flex-col items-center p-6 relative">
-
-          {/* Group Tabs - Sticky Top */}
-          {/* <div className="grid grid-cols-5 w-full bg-[#ff5c35]/10 rounded-t-lg top-0 z-20 absolute">
-            {groups.map((group) => (
-              <button
-                key={group.id}
-                onClick={() => setActiveGroup(group.id)}
-                className={`px-6 py-2 bg-[#ff5c35]/10 font-medium transition-all duration-300 ${
-                  activeGroup === group.id
-                    ? " bg-white text-[#ff5c35] rounded-t-lg !font-bold"
-                    : " hover:text-[#ff5c35]"
-                }`}
-              >
-                {group.name}
-              </button>
-            ))}
-          </div> */}
-
           {activeTab === "main" ?
             <div className="w-full flex justify-end items-center">
-              <button onClick={() => setActiveTab("import")} className="flex items-center float-end border gap-2  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-[#ff5c35] hover:bg-[#ff5c35] hover:text-white transition">
+              <button onClick={() => setActiveTab("import")} className="flex items-center float-end border gap-2  px-4 py-2 text-sm font-medium rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition">
                 Show Your Connection
               </button>
             </div> : <></>
