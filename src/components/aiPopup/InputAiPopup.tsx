@@ -359,7 +359,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
           } fixed inset-0 flex items-center justify-center`}
       >
         <div
-          className={`popup-container !w-[1200px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan
+          className={`popup-container !w-[1500px] bg-white shadow-lg absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 overflow-hidden ${!activePlan
             ? "!w-[45rem] "
             : " max-[1800px]:scale-[0.9] max-[1550px]:scale-[0.75] "
             }`}
@@ -453,7 +453,8 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Motive */}
+                    <div className="flex gap-5 ">
+                           {/* Motive */}
                     <div className="w-full input-group ">
                       <label className="block text-xl font-medium  ms-2">
                         Select Motive<span className="text-red">*</span>
@@ -485,8 +486,6 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </p>
                       )}
                     </div>
-
-                    <div className="flex gap-5 ">
                       {/* Language */}
                       <div className="w-full input-group ">
                         <label className="block text-xl font-medium  ms-2">
@@ -611,13 +610,16 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     className="p-4 bg-[#ff5c350f] rounded-lg message-reply mt-4"
                   >
                     <h3 className="font-semibold text-base mb-2">
-                      💬 Messaging Best Practices:
+                      Messaging Best Practices:
                     </h3>
-                    <ul className="list-disc list-inside text-xl  mt-2 space-y-1">
-                      <li>Respond within 1-2 minute</li>
-                      <li>Personalize with specific details</li>
-                      <li>Always provide clear next steps</li>
-                      <li>Keep messages concise and scannable</li>
+                    <ul className="list-disc list-inside text-xl mt-2 space-y-1">
+                      <li>Start with a strong hook in the first 2 lines</li>
+                      <li>Use simple and clear language</li>
+                      <li>Add value with insights, examples, or data</li>
+                      <li>Keep paragraphs short for easy reading</li>
+                      <li>End with a question or call-to-action to boost engagement</li>
+                      <li>Use emojis sparingly to make posts more relatable</li>
+                      <li>Add 2–5 relevant hashtags to increase reach</li>
                     </ul>
                   </div>
                 </div>
@@ -626,7 +628,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                 <div className=" flex flex-col w-1/2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 font-semibold text-2xl mb-[3px]">
-                      <FileText className="w-5 h-5 text-[#16a34a]" />
+                      <FileText className="w-5 h-5 text-[#ff5c35]" />
                       Generated Post
                     </div>
                     {isTextGenerated && (
@@ -655,7 +657,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                       <div className="flex gap-5">
                         {/* Insert Button - only visible after text is generated */}
                         <button
-                          className="popup-button-insert px-4 py-2 h-[4rem] w-[28rem] text-white rounded-md hover:bg-green-600"
+                          className="popup-button-insert px-4 py-2 h-[4rem] w-[36rem] text-white rounded-md hover:bg-green-600"
                           onClick={insertContent}
                           disabled={loading}
                         >

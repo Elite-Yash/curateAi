@@ -401,7 +401,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const endAt = Math.min(totalScraped + 100, 500);
 
       chrome.tabs.create(
-        { url: "https://www.linkedin.com/mynetwork/invite-connect/connections/" },
+        { url: "https://www.linkedin.com/mynetwork/invite-connect/connections/", active: false,  },
         (tab) => {
           chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
             if (tabId === tab.id && info.status === "complete") {

@@ -38,7 +38,6 @@ const ImportConnection: React.FC<ImportConnectionProps> = ({
   connections,
   progress,
 }) => {
-          console.log("  ~ ImportConnection ~ connections:", connections)
   return (
     <div className="flex flex-col items-center justify-center gap-6 w-full h-full">
       <div className="flex items-center justify-between w-full gap-3">

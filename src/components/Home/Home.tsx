@@ -75,7 +75,6 @@ const Home = () => {
         undefined, // No query parameters
         {}, // No request body
         (result: any) => {
-          console.log("  ~ Home ~ result:", result)
           if (result?.status === 200 && Array.isArray(result?.data.data)) {
             setCommentsData(result.data.data);
           } else {
@@ -103,7 +102,6 @@ const Home = () => {
         undefined,
         {},
         (response: any) => {
-          console.log("  ~ Home ~ response profile:", response)
           if (response?.status === 200 && response?.data?.data.profiles) {
             setProfilesData(response?.data?.data.profiles || []);
           } else {

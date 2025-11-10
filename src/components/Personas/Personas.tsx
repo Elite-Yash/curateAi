@@ -234,7 +234,7 @@ const Personas = () => {
                           </div>  */}
                           <div className="border rounded-full p-1 font-bold bg-[#ff5c350f] border-[#ff5c350f] text-[#ff5c35]">
                             <div className="flex gap-2">
-                              <span className="mt-[2px] ps-1"><BsShieldCheck /></span>
+                              <span className="mt-[2px] ps-1 "><BsShieldCheck style={{ strokeWidth: 1 }} /></span>
                               <span className="pe-2">Default</span>
                             </div>
                           </div>
