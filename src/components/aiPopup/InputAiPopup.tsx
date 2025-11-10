@@ -408,9 +408,12 @@ const InputAiPopup: React.FC<ModalProps> = ({
                             className={`rounded-lg overflow-hidden border ${isActive ? "active" : "border-[#6b7280]"
                               } custom_textarea h-[150px] relative`}
                           >
-                            {" "}
                             <textarea
-                              placeholder="No comment found?"
+                              // placeholder="No comment found?"
+                              placeholder={popupTriggeredFrom === "comment" ||
+                              popupTriggeredFrom === "comment-reply"
+                              ? "Which type of comment"
+                              : "Which type of Post / Messages"}
                               value={collectedText}
                               onChange={(e) => setCollectedText(e.target.value)}
                               onFocus={() => setisActive(true)}
