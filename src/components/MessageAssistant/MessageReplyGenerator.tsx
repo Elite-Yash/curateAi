@@ -490,14 +490,10 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                   <Copy className="w-4 h-4 mr-2" />
                   {copied ? "Reply Copied!" : "Copy Reply"}
                 </button>
-                {/* <button className="flex-1 px-4 py-2 rounded-lg  bg-green hover:bg-[#008234] text-white flex items-center justify-center">
-                  <Send className="w-4 h-4 mr-2" />
-                  Open LinkedIn
-                </button> */}
               </div>
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-12 h-full flex flex-col justify-center">
               <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageSquare className="w-8 h-8 text-[#ff5c35]" />
               </div>

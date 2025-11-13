@@ -613,7 +613,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                     className="p-4 bg-[#ff5c350f] rounded-lg message-reply mt-4"
                   >
                     <h3 className="font-semibold text-base mb-2">
-                      Messaging Best Practices:
+                      Messaging Writing Tips:
                     </h3>
                     <ul className="list-disc list-inside text-xl mt-2 space-y-1">
                       <li>Start with a strong hook in the first 2 lines</li>
@@ -668,7 +668,7 @@ const InputAiPopup: React.FC<ModalProps> = ({
                         </button>
                         {/* Regenerate Button - only visible after text is generated */}
                         <button
-                          className="flex gap-2 leading-6 popup-button-submit !px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[28rem] bg-green hover:bg-[#008234]"
+                          className="flex gap-2 leading-6 popup-button-submit !px-4 py-2 h-[4rem] rounded-[8px] justify-center text-white w-[35rem] bg-green hover:bg-[#008234]"
                           onClick={handleSubmit}
                           disabled={loading}
                         >
