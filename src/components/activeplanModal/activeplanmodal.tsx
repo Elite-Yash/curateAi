@@ -1,6 +1,5 @@
 import React from "react";
 import { getImage } from "../../common/utils/logoUtils";
-import { Link } from "react-router-dom";
 
 interface ModalWrapperProps {
   isOpen: boolean;
@@ -42,22 +41,11 @@ const ActivePlanModal: React.FC<ModalWrapperProps> = ({ isOpen, onClose }) => {
             <div className="text-3xl font-bold text-[#dc2626]">!!Alert!!</div>
           </div>
           <p className="text-[#4b5563] leading-relaxed">
-            Hey User, you don’t have an{" "}
-            <span className="font-semibold text-[#dc2626]">active plan</span> on Evarobo yet.
+            Hey User, you don’t have an
+            <span className="font-semibold text-[#dc2626]"> active plan</span> on Evarobo yet.
             Subscribe now and start enjoying all the amazing features!
           </p>
-        </div>
-
-        {/* button */}
-        {/* <div className="mt-6 flex justify-center gap-4">
-          <Link
-            to="/pricing"
-            className="px-6 font-normal py-2 rounded-lg border border-[#2563eb] text-[#2563eb] text-base hover:!border-[#2563eb] hover:!bg-[#2563eb] hover:!text-white transform"
-          >
-            Subscribe Now
-          </Link>
-        </div> */}
-        
+        </div>       
       </div>
     </div>
   );

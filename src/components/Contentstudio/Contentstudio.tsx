@@ -36,7 +36,7 @@ const Contentstudio = () => {
   return (
     <div className="c-padding-r py-[24px] relative pl-[320px] pr-[24px]">
       {/*Headng */}
-      <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg shadow-sm g-box">
+      <div className="flex flex-wrap items-center justify-between bg-white z-10 mb-6 g-box p-4 rounded-lg shadow-sm">
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r bg-[#ff5c35] rounded-2xl flex items-center justify-center">
@@ -44,7 +44,7 @@ const Contentstudio = () => {
             </div>
 
             <div>
-              <div className="text-2xl font-bold text-slate-900">Create Post</div>
+              <div className="text-2xl font-bold">Create Post</div>
               <div className="text-sm text-[#717c8c]">
                 Craft new LinkedIn posts instantly and share them with your network. Save time, stay consistent, and grow your presence
               </div>
@@ -73,7 +73,7 @@ const Contentstudio = () => {
 
           <button
             onClick={() => setActiveTab("postidia")}
-            className={`flex items-center justify-center gap-2 !py-2 text-sm  transition 
+            className={`flex items-center justify-center gap-2 !py-2 text-sm transition 
               ${activeTab === "postidia"
                 ? "bg-[#ff5c350f] text-[#ff5c35] rounded-sm !font-semibold"
                 : "text-[#737373] hover:bg-[#ff5c350f] font-medium"

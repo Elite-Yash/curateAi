@@ -849,27 +849,14 @@ const LinkedIn = () => {
           messageContainer = scrollable?.querySelector(".msg-form__contenteditable");
         }
 
-        // let messageText = "";
-        // if (messageContainer) {
-        //   const pTags = messageContainer.querySelectorAll("p");
-        //   messageText = Array.from(pTags)
-        //     .map((p) => p.innerText.trim() || p.textContent?.trim() || "")
-        //     .filter((txt) => txt.length > 0)
-        //     .join("\n");
-        // }
-
-        // Last message show on message-reply box
-        const messageContainers = document.querySelectorAll(".msg-s-message-list__event.clearfix");
+        const chatBox = messageBoxTextEditorContainer.closest(".msg-convo-wrapper");
+        const messageContainers = chatBox.querySelectorAll(".msg-s-message-list__event.clearfix");
         let messageText = "";
-
         if (messageContainers.length > 0) {
           const lastMessage = messageContainers[messageContainers.length - 1];
           const pTag = lastMessage.querySelector("p");
           messageText = pTag ? pTag.innerText.trim() : "";
-        } else {
-          console.warn("Message container not found!");
         }
-
         setCollectedText(messageText);
         setSelectedMessageBoxContainer(messageBoxTextEditorContainer);
         setPopupTriggeredFrom("message-reply");

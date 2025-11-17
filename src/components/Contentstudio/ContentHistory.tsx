@@ -8,16 +8,11 @@ import Loader from "../Loader/Loader";
 import Swal from "sweetalert2";
 
 const ContentHistory: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<"all" | "post" | "comment">(
-    "all"
-  );
   const [commentsData, setCommentsData] = useState<any[]>([]);
-  const [filteredContent, setFilteredContent] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalData, setModalData] = useState<any | null>(null);
   const [postsGenerated, setPostsGenerated] = useState(0);
   const [commentsGenerated, setCommentsGenerated] = useState(0);
-  const [actuallyUsed, setActuallyUsed] = useState(0);
   const [perWeekAvg, setPerWeekAvg] = useState(0);
 
   useEffect(() => {
@@ -27,27 +22,26 @@ const ContentHistory: React.FC = () => {
     ).length;
     setPostsGenerated(posts);
 
-    // Actually Used example: total of posts + comments (or your own logic)
-    setActuallyUsed(posts);
+    const postStatus = commentsData.filter(
+      (c) => c.status === "published"
+    ).length;
+    setCommentsGenerated(postStatus);
 
-    // Per Week Avg example: divide by number of weeks since first entry
-    if (commentsData.length > 0) {
-      const sorted = [...commentsData].sort(
-        (a, b) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      );
-      const firstDate = new Date(sorted[0].created_at);
-      const lastDate = new Date(sorted[sorted.length - 1].created_at);
-      const weeks = Math.max(
-        1,
-        Math.ceil(
-          (lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24 * 7)
-        )
-      );
-      setPerWeekAvg(Math.round(posts / weeks));
-    } else {
-      setPerWeekAvg(0);
-    }
+    const last7DaysComments = commentsData.filter((item) => {
+      const commentDate = new Date(item.created_at);
+      const today = new Date();
+
+      // Only compare DATE, not time
+      today.setHours(0, 0, 0, 0);
+
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(today.getDate() - 7);
+
+      commentDate.setHours(0, 0, 0, 0);
+
+      return commentDate >= sevenDaysAgo;
+    }).length
+    setPerWeekAvg(last7DaysComments);
   }, [commentsData]);
 
   const escapeHtml = (text?: string) => {
@@ -99,16 +93,6 @@ const ContentHistory: React.FC = () => {
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
-
-  useEffect(() => {
-    const filtered = commentsData.filter((item) => {
-      const type = String(item?.comment_type ?? "").toLowerCase();
-      if (activeFilter === "all") return type === "create-post";
-      if (activeFilter === "post") return type === "create-post";
-      return true;
-    });
-    setFilteredContent(filtered);
-  }, [commentsData, activeFilter]);
 
   const deleteComment = async (commentId: string) => {
     const result = await Swal.fire({
@@ -230,26 +214,6 @@ const ContentHistory: React.FC = () => {
             <History className="w-5 h-5 text-[#ff5c35]" />
             Generated Posts
           </div>
-          {/* <div className="flex items-center bg-[#ff5c350f] rounded-lg text-sm text-[#737373] font-medium overflow-hidden !p-[5px]">
-            <button
-              onClick={() => setActiveFilter("all")}
-              className={`px-4 py-1 ${activeFilter === "all" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setActiveFilter("post")}
-              className={`px-4 py-1 ${activeFilter === "post" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
-            >
-              Posts
-            </button>
-            <button
-              onClick={() => setActiveFilter("comment")}
-              className={`px-4 py-1 ${activeFilter === "comment" ? "bg-[#ff5c35] text-[#fff] rounded-lg" : ""}`}
-            >
-              Comments
-            </button>
-          </div> */}
         </div>
 
         <div className="p-2.5 pt-0">
@@ -271,7 +235,7 @@ const ContentHistory: React.FC = () => {
               <div className="text-center py-12">
                 <Loader />
               </div>
-            ) : filteredContent.length === 0 ? (
+            ) : commentsData.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-[#ff5c350f] rounded-full flex items-center justify-center mx-auto mb-4">
                   <History className="w-8 h-8 text-[#ff5c35]" />
@@ -282,7 +246,7 @@ const ContentHistory: React.FC = () => {
               </div>
             ) : (
               <div className="!border-[#e0eaf3] border-b h-125 overflow-auto">
-                {filteredContent
+                {commentsData
                   .slice()
                   .sort(
                     (a, b) =>
@@ -334,26 +298,6 @@ const ContentHistory: React.FC = () => {
                         {c.status ?? "N/A"}
                       </div>
 
-                      {/* Post URL */}
-                      {/* <div>
-                <div className="flex items-center gap-2">
-                  {c.post_url ? (
-                    <a
-                      href={c.post_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="text-[#ff5c35] border border-[#ff5c35] ps-1 pe-1 rounded-[5px] items-center text-sm gap-1 flex">
-                        Go To LinkedIn
-                        <IoLogoLinkedin className="text-xl text-[#0a66c2]" />
-                      </button>
-                    </a>
-                  ) : (
-                    "N/A"
-                  )}
-                </div>
-              </div> */}
-
                       {/* Date */}
                       <div className="text-sm col-span-1 w-22">
                         {formatDate(c.created_at)}
@@ -362,14 +306,6 @@ const ContentHistory: React.FC = () => {
                       {/* Actions */}
                       <div className="px-4 text-sm col-span-1">
                         <div className="flex items-center gap-2">
-                          {/* Edit */}
-                          {/* <button
-                    className="flex items-center justify-center w-8 h-8 rounded-full text-[#ff5c35] bg-[#fee2e2] hover:bg-[#ff5c35] hover:text-white transition"
-                    title="Edit Post"
-                  >
-                    <i className="fa-solid fa-edit"></i>
-                  </button> */}
-
                           {/* Delete */}
                           <button
                             onClick={() => deleteComment(c?.id)}

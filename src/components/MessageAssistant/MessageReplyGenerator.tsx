@@ -4,7 +4,6 @@ import {
   Copy,
   RefreshCw,
   Send,
-  User,
   Sparkles,
 } from "lucide-react";
 import {
@@ -39,18 +38,11 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
   const [generatedReply, setGeneratedReply] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [isAuth, setIsAuth] = useState(true);
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTextGenerated, setIsTextGenerated] = useState(false);
-
   const [isOriginalActive, setIsOriginalActive] = useState(false);
   const [isContextActive, setIsContextActive] = useState(false);
-
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [tone, setTone] = useState(TONES[0]);
   const [motive, setMotive] = useState(COMMENT_MOTIVES[0]);
-
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
   const [showPlanAlert, setShowPlanAlert] = useState(false);
@@ -71,7 +63,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
     if (!validateForm()) return;
     setIsGenerating(true);
     setLoading(true);
-    setError("");
 
     let platform = 'linkedin';
     const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
@@ -79,9 +70,7 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
     // Fetch auth token before sending the request
     chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
       if (!response || !response.success || !response.token) {
-        setError("Failed to retrieve auth token.");
         setLoading(false);
-        setIsAuth(true);
         setIsGenerating(false);
         return;
       }
@@ -105,14 +94,12 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
         currentUserName,
         authToken,
       };
-      console.log("  ~ handleSubmit ~ requestData:", requestData)
 
       chrome.runtime.sendMessage(
         { type: "GENERATE_CONTENT", data: requestData },
         (response) => {
           if (response?.success && !apiCalled) {
             setLoading(true);
-            setDisplayedText("");
             setGeneratedReply(""); // reset before new typing animation
 
             const generatedMessage = response.data?.data || "";
@@ -127,7 +114,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
                 setTimeout(type, typingSpeed);
               } else {
                 setLoading(false);
-                setIsTextGenerated(true);
                 setIsGenerating(false);
               }
             };
@@ -175,7 +161,6 @@ const MessageReplyGenerator: React.FC<ModalProps> = ({
               });
 
           } else {
-            setError("Failed to submit the comment. Please try again.");
             setLoading(false);
             setIsGenerating(false);
           }

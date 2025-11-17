@@ -13,7 +13,6 @@ const MessageCampaignTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editableCampaign, setEditableCampaign] = useState<Campaign | null>(null);
-  const [typeValue, setTypeValue] = useState("message"); // Add this state
   const [campaignStatus, setCampaignStatus] = useState<{ [id: number]: boolean }>({});
   const [showPlanAlert, setShowPlanAlert] = useState(false);
   const activePlanValue = useSelector(selectActivePlanValue);
@@ -403,7 +402,6 @@ const MessageCampaignTable = () => {
             onCampaignCreated={handleCampaignCreated}
             editableCampaigns={editableCampaign}
             resetEditableCampaign={resetEditableCampaign}
-            typeValue={typeValue}
           />
         )}
       </div>

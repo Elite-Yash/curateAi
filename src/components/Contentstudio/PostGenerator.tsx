@@ -34,14 +34,11 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
   const [displayedText, setDisplayedText] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isContextActive, setIsContextActive] = useState(false);
-
   const [motive, setMotive] = useState(POSTING_MOTIVES[0]);
   const [tone, setTone] = useState(TONES[0]);
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
-  const [isAuth, setIsAuth] = useState(true);
-  const [error, setError] = useState("");
   const [showPlanAlert, setShowPlanAlert] = useState(false);
   const activePlanValue = useSelector(selectActivePlanValue);
 
@@ -58,7 +55,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
 
     if (!validateForm()) return;
     setIsGenerating(true);
-    setError("");
 
     let platform = "linkedin";
     const currentUserName = getCurrentLinkedInUsernameFromLocalStorage();
@@ -66,9 +62,7 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
     // Fetch auth token before sending the request
     chrome.runtime.sendMessage({ type: "getCookies" }, (response) => {
       if (!response || !response.success || !response.token) {
-        setError("Failed to retrieve auth token.");
         setIsGenerating(false);
-        setIsAuth(true);
         return;
       }
       const personasvalue = {
@@ -159,7 +153,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
                 setIsGenerating(false);
               });
           } else {
-            setError("Failed to generate post. Please try again.");
             setIsGenerating(false);
           }
         }
@@ -230,11 +223,6 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
     if (!motive || motive.includes("Motive")) {
       newErrors.motive = "Please select a valid motive";
     }
-
-    // language must not equal "Language"
-    // if (!language || language === "Language") {
-    //   newErrors.language = "Please select a valid language";
-    // }
 
     // tone must not include "Tone"
     if (!tone || tone.includes("Tone")) {
@@ -452,23 +440,9 @@ const PostGenerator: React.FC<ModalProps> = ({ post_url, popupTriggeredFrom, per
           {generatedPost ? (
             <div className="space-y-4">
               {/* Post Preview */}
-              <div className="p-4 border border-[#e2e8f0] rounded-lg  whitespace-pre-wrap text-sm text-[#1e293b] !h-125 !overflow-auto ">
+              <div className="p-4 border border-[#e2e8f0] rounded-lg  whitespace-pre-wrap text-sm text-[#1e293b] !h-[676px] !overflow-auto ">
                 {displayedText.replace(/"/g, '')}
               </div>
-
-              {/* Post Stats */}
-              {/* <div className="flex items-center justify-between text-xs text-[#64748b]">
-              <div className="flex items-center gap-4">
-                <span>{generatedPost.length} characters</span>
-                <span>{generatedPost.split("\n").length} lines</span>
-                <span>
-                  {(generatedPost.match(/#\w+/g) || []).length} hashtags
-                </span>
-              </div>
-              <span className="px-2 py-1 border rounded-lg border-[#ff5c35] text-white bg-[#ff5c35] hover:text-[#ff5c35] hover:bg-white transition cursor-pointer">
-                Ready to post
-              </span>
-            </div> */}
 
               {/* Action Buttons */}
               <div className="flex gap-3">
